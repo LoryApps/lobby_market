@@ -583,6 +583,66 @@ export type Database = {
         };
         Relationships: [];
       };
+      coalition_invites: {
+        Row: {
+          id: string;
+          coalition_id: string;
+          inviter_id: string;
+          invitee_id: string;
+          status: "pending" | "accepted" | "declined";
+          message: string | null;
+          created_at: string;
+          responded_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          coalition_id: string;
+          inviter_id: string;
+          invitee_id: string;
+          status?: "pending" | "accepted" | "declined";
+          message?: string | null;
+          created_at?: string;
+          responded_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          coalition_id?: string;
+          inviter_id?: string;
+          invitee_id?: string;
+          status?: "pending" | "accepted" | "declined";
+          message?: string | null;
+          created_at?: string;
+          responded_at?: string | null;
+        };
+        Relationships: [];
+      };
+      coalition_join_requests: {
+        Row: {
+          id: string;
+          coalition_id: string;
+          user_id: string;
+          status: "pending" | "approved" | "rejected";
+          created_at: string;
+          responded_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          coalition_id: string;
+          user_id: string;
+          status?: "pending" | "approved" | "rejected";
+          created_at?: string;
+          responded_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          coalition_id?: string;
+          user_id?: string;
+          status?: "pending" | "approved" | "rejected";
+          created_at?: string;
+          responded_at?: string | null;
+        };
+        Relationships: [];
+      };
       clout_transactions: {
         Row: {
           id: string;
@@ -1089,7 +1149,9 @@ export type NotificationType =
   | "achievement_earned"
   | "reply_received"
   | "lobby_update"
-  | "role_promoted";
+  | "role_promoted"
+  | "coalition_invite"
+  | "coalition_invite_accepted";
 
 export type AchievementTier = "common" | "rare" | "epic" | "legendary";
 
@@ -1210,6 +1272,16 @@ export type CoalitionMember =
   Database["public"]["Tables"]["coalition_members"]["Row"];
 export type CoalitionMemberInsert =
   Database["public"]["Tables"]["coalition_members"]["Insert"];
+
+export type CoalitionInvite =
+  Database["public"]["Tables"]["coalition_invites"]["Row"];
+export type CoalitionInviteInsert =
+  Database["public"]["Tables"]["coalition_invites"]["Insert"];
+
+export type CoalitionJoinRequest =
+  Database["public"]["Tables"]["coalition_join_requests"]["Row"];
+export type CoalitionJoinRequestInsert =
+  Database["public"]["Tables"]["coalition_join_requests"]["Insert"];
 
 export type CloutTransaction =
   Database["public"]["Tables"]["clout_transactions"]["Row"];

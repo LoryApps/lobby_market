@@ -2,6 +2,7 @@ import Image from 'next/image'
 import { cn } from '@/lib/utils/cn'
 
 const sizeClasses = {
+  xs: 'h-6 w-6 text-[10px]',
   sm: 'h-8 w-8 text-xs',
   md: 'h-10 w-10 text-sm',
   lg: 'h-14 w-14 text-lg',
@@ -39,7 +40,7 @@ export function Avatar({ src, fallback, size = 'md', className }: AvatarProps) {
           alt={fallback}
           fill
           className="object-cover"
-          sizes={size === 'lg' ? '56px' : size === 'md' ? '40px' : '32px'}
+          sizes={size === 'lg' ? '56px' : size === 'md' ? '40px' : size === 'sm' ? '32px' : '24px'}
         />
       ) : (
         <span>{initials}</span>

@@ -13,6 +13,8 @@ import {
   Swords,
   TrendingUp,
   User,
+  Users,
+  CheckCircle,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
@@ -35,6 +37,8 @@ const typeConfig: Record<
   reply_received: { icon: MessageCircle, color: 'text-for-400' },
   lobby_update: { icon: Bell, color: 'text-surface-600' },
   role_promoted: { icon: User, color: 'text-emerald' },
+  coalition_invite: { icon: Users, color: 'text-purple' },
+  coalition_invite_accepted: { icon: CheckCircle, color: 'text-emerald' },
 }
 
 function buildHref(notification: Notification): string {
@@ -49,6 +53,8 @@ function buildHref(notification: Notification): string {
       return `/debates/${reference_id}`
     case 'profile':
       return `/profile/${reference_id}`
+    case 'coalition':
+      return `/coalitions/${reference_id}`
     default:
       return '#'
   }

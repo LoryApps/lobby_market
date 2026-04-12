@@ -1,10 +1,10 @@
 import Link from 'next/link'
-import { Plus, Users } from 'lucide-react'
+import { Plus, Users, Mail } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { CoalitionCard } from '@/components/lobby/CoalitionCard'
-import type { Coalition, Profile } from '@/lib/supabase/types'
+import type { Coalition, CoalitionInvite, Profile } from '@/lib/supabase/types'
 import { cn } from '@/lib/utils/cn'
 
 export const metadata = {
@@ -17,16 +17,34 @@ export const dynamic = 'force-dynamic'
 export default async function CoalitionsIndexPage() {
   const supabase = await createClient()
 
-  const { data: rows } = await supabase
-    .from('coalitions')
-    .select('*')
-    .eq('is_public', true)
-    .order('coalition_influence', { ascending: false })
-    .order('member_count', { ascending: false })
-    .limit(60)
+  const {
+    data: { user: authUser },
+  } = await supabase.auth.getUser()
 
-  const coalitions = (rows as Coalition[] | null) ?? []
+  // Run all fetches in parallel
+  const [coalitionsRes, invitesRes] = await Promise.all([
+    supabase
+      .from('coalitions')
+      .select('*')
+      .eq('is_public', true)
+      .order('coalition_influence', { ascending: false })
+      .order('member_count', { ascending: false })
+      .limit(60),
+    authUser
+      ? supabase
+          .from('coalition_invites')
+          .select('*')
+          .eq('invitee_id', authUser.id)
+          .eq('status', 'pending')
+          .order('created_at', { ascending: false })
+          .limit(10)
+      : Promise.resolve({ data: [] as CoalitionInvite[] }),
+  ])
 
+  const coalitions = (coalitionsRes.data as Coalition[] | null) ?? []
+  const rawInvites = (invitesRes.data as CoalitionInvite[] | null) ?? []
+
+  // Enrich coalitions with creator profiles
   const creatorIds = Array.from(new Set(coalitions.map((c) => c.creator_id)))
   const { data: creators } = creatorIds.length
     ? await supabase
@@ -43,11 +61,30 @@ export default async function CoalitionsIndexPage() {
     creator: creatorMap.get(c.creator_id) ?? null,
   }))
 
+  // Enrich invites with coalition names
+  const inviteCoalitionIds = rawInvites.map((i) => i.coalition_id)
+  const { data: inviteCoalitions } = inviteCoalitionIds.length
+    ? await supabase
+        .from('coalitions')
+        .select('id, name')
+        .in('id', inviteCoalitionIds)
+    : { data: [] as Pick<Coalition, 'id' | 'name'>[] }
+
+  const inviteCoalitionMap = new Map(
+    (inviteCoalitions ?? []).map((c) => [c.id, c])
+  )
+
+  const invitesEnriched = rawInvites.map((inv) => ({
+    ...inv,
+    coalition: inviteCoalitionMap.get(inv.coalition_id) ?? null,
+  }))
+
   return (
     <div className="min-h-screen bg-surface-50">
       <TopBar />
 
       <main className="max-w-6xl mx-auto px-4 py-8 pb-24 md:pb-8">
+        {/* ── Header ─────────────────────────────────────────────────── */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-3">
             <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-purple/10 border border-purple/30">
@@ -78,6 +115,50 @@ export default async function CoalitionsIndexPage() {
           </div>
         </div>
 
+        {/* ── Pending Invites Banner ──────────────────────────────────── */}
+        {invitesEnriched.length > 0 && (
+          <div className="mb-6 rounded-xl border border-purple/30 bg-purple/5 p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <Mail className="h-4 w-4 text-purple" />
+              <span className="font-mono text-xs font-semibold text-purple">
+                {invitesEnriched.length === 1
+                  ? 'You have 1 coalition invitation'
+                  : `You have ${invitesEnriched.length} coalition invitations`}
+              </span>
+            </div>
+            <div className="space-y-2">
+              {invitesEnriched.map((inv) => (
+                <Link
+                  key={inv.id}
+                  href={`/coalitions/${inv.coalition_id}`}
+                  className={cn(
+                    'flex items-center justify-between rounded-lg bg-surface-100 border border-surface-300 px-3 py-2',
+                    'hover:border-purple/40 transition-colors group'
+                  )}
+                >
+                  <div className="flex items-center gap-2 min-w-0">
+                    <div className="flex h-6 w-6 items-center justify-center rounded bg-purple/10 flex-shrink-0">
+                      <Users className="h-3.5 w-3.5 text-purple" />
+                    </div>
+                    <span className="font-mono text-xs text-white truncate">
+                      {inv.coalition?.name ?? 'Coalition'}
+                    </span>
+                    {inv.message && (
+                      <span className="font-mono text-[10px] text-surface-500 truncate hidden sm:block">
+                        — {inv.message}
+                      </span>
+                    )}
+                  </div>
+                  <span className="font-mono text-[10px] text-purple shrink-0 ml-2 group-hover:underline">
+                    View →
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ── Coalition Grid ──────────────────────────────────────────── */}
         {enriched.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 text-center">
             <Users className="h-12 w-12 text-surface-500 mb-4" />

@@ -2,10 +2,11 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ArrowLeft, Crown, Trophy, Users, Zap } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
-import { Avatar } from '@/components/ui/Avatar'
+import { CoalitionManagePanel } from '@/components/lobby/CoalitionManagePanel'
 import type {
   Coalition,
   CoalitionMember,
+  CoalitionInvite,
   Lobby,
   Profile,
 } from '@/lib/supabase/types'
@@ -20,6 +21,10 @@ export const dynamic = 'force-dynamic'
 export default async function CoalitionPage({ params }: CoalitionPageProps) {
   const supabase = await createClient()
 
+  const {
+    data: { user: authUser },
+  } = await supabase.auth.getUser()
+
   const { data: coalition, error } = await supabase
     .from('coalitions')
     .select('*')
@@ -32,10 +37,13 @@ export default async function CoalitionPage({ params }: CoalitionPageProps) {
 
   const typedCoalition = coalition as Coalition
 
+  // Parallel data fetches
   const [
     { data: memberRows },
     { data: activeLobbyRows },
     { data: creator },
+    currentMemberRes,
+    pendingInviteRes,
   ] = await Promise.all([
     supabase
       .from('coalition_members')
@@ -55,11 +63,71 @@ export default async function CoalitionPage({ params }: CoalitionPageProps) {
       .select('id, username, display_name, avatar_url, role')
       .eq('id', typedCoalition.creator_id)
       .maybeSingle(),
+    authUser
+      ? supabase
+          .from('coalition_members')
+          .select('id, role')
+          .eq('coalition_id', typedCoalition.id)
+          .eq('user_id', authUser.id)
+          .maybeSingle()
+      : Promise.resolve({ data: null }),
+    authUser
+      ? supabase
+          .from('coalition_invites')
+          .select('id')
+          .eq('coalition_id', typedCoalition.id)
+          .eq('invitee_id', authUser.id)
+          .eq('status', 'pending')
+          .maybeSingle()
+      : Promise.resolve({ data: null }),
   ])
 
   const members = (memberRows as CoalitionMember[] | null) ?? []
   const activeLobbies = (activeLobbyRows as Lobby[] | null) ?? []
+  const currentMember = currentMemberRes.data as {
+    id: string
+    role: 'leader' | 'officer' | 'member'
+  } | null
+  const pendingInvite = pendingInviteRes.data as { id: string } | null
 
+  // Fetch pending invites if leader/officer
+  let pendingInvitesForLeader: (CoalitionInvite & {
+    invitee?: Pick<Profile, 'id' | 'username' | 'display_name' | 'avatar_url'> | null
+  })[] = []
+
+  if (
+    currentMember &&
+    ['leader', 'officer'].includes(currentMember.role)
+  ) {
+    const { data: invRows } = await supabase
+      .from('coalition_invites')
+      .select('*')
+      .eq('coalition_id', typedCoalition.id)
+      .eq('status', 'pending')
+      .order('created_at', { ascending: false })
+
+    const inviteeIds = (invRows ?? []).map(
+      (i: CoalitionInvite) => i.invitee_id
+    )
+    const { data: inviteeProfiles } = inviteeIds.length
+      ? await supabase
+          .from('profiles')
+          .select('id, username, display_name, avatar_url')
+          .in('id', inviteeIds)
+      : { data: [] as Profile[] }
+
+    const inviteeMap = new Map<string, Profile>()
+    for (const p of inviteeProfiles ?? []) inviteeMap.set(p.id, p as Profile)
+
+    pendingInvitesForLeader = (invRows ?? []).map(
+      (inv: CoalitionInvite) => ({
+        ...inv,
+        invitee: inviteeMap.get(inv.invitee_id) ?? null,
+      })
+    )
+  }
+
+  // Build member list with profiles
   const memberIds = members.map((m) => m.user_id)
   const { data: memberProfiles } = memberIds.length
     ? await supabase
@@ -72,6 +140,11 @@ export default async function CoalitionPage({ params }: CoalitionPageProps) {
   for (const p of memberProfiles ?? []) {
     profileMap.set(p.id, p as Profile)
   }
+
+  const membersWithProfiles = members.map((m) => ({
+    ...m,
+    profile: profileMap.get(m.user_id) ?? null,
+  }))
 
   const totalMatches = typedCoalition.wins + typedCoalition.losses
   const winRate =
@@ -86,7 +159,7 @@ export default async function CoalitionPage({ params }: CoalitionPageProps) {
           <Link
             href="/coalitions"
             className="flex items-center justify-center h-9 w-9 rounded-lg bg-surface-200 text-surface-500 hover:bg-surface-300 hover:text-white transition-colors"
-            aria-label="Back"
+            aria-label="Back to coalitions"
           >
             <ArrowLeft className="h-5 w-5" />
           </Link>
@@ -97,6 +170,7 @@ export default async function CoalitionPage({ params }: CoalitionPageProps) {
       </div>
 
       <div className="max-w-3xl mx-auto px-4 py-8 space-y-6">
+        {/* ── Header ─────────────────────────────────────────────────── */}
         <div className="flex items-start gap-4">
           <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple/10 border border-purple/30 text-purple flex-shrink-0">
             <Users className="h-6 w-6" />
@@ -112,6 +186,7 @@ export default async function CoalitionPage({ params }: CoalitionPageProps) {
           </div>
         </div>
 
+        {/* ── Mission ─────────────────────────────────────────────────── */}
         {typedCoalition.description && (
           <div className="rounded-xl border border-surface-300 bg-surface-100 p-5">
             <div className="text-[10px] font-mono uppercase tracking-wider text-surface-500 mb-2">
@@ -123,6 +198,7 @@ export default async function CoalitionPage({ params }: CoalitionPageProps) {
           </div>
         )}
 
+        {/* ── Stats ────────────────────────────────────────────────────── */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <div className="rounded-xl border border-surface-300 bg-surface-100 p-4">
             <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-wider text-surface-500">
@@ -131,6 +207,9 @@ export default async function CoalitionPage({ params }: CoalitionPageProps) {
             </div>
             <div className="mt-1 font-mono text-2xl font-bold text-white tabular-nums">
               {typedCoalition.member_count}
+              <span className="font-mono text-xs text-surface-500">
+                /{typedCoalition.max_members}
+              </span>
             </div>
           </div>
           <div className="rounded-xl border border-surface-300 bg-surface-100 p-4">
@@ -170,6 +249,7 @@ export default async function CoalitionPage({ params }: CoalitionPageProps) {
           </div>
         </div>
 
+        {/* ── Active Lobbies ───────────────────────────────────────────── */}
         <section>
           <h2 className="font-mono text-sm font-semibold text-white mb-3 flex items-center gap-2">
             <Zap className="h-4 w-4 text-gold" />
@@ -214,51 +294,23 @@ export default async function CoalitionPage({ params }: CoalitionPageProps) {
           )}
         </section>
 
+        {/* ── Members + Management Panel ─────────────────────────────── */}
         <section>
           <h2 className="font-mono text-sm font-semibold text-white mb-3 flex items-center gap-2">
             <Users className="h-4 w-4 text-purple" />
-            Members ({members.length})
+            Membership
           </h2>
-          {members.length === 0 ? (
-            <div className="rounded-xl border border-dashed border-surface-300 bg-surface-100 p-8 text-center font-mono text-xs text-surface-500">
-              No members yet
-            </div>
-          ) : (
-            <div className="rounded-xl border border-surface-300 bg-surface-100 divide-y divide-surface-300/60">
-              {members.slice(0, 50).map((m) => {
-                const profile = profileMap.get(m.user_id)
-                return (
-                  <div
-                    key={m.id}
-                    className="flex items-center gap-3 px-4 py-3"
-                  >
-                    <Avatar
-                      src={profile?.avatar_url}
-                      fallback={
-                        profile?.display_name ||
-                        profile?.username ||
-                        'U'
-                      }
-                      size="sm"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <p className="font-mono text-xs font-medium text-white truncate">
-                        {profile?.display_name ??
-                          profile?.username ??
-                          'anonymous'}
-                      </p>
-                      <p className="font-mono text-[10px] text-surface-500">
-                        {m.role}
-                      </p>
-                    </div>
-                    {m.role === 'leader' && (
-                      <Crown className="h-3.5 w-3.5 text-gold" />
-                    )}
-                  </div>
-                )
-              })}
-            </div>
-          )}
+          <CoalitionManagePanel
+            coalitionId={typedCoalition.id}
+            isPublic={typedCoalition.is_public}
+            currentUserId={authUser?.id ?? null}
+            currentUserRole={currentMember?.role ?? null}
+            pendingInviteId={pendingInvite?.id ?? null}
+            pendingInvites={pendingInvitesForLeader}
+            members={membersWithProfiles}
+            memberCount={typedCoalition.member_count}
+            maxMembers={typedCoalition.max_members}
+          />
         </section>
       </div>
     </div>
