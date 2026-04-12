@@ -20,6 +20,8 @@ export type Database = {
           daily_votes_reset_at: string;
           verification_tier: number;
           is_influencer: boolean;
+          onboarding_complete: boolean;
+          category_preferences: string[];
           created_at: string;
           updated_at: string;
         };
@@ -41,6 +43,8 @@ export type Database = {
           daily_votes_reset_at?: string;
           verification_tier?: number;
           is_influencer?: boolean;
+          onboarding_complete?: boolean;
+          category_preferences?: string[];
           created_at?: string;
           updated_at?: string;
         };
@@ -62,6 +66,8 @@ export type Database = {
           daily_votes_reset_at?: string;
           verification_tier?: number;
           is_influencer?: boolean;
+          onboarding_complete?: boolean;
+          category_preferences?: string[];
           created_at?: string;
           updated_at?: string;
         };

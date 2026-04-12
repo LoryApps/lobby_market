@@ -50,12 +50,11 @@ export default function SignupPage() {
         return;
       }
 
-      // If email confirmation is required, show a message.
-      // Otherwise redirect to home.
+      // Redirect new users to onboarding to calibrate their feed.
       setMessage(
         "Account created. Check your email to confirm your account."
       );
-      router.push("/");
+      router.push("/onboarding");
     } catch {
       setError("An unexpected error occurred. Please try again.");
     } finally {

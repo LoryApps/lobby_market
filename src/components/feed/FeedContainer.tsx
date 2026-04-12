@@ -3,6 +3,7 @@
 import { useEffect, useRef, useCallback } from 'react'
 import { useFeedStore } from '@/lib/stores/feed-store'
 import { TopicCard } from '@/components/feed/TopicCard'
+import { FeedTutorial } from '@/components/feed/FeedTutorial'
 
 function FeedSkeleton() {
   return (
@@ -75,6 +76,7 @@ export function FeedContainer() {
 
   return (
     <div className="feed-scroll">
+      <FeedTutorial />
       {topics.map((topic) => (
         <TopicCard key={topic.id} topic={topic} />
       ))}
