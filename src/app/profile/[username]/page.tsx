@@ -42,6 +42,18 @@ export default async function ProfileUsernamePage({
   } = await supabase.auth.getUser()
   const isOwner = user?.id === profile.id
 
+  // Check if the current viewer follows this profile
+  let initialFollowing = false
+  if (user && !isOwner) {
+    const { data: followRow } = await supabase
+      .from('user_follows')
+      .select('id')
+      .eq('follower_id', user.id)
+      .eq('following_id', profile.id)
+      .maybeSingle()
+    initialFollowing = !!followRow
+  }
+
   // Fetch recent votes (50) along with topic statement for display
   const { data: votesRaw } = (await supabase
     .from('votes')
@@ -133,6 +145,8 @@ export default async function ProfileUsernamePage({
           laws={laws}
           allAchievements={allAchievements}
           earnedAchievementIds={earnedAchievementIds}
+          initialFollowing={initialFollowing}
+          viewerId={user?.id ?? null}
         />
       </main>
       <BottomNav />

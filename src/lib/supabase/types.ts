@@ -23,6 +23,8 @@ export type Database = {
           is_influencer: boolean;
           onboarding_complete: boolean;
           category_preferences: string[];
+          followers_count: number;
+          following_count: number;
           created_at: string;
           updated_at: string;
         };
@@ -47,6 +49,8 @@ export type Database = {
           is_influencer?: boolean;
           onboarding_complete?: boolean;
           category_preferences?: string[];
+          followers_count?: number;
+          following_count?: number;
           created_at?: string;
           updated_at?: string;
         };
@@ -71,6 +75,8 @@ export type Database = {
           is_influencer?: boolean;
           onboarding_complete?: boolean;
           category_preferences?: string[];
+          followers_count?: number;
+          following_count?: number;
           created_at?: string;
           updated_at?: string;
         };
@@ -1066,6 +1072,27 @@ export type Database = {
         };
         Relationships: [];
       };
+      user_follows: {
+        Row: {
+          id: string;
+          follower_id: string;
+          following_id: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          follower_id: string;
+          following_id: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          follower_id?: string;
+          following_id?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -1360,3 +1387,11 @@ export type ReportWithReporter = Report & {
     "id" | "username" | "display_name" | "avatar_url" | "role"
   > | null;
 };
+
+// User follows
+export interface UserFollow {
+  id: string;
+  follower_id: string;
+  following_id: string;
+  created_at: string;
+}

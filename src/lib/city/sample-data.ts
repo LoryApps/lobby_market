@@ -79,6 +79,8 @@ function makeProfile(
     is_influencer: isInfluencer,
     onboarding_complete: true,
     category_preferences: [],
+    followers_count: 0,
+    following_count: 0,
     created_at: now,
     updated_at: now,
   }

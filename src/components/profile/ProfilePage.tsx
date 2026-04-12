@@ -29,6 +29,8 @@ interface ProfilePageProps {
   laws: Law[]
   allAchievements: Achievement[]
   earnedAchievementIds: string[]
+  initialFollowing?: boolean
+  viewerId?: string | null
 }
 
 type TabId = 'overview' | 'votes' | 'topics' | 'laws' | 'achievements'
@@ -82,12 +84,19 @@ export function ProfilePage({
   laws,
   allAchievements,
   earnedAchievementIds,
+  initialFollowing = false,
+  viewerId = null,
 }: ProfilePageProps) {
   const [activeTab, setActiveTab] = useState<TabId>('overview')
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
-      <ProfileHeader profile={profile} isOwner={isOwner} />
+      <ProfileHeader
+        profile={profile}
+        isOwner={isOwner}
+        initialFollowing={initialFollowing}
+        viewerId={viewerId}
+      />
 
       {/* Stats row */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

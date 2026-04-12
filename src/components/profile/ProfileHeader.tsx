@@ -1,8 +1,19 @@
 'use client'
 
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { motion } from 'framer-motion'
-import { UserPlus, UserCheck, Calendar, Settings, BarChart2, AtSign, Code2, Globe } from 'lucide-react'
+import {
+  AtSign,
+  BarChart2,
+  Calendar,
+  Code2,
+  Globe,
+  Loader2,
+  Settings,
+  UserCheck,
+  UserMinus,
+  UserPlus,
+} from 'lucide-react'
 import Link from 'next/link'
 import { Avatar } from '@/components/ui/Avatar'
 import { Button } from '@/components/ui/Button'
@@ -14,32 +25,136 @@ import { cn } from '@/lib/utils/cn'
 interface ProfileHeaderProps {
   profile: Profile
   isOwner: boolean
+  /** Whether the logged-in viewer already follows this profile */
+  initialFollowing?: boolean
+  /** Viewer's user-id (null = guest) */
+  viewerId?: string | null
 }
 
 function formatJoinDate(iso: string): string {
   const date = new Date(iso)
-  return date.toLocaleDateString('en-US', {
-    month: 'long',
-    year: 'numeric',
-  })
+  return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
 }
 
-export function ProfileHeader({ profile, isOwner }: ProfileHeaderProps) {
-  const [following, setFollowing] = useState(false)
+function formatCount(n: number): string {
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`
+  if (n >= 1_000) return `${(n / 1_000).toFixed(1)}K`
+  return n.toLocaleString()
+}
+
+function FollowStat({
+  label,
+  value,
+}: {
+  label: string
+  value: number
+}) {
+  return (
+    <div className="flex flex-col items-center gap-0.5 min-w-[52px]">
+      <span className="text-base font-mono font-bold text-white tabular-nums">
+        {formatCount(value)}
+      </span>
+      <span className="text-[10px] font-mono text-surface-500 uppercase tracking-wider">
+        {label}
+      </span>
+    </div>
+  )
+}
+
+export function ProfileHeader({
+  profile,
+  isOwner,
+  initialFollowing = false,
+  viewerId = null,
+}: ProfileHeaderProps) {
+  const [following, setFollowing] = useState(initialFollowing)
+  const [toggling, setToggling] = useState(false)
+  const [hovered, setHovered] = useState(false)
+  const [followersCount, setFollowersCount] = useState(
+    profile.followers_count ?? 0
+  )
 
   const ring = getRoleRingClass(profile.role)
   const displayName = profile.display_name || profile.username
 
+  const handleFollow = useCallback(async () => {
+    if (toggling) return
+
+    // Guests → redirect to login
+    if (!viewerId) {
+      window.location.href = '/login'
+      return
+    }
+
+    // Optimistic update
+    const wasFollowing = following
+    setFollowing(!wasFollowing)
+    setFollowersCount((c) => (wasFollowing ? Math.max(0, c - 1) : c + 1))
+    setToggling(true)
+
+    try {
+      const res = await fetch('/api/follow', {
+        method: wasFollowing ? 'DELETE' : 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ target_id: profile.id }),
+      })
+
+      if (res.status === 401) {
+        // Not authed — revert and redirect
+        setFollowing(wasFollowing)
+        setFollowersCount((c) => (wasFollowing ? c + 1 : Math.max(0, c - 1)))
+        window.location.href = '/login'
+        return
+      }
+
+      if (res.ok) {
+        const data = (await res.json()) as {
+          isFollowing: boolean
+          followersCount: number
+        }
+        setFollowing(data.isFollowing)
+        setFollowersCount(data.followersCount)
+      } else {
+        // Revert on unexpected error
+        setFollowing(wasFollowing)
+        setFollowersCount((c) => (wasFollowing ? c + 1 : Math.max(0, c - 1)))
+      }
+    } catch {
+      setFollowing(wasFollowing)
+      setFollowersCount((c) => (wasFollowing ? c + 1 : Math.max(0, c - 1)))
+    } finally {
+      setToggling(false)
+    }
+  }, [following, toggling, viewerId, profile.id])
+
+  // Determine button label / icon for follow toggle
+  let followLabel: string
+  let FollowIcon: typeof UserPlus
+
+  if (toggling) {
+    followLabel = following ? 'Following' : 'Follow'
+    FollowIcon = UserPlus
+  } else if (following && hovered) {
+    followLabel = 'Unfollow'
+    FollowIcon = UserMinus
+  } else if (following) {
+    followLabel = 'Following'
+    FollowIcon = UserCheck
+  } else {
+    followLabel = 'Follow'
+    FollowIcon = UserPlus
+  }
+
   return (
     <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-surface-100 to-surface-200 border border-surface-300 p-6 md:p-8">
-      {/* Subtle background gradient */}
+      {/* Background blurs */}
       <div className="pointer-events-none absolute inset-0 opacity-20">
         <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-for-500/20 blur-3xl" />
         <div className="absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-emerald/10 blur-3xl" />
       </div>
 
       <div className="relative flex flex-col md:flex-row items-start md:items-center gap-6">
-        {/* Avatar with role-colored ring */}
+        {/* Avatar */}
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -70,14 +185,27 @@ export function ProfileHeader({ profile, isOwner }: ProfileHeaderProps) {
             </h1>
             <RoleBadge role={profile.role} size="md" />
           </div>
+
           <div className="text-sm font-mono text-surface-500 mb-2">
             @{profile.username}
           </div>
+
           {profile.bio && (
             <p className="text-sm text-surface-600 max-w-prose mb-3">
               {profile.bio}
             </p>
           )}
+
+          {/* Follow stats row */}
+          <div className="flex items-center gap-4 mb-3">
+            <FollowStat label="followers" value={followersCount} />
+            <div className="h-6 w-px bg-surface-400" aria-hidden />
+            <FollowStat
+              label="following"
+              value={profile.following_count ?? 0}
+            />
+          </div>
+
           <div className="flex items-center gap-2 text-xs font-mono text-surface-500 mb-2">
             <Calendar className="h-3.5 w-3.5" />
             Joined {formatJoinDate(profile.created_at)}
@@ -85,7 +213,7 @@ export function ProfileHeader({ profile, isOwner }: ProfileHeaderProps) {
 
           {/* Social links */}
           {profile.social_links && (
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 flex-wrap">
               {profile.social_links.twitter && (
                 <a
                   href={`https://twitter.com/${profile.social_links.twitter}`}
@@ -154,19 +282,21 @@ export function ProfileHeader({ profile, isOwner }: ProfileHeaderProps) {
           <Button
             variant={following ? 'default' : 'for'}
             size="md"
-            onClick={() => setFollowing((f) => !f)}
-          >
-            {following ? (
-              <>
-                <UserCheck className="h-4 w-4" />
-                Following
-              </>
-            ) : (
-              <>
-                <UserPlus className="h-4 w-4" />
-                Follow
-              </>
+            disabled={toggling}
+            onClick={handleFollow}
+            onMouseEnter={() => setHovered(true)}
+            onMouseLeave={() => setHovered(false)}
+            className={cn(
+              'min-w-[110px] transition-colors',
+              following && hovered && 'border-against-500/50 text-against-400 hover:bg-against-950/40'
             )}
+          >
+            {toggling ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <FollowIcon className="h-4 w-4" />
+            )}
+            {followLabel}
           </Button>
         )}
       </div>
