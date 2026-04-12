@@ -1,9 +1,11 @@
 'use client'
 
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { ThumbsUp, ThumbsDown } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import type { VoteSide } from '@/lib/supabase/types'
+import { ConfettiBurst } from '@/components/simulation/ConfettiBurst'
 
 interface VoteButtonProps {
   topicId: string
@@ -21,13 +23,23 @@ export function VoteButton(props: VoteButtonProps) {
   } = props
   const hasVoted = votedSide !== null && votedSide !== undefined
 
+  const [burstTrigger, setBurstTrigger] = useState(0)
+  const [burstSide, setBurstSide] = useState<'blue' | 'red'>('blue')
+
+  const handleVote = (side: VoteSide) => {
+    if (disabled) return
+    setBurstSide(side === 'blue' ? 'blue' : 'red')
+    setBurstTrigger((t) => t + 1)
+    onVote(side)
+  }
+
   return (
-    <div className="flex gap-3 w-full">
+    <div className="relative flex gap-3 w-full">
       {/* Agree button */}
       <motion.button
         whileTap={!disabled ? { scale: 0.95 } : undefined}
         disabled={disabled}
-        onClick={() => onVote('blue')}
+        onClick={() => handleVote('blue')}
         className={cn(
           'flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-sm transition-colors',
           !hasVoted && !disabled && 'bg-for-600 text-white hover:bg-for-700',
@@ -44,7 +56,7 @@ export function VoteButton(props: VoteButtonProps) {
       <motion.button
         whileTap={!disabled ? { scale: 0.95 } : undefined}
         disabled={disabled}
-        onClick={() => onVote('red')}
+        onClick={() => handleVote('red')}
         className={cn(
           'flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-sm transition-colors',
           !hasVoted && !disabled && 'bg-against-600 text-white hover:bg-against-700',
@@ -56,6 +68,9 @@ export function VoteButton(props: VoteButtonProps) {
         <ThumbsDown className="h-4 w-4" />
         DISAGREE
       </motion.button>
+
+      {/* Confetti burst overlay */}
+      <ConfettiBurst trigger={burstTrigger} side={burstSide} />
     </div>
   )
 }

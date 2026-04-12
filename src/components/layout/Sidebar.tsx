@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import {
   Newspaper,
   TrendingUp,
+  Landmark,
   Scale,
   Swords,
   Trophy,
@@ -15,6 +16,7 @@ import { cn } from '@/lib/utils/cn'
 const navItems = [
   { href: '/', label: 'Feed', icon: Newspaper },
   { href: '/trending', label: 'Trending', icon: TrendingUp },
+  { href: '/floor', label: 'The Floor', icon: Landmark },
   { href: '/law', label: 'Codex', icon: Scale },
   { href: '/debates', label: 'Debates', icon: Swords },
   { href: '/leaderboard', label: 'Leaderboard', icon: Trophy },

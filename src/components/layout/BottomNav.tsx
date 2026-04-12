@@ -2,12 +2,13 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Flame, Zap, PlusCircle, User } from 'lucide-react'
+import { Flame, Zap, Landmark, PlusCircle, User } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 
 const tabs = [
   { href: '/', label: 'Home', icon: Flame },
   { href: '/spark', label: 'Spark', icon: Zap },
+  { href: '/floor', label: 'Floor', icon: Landmark },
   { href: '/topic/create', label: 'Create', icon: PlusCircle },
   { href: '/profile', label: 'Profile', icon: User },
 ] as const
