@@ -2,7 +2,14 @@
 
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, Calendar, Globe, Tag } from 'lucide-react'
+import {
+  ArrowLeft,
+  Calendar,
+  Globe,
+  Info,
+  Megaphone,
+  Tag,
+} from 'lucide-react'
 import type { Topic, Profile, VoteSide } from '@/lib/supabase/types'
 import { createClient } from '@/lib/supabase/client'
 import { Badge } from '@/components/ui/Badge'
@@ -14,6 +21,9 @@ import { SupportButton } from '@/components/voting/SupportButton'
 import { ChainBanner } from '@/components/chain/ChainBanner'
 import { ContinuationSection } from '@/components/chain/ContinuationSection'
 import { ChainVisualization } from '@/components/chain/ChainVisualization'
+import { LobbyBoard } from '@/components/lobby/LobbyBoard'
+import { ReportButton } from '@/components/moderation/ReportButton'
+import { cn } from '@/lib/utils/cn'
 import { useVoteStore } from '@/lib/stores/vote-store'
 import { useFeedStore } from '@/lib/stores/feed-store'
 import { useState } from 'react'
@@ -43,10 +53,13 @@ const statusBadgeVariant: Record<string, 'proposed' | 'active' | 'law' | 'failed
   archived: 'proposed',
 }
 
+type TopicTab = 'details' | 'lobbies'
+
 export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
   const router = useRouter()
   const [topic, setTopic] = useState<Topic>(initialTopic)
   const [hasSupported, setHasSupported] = useState(false)
+  const [activeTab, setActiveTab] = useState<TopicTab>('details')
   const { castVote, hasVoted, getVoteSide } = useVoteStore()
   const updateTopic = useFeedStore((s) => s.updateTopic)
   const votedSide = getVoteSide(topic.id)
@@ -156,113 +169,159 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
       {/* Content */}
       <div className="max-w-2xl mx-auto px-4 py-8">
         {/* Statement */}
-        <h1 className="text-3xl md:text-4xl font-bold text-white leading-tight mb-8">
-          {topic.statement}
-        </h1>
-
-        {/* Chain banner — shown during the continuation lifecycle */}
-        {showChainBanner && (
-          <div className="mb-8">
-            <ChainBanner topic={topic} />
-          </div>
-        )}
-
-        {/* Vote area */}
-        {isVotable && (
-          <div className="space-y-5 mb-8">
-            <VoteBar
-              bluePct={topic.blue_pct}
-              totalVotes={topic.total_votes}
-              showLabels
-            />
-            <VoteButton
-              topicId={topic.id}
-              bluePct={topic.blue_pct}
-              onVote={handleVote}
-              disabled={hasVoted(topic.id)}
-              votedSide={votedSide}
-            />
-            {topic.voting_ends_at && (
-              <div className="flex justify-center">
-                <VoteTimer endsAt={topic.voting_ends_at} />
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Continuation lifecycle — authoring, list, or plurality vote */}
-        {showChainBanner && (
-          <div className="mb-8">
-            <ContinuationSection topic={topic} />
-          </div>
-        )}
-
-        {/* Chain visualization — shown for any chained topic */}
-        {hasChainHistory && (
-          <div className="mb-8">
-            <ChainVisualization topic={topic} />
-          </div>
-        )}
-
-        {/* Support area */}
-        {isProposed && (
-          <div className="flex justify-center mb-8">
-            <SupportButton
-              topicId={topic.id}
-              supportCount={topic.support_count}
-              threshold={topic.activation_threshold}
-              hasSupported={hasSupported}
-              onSupport={handleSupport}
-            />
-          </div>
-        )}
-
-        {/* Law badge */}
-        {topic.status === 'law' && (
-          <div className="flex justify-center mb-8">
-            <Badge variant="law" className="text-lg px-6 py-2">
-              LAW
-            </Badge>
-          </div>
-        )}
-
-        {/* Metadata */}
-        <div className="bg-surface-100 border border-surface-300 rounded-xl p-5 space-y-4">
-          {/* Author */}
-          <div className="flex items-center gap-3">
-            <Avatar
-              src={author?.avatar_url}
-              fallback={author?.display_name || author?.username || 'U'}
-              size="md"
-            />
-            <div>
-              <p className="text-sm font-medium text-white">
-                {author?.display_name || author?.username || 'Anonymous'}
-              </p>
-              {author?.username && (
-                <p className="text-xs text-surface-500">@{author.username}</p>
-              )}
-            </div>
-          </div>
-
-          {/* Details grid */}
-          <div className="grid grid-cols-2 gap-3 pt-3 border-t border-surface-300">
-            {topic.category && (
-              <div className="flex items-center gap-2 text-sm text-surface-500">
-                <Tag className="h-4 w-4" />
-                <span>{topic.category}</span>
-              </div>
-            )}
-            <div className="flex items-center gap-2 text-sm text-surface-500">
-              <Globe className="h-4 w-4" />
-              <span>{topic.scope}</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm text-surface-500">
-              <Calendar className="h-4 w-4" />
-              <span>{createdDate}</span>
-            </div>
-          </div>
+        <div className="flex items-start justify-between gap-3 mb-6">
+          <h1 className="text-3xl md:text-4xl font-bold text-white leading-tight flex-1">
+            {topic.statement}
+          </h1>
+          <ReportButton
+            contentType="topic"
+            contentId={topic.id}
+            reportedUserId={topic.author_id}
+            compact
+          />
         </div>
+
+        {/* Tabs — Details / Lobbies */}
+        <div className="flex items-center gap-1 mb-8 border-b border-surface-300">
+          <button
+            type="button"
+            onClick={() => setActiveTab('details')}
+            className={cn(
+              'inline-flex items-center gap-2 px-4 py-2 font-mono text-xs font-semibold transition-colors border-b-2',
+              activeTab === 'details'
+                ? 'text-for-400 border-for-500'
+                : 'text-surface-500 border-transparent hover:text-white'
+            )}
+          >
+            <Info className="h-3.5 w-3.5" />
+            Details
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('lobbies')}
+            className={cn(
+              'inline-flex items-center gap-2 px-4 py-2 font-mono text-xs font-semibold transition-colors border-b-2',
+              activeTab === 'lobbies'
+                ? 'text-gold border-gold'
+                : 'text-surface-500 border-transparent hover:text-white'
+            )}
+          >
+            <Megaphone className="h-3.5 w-3.5" />
+            Lobby Board
+          </button>
+        </div>
+
+        {activeTab === 'lobbies' ? (
+          <LobbyBoard topicId={topic.id} />
+        ) : (
+          <>
+            {/* Chain banner — shown during the continuation lifecycle */}
+            {showChainBanner && (
+              <div className="mb-8">
+                <ChainBanner topic={topic} />
+              </div>
+            )}
+
+            {/* Vote area */}
+            {isVotable && (
+              <div className="space-y-5 mb-8">
+                <VoteBar
+                  bluePct={topic.blue_pct}
+                  totalVotes={topic.total_votes}
+                  showLabels
+                />
+                <VoteButton
+                  topicId={topic.id}
+                  bluePct={topic.blue_pct}
+                  onVote={handleVote}
+                  disabled={hasVoted(topic.id)}
+                  votedSide={votedSide}
+                />
+                {topic.voting_ends_at && (
+                  <div className="flex justify-center">
+                    <VoteTimer endsAt={topic.voting_ends_at} />
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Continuation lifecycle — authoring, list, or plurality vote */}
+            {showChainBanner && (
+              <div className="mb-8">
+                <ContinuationSection topic={topic} />
+              </div>
+            )}
+
+            {/* Chain visualization — shown for any chained topic */}
+            {hasChainHistory && (
+              <div className="mb-8">
+                <ChainVisualization topic={topic} />
+              </div>
+            )}
+
+            {/* Support area */}
+            {isProposed && (
+              <div className="flex justify-center mb-8">
+                <SupportButton
+                  topicId={topic.id}
+                  supportCount={topic.support_count}
+                  threshold={topic.activation_threshold}
+                  hasSupported={hasSupported}
+                  onSupport={handleSupport}
+                />
+              </div>
+            )}
+
+            {/* Law badge */}
+            {topic.status === 'law' && (
+              <div className="flex justify-center mb-8">
+                <Badge variant="law" className="text-lg px-6 py-2">
+                  LAW
+                </Badge>
+              </div>
+            )}
+
+            {/* Metadata */}
+            <div className="bg-surface-100 border border-surface-300 rounded-xl p-5 space-y-4">
+              {/* Author */}
+              <div className="flex items-center gap-3">
+                <Avatar
+                  src={author?.avatar_url}
+                  fallback={author?.display_name || author?.username || 'U'}
+                  size="md"
+                />
+                <div>
+                  <p className="text-sm font-medium text-white">
+                    {author?.display_name || author?.username || 'Anonymous'}
+                  </p>
+                  {author?.username && (
+                    <p className="text-xs text-surface-500">
+                      @{author.username}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Details grid */}
+              <div className="grid grid-cols-2 gap-3 pt-3 border-t border-surface-300">
+                {topic.category && (
+                  <div className="flex items-center gap-2 text-sm text-surface-500">
+                    <Tag className="h-4 w-4" />
+                    <span>{topic.category}</span>
+                  </div>
+                )}
+                <div className="flex items-center gap-2 text-sm text-surface-500">
+                  <Globe className="h-4 w-4" />
+                  <span>{topic.scope}</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-surface-500">
+                  <Calendar className="h-4 w-4" />
+                  <span>{createdDate}</span>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   )

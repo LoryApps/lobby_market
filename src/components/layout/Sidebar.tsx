@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
@@ -7,24 +8,74 @@ import {
   TrendingUp,
   Landmark,
   Scale,
-  Swords,
+  Mic,
   Trophy,
   UserCircle,
+  Megaphone,
+  Users,
+  Shield,
+  Coins,
 } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
+import { createClient } from '@/lib/supabase/client'
+import type { UserRole } from '@/lib/supabase/types'
 
-const navItems = [
+type NavItem = {
+  href: string
+  label: string
+  icon: typeof Newspaper
+  moderatorOnly?: boolean
+}
+
+const navItems: NavItem[] = [
   { href: '/', label: 'Feed', icon: Newspaper },
   { href: '/trending', label: 'Trending', icon: TrendingUp },
   { href: '/floor', label: 'The Floor', icon: Landmark },
   { href: '/law', label: 'Codex', icon: Scale },
-  { href: '/debates', label: 'Debates', icon: Swords },
+  { href: '/debate', label: 'Debates', icon: Mic },
+  { href: '/lobby', label: 'Lobbies', icon: Megaphone },
+  { href: '/coalitions', label: 'Coalitions', icon: Users },
+  { href: '/clout', label: 'Clout', icon: Coins },
+  {
+    href: '/moderation',
+    label: 'Moderation',
+    icon: Shield,
+    moderatorOnly: true,
+  },
   { href: '/leaderboard', label: 'Leaderboard', icon: Trophy },
-  { href: '/profile', label: 'My Profile', icon: UserCircle },
-] as const
+  { href: '/profile/me', label: 'My Profile', icon: UserCircle },
+]
 
 export function Sidebar() {
   const pathname = usePathname()
+  const [role, setRole] = useState<UserRole | null>(null)
+
+  // Lazy-load the viewer's role so the Moderation entry conditionally renders.
+  useEffect(() => {
+    let cancelled = false
+    const supabase = createClient()
+    ;(async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+      if (!user || cancelled) return
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .maybeSingle()
+      if (cancelled) return
+      setRole((profile?.role as UserRole | undefined) ?? null)
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  const canModerate = role === 'troll_catcher' || role === 'elder'
+  const visibleItems = navItems.filter(
+    (item) => !item.moderatorOnly || canModerate
+  )
 
   return (
     <aside className="hidden md:flex flex-col w-56 bg-surface-100 border-r border-surface-300 min-h-screen sticky top-14">
@@ -42,7 +93,7 @@ export function Sidebar() {
       {/* Navigation */}
       <nav className="flex-1 px-3 py-2">
         <ul className="space-y-1">
-          {navItems.map((item) => {
+          {visibleItems.map((item) => {
             const isActive =
               item.href === '/'
                 ? pathname === '/'

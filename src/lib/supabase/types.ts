@@ -436,6 +436,546 @@ export type Database = {
         };
         Relationships: [];
       };
+      lobbies: {
+        Row: {
+          id: string;
+          topic_id: string;
+          creator_id: string;
+          name: string;
+          position: Database["public"]["Enums"]["lobby_position"];
+          campaign_statement: string;
+          evidence_links: string[];
+          coalition_id: string | null;
+          member_count: number;
+          influence_score: number;
+          is_active: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          topic_id: string;
+          creator_id: string;
+          name: string;
+          position: Database["public"]["Enums"]["lobby_position"];
+          campaign_statement: string;
+          evidence_links?: string[];
+          coalition_id?: string | null;
+          member_count?: number;
+          influence_score?: number;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          topic_id?: string;
+          creator_id?: string;
+          name?: string;
+          position?: Database["public"]["Enums"]["lobby_position"];
+          campaign_statement?: string;
+          evidence_links?: string[];
+          coalition_id?: string | null;
+          member_count?: number;
+          influence_score?: number;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      lobby_members: {
+        Row: {
+          id: string;
+          lobby_id: string;
+          user_id: string;
+          joined_at: string;
+        };
+        Insert: {
+          id?: string;
+          lobby_id: string;
+          user_id: string;
+          joined_at?: string;
+        };
+        Update: {
+          id?: string;
+          lobby_id?: string;
+          user_id?: string;
+          joined_at?: string;
+        };
+        Relationships: [];
+      };
+      coalitions: {
+        Row: {
+          id: string;
+          name: string;
+          creator_id: string;
+          description: string | null;
+          member_count: number;
+          coalition_influence: number;
+          wins: number;
+          losses: number;
+          is_public: boolean;
+          max_members: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          creator_id: string;
+          description?: string | null;
+          member_count?: number;
+          coalition_influence?: number;
+          wins?: number;
+          losses?: number;
+          is_public?: boolean;
+          max_members?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          creator_id?: string;
+          description?: string | null;
+          member_count?: number;
+          coalition_influence?: number;
+          wins?: number;
+          losses?: number;
+          is_public?: boolean;
+          max_members?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      coalition_members: {
+        Row: {
+          id: string;
+          coalition_id: string;
+          user_id: string;
+          role: "leader" | "officer" | "member";
+          joined_at: string;
+        };
+        Insert: {
+          id?: string;
+          coalition_id: string;
+          user_id: string;
+          role?: "leader" | "officer" | "member";
+          joined_at?: string;
+        };
+        Update: {
+          id?: string;
+          coalition_id?: string;
+          user_id?: string;
+          role?: "leader" | "officer" | "member";
+          joined_at?: string;
+        };
+        Relationships: [];
+      };
+      clout_transactions: {
+        Row: {
+          id: string;
+          user_id: string;
+          type: Database["public"]["Enums"]["clout_transaction_type"];
+          amount: number;
+          reason: string;
+          reference_id: string | null;
+          reference_type: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          type: Database["public"]["Enums"]["clout_transaction_type"];
+          amount: number;
+          reason: string;
+          reference_id?: string | null;
+          reference_type?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          type?: Database["public"]["Enums"]["clout_transaction_type"];
+          amount?: number;
+          reason?: string;
+          reference_id?: string | null;
+          reference_type?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      reports: {
+        Row: {
+          id: string;
+          reporter_id: string;
+          reported_user_id: string | null;
+          reported_content_type:
+            | "topic"
+            | "message"
+            | "argument"
+            | "lobby"
+            | "continuation";
+          reported_content_id: string;
+          reason: string;
+          description: string | null;
+          status: Database["public"]["Enums"]["report_status"];
+          reviewer_id: string | null;
+          action_taken:
+            | Database["public"]["Enums"]["report_action"]
+            | null;
+          resolution_note: string | null;
+          created_at: string;
+          resolved_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          reporter_id: string;
+          reported_user_id?: string | null;
+          reported_content_type:
+            | "topic"
+            | "message"
+            | "argument"
+            | "lobby"
+            | "continuation";
+          reported_content_id: string;
+          reason: string;
+          description?: string | null;
+          status?: Database["public"]["Enums"]["report_status"];
+          reviewer_id?: string | null;
+          action_taken?:
+            | Database["public"]["Enums"]["report_action"]
+            | null;
+          resolution_note?: string | null;
+          created_at?: string;
+          resolved_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          reporter_id?: string;
+          reported_user_id?: string | null;
+          reported_content_type?:
+            | "topic"
+            | "message"
+            | "argument"
+            | "lobby"
+            | "continuation";
+          reported_content_id?: string;
+          reason?: string;
+          description?: string | null;
+          status?: Database["public"]["Enums"]["report_status"];
+          reviewer_id?: string | null;
+          action_taken?:
+            | Database["public"]["Enums"]["report_action"]
+            | null;
+          resolution_note?: string | null;
+          created_at?: string;
+          resolved_at?: string | null;
+        };
+        Relationships: [];
+      };
+      troll_catcher_training: {
+        Row: {
+          id: string;
+          user_id: string;
+          cases_attempted: number;
+          cases_correct: number;
+          accuracy_pct: number;
+          passed: boolean;
+          completed_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          cases_attempted?: number;
+          cases_correct?: number;
+          accuracy_pct?: number;
+          passed?: boolean;
+          completed_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          cases_attempted?: number;
+          cases_correct?: number;
+          accuracy_pct?: number;
+          passed?: boolean;
+          completed_at?: string | null;
+        };
+        Relationships: [];
+      };
+      notifications: {
+        Row: {
+          id: string;
+          user_id: string;
+          type: NotificationType;
+          title: string;
+          body: string | null;
+          reference_id: string | null;
+          reference_type: string | null;
+          is_read: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          type: NotificationType;
+          title: string;
+          body?: string | null;
+          reference_id?: string | null;
+          reference_type?: string | null;
+          is_read?: boolean;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          type?: NotificationType;
+          title?: string;
+          body?: string | null;
+          reference_id?: string | null;
+          reference_type?: string | null;
+          is_read?: boolean;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      achievements: {
+        Row: {
+          id: string;
+          slug: string;
+          name: string;
+          description: string;
+          icon: string;
+          tier: AchievementTier;
+          criteria: Record<string, unknown>;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          slug: string;
+          name: string;
+          description: string;
+          icon: string;
+          tier: AchievementTier;
+          criteria?: Record<string, unknown>;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          slug?: string;
+          name?: string;
+          description?: string;
+          icon?: string;
+          tier?: AchievementTier;
+          criteria?: Record<string, unknown>;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      user_achievements: {
+        Row: {
+          id: string;
+          user_id: string;
+          achievement_id: string;
+          earned_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          achievement_id: string;
+          earned_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          achievement_id?: string;
+          earned_at?: string;
+        };
+        Relationships: [];
+      };
+      debates: {
+        Row: {
+          id: string;
+          topic_id: string;
+          creator_id: string;
+          type: Database["public"]["Enums"]["debate_type"];
+          status: Database["public"]["Enums"]["debate_status"];
+          phase: Database["public"]["Enums"]["debate_phase"];
+          title: string;
+          description: string | null;
+          scheduled_at: string;
+          started_at: string | null;
+          ended_at: string | null;
+          phase_ends_at: string | null;
+          viewer_count: number;
+          blue_sway: number;
+          red_sway: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          topic_id: string;
+          creator_id: string;
+          type: Database["public"]["Enums"]["debate_type"];
+          status?: Database["public"]["Enums"]["debate_status"];
+          phase?: Database["public"]["Enums"]["debate_phase"];
+          title: string;
+          description?: string | null;
+          scheduled_at: string;
+          started_at?: string | null;
+          ended_at?: string | null;
+          phase_ends_at?: string | null;
+          viewer_count?: number;
+          blue_sway?: number;
+          red_sway?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          topic_id?: string;
+          creator_id?: string;
+          type?: Database["public"]["Enums"]["debate_type"];
+          status?: Database["public"]["Enums"]["debate_status"];
+          phase?: Database["public"]["Enums"]["debate_phase"];
+          title?: string;
+          description?: string | null;
+          scheduled_at?: string;
+          started_at?: string | null;
+          ended_at?: string | null;
+          phase_ends_at?: string | null;
+          viewer_count?: number;
+          blue_sway?: number;
+          red_sway?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      debate_participants: {
+        Row: {
+          id: string;
+          debate_id: string;
+          user_id: string;
+          side: Database["public"]["Enums"]["vote_side"];
+          is_speaker: boolean;
+          joined_at: string;
+          left_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          debate_id: string;
+          user_id: string;
+          side: Database["public"]["Enums"]["vote_side"];
+          is_speaker?: boolean;
+          joined_at?: string;
+          left_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          debate_id?: string;
+          user_id?: string;
+          side?: Database["public"]["Enums"]["vote_side"];
+          is_speaker?: boolean;
+          joined_at?: string;
+          left_at?: string | null;
+        };
+        Relationships: [];
+      };
+      debate_messages: {
+        Row: {
+          id: string;
+          debate_id: string;
+          user_id: string;
+          content: string;
+          side: Database["public"]["Enums"]["vote_side"] | null;
+          is_argument: boolean;
+          upvotes: number;
+          parent_id: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          debate_id: string;
+          user_id: string;
+          content: string;
+          side?: Database["public"]["Enums"]["vote_side"] | null;
+          is_argument?: boolean;
+          upvotes?: number;
+          parent_id?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          debate_id?: string;
+          user_id?: string;
+          content?: string;
+          side?: Database["public"]["Enums"]["vote_side"] | null;
+          is_argument?: boolean;
+          upvotes?: number;
+          parent_id?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      debate_reactions: {
+        Row: {
+          id: string;
+          debate_id: string;
+          user_id: string;
+          emoji: string;
+          side: Database["public"]["Enums"]["vote_side"] | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          debate_id: string;
+          user_id: string;
+          emoji: string;
+          side?: Database["public"]["Enums"]["vote_side"] | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          debate_id?: string;
+          user_id?: string;
+          emoji?: string;
+          side?: Database["public"]["Enums"]["vote_side"] | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      debate_sway_votes: {
+        Row: {
+          id: string;
+          debate_id: string;
+          user_id: string;
+          checkpoint: number;
+          side: Database["public"]["Enums"]["vote_side"];
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          debate_id: string;
+          user_id: string;
+          checkpoint: number;
+          side: Database["public"]["Enums"]["vote_side"];
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          debate_id?: string;
+          user_id?: string;
+          checkpoint?: number;
+          side?: Database["public"]["Enums"]["vote_side"];
+          created_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -456,6 +996,23 @@ export type Database = {
       vote_side: "blue" | "red";
       continuation_status: "pending" | "finalist" | "winner" | "rejected";
       reopen_status: "pending" | "approved" | "rejected" | "expired";
+      debate_type: "quick" | "grand" | "tribunal";
+      debate_status: "scheduled" | "live" | "ended" | "cancelled";
+      debate_phase:
+        | "opening"
+        | "cross_exam"
+        | "closing"
+        | "audience_qa"
+        | "ended";
+      lobby_position: "for" | "against";
+      clout_transaction_type: "earned" | "spent" | "gifted" | "refunded";
+      report_status:
+        | "pending"
+        | "reviewing"
+        | "resolved"
+        | "dismissed"
+        | "escalated";
+      report_action: "dismiss" | "warn" | "hide" | "escalate" | "ban";
     };
     CompositeTypes: {
       [_ in never]: never;
@@ -514,9 +1071,98 @@ export type ReopenStatus = Database["public"]["Enums"]["reopen_status"];
 export type ContinuationStatus =
   Database["public"]["Enums"]["continuation_status"];
 
+// Notification, Achievement & UserAchievement types
+export type NotificationType =
+  | "topic_activated"
+  | "vote_threshold"
+  | "law_established"
+  | "debate_starting"
+  | "achievement_earned"
+  | "reply_received"
+  | "lobby_update"
+  | "role_promoted";
+
+export type AchievementTier = "common" | "rare" | "epic" | "legendary";
+
+export type Notification =
+  Database["public"]["Tables"]["notifications"]["Row"];
+export type NotificationInsert =
+  Database["public"]["Tables"]["notifications"]["Insert"];
+export type NotificationUpdate =
+  Database["public"]["Tables"]["notifications"]["Update"];
+
+export type Achievement =
+  Database["public"]["Tables"]["achievements"]["Row"];
+export type AchievementInsert =
+  Database["public"]["Tables"]["achievements"]["Insert"];
+export type AchievementUpdate =
+  Database["public"]["Tables"]["achievements"]["Update"];
+
+export type UserAchievement =
+  Database["public"]["Tables"]["user_achievements"]["Row"];
+export type UserAchievementInsert =
+  Database["public"]["Tables"]["user_achievements"]["Insert"];
+
+// Extended joined types
+export type UserAchievementWithAchievement = UserAchievement & {
+  achievement: Achievement;
+};
+
 // Extended types with joined data
 export type ContinuationWithAuthor = Continuation & {
   author: Pick<Profile, "id" | "username" | "display_name" | "avatar_url" | "role"> | null;
+};
+
+// Debate types
+export type Debate = Database["public"]["Tables"]["debates"]["Row"];
+export type DebateInsert = Database["public"]["Tables"]["debates"]["Insert"];
+export type DebateUpdate = Database["public"]["Tables"]["debates"]["Update"];
+
+export type DebateParticipant =
+  Database["public"]["Tables"]["debate_participants"]["Row"];
+export type DebateParticipantInsert =
+  Database["public"]["Tables"]["debate_participants"]["Insert"];
+
+export type DebateMessage =
+  Database["public"]["Tables"]["debate_messages"]["Row"];
+export type DebateMessageInsert =
+  Database["public"]["Tables"]["debate_messages"]["Insert"];
+
+export type DebateReaction =
+  Database["public"]["Tables"]["debate_reactions"]["Row"];
+export type DebateReactionInsert =
+  Database["public"]["Tables"]["debate_reactions"]["Insert"];
+
+export type DebateSwayVote =
+  Database["public"]["Tables"]["debate_sway_votes"]["Row"];
+export type DebateSwayVoteInsert =
+  Database["public"]["Tables"]["debate_sway_votes"]["Insert"];
+
+export type DebateType = Database["public"]["Enums"]["debate_type"];
+export type DebateStatus = Database["public"]["Enums"]["debate_status"];
+export type DebatePhase = Database["public"]["Enums"]["debate_phase"];
+
+// Extended debate types with joined data
+export type DebateWithTopic = Debate & {
+  topic: Pick<Topic, "id" | "statement" | "category"> | null;
+  creator: Pick<
+    Profile,
+    "id" | "username" | "display_name" | "avatar_url" | "role"
+  > | null;
+};
+
+export type DebateParticipantWithProfile = DebateParticipant & {
+  profile: Pick<
+    Profile,
+    "id" | "username" | "display_name" | "avatar_url" | "role"
+  > | null;
+};
+
+export type DebateMessageWithAuthor = DebateMessage & {
+  author: Pick<
+    Profile,
+    "id" | "username" | "display_name" | "avatar_url" | "role"
+  > | null;
 };
 
 export interface ChainNode {
@@ -531,3 +1177,76 @@ export interface ChainNode {
   is_current: boolean;
   winning_path: boolean;
 }
+
+// -----------------------------------------------------------------------
+// Phase 4: Lobbies, Clout economy, Troll Catcher moderation
+// -----------------------------------------------------------------------
+
+export type Lobby = Database["public"]["Tables"]["lobbies"]["Row"];
+export type LobbyInsert = Database["public"]["Tables"]["lobbies"]["Insert"];
+export type LobbyUpdate = Database["public"]["Tables"]["lobbies"]["Update"];
+
+export type LobbyMember =
+  Database["public"]["Tables"]["lobby_members"]["Row"];
+export type LobbyMemberInsert =
+  Database["public"]["Tables"]["lobby_members"]["Insert"];
+
+export type Coalition = Database["public"]["Tables"]["coalitions"]["Row"];
+export type CoalitionInsert =
+  Database["public"]["Tables"]["coalitions"]["Insert"];
+export type CoalitionUpdate =
+  Database["public"]["Tables"]["coalitions"]["Update"];
+
+export type CoalitionMember =
+  Database["public"]["Tables"]["coalition_members"]["Row"];
+export type CoalitionMemberInsert =
+  Database["public"]["Tables"]["coalition_members"]["Insert"];
+
+export type CloutTransaction =
+  Database["public"]["Tables"]["clout_transactions"]["Row"];
+export type CloutTransactionInsert =
+  Database["public"]["Tables"]["clout_transactions"]["Insert"];
+
+export type Report = Database["public"]["Tables"]["reports"]["Row"];
+export type ReportInsert = Database["public"]["Tables"]["reports"]["Insert"];
+export type ReportUpdate = Database["public"]["Tables"]["reports"]["Update"];
+
+export type TrollCatcherTraining =
+  Database["public"]["Tables"]["troll_catcher_training"]["Row"];
+export type TrollCatcherTrainingInsert =
+  Database["public"]["Tables"]["troll_catcher_training"]["Insert"];
+export type TrollCatcherTrainingUpdate =
+  Database["public"]["Tables"]["troll_catcher_training"]["Update"];
+
+export type LobbyPosition =
+  Database["public"]["Enums"]["lobby_position"];
+export type CloutTransactionType =
+  Database["public"]["Enums"]["clout_transaction_type"];
+export type ReportStatus = Database["public"]["Enums"]["report_status"];
+export type ReportAction = Database["public"]["Enums"]["report_action"];
+
+// Extended joined types
+export type LobbyWithCreator = Lobby & {
+  creator: Pick<
+    Profile,
+    "id" | "username" | "display_name" | "avatar_url" | "role"
+  > | null;
+};
+
+export type LobbyWithTopic = Lobby & {
+  topic: Pick<Topic, "id" | "statement" | "category" | "status"> | null;
+};
+
+export type CloutTransactionWithUser = CloutTransaction & {
+  user: Pick<
+    Profile,
+    "id" | "username" | "display_name" | "avatar_url" | "role"
+  > | null;
+};
+
+export type ReportWithReporter = Report & {
+  reporter: Pick<
+    Profile,
+    "id" | "username" | "display_name" | "avatar_url" | "role"
+  > | null;
+};

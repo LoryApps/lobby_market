@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { Search, Plus, User } from 'lucide-react'
+import { NotificationBell } from '@/components/profile/NotificationBell'
 import { cn } from '@/lib/utils/cn'
 
 export function TopBar() {
@@ -49,13 +50,16 @@ export function TopBar() {
           <span className="hidden sm:inline">Create Topic</span>
         </Link>
 
+        <NotificationBell />
+
         <Link
-          href="/login"
+          href="/profile/me"
           className={cn(
             'flex items-center justify-center h-8 w-8 rounded-full',
             'bg-surface-200 text-surface-500',
             'hover:bg-surface-300 hover:text-surface-700 transition-colors'
           )}
+          aria-label="My profile"
         >
           <User className="h-4 w-4" />
         </Link>

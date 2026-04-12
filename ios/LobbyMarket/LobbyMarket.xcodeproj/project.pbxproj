@@ -1,0 +1,471 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		E15E259D6718451F3DBAD5B9 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA2CCDF15A3826832365AF9D /* Config.swift */; };
+		701711345B14EE0BB3ADFEDD /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39AAA60214B0F4739A7AFFF2 /* ContentView.swift */; };
+		09003CF34931B8C8808F64FA /* LobbyMarketApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDF38A859BB3CE091A160F8 /* LobbyMarketApp.swift */; };
+		F405A68FA9F57BDDF0DFC720 /* Law.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753FAE4761225EF46D2BE44B /* Law.swift */; };
+		45B36E8D2668C4321D7E410C /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2950F14670FE883E18320E2 /* Profile.swift */; };
+		94650BEB39D221487BF8E2C7 /* Topic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6475FA375C2FC00A6F769FF1 /* Topic.swift */; };
+		8058A858756B1C96D1CE5DCD /* Vote.swift in Sources */ = {isa = PBXBuildFile; fileRef = C03957F49B6B788072BB9A1F /* Vote.swift */; };
+		EF62F3B43155C11C69C1C243 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1F014CA2EFFE9794F72FF89 /* AuthService.swift */; };
+		8A8C835C9E1F4875553F75DF /* RealtimeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6583B0B597C4C12C7FCFB200 /* RealtimeService.swift */; };
+		9E3EB1CDA046CD72C1BED1AD /* SupabaseClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 455111EB8C42B1ECCC8373F3 /* SupabaseClient.swift */; };
+		1CEB7D7133428B9C770D77F9 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7692F35D4D7A2CF600B00105 /* Colors.swift */; };
+		048185711096007DB151D310 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A523D9557ECCDD6787E763 /* Theme.swift */; };
+		C1EF29874AE6217B30D856E5 /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A375BC5435CA751947BE8C01 /* FeedView.swift */; };
+		99A5A780502A0CCFC101456C /* TopicCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B6692E5497C049293E4FA7C /* TopicCardView.swift */; };
+		1EB3C454808C307607AB092C /* VoteBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 889DA91F469A20B1F280417A /* VoteBarView.swift */; };
+		E3FFD86587DC5D5C8352CB48 /* VoteButtonsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23732444B906FEFC3F0D1985 /* VoteButtonsView.swift */; };
+		1313F45E1826A8A104CE1303 /* ChamberCanvas.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC96312B2BCB4EA932E4F7C3 /* ChamberCanvas.swift */; };
+		12BB14857D6895F1735E51F3 /* ChamberMath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06EC59F7328AA857B1C52856 /* ChamberMath.swift */; };
+		318ACDBD9FCFF82436C8428A /* TheFloorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D4FFB6A77ECA58EF12906EE /* TheFloorView.swift */; };
+		B0F6C966158667DDE2D59118 /* LawCodexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4BD4932581332C8A868C20 /* LawCodexView.swift */; };
+		69AF1B491CF2A87562839D5E /* LawDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4831478EAD65EDA4BB0043D /* LawDetailView.swift */; };
+		CA49D2E0EC09B5BB6D100498 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FA18029D4BD47F523737792 /* LoginView.swift */; };
+		F5B5363AE9354A37274D2D3B /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D1D2976198B01CA88582A90 /* ProfileView.swift */; };
+		342EF6B759840733B0D6971A /* CreateTopicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9DC7B837A9125F61BA33E2E /* CreateTopicView.swift */; };
+		642B5EEFF878DFEF0D29E2B5 /* TopicDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2889D11EA4ED0E7B7895CE0 /* TopicDetailView.swift */; };
+		14394479B75708F8FF2E238F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 37E4D4511D6DE1D83D37BF1C /* Assets.xcassets */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		83E84743DC6394F78129A78C /* LobbyMarket.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LobbyMarket.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		581EADA148C5E0832016E010 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		37E4D4511D6DE1D83D37BF1C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		BA2CCDF15A3826832365AF9D /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		39AAA60214B0F4739A7AFFF2 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		6FDF38A859BB3CE091A160F8 /* LobbyMarketApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LobbyMarketApp.swift; sourceTree = "<group>"; };
+		753FAE4761225EF46D2BE44B /* Law.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Law.swift; sourceTree = "<group>"; };
+		C2950F14670FE883E18320E2 /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
+		6475FA375C2FC00A6F769FF1 /* Topic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Topic.swift; sourceTree = "<group>"; };
+		C03957F49B6B788072BB9A1F /* Vote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Vote.swift; sourceTree = "<group>"; };
+		F1F014CA2EFFE9794F72FF89 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
+		6583B0B597C4C12C7FCFB200 /* RealtimeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealtimeService.swift; sourceTree = "<group>"; };
+		455111EB8C42B1ECCC8373F3 /* SupabaseClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseClient.swift; sourceTree = "<group>"; };
+		7692F35D4D7A2CF600B00105 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
+		29A523D9557ECCDD6787E763 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		A375BC5435CA751947BE8C01 /* FeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedView.swift; sourceTree = "<group>"; };
+		5B6692E5497C049293E4FA7C /* TopicCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopicCardView.swift; sourceTree = "<group>"; };
+		889DA91F469A20B1F280417A /* VoteBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoteBarView.swift; sourceTree = "<group>"; };
+		23732444B906FEFC3F0D1985 /* VoteButtonsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoteButtonsView.swift; sourceTree = "<group>"; };
+		EC96312B2BCB4EA932E4F7C3 /* ChamberCanvas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChamberCanvas.swift; sourceTree = "<group>"; };
+		06EC59F7328AA857B1C52856 /* ChamberMath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChamberMath.swift; sourceTree = "<group>"; };
+		3D4FFB6A77ECA58EF12906EE /* TheFloorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TheFloorView.swift; sourceTree = "<group>"; };
+		1A4BD4932581332C8A868C20 /* LawCodexView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LawCodexView.swift; sourceTree = "<group>"; };
+		B4831478EAD65EDA4BB0043D /* LawDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LawDetailView.swift; sourceTree = "<group>"; };
+		9FA18029D4BD47F523737792 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		6D1D2976198B01CA88582A90 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		F9DC7B837A9125F61BA33E2E /* CreateTopicView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTopicView.swift; sourceTree = "<group>"; };
+		E2889D11EA4ED0E7B7895CE0 /* TopicDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopicDetailView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		CF5BDB0BEAFE176F9629192A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		931BAC40E0989DC841B8C1D2 = {
+			isa = PBXGroup;
+			children = (
+				1FB1E3282B50F0BAE4927B5B /* LobbyMarket */,
+				5151B46607EBC8890D8DFCC2 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		5151B46607EBC8890D8DFCC2 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				83E84743DC6394F78129A78C /* LobbyMarket.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		1FB1E3282B50F0BAE4927B5B /* LobbyMarket */ = {
+			isa = PBXGroup;
+			children = (
+				BF657CFE8769AAE6C0570C29 /* Models */,
+				A024F06580C79B7582C3806A /* Resources */,
+				6EE67047A4B2648DDBB08231 /* Services */,
+				58492F208780FA5EF3807E8F /* Views */,
+				BA2CCDF15A3826832365AF9D /* Config.swift */,
+				39AAA60214B0F4739A7AFFF2 /* ContentView.swift */,
+				6FDF38A859BB3CE091A160F8 /* LobbyMarketApp.swift */,
+			);
+			path = LobbyMarket;
+			sourceTree = "<group>";
+		};
+		BF657CFE8769AAE6C0570C29 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				753FAE4761225EF46D2BE44B /* Law.swift */,
+				C2950F14670FE883E18320E2 /* Profile.swift */,
+				6475FA375C2FC00A6F769FF1 /* Topic.swift */,
+				C03957F49B6B788072BB9A1F /* Vote.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		A024F06580C79B7582C3806A /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				37E4D4511D6DE1D83D37BF1C /* Assets.xcassets */,
+				581EADA148C5E0832016E010 /* Info.plist */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		6EE67047A4B2648DDBB08231 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				F1F014CA2EFFE9794F72FF89 /* AuthService.swift */,
+				6583B0B597C4C12C7FCFB200 /* RealtimeService.swift */,
+				455111EB8C42B1ECCC8373F3 /* SupabaseClient.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		58492F208780FA5EF3807E8F /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				06DF2DE32E51B747E03B0433 /* Common */,
+				F9C473AD93A48987A906C200 /* Feed */,
+				4E77C66987590AE78F7067AA /* Floor */,
+				B86067F145C354A582459B03 /* Law */,
+				C7B4E15247184FDCE1394240 /* Profile */,
+				BCE137D7564D54A1A3AF496E /* Topic */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		06DF2DE32E51B747E03B0433 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				7692F35D4D7A2CF600B00105 /* Colors.swift */,
+				29A523D9557ECCDD6787E763 /* Theme.swift */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		F9C473AD93A48987A906C200 /* Feed */ = {
+			isa = PBXGroup;
+			children = (
+				A375BC5435CA751947BE8C01 /* FeedView.swift */,
+				5B6692E5497C049293E4FA7C /* TopicCardView.swift */,
+				889DA91F469A20B1F280417A /* VoteBarView.swift */,
+				23732444B906FEFC3F0D1985 /* VoteButtonsView.swift */,
+			);
+			path = Feed;
+			sourceTree = "<group>";
+		};
+		4E77C66987590AE78F7067AA /* Floor */ = {
+			isa = PBXGroup;
+			children = (
+				EC96312B2BCB4EA932E4F7C3 /* ChamberCanvas.swift */,
+				06EC59F7328AA857B1C52856 /* ChamberMath.swift */,
+				3D4FFB6A77ECA58EF12906EE /* TheFloorView.swift */,
+			);
+			path = Floor;
+			sourceTree = "<group>";
+		};
+		B86067F145C354A582459B03 /* Law */ = {
+			isa = PBXGroup;
+			children = (
+				1A4BD4932581332C8A868C20 /* LawCodexView.swift */,
+				B4831478EAD65EDA4BB0043D /* LawDetailView.swift */,
+			);
+			path = Law;
+			sourceTree = "<group>";
+		};
+		C7B4E15247184FDCE1394240 /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				9FA18029D4BD47F523737792 /* LoginView.swift */,
+				6D1D2976198B01CA88582A90 /* ProfileView.swift */,
+			);
+			path = Profile;
+			sourceTree = "<group>";
+		};
+		BCE137D7564D54A1A3AF496E /* Topic */ = {
+			isa = PBXGroup;
+			children = (
+				F9DC7B837A9125F61BA33E2E /* CreateTopicView.swift */,
+				E2889D11EA4ED0E7B7895CE0 /* TopicDetailView.swift */,
+			);
+			path = Topic;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		6BE78CA7C8271D8103FF8A40 /* LobbyMarket */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4E3D349B1D61CA6B8FAE430A /* Build configuration list for PBXNativeTarget "LobbyMarket" */;
+			buildPhases = (
+				1CDF2F71A52B082132B04DFF /* Sources */,
+				CF5BDB0BEAFE176F9629192A /* Frameworks */,
+				C02F1309AF4906C92F1EAD44 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LobbyMarket;
+			productName = LobbyMarket;
+			productReference = 83E84743DC6394F78129A78C /* LobbyMarket.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		6F7EBB4DDA571FFF0C21A343 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					6BE78CA7C8271D8103FF8A40 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = CA45BBE8786270DE6C5C8A61 /* Build configuration list for PBXProject "LobbyMarket" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 931BAC40E0989DC841B8C1D2;
+			productRefGroup = 5151B46607EBC8890D8DFCC2 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				6BE78CA7C8271D8103FF8A40 /* LobbyMarket */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		C02F1309AF4906C92F1EAD44 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				14394479B75708F8FF2E238F /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1CDF2F71A52B082132B04DFF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E15E259D6718451F3DBAD5B9 /* Config.swift in Sources */,
+				701711345B14EE0BB3ADFEDD /* ContentView.swift in Sources */,
+				09003CF34931B8C8808F64FA /* LobbyMarketApp.swift in Sources */,
+				F405A68FA9F57BDDF0DFC720 /* Law.swift in Sources */,
+				45B36E8D2668C4321D7E410C /* Profile.swift in Sources */,
+				94650BEB39D221487BF8E2C7 /* Topic.swift in Sources */,
+				8058A858756B1C96D1CE5DCD /* Vote.swift in Sources */,
+				EF62F3B43155C11C69C1C243 /* AuthService.swift in Sources */,
+				8A8C835C9E1F4875553F75DF /* RealtimeService.swift in Sources */,
+				9E3EB1CDA046CD72C1BED1AD /* SupabaseClient.swift in Sources */,
+				1CEB7D7133428B9C770D77F9 /* Colors.swift in Sources */,
+				048185711096007DB151D310 /* Theme.swift in Sources */,
+				C1EF29874AE6217B30D856E5 /* FeedView.swift in Sources */,
+				99A5A780502A0CCFC101456C /* TopicCardView.swift in Sources */,
+				1EB3C454808C307607AB092C /* VoteBarView.swift in Sources */,
+				E3FFD86587DC5D5C8352CB48 /* VoteButtonsView.swift in Sources */,
+				1313F45E1826A8A104CE1303 /* ChamberCanvas.swift in Sources */,
+				12BB14857D6895F1735E51F3 /* ChamberMath.swift in Sources */,
+				318ACDBD9FCFF82436C8428A /* TheFloorView.swift in Sources */,
+				B0F6C966158667DDE2D59118 /* LawCodexView.swift in Sources */,
+				69AF1B491CF2A87562839D5E /* LawDetailView.swift in Sources */,
+				CA49D2E0EC09B5BB6D100498 /* LoginView.swift in Sources */,
+				F5B5363AE9354A37274D2D3B /* ProfileView.swift in Sources */,
+				342EF6B759840733B0D6971A /* CreateTopicView.swift in Sources */,
+				642B5EEFF878DFEF0D29E2B5 /* TopicDetailView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		855D4B0C75ECD556474FD8F5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		4E74312DBBD620AE1CB5D771 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		112DB64EE5DD2663C7F9CA6C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = LobbyMarket/Resources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.lorenapps.LobbyMarket";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		1DD7FB0A527F4C0E67C68D57 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = LobbyMarket/Resources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.lorenapps.LobbyMarket";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		CA45BBE8786270DE6C5C8A61 /* Build configuration list for PBXProject "LobbyMarket" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				855D4B0C75ECD556474FD8F5 /* Debug */,
+				4E74312DBBD620AE1CB5D771 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4E3D349B1D61CA6B8FAE430A /* Build configuration list for PBXNativeTarget "LobbyMarket" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				112DB64EE5DD2663C7F9CA6C /* Debug */,
+				1DD7FB0A527F4C0E67C68D57 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 6F7EBB4DDA571FFF0C21A343 /* Project object */;
+}

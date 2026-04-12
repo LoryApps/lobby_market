@@ -1,0 +1,1910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Lobby Market — the community-run parliament where debates become law. Write the law. Build the consensus. Earn the influence." />
+<meta name="theme-color" content="#0a0a0f" />
+<title>Lobby Market — Write the law. Build the consensus.</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<style>
+  /* ============================================
+     Color system — matches tailwind.config.ts
+     ============================================ */
+  :root {
+    /* FOR (blue) */
+    --for-50: #eff6ff;
+    --for-300: #93c5fd;
+    --for-400: #60a5fa;
+    --for-500: #3b82f6;
+    --for-600: #2563eb;
+    --for-700: #1d4ed8;
+    --for-900: #1e3a8a;
+
+    /* AGAINST (red) */
+    --against-300: #fca5a5;
+    --against-400: #f87171;
+    --against-500: #ef4444;
+    --against-600: #dc2626;
+    --against-700: #b91c1c;
+    --against-900: #7f1d1d;
+
+    /* Surface */
+    --surface-0: #000000;
+    --surface-50: #0a0a0f;
+    --surface-100: #111117;
+    --surface-200: #1a1a22;
+    --surface-300: #24242e;
+    --surface-400: #3f3f4a;
+    --surface-500: #71717a;
+    --surface-600: #a1a1aa;
+    --surface-700: #d4d4d8;
+    --surface-800: #e4e4e7;
+    --surface-900: #fafafa;
+
+    /* Accents */
+    --gold: #f59e0b;
+    --gold-bright: #fbbf24;
+    --emerald: #10b981;
+    --purple: #8b5cf6;
+
+    /* Typography */
+    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+    /* Radii */
+    --r-sm: 6px;
+    --r-md: 10px;
+    --r-lg: 16px;
+    --r-xl: 24px;
+
+    /* Easing */
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  }
+
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--surface-50);
+    color: var(--surface-800);
+    line-height: 1.5;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  ::selection {
+    background: var(--for-500);
+    color: #fff;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    background: none;
+    color: inherit;
+  }
+
+  /* ============================================
+     Ambient background — animated gradient mesh
+     ============================================ */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 15% 0%, rgba(59, 130, 246, 0.12), transparent 60%),
+      radial-gradient(ellipse 80% 60% at 85% 0%, rgba(239, 68, 68, 0.10), transparent 60%),
+      radial-gradient(ellipse 100% 60% at 50% 100%, rgba(245, 158, 11, 0.05), transparent 65%);
+    pointer-events: none;
+    z-index: 0;
+    animation: ambient-shift 24s ease-in-out infinite alternate;
+  }
+
+  @keyframes ambient-shift {
+    0%   { transform: translate3d(0, 0, 0) scale(1); opacity: 1; }
+    50%  { transform: translate3d(-2%, 2%, 0) scale(1.05); opacity: 0.85; }
+    100% { transform: translate3d(2%, -1%, 0) scale(1); opacity: 1; }
+  }
+
+  /* Noise overlay for that premium film-grain feel */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    z-index: 1;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode: overlay;
+  }
+
+  /* ============================================
+     Nav
+     ============================================ */
+  .nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: background 0.3s var(--ease-out), backdrop-filter 0.3s var(--ease-out), border-color 0.3s var(--ease-out);
+    border-bottom: 1px solid transparent;
+  }
+  .nav.scrolled {
+    background: rgba(10, 10, 15, 0.72);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-bottom-color: rgba(255, 255, 255, 0.06);
+  }
+  .nav-brand {
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    font-size: 14px;
+  }
+  .nav-logomark {
+    width: 26px; height: 26px;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, var(--for-500), var(--against-500));
+    border-radius: 6px;
+    position: relative;
+  }
+  .nav-logomark::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    background: var(--surface-50);
+    border-radius: 4px;
+  }
+  .nav-logomark span {
+    position: relative;
+    z-index: 2;
+    font-size: 14px;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--for-400), var(--against-400));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--surface-600);
+  }
+  .nav-links a {
+    transition: color 0.2s;
+    position: relative;
+  }
+  .nav-links a:hover { color: var(--surface-800); }
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    left: 0; bottom: -6px;
+    width: 100%; height: 1px;
+    background: linear-gradient(90deg, var(--for-500), var(--against-500));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s var(--ease-out);
+  }
+  .nav-links a:hover::after { transform: scaleX(1); }
+  .nav-cta {
+    padding: 9px 18px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-bright) 100%);
+    color: #0a0a0f;
+    font-weight: 700;
+    font-size: 13px;
+    transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
+    box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.4), 0 6px 24px rgba(245, 158, 11, 0.25);
+  }
+  .nav-cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.6), 0 10px 34px rgba(245, 158, 11, 0.35);
+  }
+
+  @media (max-width: 768px) {
+    .nav { padding: 16px 20px; }
+    .nav-links { display: none; }
+  }
+
+  /* ============================================
+     Hero
+     ============================================ */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 120px 24px 80px;
+    text-align: center;
+    overflow: hidden;
+    z-index: 2;
+  }
+  .hero-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    opacity: 0.55;
+    pointer-events: none;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 55%, #000 30%, transparent 90%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 55%, #000 30%, transparent 90%);
+  }
+  .hero-inner {
+    position: relative;
+    z-index: 2;
+    max-width: 980px;
+  }
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--surface-600);
+    backdrop-filter: blur(10px);
+    margin-bottom: 32px;
+    animation: fade-up 1s var(--ease-out) both;
+  }
+  .eyebrow-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--emerald);
+    box-shadow: 0 0 10px var(--emerald);
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 0.55; transform: scale(1); }
+    50%      { opacity: 1;    transform: scale(1.2); }
+  }
+
+  h1.hero-title {
+    font-size: clamp(52px, 10vw, 148px);
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    line-height: 0.92;
+    margin-bottom: 28px;
+    color: #fff;
+    animation: fade-up 1.2s var(--ease-out) 0.1s both;
+  }
+  .hero-title .split-line {
+    display: block;
+  }
+  .hero-title .word-lobby {
+    background: linear-gradient(180deg, #ffffff 0%, #c4c4cc 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .hero-title .word-market {
+    background: linear-gradient(180deg, #ffffff 0%, #8a8a94 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    position: relative;
+  }
+  .split-underline {
+    margin: 18px auto 0;
+    height: 5px;
+    width: min(460px, 70%);
+    border-radius: 999px;
+    background: linear-gradient(90deg,
+      var(--for-500) 0%,
+      var(--for-500) 48%,
+      transparent 48%,
+      transparent 52%,
+      var(--against-500) 52%,
+      var(--against-500) 100%);
+    box-shadow:
+      -60px 0 80px -20px rgba(59, 130, 246, 0.8),
+      60px 0 80px -20px rgba(239, 68, 68, 0.8);
+    animation: underline-grow 1.4s var(--ease-out) 0.6s both;
+    transform-origin: center;
+  }
+  @keyframes underline-grow {
+    from { transform: scaleX(0); opacity: 0; }
+    to   { transform: scaleX(1); opacity: 1; }
+  }
+
+  .hero-tagline {
+    margin-top: 44px;
+    font-size: clamp(18px, 2.2vw, 24px);
+    font-weight: 500;
+    color: var(--surface-700);
+    animation: fade-up 1.2s var(--ease-out) 0.35s both;
+  }
+  .hero-tagline .for { color: var(--for-400); font-weight: 600; }
+  .hero-tagline .against { color: var(--against-400); font-weight: 600; }
+  .hero-tagline .gold-t { color: var(--gold-bright); font-weight: 600; }
+
+  .hero-subtitle {
+    margin-top: 20px;
+    font-size: clamp(14px, 1.3vw, 17px);
+    color: var(--surface-500);
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+    animation: fade-up 1.2s var(--ease-out) 0.5s both;
+  }
+
+  .hero-cta-row {
+    margin-top: 48px;
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+    animation: fade-up 1.2s var(--ease-out) 0.65s both;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 30px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.01em;
+    transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out), background 0.25s;
+    will-change: transform;
+  }
+  .btn-gold {
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-bright) 50%, #fcd34d 100%);
+    color: #0a0a0f;
+    box-shadow:
+      0 0 0 1px rgba(245, 158, 11, 0.5),
+      0 10px 40px -8px rgba(245, 158, 11, 0.55),
+      inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  }
+  .btn-gold:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 0 0 1px rgba(245, 158, 11, 0.7),
+      0 16px 50px -8px rgba(245, 158, 11, 0.7),
+      inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  }
+  .btn-ghost {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: var(--surface-800);
+    backdrop-filter: blur(10px);
+  }
+  .btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.26);
+    transform: translateY(-2px);
+  }
+  .btn .arrow {
+    transition: transform 0.2s var(--ease-out);
+  }
+  .btn:hover .arrow { transform: translateX(3px); }
+
+  .hero-meta {
+    margin-top: 60px;
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+    flex-wrap: wrap;
+    font-size: 12px;
+    color: var(--surface-500);
+    animation: fade-up 1.2s var(--ease-out) 0.8s both;
+  }
+  .hero-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .hero-meta .tick { color: var(--emerald); font-weight: 600; }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--surface-500);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    animation: fade-up 1.2s var(--ease-out) 1s both;
+  }
+  .hero-scroll::after {
+    content: '';
+    width: 1px;
+    height: 32px;
+    background: linear-gradient(180deg, var(--surface-500), transparent);
+    animation: scroll-hint 2.2s ease-in-out infinite;
+  }
+  @keyframes scroll-hint {
+    0%, 100% { transform: scaleY(0.6); transform-origin: top; opacity: 0.5; }
+    50%      { transform: scaleY(1);   transform-origin: top; opacity: 1; }
+  }
+
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ============================================
+     Section scaffolding
+     ============================================ */
+  section {
+    position: relative;
+    z-index: 2;
+    padding: 120px 24px;
+  }
+  .container {
+    max-width: 1180px;
+    margin: 0 auto;
+  }
+  .section-eyebrow {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--surface-500);
+    font-weight: 600;
+    margin-bottom: 18px;
+    padding: 4px 10px;
+    border-left: 2px solid var(--gold);
+  }
+  .section-title {
+    font-size: clamp(34px, 4.5vw, 56px);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.05;
+    color: #fff;
+    margin-bottom: 20px;
+    max-width: 780px;
+  }
+  .section-subtitle {
+    font-size: clamp(16px, 1.4vw, 19px);
+    color: var(--surface-500);
+    max-width: 640px;
+    line-height: 1.6;
+  }
+
+  /* Reveal utilities */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 1s var(--ease-out), transform 1s var(--ease-out);
+  }
+  .reveal.in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  /* ============================================
+     How it works
+     ============================================ */
+  .how-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 64px;
+  }
+  @media (max-width: 900px) {
+    .how-grid { grid-template-columns: 1fr; }
+  }
+  .how-card {
+    position: relative;
+    padding: 36px 32px 40px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.035) 0%, rgba(255,255,255,0.01) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--r-xl);
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    transition: transform 0.4s var(--ease-out), border-color 0.4s, background 0.4s;
+  }
+  .how-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255, 255, 255, 0.16);
+    background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%);
+  }
+  .how-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    border-radius: var(--r-xl);
+    background: linear-gradient(135deg, var(--step-color-a, var(--for-500)) 0%, transparent 50%, var(--step-color-b, var(--against-500)) 100%);
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.5s var(--ease-out);
+    pointer-events: none;
+  }
+  .how-card:hover::before { opacity: 0.5; }
+
+  .how-card[data-step="1"] { --step-color-a: var(--for-500); --step-color-b: var(--for-700); }
+  .how-card[data-step="2"] { --step-color-a: var(--for-500); --step-color-b: var(--against-500); }
+  .how-card[data-step="3"] { --step-color-a: var(--gold); --step-color-b: var(--against-500); }
+
+  .how-num {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--surface-500);
+    letter-spacing: 0.2em;
+    margin-bottom: 20px;
+  }
+  .how-illustration {
+    width: 100%;
+    height: 140px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .how-title {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin-bottom: 10px;
+    color: #fff;
+  }
+  .how-desc {
+    color: var(--surface-600);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .how-tag {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 4px 10px;
+    font-size: 10px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--surface-600);
+  }
+  .how-card[data-step="3"] .how-tag {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--gold-bright);
+  }
+
+  /* ============================================
+     Chain section
+     ============================================ */
+  .chain-wrap {
+    margin-top: 72px;
+    padding: 48px 36px 56px;
+    background:
+      radial-gradient(ellipse at top, rgba(59, 130, 246, 0.08), transparent 70%),
+      linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--r-xl);
+    overflow: hidden;
+    position: relative;
+  }
+  .chain-svg {
+    width: 100%;
+    height: 440px;
+    display: block;
+  }
+  @media (max-width: 720px) {
+    .chain-svg { height: 560px; }
+  }
+
+  /* ============================================
+     Floor preview section
+     ============================================ */
+  .floor-preview {
+    margin-top: 64px;
+    position: relative;
+    border-radius: var(--r-xl);
+    overflow: hidden;
+    background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.6);
+  }
+  .floor-preview-canvas-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    min-height: 360px;
+  }
+  .floor-preview canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%; height: 100%;
+  }
+  .floor-preview-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(180deg, rgba(10,10,15,0.1) 0%, transparent 30%, transparent 70%, rgba(10,10,15,0.65) 100%);
+  }
+  .floor-preview-bar {
+    position: absolute;
+    left: 24px; right: 24px; bottom: 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 16px;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .floor-preview-topic {
+    pointer-events: auto;
+  }
+  .floor-preview-topic .label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--surface-500);
+    margin-bottom: 6px;
+  }
+  .floor-preview-topic .title {
+    font-size: clamp(16px, 2vw, 22px);
+    font-weight: 700;
+    color: #fff;
+    max-width: 520px;
+    line-height: 1.3;
+  }
+  .floor-preview-stat {
+    background: rgba(10, 10, 15, 0.7);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 12px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    pointer-events: auto;
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+  .floor-preview-stat .dot-blue,
+  .floor-preview-stat .dot-red {
+    width: 8px; height: 8px; border-radius: 50%;
+  }
+  .floor-preview-stat .dot-blue { background: var(--for-500); box-shadow: 0 0 10px var(--for-500); }
+  .floor-preview-stat .dot-red  { background: var(--against-500); box-shadow: 0 0 10px var(--against-500); }
+  .floor-preview-stat .pct {
+    color: #fff;
+    font-weight: 600;
+  }
+  .floor-preview-link {
+    margin-top: 24px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--gold-bright);
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.02em;
+    pointer-events: auto;
+  }
+  .floor-preview-link:hover .arrow { transform: translateX(4px); }
+  .floor-preview-link .arrow { transition: transform 0.25s var(--ease-out); }
+
+  /* ============================================
+     Features
+     ============================================ */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 56px;
+  }
+  @media (max-width: 960px) { .features-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px) { .features-grid { grid-template-columns: 1fr; } }
+
+  .feature {
+    padding: 32px 28px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.025) 0%, rgba(255,255,255,0.005) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--r-lg);
+    transition: transform 0.3s var(--ease-out), border-color 0.3s, background 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .feature:hover {
+    transform: translateY(-3px);
+    border-color: rgba(255, 255, 255, 0.16);
+    background: linear-gradient(180deg, rgba(255,255,255,0.045) 0%, rgba(255,255,255,0.01) 100%);
+  }
+  .feature-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    margin-bottom: 20px;
+    color: var(--surface-700);
+    transition: all 0.3s var(--ease-out);
+  }
+  .feature:hover .feature-icon {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(239, 68, 68, 0.15));
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #fff;
+  }
+  .feature-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 8px;
+    letter-spacing: -0.005em;
+  }
+  .feature-desc {
+    font-size: 14px;
+    color: var(--surface-500);
+    line-height: 1.6;
+  }
+
+  /* ============================================
+     Stats band
+     ============================================ */
+  .stats-band {
+    margin-top: 100px;
+    padding: 60px 40px;
+    background: linear-gradient(180deg, rgba(59, 130, 246, 0.05), rgba(239, 68, 68, 0.05));
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    position: relative;
+    overflow: hidden;
+  }
+  .stats-band::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle 500px at 15% 50%, rgba(59, 130, 246, 0.15), transparent),
+      radial-gradient(circle 500px at 85% 50%, rgba(239, 68, 68, 0.15), transparent);
+    pointer-events: none;
+  }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+    position: relative;
+  }
+  @media (max-width: 900px) { .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 40px 24px; } }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: clamp(36px, 5vw, 68px);
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    background: linear-gradient(180deg, #ffffff 0%, #a4a4ac 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .stat-label {
+    margin-top: 12px;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--surface-500);
+    font-weight: 500;
+  }
+  .stat-suffix { color: var(--gold-bright); }
+
+  /* ============================================
+     CTA
+     ============================================ */
+  .final-cta {
+    margin-top: 120px;
+    padding: 80px 40px;
+    text-align: center;
+    background:
+      radial-gradient(ellipse at top, rgba(245, 158, 11, 0.08), transparent 70%),
+      linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.005));
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--r-xl);
+    position: relative;
+    overflow: hidden;
+  }
+  .final-cta::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%;
+    width: 60%;
+    height: 1px;
+    transform: translateX(-50%);
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+  .final-cta h2 {
+    font-size: clamp(32px, 4vw, 52px);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    color: #fff;
+    margin-bottom: 18px;
+  }
+  .final-cta p {
+    font-size: 17px;
+    color: var(--surface-500);
+    max-width: 540px;
+    margin: 0 auto 40px;
+  }
+  .signup-row {
+    display: flex;
+    gap: 10px;
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 6px;
+    background: rgba(10, 10, 15, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 999px;
+    backdrop-filter: blur(10px);
+  }
+  .signup-row input {
+    flex: 1;
+    padding: 14px 22px;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-size: 15px;
+    font-family: inherit;
+  }
+  .signup-row input::placeholder { color: var(--surface-500); }
+  .signup-row button {
+    padding: 12px 24px;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-bright) 100%);
+    color: #0a0a0f;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 14px;
+    transition: transform 0.2s var(--ease-out), box-shadow 0.2s;
+    white-space: nowrap;
+    box-shadow: 0 6px 22px -6px rgba(245, 158, 11, 0.6);
+  }
+  .signup-row button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 30px -6px rgba(245, 158, 11, 0.75);
+  }
+
+  /* ============================================
+     Footer
+     ============================================ */
+  footer {
+    margin-top: 140px;
+    padding: 60px 24px 36px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    position: relative;
+    z-index: 2;
+  }
+  .footer-top {
+    max-width: 1180px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 48px;
+  }
+  @media (max-width: 760px) { .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; } }
+  .footer-brand { font-weight: 900; font-size: 18px; letter-spacing: 0.06em; color: #fff; margin-bottom: 8px; }
+  .footer-tag { font-size: 13px; color: var(--surface-500); max-width: 280px; line-height: 1.6; }
+  .footer-col h4 {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--surface-700);
+    margin-bottom: 14px;
+    font-weight: 600;
+  }
+  .footer-col a {
+    display: block;
+    font-size: 13px;
+    color: var(--surface-500);
+    padding: 4px 0;
+    transition: color 0.2s;
+  }
+  .footer-col a:hover { color: #fff; }
+  .footer-bottom {
+    max-width: 1180px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+    font-size: 12px;
+    color: var(--surface-500);
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  /* ============================================
+     Utilities
+     ============================================ */
+  .gradient-text {
+    background: linear-gradient(90deg, var(--for-400), var(--against-400));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .for-text     { color: var(--for-400); }
+  .against-text { color: var(--against-400); }
+  .gold-text    { color: var(--gold-bright); }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- ====== NAV ====== -->
+<nav class="nav" id="nav" aria-label="Primary">
+  <a class="nav-brand" href="#top" aria-label="Lobby Market home">
+    <span class="nav-logomark"><span>L</span></span>
+    <span>LOBBY&nbsp;MARKET</span>
+  </a>
+  <div class="nav-links" role="navigation">
+    <a href="#how">How it works</a>
+    <a href="#chain">Chain refinement</a>
+    <a href="#floor">The Floor</a>
+    <a href="#features">Features</a>
+  </div>
+  <a class="nav-cta" href="#cta">Early access</a>
+</nav>
+
+<!-- ====== HERO ====== -->
+<header class="hero" id="top">
+  <canvas class="hero-canvas" id="heroCanvas" aria-hidden="true"></canvas>
+  <div class="hero-inner">
+    <div class="eyebrow">
+      <span class="eyebrow-dot" aria-hidden="true"></span>
+      The parliament of the internet
+    </div>
+
+    <h1 class="hero-title">
+      <span class="split-line word-lobby">LOBBY</span>
+      <span class="split-line word-market">MARKET</span>
+    </h1>
+    <div class="split-underline" aria-hidden="true"></div>
+
+    <p class="hero-tagline">
+      Write the <span class="gold-t">law</span>.
+      Build the <span class="for">consensus</span>.
+      Earn the <span class="against">influence</span>.
+    </p>
+    <p class="hero-subtitle">
+      The community-run parliament where debates become law. Polymarket&nbsp;+ Wikipedia&nbsp;+ TikTok&nbsp;+ Obsidian — refined into one chamber.
+    </p>
+
+    <div class="hero-cta-row">
+      <a href="#cta" class="btn btn-gold">
+        Enter the Chamber
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+      <a href="./floor-demo.html" class="btn btn-ghost">
+        <span aria-hidden="true">▶</span>
+        Watch the Demo
+      </a>
+    </div>
+
+    <div class="hero-meta">
+      <span><span class="tick">●</span> No gatekeepers</span>
+      <span><span class="tick">●</span> No algorithms</span>
+      <span><span class="tick">●</span> Just consensus</span>
+    </div>
+  </div>
+  <div class="hero-scroll" aria-hidden="true">Scroll</div>
+</header>
+
+<!-- ====== HOW IT WORKS ====== -->
+<section id="how">
+  <div class="container">
+    <span class="section-eyebrow reveal">01 — The lifecycle</span>
+    <h2 class="section-title reveal reveal-delay-1">
+      From statement<br/> to <span class="gold-text">LAW</span>.
+    </h2>
+    <p class="section-subtitle reveal reveal-delay-2">
+      Three phases. Seventy-two hours. A chamber of the willing. Lobby Market turns arguments into binding community consensus.
+    </p>
+
+    <div class="how-grid">
+
+      <article class="how-card reveal reveal-delay-1" data-step="1">
+        <div class="how-num">STEP 01</div>
+        <div class="how-illustration" aria-hidden="true">
+          <svg viewBox="0 0 220 140" width="100%" height="100%">
+            <defs>
+              <linearGradient id="prop-pen" x1="0" x2="1">
+                <stop offset="0" stop-color="#60a5fa"/>
+                <stop offset="1" stop-color="#3b82f6"/>
+              </linearGradient>
+            </defs>
+            <rect x="40" y="28" width="140" height="88" rx="8" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.1)"/>
+            <rect x="54" y="44" width="90" height="6" rx="3" fill="rgba(255,255,255,0.25)"/>
+            <rect x="54" y="58" width="112" height="6" rx="3" fill="rgba(255,255,255,0.15)"/>
+            <rect x="54" y="72" width="70"  height="6" rx="3" fill="rgba(255,255,255,0.1)"/>
+            <rect x="54" y="90" width="50" height="16" rx="8" fill="rgba(59,130,246,0.2)" stroke="#3b82f6"/>
+            <text x="64" y="101" font-family="Inter" font-size="9" fill="#60a5fa" font-weight="600">500 ✓</text>
+            <g transform="translate(164 88) rotate(35)">
+              <rect x="-3" y="-30" width="6" height="36" rx="2" fill="url(#prop-pen)"/>
+              <polygon points="-3,6 3,6 0,14" fill="#1e3a8a"/>
+              <rect x="-3" y="-30" width="6" height="4" fill="#fbbf24"/>
+            </g>
+          </svg>
+        </div>
+        <h3 class="how-title">Propose</h3>
+        <p class="how-desc">Write a statement. Rally 500 supporters. Earn your slot on The Floor.</p>
+        <span class="how-tag">open proposal</span>
+      </article>
+
+      <article class="how-card reveal reveal-delay-2" data-step="2">
+        <div class="how-num">STEP 02</div>
+        <div class="how-illustration" aria-hidden="true">
+          <svg viewBox="0 0 220 140" width="100%" height="100%">
+            <g transform="translate(45 40)">
+              <rect x="0" y="0" width="60" height="80" rx="6" fill="rgba(59,130,246,0.12)" stroke="#3b82f6"/>
+              <text x="30" y="34" font-family="Inter" font-size="10" text-anchor="middle" fill="#93c5fd" font-weight="700">FOR</text>
+              <text x="30" y="56" font-family="JetBrains Mono" font-size="16" text-anchor="middle" fill="#fff" font-weight="700">62%</text>
+            </g>
+            <g transform="translate(115 40)">
+              <rect x="0" y="0" width="60" height="80" rx="6" fill="rgba(239,68,68,0.12)" stroke="#ef4444"/>
+              <text x="30" y="34" font-family="Inter" font-size="10" text-anchor="middle" fill="#fca5a5" font-weight="700">AGAINST</text>
+              <text x="30" y="56" font-family="JetBrains Mono" font-size="16" text-anchor="middle" fill="#fff" font-weight="700">38%</text>
+            </g>
+            <text x="110" y="22" font-family="JetBrains Mono" font-size="9" text-anchor="middle" fill="#a1a1aa" letter-spacing="1">72:00:00</text>
+            <circle cx="110" cy="12" r="3" fill="#f59e0b">
+              <animate attributeName="opacity" values="0.3;1;0.3" dur="1.8s" repeatCount="indefinite"/>
+            </circle>
+          </svg>
+        </div>
+        <h3 class="how-title">Debate</h3>
+        <p class="how-desc">72 hours on the floor. <span class="for-text">Blue</span> vs <span class="against-text">Red</span>. Arguments — not noise — decide.</p>
+        <span class="how-tag">live on floor</span>
+      </article>
+
+      <article class="how-card reveal reveal-delay-3" data-step="3">
+        <div class="how-num">STEP 03</div>
+        <div class="how-illustration" aria-hidden="true">
+          <svg viewBox="0 0 220 140" width="100%" height="100%">
+            <rect x="30" y="30" width="160" height="28" rx="14" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.1)"/>
+            <rect x="30" y="30" width="113" height="28" rx="14" fill="rgba(59,130,246,0.22)"/>
+            <text x="110" y="47" font-family="Inter" font-size="11" text-anchor="middle" fill="#fff" font-weight="700">71% → LAW</text>
+            <g transform="translate(110 86)">
+              <polygon points="0,-10 26,0 0,10 -26,0" fill="#f59e0b" opacity="0.2" stroke="#fbbf24"/>
+              <text x="0" y="4" font-family="Inter" font-size="10" text-anchor="middle" fill="#fbbf24" font-weight="800">LAW</text>
+            </g>
+            <line x1="110" y1="60" x2="110" y2="74" stroke="#f59e0b" stroke-width="1.5"/>
+            <circle cx="30" cy="44" r="3" fill="#3b82f6"/>
+            <circle cx="190" cy="44" r="3" fill="#ef4444"/>
+          </svg>
+        </div>
+        <h3 class="how-title">Refine → Law</h3>
+        <p class="how-desc"><strong>50–67%</strong>? Refine with <em>…but</em>/<em>…and</em>. <strong>67%+</strong>? It becomes <span class="gold-text">LAW</span>.</p>
+        <span class="how-tag">enshrined</span>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ====== CHAIN SECTION ====== -->
+<section id="chain">
+  <div class="container">
+    <span class="section-eyebrow reveal">02 — Chain refinement</span>
+    <h2 class="section-title reveal reveal-delay-1">
+      Disagreement is <span class="gradient-text">signal</span>.
+    </h2>
+    <p class="section-subtitle reveal reveal-delay-2">
+      A statement stalled at 62%? The community chains it with <em>…but</em>/<em>…and</em>. The refined version wins the continuation vote — and crosses the threshold.
+    </p>
+
+    <div class="chain-wrap reveal reveal-delay-3">
+      <svg class="chain-svg" viewBox="0 0 1080 440" preserveAspectRatio="xMidYMid meet" aria-label="Chain refinement example">
+        <defs>
+          <linearGradient id="node1-fill" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0" stop-color="rgba(59,130,246,0.25)"/>
+            <stop offset="1" stop-color="rgba(59,130,246,0.08)"/>
+          </linearGradient>
+          <linearGradient id="node2-fill" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0" stop-color="rgba(139,92,246,0.3)"/>
+            <stop offset="1" stop-color="rgba(139,92,246,0.08)"/>
+          </linearGradient>
+          <linearGradient id="node3-fill" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0" stop-color="rgba(245,158,11,0.32)"/>
+            <stop offset="1" stop-color="rgba(245,158,11,0.08)"/>
+          </linearGradient>
+          <linearGradient id="link1" x1="0" x2="1">
+            <stop offset="0" stop-color="#3b82f6"/>
+            <stop offset="1" stop-color="#8b5cf6"/>
+          </linearGradient>
+          <linearGradient id="link2" x1="0" x2="1">
+            <stop offset="0" stop-color="#8b5cf6"/>
+            <stop offset="1" stop-color="#f59e0b"/>
+          </linearGradient>
+          <filter id="glow-gold" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="8" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <!-- Connector lines (animated dash) -->
+        <path id="chain-path-1" d="M 280 130 C 360 130 420 220 500 220" fill="none" stroke="url(#link1)" stroke-width="2.2" stroke-dasharray="6 4" class="chain-path"/>
+        <path id="chain-path-2" d="M 720 220 C 800 220 840 310 920 310" fill="none" stroke="url(#link2)" stroke-width="2.2" stroke-dasharray="6 4" class="chain-path" style="animation-delay: 0.6s"/>
+
+        <!-- Node 1: Original -->
+        <g class="chain-node" data-n="1">
+          <rect x="60" y="70" width="220" height="120" rx="16" fill="url(#node1-fill)" stroke="#3b82f6" stroke-width="1.4"/>
+          <text x="80" y="98" font-family="JetBrains Mono" font-size="10" fill="#60a5fa" letter-spacing="2">STATEMENT</text>
+          <text x="80" y="126" font-family="Inter" font-size="15" font-weight="700" fill="#fff">Abortion should</text>
+          <text x="80" y="146" font-family="Inter" font-size="15" font-weight="700" fill="#fff">be legal.</text>
+          <text x="80" y="174" font-family="Inter" font-size="12" fill="#93c5fd" font-weight="600">FOR 62% · stalled</text>
+        </g>
+
+        <!-- Node 2: Refinement -->
+        <g class="chain-node" data-n="2">
+          <rect x="500" y="160" width="220" height="120" rx="16" fill="url(#node2-fill)" stroke="#8b5cf6" stroke-width="1.4"/>
+          <text x="520" y="188" font-family="JetBrains Mono" font-size="10" fill="#c4b5fd" letter-spacing="2">…BUT REFINEMENT</text>
+          <text x="520" y="216" font-family="Inter" font-size="15" font-weight="700" fill="#fff">…but not after</text>
+          <text x="520" y="236" font-family="Inter" font-size="15" font-weight="700" fill="#fff">fetal viability.</text>
+          <text x="520" y="264" font-family="Inter" font-size="12" fill="#c4b5fd" font-weight="600">CHAIN WINNER</text>
+        </g>
+
+        <!-- Node 3: Law -->
+        <g class="chain-node" data-n="3" filter="url(#glow-gold)">
+          <rect x="860" y="250" width="160" height="120" rx="16" fill="url(#node3-fill)" stroke="#fbbf24" stroke-width="1.5"/>
+          <polygon points="940 276 960 298 940 320 920 298" fill="rgba(245,158,11,0.2)" stroke="#fbbf24" stroke-width="1.2"/>
+          <text x="940" y="302" font-family="Inter" font-size="10" text-anchor="middle" fill="#fbbf24" font-weight="800">LAW</text>
+          <text x="940" y="348" font-family="Inter" font-size="13" text-anchor="middle" fill="#fff" font-weight="700">71% consensus</text>
+        </g>
+
+        <!-- Labels / percentages -->
+        <text x="540" y="60" font-family="JetBrains Mono" font-size="10" fill="#a1a1aa" letter-spacing="1.5">CHAIN CONTINUATION</text>
+        <text x="540" y="402" font-family="JetBrains Mono" font-size="10" fill="#a1a1aa" letter-spacing="1.5">COMBINED STATEMENT CROSSES 67% THRESHOLD → ENSHRINED</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<style>
+  .chain-node {
+    opacity: 0;
+    transform: translateY(16px);
+    transform-box: fill-box;
+    transform-origin: center;
+    transition: opacity 0.9s var(--ease-out), transform 0.9s var(--ease-out);
+  }
+  .chain-wrap.in .chain-node { opacity: 1; transform: translateY(0); }
+  .chain-wrap.in .chain-node[data-n="1"] { transition-delay: 0.1s; }
+  .chain-wrap.in .chain-node[data-n="2"] { transition-delay: 0.55s; }
+  .chain-wrap.in .chain-node[data-n="3"] { transition-delay: 1.05s; }
+  .chain-path {
+    stroke-dashoffset: 200;
+    opacity: 0;
+    transition: opacity 0.8s var(--ease-out), stroke-dashoffset 2s var(--ease-out);
+  }
+  .chain-wrap.in .chain-path {
+    opacity: 1;
+    stroke-dashoffset: 0;
+    animation: dash-flow 3s linear infinite;
+  }
+  @keyframes dash-flow {
+    to { stroke-dashoffset: -200; }
+  }
+</style>
+
+<!-- ====== FLOOR PREVIEW ====== -->
+<section id="floor">
+  <div class="container">
+    <span class="section-eyebrow reveal">03 — The signature moment</span>
+    <h2 class="section-title reveal reveal-delay-1">
+      The <span class="gradient-text">Floor</span>.
+    </h2>
+    <p class="section-subtitle reveal reveal-delay-2">
+      An isometric parliamentary chamber where you watch consensus form in real-time. Every seat is a coalition. Every pulse is a vote. Every color shift is a community making up its mind.
+    </p>
+
+    <div class="floor-preview reveal reveal-delay-3">
+      <div class="floor-preview-canvas-wrap">
+        <canvas id="floorPreviewCanvas" aria-label="Mini parliamentary chamber preview"></canvas>
+        <div class="floor-preview-overlay"></div>
+        <div class="floor-preview-bar">
+          <div class="floor-preview-topic">
+            <div class="label">Currently on the floor</div>
+            <div class="title" id="floorPreviewTitle">Universal basic income should replace welfare.</div>
+          </div>
+          <div class="floor-preview-stat">
+            <span class="dot-blue"></span><span class="pct" id="floorPreviewBlue">58%</span>
+            <span style="color: var(--surface-600);">vs</span>
+            <span class="pct" id="floorPreviewRed">42%</span><span class="dot-red"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <a href="./floor-demo.html" class="floor-preview-link" style="margin-left: 4px;">
+      Enter the full chamber
+      <span class="arrow" aria-hidden="true">→</span>
+    </a>
+  </div>
+</section>
+
+<!-- ====== FEATURES ====== -->
+<section id="features">
+  <div class="container">
+    <span class="section-eyebrow reveal">04 — Built for truth</span>
+    <h2 class="section-title reveal reveal-delay-1">
+      The full <span class="gradient-text">stack</span> of consensus.
+    </h2>
+    <p class="section-subtitle reveal reveal-delay-2">
+      Every feature engineered for one purpose: surface what the community actually thinks — then let them refine it until it's undeniable.
+    </p>
+
+    <div class="features-grid">
+      <article class="feature reveal reveal-delay-1">
+        <div class="feature-icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        </div>
+        <h3 class="feature-title">Real-time voting</h3>
+        <p class="feature-desc">Live seat pulses. Sub-second updates. Every vote visible as it lands in the chamber.</p>
+      </article>
+      <article class="feature reveal reveal-delay-2">
+        <div class="feature-icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="14" y2="13"/><line x1="8" y1="17" x2="12" y2="17"/></svg>
+        </div>
+        <h3 class="feature-title">Obsidian-style Law Wiki</h3>
+        <p class="feature-desc">Every enshrined law is a backlinked node. Browse the chamber's canon the way you'd browse Wikipedia.</p>
+      </article>
+      <article class="feature reveal reveal-delay-3">
+        <div class="feature-icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h6l2 4 2-4h6"/><path d="M4 17h6l2-4 2 4h6"/></svg>
+        </div>
+        <h3 class="feature-title">Chain refinement</h3>
+        <p class="feature-desc">50–67%? Branch. <em>…but</em>/<em>…and</em> refinements fork, rejoin, and escalate into binding consensus.</p>
+      </article>
+      <article class="feature reveal reveal-delay-1">
+        <div class="feature-icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="10" r="3"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5"/><path d="M14 20c0-2 2-4 4-4s4 2 4 4"/></svg>
+        </div>
+        <h3 class="feature-title">Coalitions &amp; Lobbying</h3>
+        <p class="feature-desc">Form alliances. Pool your clout. Coordinate rebuttals. The chamber rewards organized signal.</p>
+      </article>
+      <article class="feature reveal reveal-delay-2">
+        <div class="feature-icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 4v5c0 5-4 9-9 9s-9-4-9-9V7l9-4z"/><path d="M9 12l2 2 4-4"/></svg>
+        </div>
+        <h3 class="feature-title">Troll Catcher</h3>
+        <p class="feature-desc">Pattern-recognition moderation that flags bad-faith, coordinated, or sockpuppet interference — transparently.</p>
+      </article>
+      <article class="feature reveal reveal-delay-3">
+        <div class="feature-icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M5 9l7-7 7 7"/></svg>
+        </div>
+        <h3 class="feature-title">Clout economy</h3>
+        <p class="feature-desc">Predict the chamber. Persuade with arguments. Earn influence that actually moves laws.</p>
+      </article>
+    </div>
+
+    <!-- Stats band -->
+    <div class="stats-band reveal reveal-delay-2">
+      <div class="stats-grid">
+        <div class="stat">
+          <div class="stat-num" data-count="2847">0</div>
+          <div class="stat-label">Laws established</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num" data-count="126">0</div>
+          <div class="stat-label">Active debates</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num" data-count="38492">0</div>
+          <div class="stat-label">Votes this hour</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num" data-count="194"><span>0</span><span class="stat-suffix">K</span></div>
+          <div class="stat-label">Citizens online</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== FINAL CTA ====== -->
+<section id="cta">
+  <div class="container">
+    <div class="final-cta reveal">
+      <h2>Ready to shape the consensus?</h2>
+      <p>Join the early chamber. Claim your seat. Help us write the first laws.</p>
+      <form class="signup-row" onsubmit="event.preventDefault(); this.querySelector('button').textContent='Added ✓';">
+        <label for="email" class="visually-hidden" style="position:absolute; left:-9999px;">Email</label>
+        <input id="email" type="email" placeholder="your@email.com" required />
+        <button type="submit">Get Early Access</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ====== FOOTER ====== -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-brand">LOBBY MARKET</div>
+      <div class="footer-tag">The community-run parliament where debates become law. Built by citizens, for consensus.</div>
+    </div>
+    <div class="footer-col">
+      <h4>Product</h4>
+      <a href="#how">How it works</a>
+      <a href="#floor">The Floor</a>
+      <a href="./floor-demo.html">Live Demo</a>
+      <a href="#features">Features</a>
+    </div>
+    <div class="footer-col">
+      <h4>Chamber</h4>
+      <a href="#">Law Codex</a>
+      <a href="#">Active debates</a>
+      <a href="#">Coalitions</a>
+      <a href="#">Leaderboards</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="#">About</a>
+      <a href="#">Manifesto</a>
+      <a href="#">Careers</a>
+      <a href="#">Contact</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div>© 2026 Lobby Market. All consensus reserved.</div>
+    <div>v0.1.0 · Made with blue and red.</div>
+  </div>
+</footer>
+
+<script>
+/* ==============================================================
+   Lobby Market landing — vanilla JS
+   Sections:
+    1. Chamber math (isometric projection, seat generation, affinity)
+    2. Hero chamber renderer (~100 seats, ambient breathing)
+    3. Floor preview renderer (larger, auto-cycles topics)
+    4. Nav scroll state
+    5. Reveal on scroll (IntersectionObserver)
+    6. Stat count-ups
+   ============================================================== */
+
+/* ---------- 1. Chamber math (mirrors src/lib/floor/chamber-math.ts) ---------- */
+const DEG = Math.PI / 180;
+const ISO_ANGLE = 30 * DEG;
+const COS_ISO = Math.cos(ISO_ANGLE);
+const SIN_ISO = Math.sin(ISO_ANGLE);
+
+function generateSeats(params) {
+  const { rows, seatsPerRow, baseRadius, rowSpacing, rowHeightStep, seatSize } = params;
+  const seats = [];
+  let id = 0;
+  for (let row = 0; row < rows; row++) {
+    const countInRow = seatsPerRow[row] ?? seatsPerRow[seatsPerRow.length - 1];
+    const radius = baseRadius + row * rowSpacing;
+    const height = row * rowHeightStep;
+    const span = Math.PI * 0.92;
+    const start = -span / 2;
+    for (let s = 0; s < countInRow; s++) {
+      const t = countInRow === 1 ? 0.5 : s / (countInRow - 1);
+      const angle = start + t * span;
+      const worldX = Math.sin(angle) * radius;
+      const worldZ = Math.cos(angle) * radius;
+      const worldY = height;
+      seats.push({
+        id: id++, row, seatInRow: s, radialAngle: angle, affinity: 0.5,
+        worldX, worldY, worldZ,
+        screenX: (worldX - worldZ) * COS_ISO,
+        screenY: (worldX + worldZ) * SIN_ISO - worldY,
+        size: seatSize + row * 0.08,
+        pulse: 0, pulseTarget: 0, fadeIn: 0,
+      });
+    }
+  }
+  return seats;
+}
+
+function assignAffinities(seats, bluePct) {
+  const blueFrac = Math.max(0, Math.min(1, bluePct / 100));
+  const sorted = [...seats].sort((a, b) => a.radialAngle - b.radialAngle);
+  const total = sorted.length;
+  for (let i = 0; i < total; i++) {
+    const seat = sorted[i];
+    const t = total === 1 ? 0.5 : i / (total - 1);
+    const seed = Math.sin(seat.id * 12.9898 + seat.row * 78.233) * 43758.5453;
+    const jitter = (seed - Math.floor(seed) - 0.5) * 0.08;
+    const dist = t - blueFrac;
+    const soft = 1 / (1 + Math.exp(dist * 14));
+    seat.targetAffinity = Math.max(0, Math.min(1, soft + jitter));
+    // smooth transitions
+    if (seat.affinity === undefined || seat.affinity === 0.5) seat.affinity = seat.targetAffinity;
+  }
+  return seats;
+}
+
+function colorFromAffinity(a) {
+  a = Math.max(0, Math.min(1, a));
+  const red  = { r: 0xef, g: 0x44, b: 0x44 };
+  const blue = { r: 0x3b, g: 0x82, b: 0xf6 };
+  return {
+    r: Math.round(red.r + (blue.r - red.r) * a),
+    g: Math.round(red.g + (blue.g - red.g) * a),
+    b: Math.round(red.b + (blue.b - red.b) * a),
+  };
+}
+
+function rgbStr(c, alpha = 1) { return `rgba(${c.r}, ${c.g}, ${c.b}, ${alpha})`; }
+
+function computeBounds(seats) {
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  for (const s of seats) {
+    if (s.screenX < minX) minX = s.screenX;
+    if (s.screenX > maxX) maxX = s.screenX;
+    if (s.screenY < minY) minY = s.screenY;
+    if (s.screenY > maxY) maxY = s.screenY;
+  }
+  return { minX, maxX, minY, maxY, width: maxX - minX, height: maxY - minY };
+}
+
+function seatPhase(id) {
+  const s = Math.sin(id * 374.62 + 5.31) * 4571.18;
+  return s - Math.floor(s);
+}
+
+/* ---------- 2. Shared seat renderer ---------- */
+function drawSeat(ctx, x, y, size, seat) {
+  if (seat.fadeIn <= 0) return;
+  const color = colorFromAffinity(seat.affinity);
+  const pulse = seat.pulse;
+  const alpha = seat.fadeIn;
+
+  // Glow
+  const glowSize = size * (1.8 + pulse * 2);
+  const glowGrad = ctx.createRadialGradient(x, y + 1, 0, x, y + 1, glowSize);
+  glowGrad.addColorStop(0, rgbStr(color, (0.45 + pulse * 0.4) * alpha));
+  glowGrad.addColorStop(1, rgbStr(color, 0));
+  ctx.fillStyle = glowGrad;
+  ctx.beginPath();
+  ctx.arc(x, y + 1, glowSize, 0, Math.PI * 2);
+  ctx.fill();
+
+  const w = size, h = size * 0.55;
+
+  // Bottom face
+  const bottom = { r: Math.round(color.r * 0.45), g: Math.round(color.g * 0.45), b: Math.round(color.b * 0.45) };
+  ctx.fillStyle = rgbStr(bottom, alpha);
+  ctx.beginPath();
+  ctx.moveTo(x - w, y);
+  ctx.lineTo(x, y + h * 1.2);
+  ctx.lineTo(x + w, y);
+  ctx.lineTo(x, y + h * 0.3);
+  ctx.closePath();
+  ctx.fill();
+
+  // Top face
+  const top = {
+    r: Math.min(255, Math.round(color.r * (1 + pulse * 0.6))),
+    g: Math.min(255, Math.round(color.g * (1 + pulse * 0.6))),
+    b: Math.min(255, Math.round(color.b * (1 + pulse * 0.6))),
+  };
+  ctx.fillStyle = rgbStr(top, alpha);
+  ctx.beginPath();
+  ctx.moveTo(x - w, y);
+  ctx.lineTo(x, y - h);
+  ctx.lineTo(x + w, y);
+  ctx.lineTo(x, y + h * 0.3);
+  ctx.closePath();
+  ctx.fill();
+
+  // Top highlight strip
+  const highlight = { r: Math.min(255, top.r + 60), g: Math.min(255, top.g + 60), b: Math.min(255, top.b + 60) };
+  ctx.strokeStyle = rgbStr(highlight, 0.6 * alpha);
+  ctx.lineWidth = 0.6;
+  ctx.beginPath();
+  ctx.moveTo(x - w * 0.6, y - h * 0.3);
+  ctx.lineTo(x, y - h * 0.85);
+  ctx.stroke();
+
+  // Outline
+  ctx.strokeStyle = `rgba(0,0,0,${0.45 * alpha})`;
+  ctx.lineWidth = 0.5;
+  ctx.beginPath();
+  ctx.moveTo(x - w, y);
+  ctx.lineTo(x, y - h);
+  ctx.lineTo(x + w, y);
+  ctx.lineTo(x, y + h * 1.2);
+  ctx.closePath();
+  ctx.stroke();
+}
+
+function drawRostrum(ctx, x, y, scale, flash) {
+  const w = 50 * scale, h = 16 * scale;
+  ctx.fillStyle = 'rgba(0,0,0,0.45)';
+  ctx.beginPath();
+  ctx.ellipse(x, y + h * 0.8, w * 0.9, h * 0.5, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  const topGrad = ctx.createLinearGradient(x - w, y - h, x + w, y + h);
+  topGrad.addColorStop(0, '#2a2a36');
+  topGrad.addColorStop(0.5, '#1a1a22');
+  topGrad.addColorStop(1, '#12121a');
+  ctx.fillStyle = topGrad;
+  ctx.beginPath();
+  ctx.moveTo(x - w, y); ctx.lineTo(x - w, y + h); ctx.lineTo(x, y + h * 1.5); ctx.lineTo(x, y + h * 0.5); ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = '#1a1a22';
+  ctx.beginPath();
+  ctx.moveTo(x, y + h * 0.5); ctx.lineTo(x, y + h * 1.5); ctx.lineTo(x + w, y + h); ctx.lineTo(x + w, y); ctx.closePath();
+  ctx.fill();
+
+  const topFace = ctx.createLinearGradient(x - w, y - h, x + w, y + h * 0.5);
+  topFace.addColorStop(0, '#3f3f4a');
+  topFace.addColorStop(1, '#24242e');
+  ctx.fillStyle = topFace;
+  ctx.beginPath();
+  ctx.moveTo(x - w, y); ctx.lineTo(x, y - h * 0.5); ctx.lineTo(x + w, y); ctx.lineTo(x, y + h * 0.5); ctx.closePath();
+  ctx.fill();
+
+  ctx.strokeStyle = `rgba(245, 158, 11, ${0.55 + flash * 0.4})`;
+  ctx.lineWidth = 1.2;
+  ctx.beginPath();
+  ctx.moveTo(x - w, y); ctx.lineTo(x, y - h * 0.5); ctx.lineTo(x + w, y); ctx.lineTo(x, y + h * 0.5); ctx.closePath();
+  ctx.stroke();
+
+  if (flash > 0.01) {
+    const glow = ctx.createRadialGradient(x, y, 0, x, y, w * 2.4);
+    glow.addColorStop(0, `rgba(245, 158, 11, ${flash * 0.35})`);
+    glow.addColorStop(1, 'rgba(245, 158, 11, 0)');
+    ctx.fillStyle = glow;
+    ctx.beginPath();
+    ctx.arc(x, y, w * 2.4, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+/* ---------- 3. Hero background chamber (~100 seats, low opacity) ---------- */
+(function heroChamber() {
+  const canvas = document.getElementById('heroCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const layout = {
+    rows: 8,
+    seatsPerRow: [10, 12, 14, 16, 18, 18, 16, 12],
+    baseRadius: 120,
+    rowSpacing: 26,
+    rowHeightStep: 5,
+    seatSize: 7,
+  };
+  let seats = generateSeats(layout);
+  let bluePct = 55;
+  assignAffinities(seats, bluePct);
+  seats.forEach(s => { s.fadeIn = 1; s.affinity = s.targetAffinity; });
+
+  let w = 0, h = 0, dpr = 1;
+  function resize() {
+    dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    w = rect.width; h = rect.height;
+    canvas.width  = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  let start = performance.now();
+  let ambientBlue = 55;
+  let ambientTarget = 55;
+
+  function render(now) {
+    const t = (now - start) / 1000;
+    ctx.clearRect(0, 0, w, h);
+
+    // Occasionally shift the balance for ambient life
+    if (Math.random() < 0.003) {
+      ambientTarget = 35 + Math.random() * 50;
+    }
+    ambientBlue += (ambientTarget - ambientBlue) * 0.02;
+    if (Math.abs(ambientBlue - bluePct) > 0.3) {
+      bluePct = ambientBlue;
+      assignAffinities(seats, bluePct);
+      seats.forEach(s => { s.affinity += (s.targetAffinity - s.affinity) * 0.04; });
+    }
+
+    const bounds = computeBounds(seats);
+    const avail = { x: w * 0.85, y: h * 0.8 };
+    const scale = Math.min(avail.x / Math.max(bounds.width, 1), avail.y / Math.max(bounds.height, 1)) * 0.85;
+    const cxs = w / 2;
+    const cys = h / 2 + 30;
+    const cxw = (bounds.minX + bounds.maxX) / 2;
+    const cyw = (bounds.minY + bounds.maxY) / 2;
+
+    const toScreen = s => ({
+      x: cxs + (s.screenX - cxw) * scale,
+      y: cys + (s.screenY - cyw) * scale,
+    });
+
+    const order = [...seats].sort((a, b) => toScreen(a).y - toScreen(b).y);
+
+    // Random ambient pulses
+    if (Math.random() < 0.15) {
+      const s = seats[Math.floor(Math.random() * seats.length)];
+      s.pulseTarget = 1;
+      s.pulse = Math.max(s.pulse, 0.3);
+    }
+
+    for (const seat of order) {
+      if (seat.pulseTarget > 0) {
+        seat.pulse += (seat.pulseTarget - seat.pulse) * 0.2;
+        if (seat.pulse > 0.95) seat.pulseTarget = 0;
+      } else {
+        seat.pulse *= 0.94;
+      }
+      const phase = seatPhase(seat.id) * Math.PI * 2;
+      const breathing = 1 + Math.sin(t * 1.1 + phase) * 0.04;
+      const p = toScreen(seat);
+      drawSeat(ctx, p.x, p.y, seat.size * scale * breathing, seat);
+    }
+    requestAnimationFrame(render);
+  }
+  requestAnimationFrame(render);
+})();
+
+/* ---------- 4. Floor preview chamber (larger, topic cycling) ---------- */
+(function floorPreview() {
+  const canvas = document.getElementById('floorPreviewCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const titleEl = document.getElementById('floorPreviewTitle');
+  const blueEl  = document.getElementById('floorPreviewBlue');
+  const redEl   = document.getElementById('floorPreviewRed');
+
+  const topics = [
+    { title: 'Universal basic income should replace welfare.', blue: 58 },
+    { title: 'AI-generated content must be watermarked by law.', blue: 71 },
+    { title: 'Social media should require age verification.', blue: 44 },
+    { title: 'Carbon tax should fund universal healthcare.', blue: 63 },
+  ];
+
+  const layout = {
+    rows: 10,
+    seatsPerRow: [18, 20, 22, 24, 26, 28, 30, 32, 32, 28],
+    baseRadius: 120,
+    rowSpacing: 28,
+    rowHeightStep: 4,
+    seatSize: 6.5,
+  };
+  const seats = generateSeats(layout);
+  let currentTopic = 0;
+  let displayBlue = topics[0].blue;
+  let targetBlue  = topics[0].blue;
+  assignAffinities(seats, displayBlue);
+  seats.forEach(s => { s.affinity = s.targetAffinity; });
+  titleEl.textContent = topics[0].title;
+
+  function switchTopic() {
+    currentTopic = (currentTopic + 1) % topics.length;
+    const t = topics[currentTopic];
+    targetBlue = t.blue;
+    // Fade the title
+    titleEl.style.transition = 'opacity 0.3s';
+    titleEl.style.opacity = '0';
+    setTimeout(() => {
+      titleEl.textContent = t.title;
+      titleEl.style.opacity = '1';
+    }, 300);
+  }
+  setInterval(switchTopic, 7500);
+
+  let w = 0, h = 0, dpr = 1;
+  function resize() {
+    dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    w = rect.width; h = rect.height;
+    canvas.width  = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  const ro = new ResizeObserver(resize);
+  ro.observe(canvas);
+  resize();
+
+  let start = performance.now();
+  let lastPulse = 0;
+
+  function render(now) {
+    const t = (now - start) / 1000;
+    // Smooth bluePct transition
+    displayBlue += (targetBlue - displayBlue) * 0.03;
+    assignAffinities(seats, displayBlue);
+    for (const s of seats) s.affinity += (s.targetAffinity - s.affinity) * 0.05;
+
+    blueEl.textContent = `${Math.round(displayBlue)}%`;
+    redEl.textContent  = `${Math.round(100 - displayBlue)}%`;
+
+    // Background radial tint
+    ctx.clearRect(0, 0, w, h);
+    const leanBlue = displayBlue / 100;
+    const tintR = Math.round(60 * (1 - leanBlue));
+    const tintG = 20;
+    const tintB = Math.round(80 * leanBlue);
+    const rad = ctx.createRadialGradient(w / 2, h * 0.45, 0, w / 2, h * 0.45, Math.max(w, h) * 0.75);
+    rad.addColorStop(0, `rgba(${tintR + 20}, ${tintG + 10}, ${tintB + 30}, 0.4)`);
+    rad.addColorStop(0.5, `rgba(${tintR}, ${tintG}, ${tintB}, 0.12)`);
+    rad.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = '#05050a';
+    ctx.fillRect(0, 0, w, h);
+    ctx.fillStyle = rad;
+    ctx.fillRect(0, 0, w, h);
+
+    // Layout
+    const bounds = computeBounds(seats);
+    const avail = { x: w * 0.92, y: h * 0.78 };
+    const scale = Math.min(avail.x / Math.max(bounds.width, 1), avail.y / Math.max(bounds.height, 1)) * 0.9;
+    const cxs = w / 2;
+    const cys = h * 0.55;
+    const cxw = (bounds.minX + bounds.maxX) / 2;
+    const cyw = (bounds.minY + bounds.maxY) / 2;
+
+    const toScreen = s => ({
+      x: cxs + (s.screenX - cxw) * scale,
+      y: cys + (s.screenY - cyw) * scale,
+    });
+
+    // Floor glow
+    const r = Math.round(239 * (1 - leanBlue) + 59 * leanBlue);
+    const g = Math.round(68  * (1 - leanBlue) + 130 * leanBlue);
+    const b = Math.round(68  * (1 - leanBlue) + 246 * leanBlue);
+    const radius = avail.x * 0.45;
+    const glow = ctx.createRadialGradient(cxs, cys + radius * 0.1, 0, cxs, cys + radius * 0.1, radius);
+    glow.addColorStop(0, `rgba(${r}, ${g}, ${b}, 0.22)`);
+    glow.addColorStop(0.5, `rgba(${r}, ${g}, ${b}, 0.08)`);
+    glow.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = glow;
+    ctx.beginPath();
+    ctx.ellipse(cxs, cys + radius * 0.1, radius, radius * 0.55, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Rostrum
+    drawRostrum(ctx, cxs, cys - radius * 0.05, scale, 0);
+
+    // Ambient vote pulses
+    if (now - lastPulse > 120 + Math.random() * 200) {
+      const preferBlue = displayBlue >= 50;
+      const pool = seats.filter(x => preferBlue ? x.affinity > 0.55 : x.affinity < 0.45);
+      const candidates = pool.length > 0 ? pool : seats;
+      for (let i = 0; i < 2; i++) {
+        const s = candidates[Math.floor(Math.random() * candidates.length)];
+        s.pulseTarget = 1;
+        s.pulse = Math.max(s.pulse, 0.3);
+      }
+      lastPulse = now;
+    }
+
+    const order = [...seats].sort((a, b) => toScreen(a).y - toScreen(b).y);
+    for (const seat of order) {
+      if (seat.pulseTarget > 0) {
+        seat.pulse += (seat.pulseTarget - seat.pulse) * 0.22;
+        if (seat.pulse > 0.95) seat.pulseTarget = 0;
+      } else {
+        seat.pulse *= 0.93;
+      }
+      seat.fadeIn = 1;
+      const phase = seatPhase(seat.id) * Math.PI * 2;
+      const breathing = 1 + Math.sin(t * 1.25 + phase) * 0.025;
+      const p = toScreen(seat);
+      drawSeat(ctx, p.x, p.y, seat.size * scale * breathing, seat);
+    }
+
+    requestAnimationFrame(render);
+  }
+  requestAnimationFrame(render);
+})();
+
+/* ---------- 5. Nav scroll state ---------- */
+(function navScroll() {
+  const nav = document.getElementById('nav');
+  const onScroll = () => {
+    if (window.scrollY > 30) nav.classList.add('scrolled');
+    else nav.classList.remove('scrolled');
+  };
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+})();
+
+/* ---------- 6. Reveal on scroll ---------- */
+(function revealOnScroll() {
+  const items = document.querySelectorAll('.reveal, .chain-wrap');
+  const io = new IntersectionObserver(entries => {
+    for (const e of entries) {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    }
+  }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+  items.forEach(el => io.observe(el));
+})();
+
+/* ---------- 7. Stat count-ups ---------- */
+(function countUps() {
+  const nums = document.querySelectorAll('.stat-num');
+  const format = n => n.toLocaleString('en-US');
+  const io = new IntersectionObserver(entries => {
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      const el = e.target;
+      const target = parseInt(el.dataset.count, 10);
+      const duration = 1800;
+      const start = performance.now();
+      const suffix = el.querySelector('.stat-suffix');
+      function step(now) {
+        const t = Math.min(1, (now - start) / duration);
+        const eased = 1 - Math.pow(1 - t, 3);
+        const v = Math.round(target * eased);
+        if (suffix) {
+          el.innerHTML = `<span>${format(v)}</span><span class="stat-suffix">${suffix.textContent}</span>`;
+        } else {
+          el.textContent = format(v);
+        }
+        if (t < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+      io.unobserve(el);
+    }
+  }, { threshold: 0.3 });
+  nums.forEach(n => io.observe(n));
+})();
+</script>
+</body>
+</html>

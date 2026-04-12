@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="The Floor — Lobby Market's isometric parliamentary chamber. Watch consensus form in real-time." />
+<meta name="theme-color" content="#000000" />
+<title>The Floor · Lobby Market</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --for-400: #60a5fa;
+    --for-500: #3b82f6;
+    --for-700: #1d4ed8;
+    --against-400: #f87171;
+    --against-500: #ef4444;
+    --against-700: #b91c1c;
+    --surface-0: #000000;
+    --surface-50: #0a0a0f;
+    --surface-100: #111117;
+    --surface-200: #1a1a22;
+    --surface-400: #3f3f4a;
+    --surface-500: #71717a;
+    --surface-600: #a1a1aa;
+    --surface-700: #d4d4d8;
+    --surface-800: #e4e4e7;
+    --gold: #f59e0b;
+    --gold-bright: #fbbf24;
+    --emerald: #10b981;
+    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  html, body {
+    height: 100%;
+    background: #000;
+    color: var(--surface-800);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow: hidden;
+  }
+  body {
+    display: flex;
+    flex-direction: column;
+  }
+  ::selection { background: var(--for-500); color: #fff; }
+
+  /* ============================================
+     Top bar
+     ============================================ */
+  .topbar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 10;
+    padding: 18px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(180deg, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.2) 70%, transparent 100%);
+    pointer-events: none;
+  }
+  .topbar > * { pointer-events: auto; }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 800;
+    font-size: 13px;
+    letter-spacing: 0.16em;
+    color: #fff;
+    text-decoration: none;
+  }
+  .brand-mark {
+    width: 28px; height: 28px;
+    border-radius: 7px;
+    background: linear-gradient(135deg, var(--for-500), var(--against-500));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .brand-mark::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    background: #000;
+    border-radius: 5px;
+  }
+  .brand-mark span {
+    position: relative;
+    z-index: 2;
+    font-size: 14px;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--for-400), var(--against-400));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 999px;
+    color: var(--surface-800);
+    font-size: 12px;
+    font-weight: 600;
+    backdrop-filter: blur(16px);
+    text-decoration: none;
+    transition: background 0.2s, border-color 0.2s, transform 0.2s var(--ease-out);
+  }
+  .back-link:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.22);
+    transform: translateY(-1px);
+  }
+
+  /* ============================================
+     Chamber canvas
+     ============================================ */
+  .chamber {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 40%, rgba(8, 12, 28, 0.9) 0%, #000 65%);
+  }
+  #chamberCanvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  /* ============================================
+     Topic card (center-top, above the rostrum)
+     ============================================ */
+  .topic-card {
+    position: absolute;
+    top: 86px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+    background: rgba(10, 10, 15, 0.55);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 20px 32px 22px;
+    max-width: min(780px, 92vw);
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+    pointer-events: none;
+    transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
+  }
+  .topic-card.fading {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-12px);
+  }
+  .topic-card .label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--surface-500);
+    margin-bottom: 8px;
+  }
+  .topic-card .title {
+    font-size: clamp(18px, 2.4vw, 26px);
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: #fff;
+    line-height: 1.25;
+    margin-bottom: 12px;
+  }
+  .topic-card .splits {
+    display: inline-flex;
+    align-items: center;
+    gap: 22px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+  .topic-card .splits .for-side   { color: var(--for-400);   }
+  .topic-card .splits .against-side { color: var(--against-400); }
+  .topic-card .splits .divider   { color: var(--surface-500); }
+  .topic-card .splits .val {
+    color: #fff;
+    font-weight: 700;
+  }
+  .topic-card .dot-blue,
+  .topic-card .dot-red {
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    vertical-align: middle;
+  }
+  .topic-card .dot-blue { background: var(--for-500); box-shadow: 0 0 10px var(--for-500); }
+  .topic-card .dot-red  { background: var(--against-500); box-shadow: 0 0 10px var(--against-500); }
+
+  .progress-bar {
+    margin-top: 14px;
+    width: 100%;
+    height: 4px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    overflow: hidden;
+    position: relative;
+  }
+  .progress-bar .fill-blue {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    background: linear-gradient(90deg, var(--for-700), var(--for-400));
+    transition: width 0.8s var(--ease-out);
+  }
+  .progress-bar .fill-red {
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    background: linear-gradient(270deg, var(--against-700), var(--against-400));
+    transition: width 0.8s var(--ease-out);
+  }
+
+  /* ============================================
+     Vote stream (right side)
+     ============================================ */
+  .vote-stream {
+    position: absolute;
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 4;
+    width: 220px;
+    padding: 16px;
+    background: rgba(10, 10, 15, 0.6);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+    pointer-events: none;
+    max-height: 40vh;
+    overflow: hidden;
+  }
+  .vote-stream h4 {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--surface-500);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .vote-stream h4::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--emerald);
+    box-shadow: 0 0 10px var(--emerald);
+    animation: pulse-dot 1.8s ease-in-out infinite;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 0.55; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.3); }
+  }
+  .vote-stream ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .vote-stream li {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--surface-600);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    animation: vote-in 0.4s var(--ease-out) forwards;
+  }
+  @keyframes vote-in {
+    0%   { opacity: 0; transform: translateX(12px); }
+    100% { opacity: 1; transform: translateX(0); }
+  }
+  .vote-stream li.fade-out {
+    animation: vote-out 0.3s var(--ease-out) forwards;
+  }
+  @keyframes vote-out {
+    to { opacity: 0; transform: translateX(-10px); }
+  }
+  .vote-stream li .vote-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+  }
+  .vote-stream li.for-vote .vote-dot { background: var(--for-500); box-shadow: 0 0 6px var(--for-500); }
+  .vote-stream li.against-vote .vote-dot { background: var(--against-500); box-shadow: 0 0 6px var(--against-500); }
+  .vote-stream li .user { color: var(--surface-700); }
+  .vote-stream li .action.for-vote { color: var(--for-400); }
+  .vote-stream li .action.against-vote { color: var(--against-400); }
+
+  /* ============================================
+     Stats pill (left side)
+     ============================================ */
+  .stats-pill {
+    position: absolute;
+    left: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 4;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    pointer-events: none;
+  }
+  .stat-chip {
+    background: rgba(10, 10, 15, 0.6);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    min-width: 140px;
+  }
+  .stat-chip .label {
+    color: var(--surface-500);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .stat-chip .value {
+    color: #fff;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .stat-chip.emerald .value { color: var(--emerald); }
+  .stat-chip.gold .value    { color: var(--gold-bright); }
+
+  /* ============================================
+     Bottom bar — topic carousel
+     ============================================ */
+  .bottombar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 8;
+    padding: 14px 28px 20px;
+    background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.3) 80%, transparent 100%);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    pointer-events: none;
+  }
+  .carousel {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    pointer-events: auto;
+    max-width: 70%;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .carousel::-webkit-scrollbar { display: none; }
+  .carousel-item {
+    flex-shrink: 0;
+    padding: 10px 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    font-size: 12px;
+    color: var(--surface-600);
+    cursor: pointer;
+    transition: background 0.25s, border-color 0.25s, color 0.25s, transform 0.25s var(--ease-out);
+    max-width: 260px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    backdrop-filter: blur(14px);
+  }
+  .carousel-item:hover {
+    background: rgba(255, 255, 255, 0.07);
+    color: var(--surface-800);
+    border-color: rgba(255, 255, 255, 0.18);
+  }
+  .carousel-item.active {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(239, 68, 68, 0.15));
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.35), 0 0 30px -5px rgba(245, 158, 11, 0.3);
+  }
+
+  .sim-note {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--surface-500);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    pointer-events: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: rgba(10, 10, 15, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 999px;
+    backdrop-filter: blur(14px);
+  }
+  .sim-note::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 8px var(--gold);
+  }
+
+  /* ============================================
+     Mobile
+     ============================================ */
+  @media (max-width: 780px) {
+    .topbar { padding: 14px 16px; }
+    .topic-card { top: 70px; padding: 16px 20px; }
+    .vote-stream, .stats-pill { display: none; }
+    .bottombar { padding: 10px 14px 14px; flex-direction: column; align-items: stretch; gap: 10px; }
+    .carousel { max-width: 100%; }
+    .sim-note { align-self: center; }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- ====== Top bar ====== -->
+<header class="topbar">
+  <a class="brand" href="./landing.html" aria-label="Lobby Market home">
+    <span class="brand-mark"><span>L</span></span>
+    <span>LOBBY&nbsp;MARKET</span>
+  </a>
+  <a class="back-link" href="./landing.html" aria-label="Back to landing">
+    <span aria-hidden="true">←</span>
+    Back to landing
+  </a>
+</header>
+
+<!-- ====== The Chamber ====== -->
+<main class="chamber" aria-label="The Floor chamber">
+  <canvas id="chamberCanvas"></canvas>
+</main>
+
+<!-- ====== Topic card ====== -->
+<section class="topic-card" id="topicCard" aria-live="polite">
+  <div class="label">Now on the floor</div>
+  <div class="title" id="topicTitle">Universal basic income should replace welfare.</div>
+  <div class="splits">
+    <span class="for-side"><span class="dot-blue"></span> FOR <span class="val" id="blueVal">58%</span></span>
+    <span class="divider">·</span>
+    <span class="against-side"><span class="val" id="redVal">42%</span> AGAINST <span class="dot-red"></span></span>
+  </div>
+  <div class="progress-bar">
+    <div class="fill-blue" id="fillBlue" style="width: 58%"></div>
+    <div class="fill-red"  id="fillRed"  style="width: 42%"></div>
+  </div>
+</section>
+
+<!-- ====== Left: stats ====== -->
+<aside class="stats-pill" aria-hidden="true">
+  <div class="stat-chip emerald">
+    <div class="label">Live voters</div>
+    <div class="value" id="statVoters">12,847</div>
+  </div>
+  <div class="stat-chip">
+    <div class="label">Votes / sec</div>
+    <div class="value" id="statVps">142</div>
+  </div>
+  <div class="stat-chip gold">
+    <div class="label">Time left</div>
+    <div class="value" id="statTime">47:12:08</div>
+  </div>
+</aside>
+
+<!-- ====== Right: vote stream ====== -->
+<aside class="vote-stream" aria-label="Live vote stream">
+  <h4>Live feed</h4>
+  <ul id="voteList"></ul>
+</aside>
+
+<!-- ====== Bottom: topic carousel ====== -->
+<footer class="bottombar">
+  <div class="carousel" id="carousel" role="tablist" aria-label="Topic carousel"></div>
+  <div class="sim-note">Simulated data · demo mode</div>
+</footer>
+
+<script>
+/* ==============================================================
+   The Floor — self-contained demo
+   ============================================================== */
+
+/* ---------- Chamber math ---------- */
+const DEG = Math.PI / 180;
+const ISO_ANGLE = 30 * DEG;
+const COS_ISO = Math.cos(ISO_ANGLE);
+const SIN_ISO = Math.sin(ISO_ANGLE);
+
+function generateSeats(params) {
+  const { rows, seatsPerRow, baseRadius, rowSpacing, rowHeightStep, seatSize } = params;
+  const seats = [];
+  let id = 0;
+  for (let row = 0; row < rows; row++) {
+    const countInRow = seatsPerRow[row] ?? seatsPerRow[seatsPerRow.length - 1];
+    const radius = baseRadius + row * rowSpacing;
+    const height = row * rowHeightStep;
+    const span = Math.PI * 0.92;
+    const start = -span / 2;
+    for (let s = 0; s < countInRow; s++) {
+      const t = countInRow === 1 ? 0.5 : s / (countInRow - 1);
+      const angle = start + t * span;
+      const worldX = Math.sin(angle) * radius;
+      const worldZ = Math.cos(angle) * radius;
+      const worldY = height;
+      seats.push({
+        id: id++, row, seatInRow: s, radialAngle: angle,
+        affinity: 0.5, targetAffinity: 0.5,
+        worldX, worldY, worldZ,
+        screenX: (worldX - worldZ) * COS_ISO,
+        screenY: (worldX + worldZ) * SIN_ISO - worldY,
+        size: seatSize + row * 0.08,
+        pulse: 0, pulseTarget: 0, fadeIn: 0,
+      });
+    }
+  }
+  return seats;
+}
+
+function assignAffinities(seats, bluePct) {
+  const blueFrac = Math.max(0, Math.min(1, bluePct / 100));
+  const sorted = [...seats].sort((a, b) => a.radialAngle - b.radialAngle);
+  const total = sorted.length;
+  for (let i = 0; i < total; i++) {
+    const seat = sorted[i];
+    const t = total === 1 ? 0.5 : i / (total - 1);
+    const seed = Math.sin(seat.id * 12.9898 + seat.row * 78.233) * 43758.5453;
+    const jitter = (seed - Math.floor(seed) - 0.5) * 0.08;
+    const dist = t - blueFrac;
+    const soft = 1 / (1 + Math.exp(dist * 14));
+    seat.targetAffinity = Math.max(0, Math.min(1, soft + jitter));
+  }
+}
+
+function colorFromAffinity(a) {
+  a = Math.max(0, Math.min(1, a));
+  const red  = { r: 0xef, g: 0x44, b: 0x44 };
+  const blue = { r: 0x3b, g: 0x82, b: 0xf6 };
+  return {
+    r: Math.round(red.r + (blue.r - red.r) * a),
+    g: Math.round(red.g + (blue.g - red.g) * a),
+    b: Math.round(red.b + (blue.b - red.b) * a),
+  };
+}
+const rgbStr = (c, a = 1) => `rgba(${c.r}, ${c.g}, ${c.b}, ${a})`;
+
+function computeBounds(seats) {
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  for (const s of seats) {
+    if (s.screenX < minX) minX = s.screenX;
+    if (s.screenX > maxX) maxX = s.screenX;
+    if (s.screenY < minY) minY = s.screenY;
+    if (s.screenY > maxY) maxY = s.screenY;
+  }
+  return { minX, maxX, minY, maxY, width: maxX - minX, height: maxY - minY };
+}
+
+function seatPhase(id) {
+  const s = Math.sin(id * 374.62 + 5.31) * 4571.18;
+  return s - Math.floor(s);
+}
+
+/* ---------- Topics ---------- */
+const TOPICS = [
+  {
+    title: 'Universal basic income should replace welfare.',
+    blue: 58,
+  },
+  {
+    title: 'AI-generated content must be watermarked by law.',
+    blue: 74,
+  },
+  {
+    title: 'Social media should require government age verification.',
+    blue: 42,
+  },
+  {
+    title: 'Nuclear energy is the fastest path to decarbonization.',
+    blue: 66,
+  },
+  {
+    title: 'Private companies should not own public water supplies.',
+    blue: 81,
+  },
+];
+
+/* ---------- Canvas setup ---------- */
+const canvas = document.getElementById('chamberCanvas');
+const ctx = canvas.getContext('2d');
+
+const isCompact = window.matchMedia('(max-width: 768px)').matches;
+const DEFAULT_LAYOUT = {
+  rows: 14,
+  seatsPerRow: [18, 20, 22, 24, 26, 28, 30, 32, 34, 34, 32, 30, 26, 20],
+  baseRadius: 120,
+  rowSpacing: 26,
+  rowHeightStep: 4,
+  seatSize: 6.5,
+};
+const COMPACT_LAYOUT = {
+  rows: 10,
+  seatsPerRow: [12, 14, 16, 18, 20, 22, 24, 22, 18, 14],
+  baseRadius: 90,
+  rowSpacing: 22,
+  rowHeightStep: 3,
+  seatSize: 5.5,
+};
+
+const layout = isCompact ? COMPACT_LAYOUT : DEFAULT_LAYOUT;
+let seats = generateSeats(layout);
+
+/* ---------- State ---------- */
+let currentTopic = 0;
+let displayBlue = TOPICS[0].blue;
+let targetBlue  = TOPICS[0].blue;
+assignAffinities(seats, displayBlue);
+seats.forEach(s => { s.affinity = s.targetAffinity; s.fadeIn = 0; });
+
+const particles = [];
+let rostrumFlash = 0;
+let startTime = performance.now();
+let lastFrame = performance.now();
+
+/* ---------- Resize ---------- */
+let w = 0, h = 0, dpr = 1;
+function resize() {
+  dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  w = rect.width; h = rect.height;
+  canvas.width  = Math.round(w * dpr);
+  canvas.height = Math.round(h * dpr);
+  canvas.style.width = `${w}px`;
+  canvas.style.height = `${h}px`;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+resize();
+window.addEventListener('resize', resize);
+
+/* ---------- Background helpers ---------- */
+function drawBackground(bluePct) {
+  // Deep black
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0, 0, w, h);
+
+  // Ambient tint
+  const leanBlue = bluePct / 100;
+  const tintR = Math.round(60 * (1 - leanBlue));
+  const tintG = Math.round(20 * (1 - Math.abs(leanBlue - 0.5)));
+  const tintB = Math.round(80 * leanBlue);
+  const radial = ctx.createRadialGradient(w / 2, h * 0.4, 0, w / 2, h * 0.4, Math.max(w, h) * 0.8);
+  radial.addColorStop(0, `rgba(${tintR + 20}, ${tintG + 10}, ${tintB + 30}, 0.38)`);
+  radial.addColorStop(0.5, `rgba(${tintR}, ${tintG}, ${tintB}, 0.12)`);
+  radial.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = radial;
+  ctx.fillRect(0, 0, w, h);
+
+  // Vignette
+  const vignette = ctx.createRadialGradient(w / 2, h / 2, Math.min(w, h) * 0.4, w / 2, h / 2, Math.max(w, h) * 0.9);
+  vignette.addColorStop(0, 'rgba(0,0,0,0)');
+  vignette.addColorStop(1, 'rgba(0,0,0,0.8)');
+  ctx.fillStyle = vignette;
+  ctx.fillRect(0, 0, w, h);
+
+  // Floor grid hint
+  ctx.strokeStyle = 'rgba(255,255,255,0.02)';
+  ctx.lineWidth = 1;
+  for (let i = 0; i < 10; i++) {
+    const y = h * 0.72 + i * 14;
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(w, y);
+    ctx.stroke();
+  }
+}
+
+function drawFloorGlow(cx, cy, radius, bluePct) {
+  const leanBlue = bluePct / 100;
+  const r = Math.round(239 * (1 - leanBlue) + 59 * leanBlue);
+  const g = Math.round(68  * (1 - leanBlue) + 130 * leanBlue);
+  const b = Math.round(68  * (1 - leanBlue) + 246 * leanBlue);
+  const grad = ctx.createRadialGradient(cx, cy + radius * 0.1, 0, cx, cy + radius * 0.1, radius);
+  grad.addColorStop(0,   `rgba(${r}, ${g}, ${b}, 0.22)`);
+  grad.addColorStop(0.5, `rgba(${r}, ${g}, ${b}, 0.08)`);
+  grad.addColorStop(1,   'rgba(0,0,0,0)');
+  ctx.fillStyle = grad;
+  ctx.beginPath();
+  ctx.ellipse(cx, cy + radius * 0.1, radius, radius * 0.55, 0, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+function drawSeat(x, y, size, seat) {
+  if (seat.fadeIn <= 0) return;
+  const color = colorFromAffinity(seat.affinity);
+  const pulse = seat.pulse;
+  const alpha = seat.fadeIn;
+
+  // Glow
+  const glowSize = size * (1.8 + pulse * 2);
+  const glowGrad = ctx.createRadialGradient(x, y + 1, 0, x, y + 1, glowSize);
+  glowGrad.addColorStop(0, rgbStr(color, (0.45 + pulse * 0.45) * alpha));
+  glowGrad.addColorStop(1, rgbStr(color, 0));
+  ctx.fillStyle = glowGrad;
+  ctx.beginPath();
+  ctx.arc(x, y + 1, glowSize, 0, Math.PI * 2);
+  ctx.fill();
+
+  const w = size, h = size * 0.55;
+
+  // Bottom
+  const bottom = { r: Math.round(color.r * 0.45), g: Math.round(color.g * 0.45), b: Math.round(color.b * 0.45) };
+  ctx.fillStyle = rgbStr(bottom, alpha);
+  ctx.beginPath();
+  ctx.moveTo(x - w, y);
+  ctx.lineTo(x, y + h * 1.2);
+  ctx.lineTo(x + w, y);
+  ctx.lineTo(x, y + h * 0.3);
+  ctx.closePath();
+  ctx.fill();
+
+  // Top
+  const top = {
+    r: Math.min(255, Math.round(color.r * (1 + pulse * 0.6))),
+    g: Math.min(255, Math.round(color.g * (1 + pulse * 0.6))),
+    b: Math.min(255, Math.round(color.b * (1 + pulse * 0.6))),
+  };
+  ctx.fillStyle = rgbStr(top, alpha);
+  ctx.beginPath();
+  ctx.moveTo(x - w, y);
+  ctx.lineTo(x, y - h);
+  ctx.lineTo(x + w, y);
+  ctx.lineTo(x, y + h * 0.3);
+  ctx.closePath();
+  ctx.fill();
+
+  // Highlight strip
+  const hl = { r: Math.min(255, top.r + 60), g: Math.min(255, top.g + 60), b: Math.min(255, top.b + 60) };
+  ctx.strokeStyle = rgbStr(hl, 0.6 * alpha);
+  ctx.lineWidth = 0.6;
+  ctx.beginPath();
+  ctx.moveTo(x - w * 0.6, y - h * 0.3);
+  ctx.lineTo(x, y - h * 0.85);
+  ctx.stroke();
+
+  // Outline
+  ctx.strokeStyle = `rgba(0,0,0,${0.45 * alpha})`;
+  ctx.lineWidth = 0.5;
+  ctx.beginPath();
+  ctx.moveTo(x - w, y);
+  ctx.lineTo(x, y - h);
+  ctx.lineTo(x + w, y);
+  ctx.lineTo(x, y + h * 1.2);
+  ctx.closePath();
+  ctx.stroke();
+}
+
+function drawRostrum(x, y, scale, flash) {
+  const w0 = 58 * scale, h0 = 18 * scale;
+  // Shadow
+  ctx.fillStyle = 'rgba(0,0,0,0.45)';
+  ctx.beginPath();
+  ctx.ellipse(x, y + h0 * 0.8, w0 * 0.9, h0 * 0.5, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Faces
+  const lg = ctx.createLinearGradient(x - w0, y - h0, x + w0, y + h0);
+  lg.addColorStop(0, '#2a2a36');
+  lg.addColorStop(0.5, '#1a1a22');
+  lg.addColorStop(1, '#12121a');
+  ctx.fillStyle = lg;
+  ctx.beginPath();
+  ctx.moveTo(x - w0, y); ctx.lineTo(x - w0, y + h0); ctx.lineTo(x, y + h0 * 1.5); ctx.lineTo(x, y + h0 * 0.5); ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = '#1a1a22';
+  ctx.beginPath();
+  ctx.moveTo(x, y + h0 * 0.5); ctx.lineTo(x, y + h0 * 1.5); ctx.lineTo(x + w0, y + h0); ctx.lineTo(x + w0, y); ctx.closePath();
+  ctx.fill();
+
+  // Top
+  const tf = ctx.createLinearGradient(x - w0, y - h0, x + w0, y + h0 * 0.5);
+  tf.addColorStop(0, '#3f3f4a');
+  tf.addColorStop(1, '#24242e');
+  ctx.fillStyle = tf;
+  ctx.beginPath();
+  ctx.moveTo(x - w0, y); ctx.lineTo(x, y - h0 * 0.5); ctx.lineTo(x + w0, y); ctx.lineTo(x, y + h0 * 0.5); ctx.closePath();
+  ctx.fill();
+
+  // Gold rim
+  ctx.strokeStyle = `rgba(245, 158, 11, ${0.6 + flash * 0.4})`;
+  ctx.lineWidth = 1.3;
+  ctx.beginPath();
+  ctx.moveTo(x - w0, y); ctx.lineTo(x, y - h0 * 0.5); ctx.lineTo(x + w0, y); ctx.lineTo(x, y + h0 * 0.5); ctx.closePath();
+  ctx.stroke();
+
+  if (flash > 0.01) {
+    const glow = ctx.createRadialGradient(x, y, 0, x, y, w0 * 2.4);
+    glow.addColorStop(0, `rgba(245, 158, 11, ${flash * 0.4})`);
+    glow.addColorStop(1, 'rgba(245, 158, 11, 0)');
+    ctx.fillStyle = glow;
+    ctx.beginPath();
+    ctx.arc(x, y, w0 * 2.4, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+function updateParticles(dt, origin) {
+  if (Math.random() < 0.08 && particles.length < 50) {
+    particles.push({
+      x: (Math.random() - 0.5) * 220,
+      y: (Math.random() - 0.2) * 50,
+      vx: (Math.random() - 0.5) * 0.2,
+      vy: -0.2 - Math.random() * 0.3,
+      life: 0,
+      maxLife: 300 + Math.random() * 200,
+      size: 0.7 + Math.random() * 1.4,
+    });
+  }
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+    p.life += dt / 16;
+    p.x += p.vx * (dt / 16);
+    p.y += p.vy * (dt / 16);
+    if (p.life >= p.maxLife) { particles.splice(i, 1); continue; }
+    const alpha = (1 - p.life / p.maxLife) * 0.55;
+    ctx.fillStyle = `rgba(255, 240, 200, ${alpha})`;
+    ctx.beginPath();
+    ctx.arc(origin.x + p.x, origin.y + p.y, p.size, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+/* ---------- Main render loop ---------- */
+function render(now) {
+  const dt = Math.min(now - lastFrame, 50);
+  lastFrame = now;
+  const t = (now - startTime) / 1000;
+
+  // Smooth blue transition
+  displayBlue += (targetBlue - displayBlue) * 0.025;
+  if (Math.abs(displayBlue - targetBlue) > 0.2) {
+    assignAffinities(seats, displayBlue);
+  }
+  for (const s of seats) {
+    s.affinity += (s.targetAffinity - s.affinity) * 0.055;
+  }
+
+  // Update UI
+  const blueDisplayRound = Math.round(displayBlue);
+  const redDisplayRound  = 100 - blueDisplayRound;
+  document.getElementById('blueVal').textContent = `${blueDisplayRound}%`;
+  document.getElementById('redVal').textContent  = `${redDisplayRound}%`;
+  document.getElementById('fillBlue').style.width = `${blueDisplayRound}%`;
+  document.getElementById('fillRed').style.width  = `${redDisplayRound}%`;
+
+  // Draw
+  drawBackground(displayBlue);
+
+  const bounds = computeBounds(seats);
+  const topReserve = h * 0.30;
+  const bottomReserve = h * 0.15;
+  const avail = { x: w * 0.92, y: h - topReserve - bottomReserve };
+  const scale = Math.min(avail.x / Math.max(bounds.width, 1), avail.y / Math.max(bounds.height, 1)) * 0.95;
+  const cxs = w / 2;
+  const cys = topReserve + avail.y * 0.55;
+  const cxw = (bounds.minX + bounds.maxX) / 2;
+  const cyw = (bounds.minY + bounds.maxY) / 2;
+  const toScreen = s => ({
+    x: cxs + (s.screenX - cxw) * scale,
+    y: cys + (s.screenY - cyw) * scale,
+  });
+
+  drawFloorGlow(cxs, cys, avail.x * 0.5, displayBlue);
+
+  const rostrumScreen = { x: cxs, y: cys - 12 * scale };
+  updateParticles(dt, rostrumScreen);
+  drawRostrum(rostrumScreen.x, rostrumScreen.y, scale, rostrumFlash);
+  rostrumFlash = Math.max(0, rostrumFlash - dt / 600);
+
+  // Sort back-to-front
+  const order = [...seats].sort((a, b) => toScreen(a).y - toScreen(b).y);
+  for (const seat of order) {
+    const rowDelay = seat.row * 0.07;
+    const seatDelay = seat.seatInRow * 0.004;
+    const activation = Math.max(0, Math.min(1, (t - rowDelay - seatDelay) / 0.6));
+    seat.fadeIn = activation;
+
+    if (seat.pulseTarget > 0) {
+      seat.pulse += (seat.pulseTarget - seat.pulse) * 0.2;
+      if (seat.pulse > 0.95) seat.pulseTarget = 0;
+    } else {
+      seat.pulse *= 0.94;
+    }
+
+    const phase = seatPhase(seat.id) * Math.PI * 2;
+    const breathing = 1 + Math.sin(t * 1.3 + phase) * 0.022;
+
+    const p = toScreen(seat);
+    drawSeat(p.x, p.y, seat.size * scale * breathing, seat);
+  }
+
+  requestAnimationFrame(render);
+}
+requestAnimationFrame(render);
+
+/* ---------- Simulated vote stream ---------- */
+const USER_NAMES = [
+  '@civicmind', '@votera', '@polis7', '@deepstate', '@solon', '@cass',
+  '@quorum', '@juno', '@rhetorix', '@pollux', '@thales', '@sicero',
+  '@marble', '@clio', '@thermos', '@athene', '@orcus', '@plebis',
+  '@verity', '@ampere', '@concord', '@lexis', '@forum_', '@oathring',
+];
+
+function addVote() {
+  const preferBlue = displayBlue >= 50;
+  // Votes tend to match the majority but not always
+  const isBlue = Math.random() < (preferBlue ? 0.62 : 0.38);
+  const user = USER_NAMES[Math.floor(Math.random() * USER_NAMES.length)];
+
+  // Pulse a matching seat
+  const pool = seats.filter(s => isBlue ? s.affinity > 0.55 : s.affinity < 0.45);
+  const cand = pool.length > 0 ? pool : seats;
+  const seat = cand[Math.floor(Math.random() * cand.length)];
+  seat.pulseTarget = 1;
+  seat.pulse = Math.max(seat.pulse, 0.35);
+
+  // Occasional rostrum flash
+  if (Math.random() < 0.25) rostrumFlash = 1;
+
+  // Spawn particles
+  if (Math.random() < 0.35) {
+    for (let i = 0; i < 4; i++) {
+      particles.push({
+        x: (Math.random() - 0.5) * 40,
+        y: 0,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: -0.6 - Math.random() * 0.6,
+        life: 0,
+        maxLife: 120 + Math.random() * 80,
+        size: 1 + Math.random() * 1.5,
+      });
+    }
+  }
+
+  // Drip vote into the live feed
+  const list = document.getElementById('voteList');
+  const li = document.createElement('li');
+  li.className = isBlue ? 'for-vote' : 'against-vote';
+  li.innerHTML = `
+    <span class="vote-dot"></span>
+    <span class="user">${user}</span>
+    <span class="action ${isBlue ? 'for-vote' : 'against-vote'}">${isBlue ? 'FOR' : 'AGAINST'}</span>
+  `;
+  list.prepend(li);
+  // Keep only 8
+  while (list.children.length > 8) {
+    const last = list.lastElementChild;
+    last.classList.add('fade-out');
+    setTimeout(() => last.remove(), 300);
+    break;
+  }
+}
+setInterval(addVote, 520);
+
+/* ---------- Topic cycling + carousel ---------- */
+const topicCard = document.getElementById('topicCard');
+const topicTitle = document.getElementById('topicTitle');
+const carousel = document.getElementById('carousel');
+
+TOPICS.forEach((t, i) => {
+  const item = document.createElement('button');
+  item.type = 'button';
+  item.className = 'carousel-item' + (i === 0 ? ' active' : '');
+  item.textContent = t.title;
+  item.setAttribute('role', 'tab');
+  item.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+  item.addEventListener('click', () => setTopic(i));
+  carousel.appendChild(item);
+});
+
+function setTopic(i) {
+  if (i === currentTopic) return;
+  currentTopic = i;
+  const topic = TOPICS[i];
+  targetBlue = topic.blue;
+
+  // Fade the card title
+  topicCard.classList.add('fading');
+  setTimeout(() => {
+    topicTitle.textContent = topic.title;
+    topicCard.classList.remove('fading');
+  }, 400);
+
+  // Update carousel active state
+  [...carousel.children].forEach((el, idx) => {
+    el.classList.toggle('active', idx === i);
+    el.setAttribute('aria-selected', idx === i ? 'true' : 'false');
+    if (idx === i) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
+  });
+}
+
+// Auto-cycle every 10s
+let autoInterval = setInterval(() => {
+  setTopic((currentTopic + 1) % TOPICS.length);
+}, 10000);
+
+// Pause auto cycling when the user clicks an item
+carousel.addEventListener('click', () => {
+  clearInterval(autoInterval);
+  autoInterval = setInterval(() => {
+    setTopic((currentTopic + 1) % TOPICS.length);
+  }, 12000);
+});
+
+/* ---------- Left-side live stats ---------- */
+const statVoters = document.getElementById('statVoters');
+const statVps = document.getElementById('statVps');
+const statTime = document.getElementById('statTime');
+
+let voters = 12847;
+let vps = 142;
+setInterval(() => {
+  voters += Math.floor(Math.random() * 14) - 4;
+  if (voters < 10000) voters = 12000 + Math.floor(Math.random() * 400);
+  vps = 120 + Math.floor(Math.random() * 60);
+  statVoters.textContent = voters.toLocaleString('en-US');
+  statVps.textContent = vps;
+}, 900);
+
+let timeLeft = 47 * 3600 + 12 * 60 + 8;
+setInterval(() => {
+  timeLeft = Math.max(0, timeLeft - 1);
+  const hh = String(Math.floor(timeLeft / 3600)).padStart(2, '0');
+  const mm = String(Math.floor((timeLeft % 3600) / 60)).padStart(2, '0');
+  const ss = String(timeLeft % 60).padStart(2, '0');
+  statTime.textContent = `${hh}:${mm}:${ss}`;
+}, 1000);
+</script>
+</body>
+</html>
