@@ -25,6 +25,7 @@ import {
   NEUTRAL_EMOJIS,
   type FloatingReaction,
 } from './DebateReactions'
+import { DebateRSVPButton } from './DebateRSVPButton'
 
 interface DebateArenaProps {
   initialDebate: DebateWithTopic
@@ -314,7 +315,7 @@ export function DebateArena({
 
       {/* Not live overlay */}
       {!isLive && debate.status !== 'ended' && (
-        <div className={cn('absolute inset-x-0 top-36 z-20 text-center')}>
+        <div className={cn('absolute inset-x-0 top-36 z-20 flex flex-col items-center gap-3')}>
           <div className="inline-block px-4 py-2 rounded-full bg-surface-100/90 backdrop-blur-md border border-surface-300">
             <span className="font-mono text-xs text-surface-600 uppercase tracking-widest">
               {debate.status === 'scheduled'
@@ -330,6 +331,13 @@ export function DebateArena({
                 : debate.status}
             </span>
           </div>
+          {debate.status === 'scheduled' && (
+            <DebateRSVPButton
+              debateId={debate.id}
+              size="md"
+              className="backdrop-blur-md bg-surface-100/80"
+            />
+          )}
         </div>
       )}
     </div>

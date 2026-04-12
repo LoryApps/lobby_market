@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Clock, Users, Calendar, Mic } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
+import { DebateRSVPButton } from '@/components/debate/DebateRSVPButton'
 import type {
   DebateWithTopic,
   DebateParticipantWithProfile,
@@ -145,6 +146,16 @@ export function DebateCard({ debate, participants = [] }: DebateCardProps) {
           )}
         </div>
       </div>
+
+      {/* RSVP row — only for scheduled (not yet live) debates */}
+      {!isLive && (
+        <div className="mt-3 pt-3 border-t border-surface-300/40 flex items-center justify-between gap-3">
+          <p className="text-[11px] text-surface-600 font-mono">
+            Will you be watching?
+          </p>
+          <DebateRSVPButton debateId={debate.id} size="sm" />
+        </div>
+      )}
     </Link>
   )
 }

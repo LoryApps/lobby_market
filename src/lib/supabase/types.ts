@@ -1045,6 +1045,27 @@ export type Database = {
         };
         Relationships: [];
       };
+      debate_rsvps: {
+        Row: {
+          id: string;
+          debate_id: string;
+          user_id: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          debate_id: string;
+          user_id: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          debate_id?: string;
+          user_id?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -1235,6 +1256,14 @@ export type DebateMessageWithAuthor = DebateMessage & {
     "id" | "username" | "display_name" | "avatar_url" | "role"
   > | null;
 };
+
+// RSVP — spectator attendance for scheduled debates
+export interface DebateRsvp {
+  id: string;
+  debate_id: string;
+  user_id: string;
+  created_at: string;
+}
 
 export interface ChainNode {
   id: string;
