@@ -11,6 +11,9 @@ import { VoteBar } from '@/components/voting/VoteBar'
 import { VoteButton } from '@/components/voting/VoteButton'
 import { VoteTimer } from '@/components/voting/VoteTimer'
 import { SupportButton } from '@/components/voting/SupportButton'
+import { ChainBanner } from '@/components/chain/ChainBanner'
+import { ContinuationSection } from '@/components/chain/ContinuationSection'
+import { ChainVisualization } from '@/components/chain/ChainVisualization'
 import { useVoteStore } from '@/lib/stores/vote-store'
 import { useFeedStore } from '@/lib/stores/feed-store'
 import { useState } from 'react'
@@ -47,8 +50,15 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
   const { castVote, hasVoted, getVoteSide } = useVoteStore()
   const updateTopic = useFeedStore((s) => s.updateTopic)
   const votedSide = getVoteSide(topic.id)
-  const isVotable = topic.status === 'active' || topic.status === 'voting'
   const isProposed = topic.status === 'proposed'
+  const isContinued = topic.status === 'continued'
+  const isInContinuationVote =
+    topic.status === 'voting' && topic.continuation_vote_ends_at !== null
+  const isVotable =
+    (topic.status === 'active' || topic.status === 'voting') &&
+    !isInContinuationVote
+  const showChainBanner = isContinued || isInContinuationVote
+  const hasChainHistory = topic.chain_depth > 0 || topic.parent_id !== null
 
   // Subscribe to Supabase Realtime for live vote updates
   useEffect(() => {
@@ -150,6 +160,13 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
           {topic.statement}
         </h1>
 
+        {/* Chain banner — shown during the continuation lifecycle */}
+        {showChainBanner && (
+          <div className="mb-8">
+            <ChainBanner topic={topic} />
+          </div>
+        )}
+
         {/* Vote area */}
         {isVotable && (
           <div className="space-y-5 mb-8">
@@ -170,6 +187,20 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
                 <VoteTimer endsAt={topic.voting_ends_at} />
               </div>
             )}
+          </div>
+        )}
+
+        {/* Continuation lifecycle — authoring, list, or plurality vote */}
+        {showChainBanner && (
+          <div className="mb-8">
+            <ContinuationSection topic={topic} />
+          </div>
+        )}
+
+        {/* Chain visualization — shown for any chained topic */}
+        {hasChainHistory && (
+          <div className="mb-8">
+            <ChainVisualization topic={topic} />
           </div>
         )}
 

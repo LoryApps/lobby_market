@@ -15,7 +15,7 @@ import { cn } from '@/lib/utils/cn'
 const navItems = [
   { href: '/', label: 'Feed', icon: Newspaper },
   { href: '/trending', label: 'Trending', icon: TrendingUp },
-  { href: '/laws', label: 'Laws', icon: Scale },
+  { href: '/law', label: 'Codex', icon: Scale },
   { href: '/debates', label: 'Debates', icon: Swords },
   { href: '/leaderboard', label: 'Leaderboard', icon: Trophy },
   { href: '/profile', label: 'My Profile', icon: UserCircle },

@@ -86,6 +86,8 @@ export type Database = {
           parent_id: string | null;
           connector: string | null;
           chain_depth: number;
+          continuation_window_ends_at: string | null;
+          continuation_vote_ends_at: string | null;
           feed_score: number;
           view_count: number;
           created_at: string;
@@ -109,6 +111,8 @@ export type Database = {
           parent_id?: string | null;
           connector?: string | null;
           chain_depth?: number;
+          continuation_window_ends_at?: string | null;
+          continuation_vote_ends_at?: string | null;
           feed_score?: number;
           view_count?: number;
           created_at?: string;
@@ -132,10 +136,99 @@ export type Database = {
           parent_id?: string | null;
           connector?: string | null;
           chain_depth?: number;
+          continuation_window_ends_at?: string | null;
+          continuation_vote_ends_at?: string | null;
           feed_score?: number;
           view_count?: number;
           created_at?: string;
           updated_at?: string;
+        };
+        Relationships: [];
+      };
+      continuations: {
+        Row: {
+          id: string;
+          topic_id: string;
+          author_id: string;
+          text: string;
+          connector: "but" | "and";
+          boost_count: number;
+          endorsement_count: number;
+          vote_count: number;
+          status: Database["public"]["Enums"]["continuation_status"];
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          topic_id: string;
+          author_id: string;
+          text: string;
+          connector: "but" | "and";
+          boost_count?: number;
+          endorsement_count?: number;
+          vote_count?: number;
+          status?: Database["public"]["Enums"]["continuation_status"];
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          topic_id?: string;
+          author_id?: string;
+          text?: string;
+          connector?: "but" | "and";
+          boost_count?: number;
+          endorsement_count?: number;
+          vote_count?: number;
+          status?: Database["public"]["Enums"]["continuation_status"];
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      continuation_boosts: {
+        Row: {
+          id: string;
+          continuation_id: string;
+          user_id: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          continuation_id: string;
+          user_id: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          continuation_id?: string;
+          user_id?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      continuation_votes: {
+        Row: {
+          id: string;
+          topic_id: string;
+          continuation_id: string;
+          user_id: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          topic_id: string;
+          continuation_id: string;
+          user_id: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          topic_id?: string;
+          continuation_id?: string;
+          user_id?: string;
+          created_at?: string;
         };
         Relationships: [];
       };
@@ -250,6 +343,99 @@ export type Database = {
         };
         Relationships: [];
       };
+      law_revisions: {
+        Row: {
+          id: string;
+          law_id: string;
+          editor_id: string;
+          body_markdown: string;
+          summary: string | null;
+          revision_num: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          law_id: string;
+          editor_id: string;
+          body_markdown: string;
+          summary?: string | null;
+          revision_num: number;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          law_id?: string;
+          editor_id?: string;
+          body_markdown?: string;
+          summary?: string | null;
+          revision_num?: number;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      law_reopen_requests: {
+        Row: {
+          id: string;
+          law_id: string;
+          topic_id: string;
+          requester_id: string;
+          case_for_repeal: string;
+          total_original_voters: number;
+          consent_count: number;
+          override_support_count: number;
+          status: Database["public"]["Enums"]["reopen_status"];
+          expires_at: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          law_id: string;
+          topic_id: string;
+          requester_id: string;
+          case_for_repeal: string;
+          total_original_voters: number;
+          consent_count?: number;
+          override_support_count?: number;
+          status?: Database["public"]["Enums"]["reopen_status"];
+          expires_at?: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          law_id?: string;
+          topic_id?: string;
+          requester_id?: string;
+          case_for_repeal?: string;
+          total_original_voters?: number;
+          consent_count?: number;
+          override_support_count?: number;
+          status?: Database["public"]["Enums"]["reopen_status"];
+          expires_at?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      law_reopen_consents: {
+        Row: {
+          id: string;
+          request_id: string;
+          user_id: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          request_id: string;
+          user_id: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          request_id?: string;
+          user_id?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -268,6 +454,8 @@ export type Database = {
         | "failed"
         | "archived";
       vote_side: "blue" | "red";
+      continuation_status: "pending" | "finalist" | "winner" | "rejected";
+      reopen_status: "pending" | "approved" | "rejected" | "expired";
     };
     CompositeTypes: {
       [_ in never]: never;
@@ -294,6 +482,52 @@ export type LawInsert = Database["public"]["Tables"]["laws"]["Insert"];
 
 export type LawLink = Database["public"]["Tables"]["law_links"]["Row"];
 
+export type LawRevision = Database["public"]["Tables"]["law_revisions"]["Row"];
+
+export type LawReopenRequest =
+  Database["public"]["Tables"]["law_reopen_requests"]["Row"];
+
+export type LawReopenConsent =
+  Database["public"]["Tables"]["law_reopen_consents"]["Row"];
+
+export type Continuation =
+  Database["public"]["Tables"]["continuations"]["Row"];
+export type ContinuationInsert =
+  Database["public"]["Tables"]["continuations"]["Insert"];
+export type ContinuationUpdate =
+  Database["public"]["Tables"]["continuations"]["Update"];
+
+export type ContinuationBoost =
+  Database["public"]["Tables"]["continuation_boosts"]["Row"];
+export type ContinuationBoostInsert =
+  Database["public"]["Tables"]["continuation_boosts"]["Insert"];
+
+export type ContinuationVote =
+  Database["public"]["Tables"]["continuation_votes"]["Row"];
+export type ContinuationVoteInsert =
+  Database["public"]["Tables"]["continuation_votes"]["Insert"];
+
 export type UserRole = Database["public"]["Enums"]["user_role"];
 export type TopicStatus = Database["public"]["Enums"]["topic_status"];
 export type VoteSide = Database["public"]["Enums"]["vote_side"];
+export type ReopenStatus = Database["public"]["Enums"]["reopen_status"];
+export type ContinuationStatus =
+  Database["public"]["Enums"]["continuation_status"];
+
+// Extended types with joined data
+export type ContinuationWithAuthor = Continuation & {
+  author: Pick<Profile, "id" | "username" | "display_name" | "avatar_url" | "role"> | null;
+};
+
+export interface ChainNode {
+  id: string;
+  statement: string;
+  connector: string | null;
+  chain_depth: number;
+  status: TopicStatus;
+  blue_pct: number;
+  total_votes: number;
+  parent_id: string | null;
+  is_current: boolean;
+  winning_path: boolean;
+}
