@@ -3,6 +3,7 @@ import type { Topic } from "@/lib/supabase/types";
 
 export type FeedSort = "top" | "new" | "hot";
 export type FeedStatus = "proposed" | "active" | "voting" | "law" | null;
+export type FeedCategory = string | null;
 
 interface FeedState {
   topics: Topic[];
@@ -11,11 +12,13 @@ interface FeedState {
   offset: number;
   sort: FeedSort;
   statusFilter: FeedStatus;
+  categoryFilter: FeedCategory;
   _generation: number;
 
   fetchNextPage: () => Promise<void>;
   setSort: (sort: FeedSort) => void;
   setStatusFilter: (status: FeedStatus) => void;
+  setCategoryFilter: (category: FeedCategory) => void;
   prependTopic: (topic: Topic) => void;
   updateTopic: (id: string, updates: Partial<Topic>) => void;
 }
@@ -27,10 +30,11 @@ export const useFeedStore = create<FeedState>((set, get) => ({
   offset: 0,
   sort: "top",
   statusFilter: null,
+  categoryFilter: null,
   _generation: 0,
 
   fetchNextPage: async () => {
-    const { isLoading, hasMore, offset, sort, statusFilter, _generation } =
+    const { isLoading, hasMore, offset, sort, statusFilter, categoryFilter, _generation } =
       get();
     if (isLoading || !hasMore) return;
 
@@ -40,6 +44,7 @@ export const useFeedStore = create<FeedState>((set, get) => ({
     try {
       const params = new URLSearchParams({ limit: "20", offset: String(offset), sort });
       if (statusFilter) params.set("status", statusFilter);
+      if (categoryFilter) params.set("category", categoryFilter);
 
       const res = await fetch(`/api/feed?${params.toString()}`);
 
@@ -81,6 +86,12 @@ export const useFeedStore = create<FeedState>((set, get) => ({
   setStatusFilter: (statusFilter) => {
     const gen = get()._generation + 1;
     set({ statusFilter, topics: [], offset: 0, hasMore: true, isLoading: false, _generation: gen });
+    get().fetchNextPage();
+  },
+
+  setCategoryFilter: (categoryFilter) => {
+    const gen = get()._generation + 1;
+    set({ categoryFilter, topics: [], offset: 0, hasMore: true, isLoading: false, _generation: gen });
     get().fetchNextPage();
   },
 

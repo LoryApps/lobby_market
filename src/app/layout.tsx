@@ -3,8 +3,23 @@ import { Providers } from '@/components/Providers'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Lobby Market',
-  description: 'Write the law. Build the consensus.',
+  title: {
+    default: 'Lobby Market',
+    template: '%s · Lobby Market',
+  },
+  description: 'Write the law. Build the consensus. A platform where ideas compete, votes decide, and the best arguments become law.',
+  metadataBase: new URL('https://lobby.market'),
+  openGraph: {
+    type: 'website',
+    siteName: 'Lobby Market',
+    title: 'Lobby Market',
+    description: 'Write the law. Build the consensus.',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Lobby Market',
+    description: 'Write the law. Build the consensus.',
+  },
 }
 
 export default function RootLayout({

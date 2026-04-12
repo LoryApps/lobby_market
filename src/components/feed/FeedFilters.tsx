@@ -1,6 +1,6 @@
 'use client'
 
-import { TrendingUp, Clock, Flame, Scale, FileText, Zap, Gavel } from 'lucide-react'
+import { TrendingUp, Clock, Flame, Scale, FileText, Zap, Gavel, Tag } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { useFeedStore } from '@/lib/stores/feed-store'
 import type { FeedSort, FeedStatus } from '@/lib/stores/feed-store'
@@ -49,58 +49,114 @@ const STATUS_OPTIONS: {
   },
 ]
 
+const CATEGORIES = [
+  'Economics',
+  'Politics',
+  'Technology',
+  'Science',
+  'Ethics',
+  'Philosophy',
+  'Culture',
+  'Health',
+  'Environment',
+  'Education',
+]
+
 export function FeedFilters() {
-  const { sort, statusFilter, setSort, setStatusFilter } = useFeedStore()
+  const { sort, statusFilter, categoryFilter, setSort, setStatusFilter, setCategoryFilter } = useFeedStore()
 
   return (
-    <div
-      className={cn(
-        'flex items-center gap-2 px-3 py-2',
-        'overflow-x-auto',
-        // Hide scrollbar cross-browser
-        '[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
-      )}
-    >
-      {/* Sort group */}
-      <div className="flex items-center gap-0.5 flex-shrink-0 bg-surface-200/80 border border-surface-300 rounded-lg p-0.5 backdrop-blur-sm">
-        {SORT_OPTIONS.map(({ id, label, icon: Icon }) => (
+    <div className="flex flex-col gap-1.5">
+      {/* Row 1: Sort + Status */}
+      <div
+        className={cn(
+          'flex items-center gap-2 px-3 py-2',
+          'overflow-x-auto',
+          '[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
+        )}
+      >
+        {/* Sort group */}
+        <div className="flex items-center gap-0.5 flex-shrink-0 bg-surface-200/80 border border-surface-300 rounded-lg p-0.5 backdrop-blur-sm">
+          {SORT_OPTIONS.map(({ id, label, icon: Icon }) => (
+            <button
+              key={id}
+              onClick={() => setSort(id)}
+              aria-pressed={sort === id}
+              className={cn(
+                'flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-mono font-medium transition-all duration-150',
+                sort === id
+                  ? 'bg-for-600 text-white shadow-sm'
+                  : 'text-surface-500 hover:text-surface-700'
+              )}
+            >
+              <Icon className="h-3 w-3 flex-shrink-0" />
+              <span>{label}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* Separator */}
+        <div className="h-4 w-px bg-surface-400 flex-shrink-0" aria-hidden />
+
+        {/* Status pills */}
+        {STATUS_OPTIONS.map(({ id, label, activeClass }) => (
           <button
-            key={id}
-            onClick={() => setSort(id)}
-            aria-pressed={sort === id}
+            key={String(id)}
+            onClick={() => setStatusFilter(id)}
+            aria-pressed={statusFilter === id}
             className={cn(
-              'flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-mono font-medium transition-all duration-150',
-              sort === id
-                ? 'bg-for-600 text-white shadow-sm'
-                : 'text-surface-500 hover:text-surface-700'
+              'flex-shrink-0 px-2.5 py-1 rounded-lg text-xs font-mono font-medium',
+              'border transition-all duration-150',
+              statusFilter === id
+                ? activeClass
+                : 'bg-surface-200/60 text-surface-500 border-transparent hover:text-surface-700 backdrop-blur-sm'
             )}
           >
-            <Icon className="h-3 w-3 flex-shrink-0" />
-            <span>{label}</span>
+            {label}
           </button>
         ))}
       </div>
 
-      {/* Separator */}
-      <div className="h-4 w-px bg-surface-400 flex-shrink-0" aria-hidden />
-
-      {/* Status pills */}
-      {STATUS_OPTIONS.map(({ id, label, activeClass }) => (
+      {/* Row 2: Category chips */}
+      <div
+        className={cn(
+          'flex items-center gap-1.5 px-3 pb-2',
+          'overflow-x-auto',
+          '[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
+        )}
+      >
+        <Tag className="h-3 w-3 text-surface-500 flex-shrink-0" />
+        {/* "All categories" chip */}
         <button
-          key={String(id)}
-          onClick={() => setStatusFilter(id)}
-          aria-pressed={statusFilter === id}
+          onClick={() => setCategoryFilter(null)}
+          aria-pressed={categoryFilter === null}
           className={cn(
-            'flex-shrink-0 px-2.5 py-1 rounded-lg text-xs font-mono font-medium',
+            'flex-shrink-0 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium',
             'border transition-all duration-150',
-            statusFilter === id
-              ? activeClass
-              : 'bg-surface-200/60 text-surface-500 border-transparent hover:text-surface-700 backdrop-blur-sm'
+            categoryFilter === null
+              ? 'bg-surface-400 text-white border-surface-400'
+              : 'bg-transparent text-surface-500 border-surface-500/40 hover:text-surface-400 hover:border-surface-400'
           )}
         >
-          {label}
+          All
         </button>
-      ))}
+        {CATEGORIES.map((cat) => (
+          <button
+            key={cat}
+            onClick={() => setCategoryFilter(categoryFilter === cat ? null : cat)}
+            aria-pressed={categoryFilter === cat}
+            className={cn(
+              'flex-shrink-0 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium',
+              'border transition-all duration-150',
+              categoryFilter === cat
+                ? 'bg-for-600/80 text-white border-for-600'
+                : 'bg-transparent text-surface-500 border-surface-500/40 hover:text-surface-400 hover:border-surface-400'
+            )}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
     </div>
   )
 }

@@ -7,6 +7,7 @@ export async function GET(request: NextRequest) {
   const limit = Math.min(parseInt(searchParams.get('limit') || '20', 10), 50)
   const sort = searchParams.get('sort') || 'top'
   const status = searchParams.get('status') || null
+  const category = searchParams.get('category') || null
 
   const supabase = await createClient()
 
@@ -20,6 +21,11 @@ export async function GET(request: NextRequest) {
     query = query.eq('status', status as 'proposed' | 'active' | 'voting' | 'law' | 'failed' | 'archived' | 'continued')
   } else {
     query = query.in('status', ['proposed', 'active', 'voting', 'law'])
+  }
+
+  // Category filter
+  if (category) {
+    query = query.eq('category', category)
   }
 
   // Sort order

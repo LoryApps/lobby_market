@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { LawPage } from '@/components/law/LawPage'
@@ -12,6 +13,49 @@ import type {
 
 interface LawDetailPageProps {
   params: { id: string }
+}
+
+export async function generateMetadata({ params }: LawDetailPageProps): Promise<Metadata> {
+  const supabase = await createClient()
+
+  const { data: law } = await supabase
+    .from('laws')
+    .select('statement, category, total_votes, established_at')
+    .eq('id', params.id)
+    .single()
+
+  if (!law) {
+    return { title: 'Law · Lobby Market' }
+  }
+
+  const votes = law.total_votes ? `${law.total_votes.toLocaleString()} votes` : null
+  const description = [
+    'Established Consensus Law',
+    votes,
+    law.category ?? null,
+  ]
+    .filter(Boolean)
+    .join(' · ')
+
+  const title = `${law.statement} · Lobby Market`
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: 'article',
+      siteName: 'Lobby Market',
+      publishedTime: law.established_at,
+      tags: law.category ? [law.category] : undefined,
+    },
+    twitter: {
+      card: 'summary',
+      title,
+      description,
+    },
+  }
 }
 
 export default async function LawDetailPage({ params }: LawDetailPageProps) {
