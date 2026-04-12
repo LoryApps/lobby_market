@@ -15,6 +15,9 @@ export interface SpriteBillboardProps {
   onPointerOut?: (e: ThreeEvent<PointerEvent>) => void
   /** Extra Y rotation applied on top of the billboarding yaw. */
   rotationYOffset?: number
+  /** Luminance below which pixels are treated as fully transparent.
+   * Use for sprites rendered on a black void background. */
+  luminanceKey?: number
 }
 
 /**
@@ -30,6 +33,7 @@ export function SpriteBillboard({
   onPointerOver,
   onPointerOut,
   rotationYOffset = 0,
+  luminanceKey = 0.08,
 }: SpriteBillboardProps) {
   return (
     <group position={position}>
@@ -51,6 +55,7 @@ export function SpriteBillboard({
           onPointerOver={onPointerOver}
           onPointerOut={onPointerOut}
           rotationYOffset={rotationYOffset}
+          luminanceKey={luminanceKey}
         />
       </Suspense>
     </group>
@@ -64,6 +69,45 @@ interface SpriteInnerProps {
   onPointerOver?: (e: ThreeEvent<PointerEvent>) => void
   onPointerOut?: (e: ThreeEvent<PointerEvent>) => void
   rotationYOffset: number
+  luminanceKey: number
+}
+
+/**
+ * Shader material that keys out dark pixels by luminance. Used to make
+ * sprites rendered on a solid black background look transparent without
+ * needing a pre-processed alpha channel.
+ */
+function createLuminanceKeyMaterial(texture: THREE.Texture, luminanceKey: number) {
+  return new THREE.ShaderMaterial({
+    transparent: true,
+    side: THREE.DoubleSide,
+    depthWrite: false,
+    toneMapped: false,
+    uniforms: {
+      map: { value: texture },
+      uKey: { value: luminanceKey },
+    },
+    vertexShader: `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      uniform sampler2D map;
+      uniform float uKey;
+      varying vec2 vUv;
+      void main() {
+        vec4 c = texture2D(map, vUv);
+        float lum = dot(c.rgb, vec3(0.299, 0.587, 0.114));
+        // Soft edge between uKey and uKey + 0.06
+        float a = smoothstep(uKey, uKey + 0.06, lum);
+        if (a < 0.02) discard;
+        gl_FragColor = vec4(c.rgb, a * c.a);
+      }
+    `,
+  })
 }
 
 function SpriteInner({
@@ -73,6 +117,7 @@ function SpriteInner({
   onPointerOver,
   onPointerOut,
   rotationYOffset,
+  luminanceKey,
 }: SpriteInnerProps) {
   const meshRef = useRef<THREE.Mesh>(null)
   const texture = useTexture(texturePath) as THREE.Texture
@@ -81,6 +126,15 @@ function SpriteInner({
     texture.anisotropy = 4
     texture.minFilter = THREE.LinearFilter
     texture.magFilter = THREE.LinearFilter
+  }
+
+  // Build the luminance-key material once per texture.
+  const material = useRef<THREE.ShaderMaterial>()
+  if (!material.current && texture) {
+    material.current = createLuminanceKeyMaterial(texture, luminanceKey)
+  } else if (material.current) {
+    material.current.uniforms.uKey.value = luminanceKey
+    material.current.uniforms.map.value = texture
   }
 
   useFrame(({ camera }) => {
@@ -102,15 +156,9 @@ function SpriteInner({
       onClick={onClick}
       onPointerOver={onPointerOver}
       onPointerOut={onPointerOut}
+      material={material.current}
     >
       <planeGeometry args={size} />
-      <meshBasicMaterial
-        map={texture}
-        transparent
-        alphaTest={0.35}
-        side={THREE.DoubleSide}
-        toneMapped={false}
-      />
     </mesh>
   )
 }
