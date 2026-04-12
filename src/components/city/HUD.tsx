@@ -19,6 +19,7 @@ import {
 import type { Profile } from '@/lib/supabase/types'
 import {
   buildingTier,
+  plotPosition,
   tierName,
   tierProgress,
   tierRange,
@@ -30,6 +31,12 @@ export interface HUDProps {
   onClearSelection: () => void
   fullscreen: boolean
   onToggleFullscreen: () => void
+  /** All users in the scene (used to draw the minimap). */
+  users?: Profile[]
+  /** Live world-space position of the player character. */
+  playerPosition?: { x: number; z: number } | null
+  /** Current camera mode; controls which hint is emphasized. */
+  cameraMode?: 'follow' | 'orbit'
 }
 
 export function HUD({
@@ -38,6 +45,9 @@ export function HUD({
   onClearSelection,
   fullscreen,
   onToggleFullscreen,
+  users = [],
+  playerPosition = null,
+  cameraMode = 'follow',
 }: HUDProps) {
   const router = useRouter()
 
@@ -69,7 +79,7 @@ export function HUD({
             )}
           </button>
         </div>
-        <CameraHelp />
+        <ControlsHint cameraMode={cameraMode} />
       </div>
 
       {/* Bottom: upgrade progress */}
@@ -83,6 +93,14 @@ export function HUD({
           onVisit={() => router.push(`/city/${selectedUser.username}`)}
         />
       )}
+
+      {/* Minimap (bottom-right) */}
+      <Minimap
+        users={users}
+        playerPosition={playerPosition}
+        currentUserId={currentUser?.id ?? null}
+        selectedUserId={selectedUser?.id ?? null}
+      />
 
       {/* Title banner */}
       <div className="pointer-events-none fixed left-1/2 top-4 z-10 -translate-x-1/2">
@@ -298,16 +316,179 @@ function roleLabel(role: Profile['role']): string {
   }
 }
 
-function CameraHelp() {
+function ControlsHint({ cameraMode }: { cameraMode: 'follow' | 'orbit' }) {
   return (
-    <div className="pointer-events-auto hidden max-w-[220px] rounded-lg border border-white/10 bg-black/60 p-2.5 text-[10px] text-white/60 backdrop-blur-md md:block">
-      <div className="mb-1 flex items-center gap-1 font-semibold text-white/80">
+    <div className="pointer-events-auto hidden max-w-[240px] rounded-lg border border-white/10 bg-black/65 p-2.5 text-[10px] text-white/70 backdrop-blur-md md:block">
+      <div className="mb-1 flex items-center gap-1 font-semibold text-white/90">
         <Mouse className="h-3 w-3" />
-        Camera controls
+        Controls
       </div>
-      <div>Left-drag: rotate</div>
-      <div>Right-drag: pan</div>
-      <div>Scroll: zoom</div>
+      {cameraMode === 'follow' ? (
+        <>
+          <div>
+            <span className="font-mono text-white/90">WASD</span> / arrows: move
+          </div>
+          <div>
+            <span className="font-mono text-white/90">E</span>: interact with plot
+          </div>
+          <div>
+            <span className="font-mono text-white/90">O</span>: orbit camera mode
+          </div>
+        </>
+      ) : (
+        <>
+          <div>Left-drag: rotate</div>
+          <div>Right-drag: pan</div>
+          <div>Scroll: zoom</div>
+          <div>
+            <span className="font-mono text-white/90">O</span>: back to follow cam
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/* Minimap                                                             */
+/* ------------------------------------------------------------------ */
+function Minimap({
+  users,
+  playerPosition,
+  currentUserId,
+  selectedUserId,
+}: {
+  users: Profile[]
+  playerPosition: { x: number; z: number } | null
+  currentUserId: string | null
+  selectedUserId: string | null
+}) {
+  const SIZE = 160
+  // Show a 120-unit radius around the player (or origin) in world units.
+  const VIEW_RADIUS = 120
+  const center = playerPosition ?? { x: 0, z: 0 }
+
+  const toMap = (wx: number, wz: number) => {
+    const dx = wx - center.x
+    const dz = wz - center.z
+    const px = SIZE / 2 + (dx / VIEW_RADIUS) * (SIZE / 2)
+    const py = SIZE / 2 + (dz / VIEW_RADIUS) * (SIZE / 2)
+    return { px, py }
+  }
+
+  // Only draw dots for plots within the viewport to keep the DOM light.
+  const dots = users
+    .map((u) => {
+      const [x, z] = plotPosition(u.id)
+      const dx = x - center.x
+      const dz = z - center.z
+      const dist = Math.hypot(dx, dz)
+      if (dist > VIEW_RADIUS) return null
+      const { px, py } = toMap(x, z)
+      const isCurrent = u.id === currentUserId
+      const isSelected = u.id === selectedUserId
+      const tier = buildingTier(u.reputation_score)
+      const color = isSelected
+        ? '#fbbf24'
+        : isCurrent
+          ? '#60a5fa'
+          : tier >= 5
+            ? '#a78bfa'
+            : tier >= 3
+              ? '#94a3b8'
+              : '#475569'
+      const r = isCurrent || isSelected ? 3 : tier >= 5 ? 2.5 : 1.6
+      return { id: u.id, px, py, color, r }
+    })
+    .filter((d): d is NonNullable<typeof d> => d !== null)
+
+  return (
+    <div className="pointer-events-none fixed bottom-6 right-4 z-20">
+      <div className="pointer-events-auto rounded-xl border border-white/10 bg-black/75 p-2 shadow-xl backdrop-blur-md">
+        <div className="mb-1 flex items-center justify-between px-1 text-[9px] uppercase tracking-widest text-white/60">
+          <span>Lobby map</span>
+          <span className="text-white/30">{VIEW_RADIUS * 2}u</span>
+        </div>
+        <svg
+          width={SIZE}
+          height={SIZE}
+          className="block rounded-md"
+          style={{ background: 'radial-gradient(circle at center, #0b1024 0%, #03050c 80%)' }}
+          viewBox={`0 0 ${SIZE} ${SIZE}`}
+        >
+          {/* Compass crosshair */}
+          <line
+            x1={SIZE / 2}
+            y1={0}
+            x2={SIZE / 2}
+            y2={SIZE}
+            stroke="#1e293b"
+            strokeWidth={0.5}
+          />
+          <line
+            x1={0}
+            y1={SIZE / 2}
+            x2={SIZE}
+            y2={SIZE / 2}
+            stroke="#1e293b"
+            strokeWidth={0.5}
+          />
+          {/* Concentric rings */}
+          {[0.25, 0.5, 0.75].map((r) => (
+            <circle
+              key={r}
+              cx={SIZE / 2}
+              cy={SIZE / 2}
+              r={(SIZE / 2) * r}
+              fill="none"
+              stroke="#1e293b"
+              strokeWidth={0.5}
+            />
+          ))}
+          {/* Plot dots */}
+          {dots.map((d) => (
+            <circle
+              key={d.id}
+              cx={d.px}
+              cy={d.py}
+              r={d.r}
+              fill={d.color}
+              opacity={0.9}
+            />
+          ))}
+          {/* Player marker (always at center) */}
+          <g>
+            <circle
+              cx={SIZE / 2}
+              cy={SIZE / 2}
+              r={4.5}
+              fill="#f59e0b"
+              stroke="#fde68a"
+              strokeWidth={1}
+            />
+            <circle
+              cx={SIZE / 2}
+              cy={SIZE / 2}
+              r={8}
+              fill="none"
+              stroke="#f59e0b"
+              strokeWidth={0.7}
+              opacity={0.5}
+            />
+          </g>
+          {/* N label */}
+          <text
+            x={SIZE / 2}
+            y={9}
+            textAnchor="middle"
+            fontSize={8}
+            fill="#94a3b8"
+            fontFamily="monospace"
+          >
+            N
+          </text>
+        </svg>
+      </div>
     </div>
   )
 }

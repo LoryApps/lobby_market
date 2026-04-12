@@ -17,16 +17,27 @@ import {
 } from '@react-three/drei'
 import * as THREE from 'three'
 import type { Profile } from '@/lib/supabase/types'
-import { plotPosition } from '@/lib/city/plot-math'
+import { buildingTier, plotPosition } from '@/lib/city/plot-math'
 import { Ground } from './Ground'
 import { Plot } from './Plot'
 import { HUD } from './HUD'
+import {
+  PlayerCharacter,
+  type PlayerCharacterHandle,
+  type Obstacle,
+} from './PlayerCharacter'
+import { NPC } from './NPC'
+import { FollowCamera } from './FollowCamera'
+import { InteractionPrompt } from './InteractionPrompt'
+import { PropPlacement } from './PropPlacement'
 
 export interface CityViewProps {
   users: Profile[]
   currentUser: Profile | null
   focusUsername?: string
 }
+
+type CameraMode = 'follow' | 'orbit'
 
 /**
  * Root 3D scene + overlay HUD for The Lobby.
@@ -35,19 +46,47 @@ export interface CityViewProps {
 export function CityView({ users, currentUser, focusUsername }: CityViewProps) {
   const [selected, setSelected] = useState<Profile | null>(null)
   const [fullscreen, setFullscreen] = useState(false)
+  const [cameraMode, setCameraMode] = useState<CameraMode>('follow')
+  const [playerPosition, setPlayerPosition] = useState<{
+    x: number
+    z: number
+  } | null>(null)
+  const [nearbyPlot, setNearbyPlot] = useState<Profile | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
+  const playerRef = useRef<PlayerCharacterHandle | null>(null)
+  const positionSampleRef = useRef(0)
 
   const focusedUser = useMemo(
     () =>
-      focusUsername ? users.find((u) => u.username === focusUsername) ?? null : null,
+      focusUsername
+        ? users.find((u) => u.username === focusUsername) ?? null
+        : null,
     [users, focusUsername]
   )
 
-  const focusTarget = useMemo<[number, number, number] | null>(() => {
-    if (!focusedUser) return null
-    const [x, z] = plotPosition(focusedUser.id)
-    return [x, 0, z]
-  }, [focusedUser])
+  // Build an obstacles list for player collision: one circle per plot
+  // centered on the building and sized to its footprint.
+  const obstacles = useMemo<Obstacle[]>(() => {
+    const list: Obstacle[] = []
+    for (const u of users) {
+      const [x, z] = plotPosition(u.id)
+      const tier = buildingTier(u.reputation_score)
+      const radius = obstacleRadiusForTier(tier)
+      list.push({ x, z, radius })
+    }
+    return list
+  }, [users])
+
+  // The player spawns at the focused user's plot, else the current user's
+  // plot, else origin.
+  const initialPosition = useMemo<[number, number, number]>(() => {
+    const anchor = focusedUser ?? currentUser
+    if (!anchor) return [0, 0, 0]
+    const [x, z] = plotPosition(anchor.id)
+    // Spawn just off the south edge of their plot so they don't inter-sect
+    // the building at t=0.
+    return [x, 0, z + 6]
+  }, [focusedUser, currentUser])
 
   const handleSelect = useCallback((u: Profile) => {
     setSelected(u)
@@ -75,6 +114,64 @@ export function CityView({ users, currentUser, focusUsername }: CityViewProps) {
     return () => document.removeEventListener('fullscreenchange', handler)
   }, [])
 
+  // Global key handler: O toggles camera mode, E opens nearest plot profile.
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null
+      if (
+        target &&
+        (target.tagName === 'INPUT' ||
+          target.tagName === 'TEXTAREA' ||
+          target.isContentEditable)
+      ) {
+        return
+      }
+      const key = e.key.toLowerCase()
+      if (key === 'o') {
+        setCameraMode((m) => (m === 'follow' ? 'orbit' : 'follow'))
+      } else if (key === 'e') {
+        if (nearbyPlot) {
+          setSelected(nearbyPlot)
+        }
+      } else if (key === 'escape') {
+        setSelected(null)
+      }
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [nearbyPlot])
+
+  // Position-change callback from the player. This is called every frame while
+  // moving so we throttle state updates to ~10Hz to avoid re-rendering React
+  // on every three.js frame.
+  const handlePlayerMove = useCallback(
+    (pos: THREE.Vector3) => {
+      positionSampleRef.current += 1
+      if (positionSampleRef.current % 6 !== 0) return
+      setPlayerPosition({ x: pos.x, z: pos.z })
+
+      // Find the nearest plot and, if within interaction range, flag it.
+      let bestUser: Profile | null = null
+      let bestDist = Infinity
+      for (const u of users) {
+        const [px, pz] = plotPosition(u.id)
+        const dx = px - pos.x
+        const dz = pz - pos.z
+        const d = Math.hypot(dx, dz)
+        if (d < bestDist) {
+          bestDist = d
+          bestUser = u
+        }
+      }
+      if (bestUser && bestDist < 6) {
+        setNearbyPlot((prev) => (prev?.id === bestUser!.id ? prev : bestUser))
+      } else {
+        setNearbyPlot((prev) => (prev ? null : prev))
+      }
+    },
+    [users]
+  )
+
   // When focus changes, set it as the "selected" so the HUD shows its details.
   useEffect(() => {
     if (focusedUser) setSelected(focusedUser)
@@ -94,11 +191,16 @@ export function CityView({ users, currentUser, focusUsername }: CityViewProps) {
         <Suspense fallback={null}>
           <Scene
             users={users}
-            focusTarget={focusTarget}
             selected={selected}
             focusedUserId={focusedUser?.id ?? null}
             currentUserId={currentUser?.id ?? null}
             onSelect={handleSelect}
+            playerRef={playerRef}
+            initialPosition={initialPosition}
+            obstacles={obstacles}
+            onPlayerMove={handlePlayerMove}
+            cameraMode={cameraMode}
+            nearbyPlot={nearbyPlot}
           />
         </Suspense>
       </Canvas>
@@ -109,6 +211,9 @@ export function CityView({ users, currentUser, focusUsername }: CityViewProps) {
         onClearSelection={handleClearSelection}
         fullscreen={fullscreen}
         onToggleFullscreen={toggleFullscreen}
+        users={users}
+        playerPosition={playerPosition}
+        cameraMode={cameraMode}
       />
     </div>
   )
@@ -120,45 +225,81 @@ export function CityView({ users, currentUser, focusUsername }: CityViewProps) {
 
 interface SceneProps {
   users: Profile[]
-  focusTarget: [number, number, number] | null
   selected: Profile | null
   focusedUserId: string | null
   currentUserId: string | null
   onSelect: (u: Profile) => void
+  playerRef: React.MutableRefObject<PlayerCharacterHandle | null>
+  initialPosition: [number, number, number]
+  obstacles: Obstacle[]
+  onPlayerMove: (pos: THREE.Vector3) => void
+  cameraMode: CameraMode
+  nearbyPlot: Profile | null
 }
 
 function Scene({
   users,
-  focusTarget,
   selected,
   focusedUserId,
   currentUserId,
   onSelect,
+  playerRef,
+  initialPosition,
+  obstacles,
+  onPlayerMove,
+  cameraMode,
+  nearbyPlot,
 }: SceneProps) {
+  const playerTargetRef = useRef<THREE.Object3D | null>(null)
+
+  // Keep playerTargetRef in sync with the player group so FollowCamera can
+  // consume a stable object reference.
+  useFrame(() => {
+    const group = playerRef.current?.group ?? null
+    if (playerTargetRef.current !== group) {
+      playerTargetRef.current = group
+    }
+  })
+
   return (
     <>
       {/* Camera rig */}
-      <PerspectiveCamera makeDefault position={[40, 40, 40]} fov={55} />
-      <CameraRig target={focusTarget} />
-
-      {/* Controls */}
-      <OrbitControls
-        enableDamping
-        dampingFactor={0.08}
-        maxPolarAngle={Math.PI / 2.1}
-        minPolarAngle={Math.PI / 6}
-        minDistance={8}
-        maxDistance={220}
+      <PerspectiveCamera
         makeDefault
+        position={[
+          initialPosition[0],
+          initialPosition[1] + 11,
+          initialPosition[2] + 14,
+        ]}
+        fov={55}
       />
+
+      {/* Follow camera — active only in follow mode */}
+      <FollowCamera
+        target={playerTargetRef}
+        disabled={cameraMode !== 'follow'}
+      />
+
+      {/* Orbit controls — only active in orbit mode */}
+      {cameraMode === 'orbit' && (
+        <OrbitControls
+          enableDamping
+          dampingFactor={0.08}
+          maxPolarAngle={Math.PI / 2.1}
+          minPolarAngle={Math.PI / 6}
+          minDistance={8}
+          maxDistance={220}
+          makeDefault
+        />
+      )}
 
       {/* Atmosphere */}
       <color attach="background" args={['#05060d']} />
       <fog attach="fog" args={['#05060d', 80, 260]} />
 
       {/* Lights */}
-      <ambientLight intensity={0.35} color="#8ea0c0" />
-      <hemisphereLight args={['#6080c0', '#201030', 0.5]} />
+      <ambientLight intensity={0.45} color="#8ea0c0" />
+      <hemisphereLight args={['#6080c0', '#201030', 0.55]} />
       <directionalLight
         position={[40, 60, 30]}
         intensity={1.1}
@@ -195,6 +336,93 @@ function Scene({
         currentUserId={currentUserId}
         onSelect={onSelect}
       />
+
+      {/* Props scattered around plots */}
+      <PropPlacement users={users} />
+
+      {/* NPCs — one per user, excluding the player's own profile */}
+      <NPCs
+        users={users}
+        onSelect={onSelect}
+        excludeUserId={currentUserId}
+      />
+
+      {/* Player character */}
+      <PlayerCharacter
+        ref={playerRef as React.RefObject<PlayerCharacterHandle>}
+        initialPosition={initialPosition}
+        obstacles={obstacles}
+        onPositionChange={onPlayerMove}
+      />
+
+      {/* Floating "Press E" prompt when near a plot */}
+      {nearbyPlot && <NearbyPrompt user={nearbyPlot} />}
+    </>
+  )
+}
+
+function NearbyPrompt({ user }: { user: Profile }) {
+  const pos = useMemo<[number, number, number]>(() => {
+    const [x, z] = plotPosition(user.id)
+    return [x, 4.5, z]
+  }, [user.id])
+  return <InteractionPrompt position={pos} user={user} />
+}
+
+/* ------------------------------------------------------------------ */
+/* NPC spawner — cuts NPCs beyond a certain distance for perf          */
+/* ------------------------------------------------------------------ */
+function NPCs({
+  users,
+  onSelect,
+  excludeUserId,
+}: {
+  users: Profile[]
+  onSelect: (u: Profile) => void
+  excludeUserId: string | null
+}) {
+  const { camera } = useThree()
+  const [visibleIds, setVisibleIds] = useState<Set<string>>(new Set())
+  const tickRef = useRef(0)
+
+  // Recompute NPC visibility every ~0.5s
+  useFrame(() => {
+    tickRef.current += 1
+    if (tickRef.current % 30 !== 0) return
+    const next = new Set<string>()
+    for (const u of users) {
+      if (u.id === excludeUserId) continue
+      const [x, z] = plotPosition(u.id)
+      const dx = camera.position.x - x
+      const dz = camera.position.z - z
+      const dist = Math.hypot(dx, dz)
+      if (dist < 80) next.add(u.id)
+    }
+    let changed = next.size !== visibleIds.size
+    if (!changed) {
+      next.forEach((id) => {
+        if (!visibleIds.has(id)) changed = true
+      })
+    }
+    if (changed) setVisibleIds(next)
+  })
+
+  return (
+    <>
+      {users.map((u) => {
+        if (u.id === excludeUserId) return null
+        if (!visibleIds.has(u.id)) return null
+        const [x, z] = plotPosition(u.id)
+        return (
+          <NPC
+            key={u.id}
+            user={u}
+            center={[x, z]}
+            wanderRadius={3.2}
+            onClick={onSelect}
+          />
+        )
+      })}
     </>
   )
 }
@@ -259,29 +487,24 @@ function PlotsLOD({
   )
 }
 
-/* ------------------------------------------------------------------ */
-/* Camera rig — ease toward a focus point once on mount                */
-/* ------------------------------------------------------------------ */
-function CameraRig({ target }: { target: [number, number, number] | null }) {
-  const { camera, controls } = useThree() as unknown as {
-    camera: THREE.PerspectiveCamera
-    controls: { target: THREE.Vector3; update: () => void } | null
+/** Approximate building footprint radius by tier (used for collision). */
+function obstacleRadiusForTier(tier: number): number {
+  switch (tier) {
+    case 0:
+      return 1.4
+    case 1:
+      return 1.7
+    case 2:
+    case 3:
+      return 2.2
+    case 4:
+      return 2.6
+    case 5:
+      return 2.8
+    case 6:
+    default:
+      return 3.0
   }
-  const doneRef = useRef(false)
-
-  useFrame(() => {
-    if (doneRef.current || !target || !controls) return
-    const desired = new THREE.Vector3(target[0], 8, target[2])
-    const desiredCam = new THREE.Vector3(target[0] + 18, 18, target[2] + 18)
-    controls.target.lerp(desired, 0.05)
-    camera.position.lerp(desiredCam, 0.05)
-    controls.update()
-    if (camera.position.distanceTo(desiredCam) < 0.5) {
-      doneRef.current = true
-    }
-  })
-
-  return null
 }
 
 export default CityView
