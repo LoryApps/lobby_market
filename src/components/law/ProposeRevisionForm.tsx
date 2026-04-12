@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   AlertCircle,
   Bold,
@@ -24,6 +24,98 @@ import {
 import { parseBlocks } from './LawDocument'
 import { Button } from '@/components/ui/Button'
 import { cn } from '@/lib/utils/cn'
+
+// ─── Wikilink autocomplete ────────────────────────────────────────────────────
+
+interface LawSuggestion {
+  id: string
+  statement: string
+  category: string | null
+}
+
+// Regex: detect an open [[ that hasn't been closed yet (on the same line)
+const WIKILINK_OPEN_RE = /\[\[([^\]\n]*)$/
+
+function WikilinkDropdown({
+  suggestions,
+  activeIndex,
+  onSelect,
+  loading,
+}: {
+  suggestions: LawSuggestion[]
+  activeIndex: number
+  onSelect: (s: LawSuggestion) => void
+  loading: boolean
+}) {
+  const listRef = useRef<HTMLUListElement>(null)
+
+  // Scroll active item into view
+  useEffect(() => {
+    const el = listRef.current?.children[activeIndex] as HTMLElement | undefined
+    el?.scrollIntoView({ block: 'nearest' })
+  }, [activeIndex])
+
+  return (
+    <div
+      className={cn(
+        'absolute left-0 right-0 z-50 mt-1',
+        'rounded-xl border border-emerald/30 bg-surface-200 shadow-xl',
+        'overflow-hidden'
+      )}
+    >
+      {loading && suggestions.length === 0 ? (
+        <div className="px-4 py-3 text-xs font-mono text-surface-500">
+          Searching laws…
+        </div>
+      ) : suggestions.length === 0 ? (
+        <div className="px-4 py-3 text-xs font-mono text-surface-500">
+          No laws found. Keep typing…
+        </div>
+      ) : (
+        <>
+          <div className="px-3 py-1.5 border-b border-surface-300">
+            <span className="text-[10px] font-mono uppercase tracking-wider text-surface-500">
+              Link to a Law · ↑↓ navigate · ↵ select · Esc cancel
+            </span>
+          </div>
+          <ul
+            ref={listRef}
+            className="max-h-48 overflow-y-auto py-1"
+            role="listbox"
+            aria-label="Law suggestions"
+          >
+            {suggestions.map((s, i) => (
+              <li
+                key={s.id}
+                role="option"
+                aria-selected={i === activeIndex}
+                onMouseDown={(e) => {
+                  e.preventDefault() // don't blur textarea
+                  onSelect(s)
+                }}
+                className={cn(
+                  'flex items-start gap-3 px-4 py-2 cursor-pointer transition-colors',
+                  i === activeIndex
+                    ? 'bg-emerald/15 text-white'
+                    : 'text-surface-700 hover:bg-surface-300'
+                )}
+              >
+                <span className="flex-1 text-xs font-mono leading-snug line-clamp-2">
+                  {s.statement}
+                </span>
+                {s.category && (
+                  <span className="flex-shrink-0 text-[10px] font-mono text-surface-500 mt-0.5">
+                    {s.category}
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+    </div>
+  )
+}
 
 interface ProposeRevisionFormProps {
   lawId: string
@@ -166,6 +258,7 @@ export function ProposeRevisionForm({
   onSubmit,
 }: ProposeRevisionFormProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const editorWrapRef = useRef<HTMLDivElement>(null)
   const [bodyMarkdown, setBodyMarkdown] = useState('')
   const [summary, setSummary] = useState('')
   const [preview, setPreview] = useState(false)
@@ -173,6 +266,112 @@ export function ProposeRevisionForm({
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [open, setOpen] = useState(false)
+
+  // ── Wikilink autocomplete state ────────────────────────────────────────────
+  const [wikiQuery, setWikiQuery] = useState<string | null>(null)
+  const [wikiStart, setWikiStart] = useState(-1) // index of '[' in '[['
+  const [suggestions, setSuggestions] = useState<LawSuggestion[]>([])
+  const [suggestionIdx, setSuggestionIdx] = useState(0)
+  const [wikiLoading, setWikiLoading] = useState(false)
+  const wikiDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // Fetch law suggestions when wikiQuery changes
+  useEffect(() => {
+    if (wikiQuery === null) {
+      setSuggestions([])
+      return
+    }
+    if (wikiDebounceRef.current) clearTimeout(wikiDebounceRef.current)
+
+    if (wikiQuery.trim().length === 0) {
+      setSuggestions([])
+      return
+    }
+
+    wikiDebounceRef.current = setTimeout(async () => {
+      setWikiLoading(true)
+      try {
+        const res = await fetch(
+          `/api/search?q=${encodeURIComponent(wikiQuery)}&tab=laws`
+        )
+        if (!res.ok) return
+        const data = (await res.json()) as { results: LawSuggestion[] }
+        setSuggestions(data.results?.slice(0, 8) ?? [])
+        setSuggestionIdx(0)
+      } catch {
+        // best-effort
+      } finally {
+        setWikiLoading(false)
+      }
+    }, 200)
+  }, [wikiQuery])
+
+  function closeWiki() {
+    setWikiQuery(null)
+    setSuggestions([])
+    setSuggestionIdx(0)
+  }
+
+  function selectSuggestion(s: LawSuggestion) {
+    const el = textareaRef.current
+    if (!el) return
+
+    const pos = el.selectionStart
+    const before = bodyMarkdown.slice(0, wikiStart)
+    const after = bodyMarkdown.slice(pos)
+    const insertion = `[[${s.statement}]]`
+    const newValue = before + insertion + after
+    const newPos = before.length + insertion.length
+
+    setBodyMarkdown(newValue)
+    closeWiki()
+
+    requestAnimationFrame(() => {
+      el.focus()
+      el.setSelectionRange(newPos, newPos)
+    })
+  }
+
+  function handleTextareaChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    const value = e.target.value
+    setBodyMarkdown(value)
+
+    const pos = e.target.selectionStart
+    const textBefore = value.slice(0, pos)
+    const match = WIKILINK_OPEN_RE.exec(textBefore)
+
+    if (match) {
+      const query = match[1]
+      const start = pos - query.length - 2 // position of first '['
+      setWikiQuery(query)
+      setWikiStart(start)
+    } else {
+      closeWiki()
+    }
+  }
+
+  function handleTextareaKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
+    if (wikiQuery === null || (suggestions.length === 0 && !wikiLoading)) return
+
+    if (e.key === 'Escape') {
+      e.preventDefault()
+      closeWiki()
+      return
+    }
+
+    if (suggestions.length === 0) return
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault()
+      setSuggestionIdx((i) => Math.min(i + 1, suggestions.length - 1))
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault()
+      setSuggestionIdx((i) => Math.max(i - 1, 0))
+    } else if (e.key === 'Enter' || e.key === 'Tab') {
+      e.preventDefault()
+      selectSuggestion(suggestions[suggestionIdx])
+    }
+  }
 
   const nextRevNum = currentRevisionNum + 1
   const canSubmit =
@@ -350,45 +549,58 @@ export function ProposeRevisionForm({
             <PreviewPane markdown={bodyMarkdown} />
           </div>
         ) : (
-          <div
-            className={cn(
-              'rounded-xl border bg-surface-50 transition-colors',
-              'focus-within:border-emerald/50',
-              bodyMarkdown.trim().length > 0 && bodyMarkdown.trim().length < 50
-                ? 'border-against-500/50'
-                : 'border-surface-300'
-            )}
-          >
-            <textarea
-              ref={textareaRef}
-              value={bodyMarkdown}
-              onChange={(e) => setBodyMarkdown(e.target.value)}
-              placeholder={`# Article I — Overview\n\nWrite the law body in Markdown. Supports **bold**, *italic*, [[wikilinks]], headings, blockquotes, and code blocks.\n\n## Article II — Provisions\n\nStart drafting here…`}
-              rows={14}
-              disabled={submitting || submitted}
+          <div ref={editorWrapRef} className="relative">
+            <div
               className={cn(
-                'w-full bg-transparent text-sm text-white placeholder:text-surface-400',
-                'resize-y focus:outline-none font-mono leading-relaxed',
-                'px-4 pt-3 pb-2 disabled:opacity-50'
+                'rounded-xl border bg-surface-50 transition-colors',
+                'focus-within:border-emerald/50',
+                bodyMarkdown.trim().length > 0 && bodyMarkdown.trim().length < 50
+                  ? 'border-against-500/50'
+                  : 'border-surface-300'
               )}
-            />
-            <div className="flex items-center justify-between border-t border-surface-300 px-4 py-2">
-              <span className="text-[11px] text-surface-500 font-mono">
-                Markdown supported · min 50 chars
-              </span>
-              <span
+            >
+              <textarea
+                ref={textareaRef}
+                value={bodyMarkdown}
+                onChange={handleTextareaChange}
+                onKeyDown={handleTextareaKeyDown}
+                placeholder={`# Article I — Overview\n\nWrite the law body in Markdown. Supports **bold**, *italic*, [[wikilinks]], headings, blockquotes, and code blocks.\n\n## Article II — Provisions\n\nStart drafting here…`}
+                rows={14}
+                disabled={submitting || submitted}
                 className={cn(
-                  'text-xs font-mono tabular-nums',
-                  bodyMarkdown.trim().length < 50
-                    ? 'text-against-500'
-                    : bodyMarkdown.trim().length > 45000
-                      ? 'text-gold'
-                      : 'text-surface-500'
+                  'w-full bg-transparent text-sm text-white placeholder:text-surface-400',
+                  'resize-y focus:outline-none font-mono leading-relaxed',
+                  'px-4 pt-3 pb-2 disabled:opacity-50'
                 )}
-              >
-                {bodyMarkdown.trim().length.toLocaleString()} / 50,000
-              </span>
+              />
+              <div className="flex items-center justify-between border-t border-surface-300 px-4 py-2">
+                <span className="text-[11px] text-surface-500 font-mono">
+                  Markdown · <span className="text-emerald/70">[[law name]]</span> for wikilinks · min 50 chars
+                </span>
+                <span
+                  className={cn(
+                    'text-xs font-mono tabular-nums',
+                    bodyMarkdown.trim().length < 50
+                      ? 'text-against-500'
+                      : bodyMarkdown.trim().length > 45000
+                        ? 'text-gold'
+                        : 'text-surface-500'
+                  )}
+                >
+                  {bodyMarkdown.trim().length.toLocaleString()} / 50,000
+                </span>
+              </div>
             </div>
+
+            {/* Wikilink autocomplete dropdown — show while typing after [[ */}
+            {wikiQuery !== null && wikiQuery.trim().length > 0 && (
+              <WikilinkDropdown
+                suggestions={suggestions}
+                activeIndex={suggestionIdx}
+                onSelect={selectSuggestion}
+                loading={wikiLoading}
+              />
+            )}
           </div>
         )}
 
