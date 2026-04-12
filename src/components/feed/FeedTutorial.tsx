@@ -21,7 +21,7 @@ const STEPS: TutorialStep[] = [
   },
   {
     title: 'Vote For or Against',
-    body: 'Blue is FOR. Red is AGAINST. Cast your vote on active topics to shape what becomes law. Your clout grows with every accurate call.',
+    body: 'Blue is FOR. Red is AGAINST. Swipe right to vote FOR, swipe left to vote AGAINST — or tap the buttons on the card. Your clout grows with every accurate call.',
     accent: 'red',
   },
   {
