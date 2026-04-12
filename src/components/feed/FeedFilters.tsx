@@ -1,6 +1,7 @@
 'use client'
 
-import { TrendingUp, Clock, Flame, Scale, FileText, Zap, Gavel, Tag } from 'lucide-react'
+import Link from 'next/link'
+import { TrendingUp, Clock, Flame, Scale, FileText, Zap, Gavel, Tag, LayoutGrid } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { useFeedStore } from '@/lib/stores/feed-store'
 import type { FeedSort, FeedStatus } from '@/lib/stores/feed-store'
@@ -156,6 +157,20 @@ export function FeedFilters() {
             {cat}
           </button>
         ))}
+        {/* Separator + browse link */}
+        <div className="h-3.5 w-px bg-surface-500/30 flex-shrink-0 mx-0.5" aria-hidden />
+        <Link
+          href="/topic/categories"
+          className={cn(
+            'flex-shrink-0 flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium',
+            'border border-surface-500/40 text-surface-500',
+            'hover:text-surface-300 hover:border-surface-400 transition-all duration-150'
+          )}
+          aria-label="Browse all categories"
+        >
+          <LayoutGrid className="h-2.5 w-2.5" />
+          Browse
+        </Link>
       </div>
     </div>
   )
