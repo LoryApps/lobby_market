@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { UserPlus, UserCheck, Calendar, Settings } from 'lucide-react'
+import { UserPlus, UserCheck, Calendar, Settings, BarChart2 } from 'lucide-react'
 import Link from 'next/link'
 import { Avatar } from '@/components/ui/Avatar'
 import { Button } from '@/components/ui/Button'
@@ -93,12 +93,20 @@ export function ProfileHeader({ profile, isOwner }: ProfileHeaderProps) {
       {/* Actions row */}
       <div className="relative mt-6 flex items-center gap-3">
         {isOwner ? (
-          <Link href="/profile/settings">
-            <Button variant="default" size="md">
-              <Settings className="h-4 w-4" />
-              Edit profile
-            </Button>
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link href="/profile/settings">
+              <Button variant="default" size="md">
+                <Settings className="h-4 w-4" />
+                Edit profile
+              </Button>
+            </Link>
+            <Link href="/analytics">
+              <Button variant="default" size="md">
+                <BarChart2 className="h-4 w-4" />
+                Analytics
+              </Button>
+            </Link>
+          </div>
         ) : (
           <Button
             variant={following ? 'default' : 'for'}
