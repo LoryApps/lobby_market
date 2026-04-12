@@ -4,6 +4,7 @@ import { useEffect, useRef, useCallback } from 'react'
 import { useFeedStore } from '@/lib/stores/feed-store'
 import { TopicCard } from '@/components/feed/TopicCard'
 import { FeedTutorial } from '@/components/feed/FeedTutorial'
+import { FeedFilters } from '@/components/feed/FeedFilters'
 
 function FeedSkeleton() {
   return (
@@ -75,41 +76,50 @@ export function FeedContainer() {
   }, [observerCallback])
 
   return (
-    <div className="feed-scroll">
-      <FeedTutorial />
-      {topics.map((topic) => (
-        <TopicCard key={topic.id} topic={topic} />
-      ))}
+    <div className="relative">
+      {/* Filter bar — floats below the TopBar (h-14 = top-14) over the feed */}
+      <div className="fixed top-14 left-0 right-0 z-40 pointer-events-none">
+        <div className="pointer-events-auto bg-gradient-to-b from-surface-50/95 via-surface-50/70 to-transparent pb-2">
+          <FeedFilters />
+        </div>
+      </div>
 
-      {/* Loading skeletons */}
-      {isLoading && (
-        <>
-          <FeedSkeleton />
-          <FeedSkeleton />
-        </>
-      )}
+      <div className="feed-scroll">
+        <FeedTutorial />
+        {topics.map((topic) => (
+          <TopicCard key={topic.id} topic={topic} />
+        ))}
 
-      {/* Empty state */}
-      {!isLoading && topics.length === 0 && (
-        <div className="feed-card flex items-center justify-center">
-          <div className="text-center px-6">
-            <p className="text-2xl font-bold text-white mb-2">No topics yet</p>
-            <p className="text-surface-500">
-              Be the first to propose a topic for the lobby.
-            </p>
+        {/* Loading skeletons */}
+        {isLoading && (
+          <>
+            <FeedSkeleton />
+            <FeedSkeleton />
+          </>
+        )}
+
+        {/* Empty state */}
+        {!isLoading && topics.length === 0 && (
+          <div className="feed-card flex items-center justify-center">
+            <div className="text-center px-6">
+              <p className="text-2xl font-bold text-white mb-2">No topics yet</p>
+              <p className="text-surface-500">
+                Be the first to propose a topic for the lobby.
+              </p>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Sentinel for infinite scroll */}
-      {hasMore && <div ref={sentinelRef} className="h-1" />}
+        {/* Sentinel for infinite scroll */}
+        {hasMore && <div ref={sentinelRef} className="h-1" />}
 
-      {/* End of feed */}
-      {!hasMore && topics.length > 0 && (
-        <div className="flex items-center justify-center py-10 text-surface-500 text-sm">
-          You have reached the end of the feed.
-        </div>
-      )}
+        {/* End of feed */}
+        {!hasMore && topics.length > 0 && (
+          <div className="flex items-center justify-center py-10 text-surface-500 text-sm">
+            You have reached the end of the feed.
+          </div>
+        )}
+      </div>
     </div>
   )
 }
