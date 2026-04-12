@@ -23,6 +23,7 @@ import { ContinuationSection } from '@/components/chain/ContinuationSection'
 import { ChainVisualization } from '@/components/chain/ChainVisualization'
 import { LobbyBoard } from '@/components/lobby/LobbyBoard'
 import { ReportButton } from '@/components/moderation/ReportButton'
+import { SharePanel } from '@/components/ui/SharePanel'
 import { cn } from '@/lib/utils/cn'
 import { useVoteStore } from '@/lib/stores/vote-store'
 import { useFeedStore } from '@/lib/stores/feed-store'
@@ -158,7 +159,11 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
             <ArrowLeft className="h-5 w-5" />
           </button>
           <span className="text-sm font-medium text-surface-500">Topic</span>
-          <div className="ml-auto">
+          <div className="ml-auto flex items-center gap-2">
+            <SharePanel
+              url={typeof window !== 'undefined' ? window.location.href : `/topic/${topic.id}`}
+              text={`${topic.statement} — ${Math.round(topic.blue_pct)}% For on Lobby Market`}
+            />
             <Badge variant={statusBadgeVariant[topic.status] ?? 'proposed'}>
               {statusLabel[topic.status] ?? topic.status}
             </Badge>

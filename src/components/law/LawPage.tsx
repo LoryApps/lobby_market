@@ -14,6 +14,7 @@ import {
   Users,
   X,
 } from 'lucide-react'
+import { SharePanel } from '@/components/ui/SharePanel'
 import type {
   Law,
   LawReopenRequest,
@@ -112,6 +113,11 @@ export function LawPage({
           </div>
 
           <div className="ml-auto flex items-center gap-2">
+            {/* Share */}
+            <SharePanel
+              url={typeof window !== 'undefined' ? window.location.href : `/law/${law.id}`}
+              text={`${law.statement} — Established Consensus Law on Lobby Market`}
+            />
             {/* Mobile: ToC toggle */}
             <button
               onClick={() => setTocOpen((v) => !v)}

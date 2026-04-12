@@ -38,6 +38,7 @@ export async function generateMetadata({ params }: LawDetailPageProps): Promise<
     .join(' · ')
 
   const title = `${law.statement} · Lobby Market`
+  const ogImageUrl = `/api/og/law/${params.id}`
 
   return {
     title,
@@ -49,11 +50,20 @@ export async function generateMetadata({ params }: LawDetailPageProps): Promise<
       siteName: 'Lobby Market',
       publishedTime: law.established_at,
       tags: law.category ? [law.category] : undefined,
+      images: [
+        {
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
+          alt: law.statement,
+        },
+      ],
     },
     twitter: {
-      card: 'summary',
+      card: 'summary_large_image',
       title,
       description,
+      images: [ogImageUrl],
     },
   }
 }
