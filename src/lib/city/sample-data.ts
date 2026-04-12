@@ -64,6 +64,7 @@ function makeProfile(
     display_name: displayName,
     avatar_url: null,
     bio: null,
+    social_links: null,
     role,
     clout,
     reputation_score: reputation,

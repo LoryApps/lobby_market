@@ -40,6 +40,7 @@ export async function PATCH(request: NextRequest) {
     display_name?: string | null
     bio?: string | null
     avatar_url?: string | null
+    social_links?: { twitter?: string; github?: string; website?: string } | null
   }
   try {
     body = await request.json()
@@ -51,6 +52,7 @@ export async function PATCH(request: NextRequest) {
     display_name?: string | null
     bio?: string | null
     avatar_url?: string | null
+    social_links?: { twitter?: string; github?: string; website?: string } | null
   } = {}
 
   if ('display_name' in body) {
@@ -87,6 +89,26 @@ export async function PATCH(request: NextRequest) {
       )
     }
     update.avatar_url = body.avatar_url
+  }
+
+  if ('social_links' in body) {
+    if (body.social_links !== null && typeof body.social_links !== 'object') {
+      return NextResponse.json(
+        { error: 'social_links must be an object or null' },
+        { status: 400 }
+      )
+    }
+    // Sanitize: only keep known keys and ensure string values
+    if (body.social_links !== null) {
+      const { twitter, github, website } = body.social_links
+      update.social_links = {
+        ...(twitter && typeof twitter === 'string' ? { twitter: twitter.trim() } : {}),
+        ...(github && typeof github === 'string' ? { github: github.trim() } : {}),
+        ...(website && typeof website === 'string' ? { website: website.trim() } : {}),
+      }
+    } else {
+      update.social_links = null
+    }
   }
 
   if (Object.keys(update).length === 0) {

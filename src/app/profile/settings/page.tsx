@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Save, Calendar, Mail, ArrowLeft } from 'lucide-react'
+import { Save, Calendar, Mail, ArrowLeft, AtSign, Code2, Globe } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -18,6 +18,9 @@ export default function ProfileSettingsPage() {
   const [displayName, setDisplayName] = useState('')
   const [bio, setBio] = useState('')
   const [avatarUrl, setAvatarUrl] = useState('')
+  const [twitter, setTwitter] = useState('')
+  const [github, setGithub] = useState('')
+  const [website, setWebsite] = useState('')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -48,6 +51,10 @@ export default function ProfileSettingsPage() {
         setDisplayName(data.display_name ?? '')
         setBio(data.bio ?? '')
         setAvatarUrl(data.avatar_url ?? '')
+        const links = data.social_links
+        setTwitter(links?.twitter ?? '')
+        setGithub(links?.github ?? '')
+        setWebsite(links?.website ?? '')
       }
       setLoading(false)
     }
@@ -61,6 +68,11 @@ export default function ProfileSettingsPage() {
     setError(null)
     setSuccess(false)
 
+    const socialLinks: { twitter?: string; github?: string; website?: string } = {}
+    if (twitter.trim()) socialLinks.twitter = twitter.trim().replace(/^@/, '')
+    if (github.trim()) socialLinks.github = github.trim().replace(/^@/, '')
+    if (website.trim()) socialLinks.website = website.trim()
+
     try {
       const response = await fetch('/api/profile', {
         method: 'PATCH',
@@ -69,6 +81,7 @@ export default function ProfileSettingsPage() {
           display_name: displayName.trim() || null,
           bio: bio.trim() || null,
           avatar_url: avatarUrl.trim() || null,
+          social_links: Object.keys(socialLinks).length > 0 ? socialLinks : null,
         }),
       })
 
@@ -219,6 +232,54 @@ export default function ProfileSettingsPage() {
             />
             <div className="text-[10px] font-mono text-surface-500 mt-1 text-right">
               {bio.length}/280
+            </div>
+          </div>
+
+          {/* Social links section */}
+          <div className="pt-4 border-t border-surface-300">
+            <div className="text-sm font-semibold text-surface-600 mb-4">
+              Social links
+            </div>
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-surface-200 border border-surface-300 flex items-center justify-center">
+                  <AtSign className="h-4 w-4 text-surface-500" />
+                </div>
+                <input
+                  type="text"
+                  value={twitter}
+                  onChange={(e) => setTwitter(e.target.value)}
+                  className="flex-1 rounded-lg border border-surface-300 bg-surface-200 px-4 py-2.5 text-sm text-surface-900 placeholder-surface-500 focus:border-for-500 focus:outline-none focus:ring-1 focus:ring-for-500 transition-colors"
+                  placeholder="@handle or username"
+                  maxLength={64}
+                />
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-surface-200 border border-surface-300 flex items-center justify-center">
+                  <Code2 className="h-4 w-4 text-surface-500" />
+                </div>
+                <input
+                  type="text"
+                  value={github}
+                  onChange={(e) => setGithub(e.target.value)}
+                  className="flex-1 rounded-lg border border-surface-300 bg-surface-200 px-4 py-2.5 text-sm text-surface-900 placeholder-surface-500 focus:border-for-500 focus:outline-none focus:ring-1 focus:ring-for-500 transition-colors"
+                  placeholder="@handle or username"
+                  maxLength={64}
+                />
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-surface-200 border border-surface-300 flex items-center justify-center">
+                  <Globe className="h-4 w-4 text-surface-500" />
+                </div>
+                <input
+                  type="url"
+                  value={website}
+                  onChange={(e) => setWebsite(e.target.value)}
+                  className="flex-1 rounded-lg border border-surface-300 bg-surface-200 px-4 py-2.5 text-sm text-surface-900 placeholder-surface-500 focus:border-for-500 focus:outline-none focus:ring-1 focus:ring-for-500 transition-colors"
+                  placeholder="https://yoursite.com"
+                  maxLength={256}
+                />
+              </div>
             </div>
           </div>
 

@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { UserPlus, UserCheck, Calendar, Settings, BarChart2 } from 'lucide-react'
+import { UserPlus, UserCheck, Calendar, Settings, BarChart2, AtSign, Code2, Globe } from 'lucide-react'
 import Link from 'next/link'
 import { Avatar } from '@/components/ui/Avatar'
 import { Button } from '@/components/ui/Button'
@@ -78,10 +78,53 @@ export function ProfileHeader({ profile, isOwner }: ProfileHeaderProps) {
               {profile.bio}
             </p>
           )}
-          <div className="flex items-center gap-2 text-xs font-mono text-surface-500">
+          <div className="flex items-center gap-2 text-xs font-mono text-surface-500 mb-2">
             <Calendar className="h-3.5 w-3.5" />
             Joined {formatJoinDate(profile.created_at)}
           </div>
+
+          {/* Social links */}
+          {profile.social_links && (
+            <div className="flex items-center gap-3">
+              {profile.social_links.twitter && (
+                <a
+                  href={`https://twitter.com/${profile.social_links.twitter}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-white transition-colors"
+                >
+                  <AtSign className="h-3.5 w-3.5" />
+                  <span>@{profile.social_links.twitter}</span>
+                </a>
+              )}
+              {profile.social_links.github && (
+                <a
+                  href={`https://github.com/${profile.social_links.github}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-white transition-colors"
+                >
+                  <Code2 className="h-3.5 w-3.5" />
+                  <span>{profile.social_links.github}</span>
+                </a>
+              )}
+              {profile.social_links.website && (
+                <a
+                  href={profile.social_links.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-white transition-colors"
+                >
+                  <Globe className="h-3.5 w-3.5" />
+                  <span>
+                    {profile.social_links.website
+                      .replace(/^https?:\/\/(www\.)?/, '')
+                      .replace(/\/$/, '')}
+                  </span>
+                </a>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Reputation meter */}

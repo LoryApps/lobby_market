@@ -44,6 +44,8 @@ export async function generateMetadata({ params }: TopicPageProps): Promise<Meta
 
   const title = `${topic.statement} · Lobby Market`
 
+  const ogImageUrl = `/api/og/topic/${params.id}`
+
   return {
     title,
     description,
@@ -54,11 +56,20 @@ export async function generateMetadata({ params }: TopicPageProps): Promise<Meta
       siteName: 'Lobby Market',
       publishedTime: topic.created_at,
       tags: topic.category ? [topic.category] : undefined,
+      images: [
+        {
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
+          alt: topic.statement,
+        },
+      ],
     },
     twitter: {
-      card: 'summary',
+      card: 'summary_large_image',
       title,
       description,
+      images: [ogImageUrl],
     },
   }
 }

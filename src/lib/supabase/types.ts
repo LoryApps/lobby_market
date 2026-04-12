@@ -8,6 +8,7 @@ export type Database = {
           display_name: string | null;
           avatar_url: string | null;
           bio: string | null;
+          social_links: { twitter?: string; github?: string; website?: string } | null;
           role: Database["public"]["Enums"]["user_role"];
           clout: number;
           reputation_score: number;
@@ -31,6 +32,7 @@ export type Database = {
           display_name?: string | null;
           avatar_url?: string | null;
           bio?: string | null;
+          social_links?: { twitter?: string; github?: string; website?: string } | null;
           role?: Database["public"]["Enums"]["user_role"];
           clout?: number;
           reputation_score?: number;
@@ -54,6 +56,7 @@ export type Database = {
           display_name?: string | null;
           avatar_url?: string | null;
           bio?: string | null;
+          social_links?: { twitter?: string; github?: string; website?: string } | null;
           role?: Database["public"]["Enums"]["user_role"];
           clout?: number;
           reputation_score?: number;
