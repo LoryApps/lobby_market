@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { BarChart2, LogOut, Search, Plus, Settings, User } from 'lucide-react'
+import { BarChart2, BookOpen, HelpCircle, LogOut, Search, Plus, Settings, User } from 'lucide-react'
 import { NotificationBell } from '@/components/profile/NotificationBell'
 import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils/cn'
@@ -149,6 +149,23 @@ export function TopBar() {
               >
                 <Settings className="h-3.5 w-3.5 flex-shrink-0" />
                 Settings
+              </Link>
+              <div className="border-t border-surface-300" />
+              <Link
+                href="/about"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <BookOpen className="h-3.5 w-3.5 flex-shrink-0" />
+                About
+              </Link>
+              <Link
+                href="/help"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <HelpCircle className="h-3.5 w-3.5 flex-shrink-0" />
+                Help & FAQ
               </Link>
               <div className="border-t border-surface-300" />
               <button

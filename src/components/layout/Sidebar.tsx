@@ -16,6 +16,8 @@ import {
   Shield,
   Coins,
   Building2,
+  BookOpen,
+  HelpCircle,
 } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { createClient } from '@/lib/supabase/client'
@@ -121,6 +123,29 @@ export function Sidebar() {
           })}
         </ul>
       </nav>
+
+      {/* Footer links */}
+      <div className="px-3 py-3 border-t border-surface-300 space-y-0.5">
+        {[
+          { href: '/about', label: 'About', icon: BookOpen },
+          { href: '/help', label: 'Help & FAQ', icon: HelpCircle },
+          { href: '/guidelines', label: 'Guidelines', icon: Shield },
+        ].map(({ href, label, icon: Icon }) => (
+          <Link
+            key={href}
+            href={href}
+            className={cn(
+              'flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs transition-colors',
+              pathname.startsWith(href)
+                ? 'text-surface-700 bg-surface-200'
+                : 'text-surface-400 hover:text-surface-600 hover:bg-surface-200'
+            )}
+          >
+            <Icon className="h-3.5 w-3.5 flex-shrink-0" />
+            <span>{label}</span>
+          </Link>
+        ))}
+      </div>
     </aside>
   )
 }

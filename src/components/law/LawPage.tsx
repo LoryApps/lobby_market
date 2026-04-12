@@ -27,6 +27,7 @@ import { cn } from '@/lib/utils/cn'
 import { LawDocument, parseBlocks } from './LawDocument'
 import { LawBacklinks } from './LawBacklinks'
 import { ReopenPetition } from './ReopenPetition'
+import { ProposeRevisionForm } from './ProposeRevisionForm'
 
 interface LawPageProps {
   law: Law
@@ -296,6 +297,14 @@ export function LawPage({
                   View Graph
                 </Link>
               </div>
+            </div>
+
+            {/* Propose revision */}
+            <div className="mt-6">
+              <ProposeRevisionForm
+                lawId={law.id}
+                currentRevisionNum={revisions[0]?.revision_num ?? 0}
+              />
             </div>
 
             {/* Reopen petition */}
