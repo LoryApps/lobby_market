@@ -1,12 +1,6 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
 import { Providers } from '@/components/Providers'
 import './globals.css'
-
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-inter',
-})
 
 export const metadata: Metadata = {
   title: 'Lobby Market',
@@ -21,7 +15,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.variable} font-sans bg-surface-50 text-surface-700 min-h-screen antialiased`}
+        className="font-sans bg-surface-50 text-surface-700 min-h-screen antialiased"
       >
         <Providers>{children}</Providers>
       </body>
