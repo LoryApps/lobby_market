@@ -15,6 +15,7 @@ import {
   Users,
   Shield,
   Coins,
+  Building2,
 } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { createClient } from '@/lib/supabase/client'
@@ -35,6 +36,7 @@ const navItems: NavItem[] = [
   { href: '/debate', label: 'Debates', icon: Mic },
   { href: '/lobby', label: 'Lobbies', icon: Megaphone },
   { href: '/coalitions', label: 'Coalitions', icon: Users },
+  { href: '/city', label: 'The City', icon: Building2 },
   { href: '/clout', label: 'Clout', icon: Coins },
   {
     href: '/moderation',
