@@ -27,7 +27,7 @@ HEADERS = {"X-API-Key": API_KEY, "Content-Type": "application/json"}
 SPRITES_DIR = Path("/home/loren/consensus-app/public/assets/sprites")
 SPRITES_DIR.mkdir(parents=True, exist_ok=True)
 
-MAX_CONCURRENT = 3
+MAX_CONCURRENT = 2
 
 
 # -------- workflows --------------------------------------------------------
@@ -88,11 +88,11 @@ def sprite_workflow(
             "class_type": "BiRefNetRMBG",
             "inputs": {
                 "image": ["6", 0],
-                "model": "BiRefNet-general",
+                "model": "BiRefNet_lite",
                 "mask_blur": 1,
                 "mask_offset": 0,
                 "invert_output": False,
-                "refine_foreground": True,
+                "refine_foreground": False,
                 "background": "Alpha",
             },
         }
@@ -121,7 +121,7 @@ def submit(workflow: dict) -> str:
     return r.json()["prompt_id"]
 
 
-def poll(pid: str, timeout: int = 300) -> dict:
+def poll(pid: str, timeout: int = 540) -> dict:
     t0 = time.time()
     while time.time() - t0 < timeout:
         r = requests.get(
@@ -172,14 +172,15 @@ def download_output(pid: str, dest: Path) -> bool:
 # -------- character style guide --------------------------------------------
 
 STYLE_BASE = (
-    "full body, facing camera, isometric game character, 3/4 view, "
-    "simple stylized low-poly game aesthetic, soft ambient lighting, "
-    "pure white background, clean outline, centered composition, "
-    "single character, no shadows on ground"
+    "full body portrait, facing camera, 3/4 view game character, "
+    "stylized low-poly sims-like aesthetic, soft rim lighting, "
+    "pure solid black void background, no floor, no ground, "
+    "clean outline, centered composition, single character"
 )
 
 NEGATIVE = (
     "multiple people, crowd, group, background scenery, environment, props, "
+    "white background, colored background, sky, floor, ground, shadows, "
     "cropped, blurry, low quality, ugly, deformed, extra limbs, bad anatomy, "
     "noisy, pixelated, jpeg artifacts, watermark, signature, text, nude"
 )
@@ -318,14 +319,14 @@ def generate(asset: dict) -> tuple[str, bool, str]:
         height=height,
         seed=(hash(name) & 0x7FFFFFFF) or 42,
         filename_prefix=f"lobby_sprite_{name}",
-        remove_bg=True,
+        remove_bg=False,
     )
     try:
         pid = submit(wf)
     except Exception as e:
         return name, False, f"submit failed: {e}"
 
-    result = poll(pid, timeout=300)
+    result = poll(pid, timeout=540)
     if result.get("status") != "success":
         err = result.get("error_message") or result.get("error") or result.get("status")
         return name, False, f"job failed: {str(err)[:200]}"
