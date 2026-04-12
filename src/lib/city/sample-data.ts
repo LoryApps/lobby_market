@@ -76,6 +76,8 @@ function makeProfile(
     daily_votes_reset_at: now,
     verification_tier: 1,
     is_influencer: isInfluencer,
+    onboarding_complete: true,
+    category_preferences: [],
     created_at: now,
     updated_at: now,
   }
