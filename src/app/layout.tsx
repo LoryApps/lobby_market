@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Providers } from '@/components/Providers'
 import './globals.css'
 
@@ -14,12 +14,46 @@ export const metadata: Metadata = {
     siteName: 'Lobby Market',
     title: 'Lobby Market',
     description: 'Write the law. Build the consensus.',
+    images: [{ url: '/assets/og-share.png', width: 1200, height: 630 }],
   },
   twitter: {
-    card: 'summary',
+    card: 'summary_large_image',
     title: 'Lobby Market',
     description: 'Write the law. Build the consensus.',
+    images: ['/assets/og-share.png'],
   },
+  // Apple PWA meta
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'Lobby',
+  },
+  // Manifest is auto-linked by Next.js when src/app/manifest.ts exists
+  applicationName: 'Lobby Market',
+  formatDetection: {
+    telephone: false,
+    date: false,
+    address: false,
+    email: false,
+    url: false,
+  },
+}
+
+// Separate viewport export — required in Next.js 14 App Router.
+// viewport-fit=cover lets content extend under the iPhone notch / home
+// indicator; combined with the safe-area-inset-* CSS env() calls already
+// used in BottomNav and TopBar this gives a full-bleed native feel.
+export const viewport: Viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: dark)', color: '#0a0a0f' },
+    { media: '(prefers-color-scheme: light)', color: '#0a0a0f' },
+  ],
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: 'cover',
+  colorScheme: 'dark',
 }
 
 export default function RootLayout({

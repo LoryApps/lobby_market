@@ -5,13 +5,12 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { BarChart2, BookOpen, HelpCircle, LogOut, Search, Plus, Settings, User } from 'lucide-react'
 import { NotificationBell } from '@/components/profile/NotificationBell'
+import { openCommandPalette } from '@/lib/hooks/useCommandPalette'
 import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils/cn'
 
 export function TopBar() {
   const router = useRouter()
-  const [query, setQuery] = useState('')
-  const inputRef = useRef<HTMLInputElement>(null)
   const [menuOpen, setMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
 
@@ -42,17 +41,6 @@ export function TopBar() {
     router.push('/login')
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    const q = query.trim()
-    if (q.length > 0) {
-      router.push(`/search?q=${encodeURIComponent(q)}`)
-    } else {
-      router.push('/search')
-    }
-    inputRef.current?.blur()
-  }
-
   return (
     <header className="sticky top-0 z-50 h-14 bg-surface-100 border-b border-surface-300 flex items-center px-4 gap-4">
       {/* Left: Logo */}
@@ -64,45 +52,43 @@ export function TopBar() {
         </div>
       </Link>
 
-      {/* Center: Search */}
+      {/* Center: Command palette trigger (desktop) */}
       <div className="flex-1 max-w-md mx-auto hidden sm:block">
-        <form onSubmit={handleSubmit} role="search" aria-label="Search Lobby Market" className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-surface-500 pointer-events-none" aria-hidden="true" />
-          <input
-            ref={inputRef}
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onFocus={() => {
-              if (query.trim().length === 0) router.prefetch('/search')
-            }}
-            placeholder="Search topics, laws, people..."
-            aria-label="Search"
-            className={cn(
-              'w-full h-9 pl-9 pr-4 rounded-lg',
-              'bg-surface-200 border border-surface-300',
-              'text-sm text-white placeholder:text-surface-500',
-              'focus:outline-none focus:border-for-500/50 focus:ring-1 focus:ring-for-500/20',
-              'transition-colors cursor-text'
-            )}
-          />
-        </form>
+        <button
+          type="button"
+          onClick={openCommandPalette}
+          aria-label="Open command palette (⌘K)"
+          className={cn(
+            'w-full h-9 pl-3 pr-3 rounded-lg flex items-center gap-2',
+            'bg-surface-200 border border-surface-300',
+            'text-sm text-surface-500',
+            'hover:border-surface-400 hover:text-surface-700 transition-colors',
+            'cursor-pointer'
+          )}
+        >
+          <Search className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
+          <span className="flex-1 text-left">Search topics, laws, people…</span>
+          <kbd className="flex-shrink-0 flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-surface-300 border border-surface-400 text-[10px] font-mono text-surface-500">
+            ⌘K
+          </kbd>
+        </button>
       </div>
 
       {/* Right: Actions */}
       <div className="flex items-center gap-3 flex-shrink-0">
-        {/* Mobile: search icon */}
-        <Link
-          href="/search"
+        {/* Mobile: search / command palette icon */}
+        <button
+          type="button"
+          onClick={openCommandPalette}
+          aria-label="Open command palette"
           className={cn(
             'flex items-center justify-center h-8 w-8 rounded-lg sm:hidden',
             'bg-surface-200 text-surface-500',
             'hover:bg-surface-300 hover:text-white transition-colors'
           )}
-          aria-label="Search"
         >
           <Search className="h-4 w-4" />
-        </Link>
+        </button>
 
         <Link
           href="/topic/create"
