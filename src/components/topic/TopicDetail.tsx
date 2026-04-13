@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   ArrowLeft,
@@ -10,7 +10,9 @@ import {
   Megaphone,
   MessageSquare,
   Tag,
+  ThumbsUp,
 } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 import type { Topic, Profile, VoteSide } from '@/lib/supabase/types'
 import { createClient } from '@/lib/supabase/client'
 import { Badge } from '@/components/ui/Badge'
@@ -18,6 +20,7 @@ import { Avatar } from '@/components/ui/Avatar'
 import { VoteBar } from '@/components/voting/VoteBar'
 import { VoteButton } from '@/components/voting/VoteButton'
 import { VoteTimer } from '@/components/voting/VoteTimer'
+import { VoteSheet } from '@/components/voting/VoteSheet'
 import { SupportButton } from '@/components/voting/SupportButton'
 import { ChainBanner } from '@/components/chain/ChainBanner'
 import { ContinuationSection } from '@/components/chain/ContinuationSection'
@@ -29,7 +32,6 @@ import { SharePanel } from '@/components/ui/SharePanel'
 import { cn } from '@/lib/utils/cn'
 import { useVoteStore } from '@/lib/stores/vote-store'
 import { useFeedStore } from '@/lib/stores/feed-store'
-import { useState } from 'react'
 
 interface TopicDetailProps {
   initialTopic: Topic
@@ -63,6 +65,7 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
   const [topic, setTopic] = useState<Topic>(initialTopic)
   const [hasSupported, setHasSupported] = useState(false)
   const [activeTab, setActiveTab] = useState<TopicTab>('details')
+  const [voteSheetOpen, setVoteSheetOpen] = useState(false)
   const { castVote, hasVoted, getVoteSide } = useVoteStore()
   const updateTopic = useFeedStore((s) => s.updateTopic)
   const votedSide = getVoteSide(topic.id)
@@ -342,9 +345,64 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
                 </div>
               </div>
             </div>
+
+            {/* Extra bottom padding on mobile so the sticky CTA doesn't overlap content */}
+            {isVotable && !hasVoted(topic.id) && (
+              <div className="md:hidden h-24" aria-hidden="true" />
+            )}
           </>
         )}
       </div>
+
+      {/* ── Mobile sticky "Cast your vote" CTA ────────────────────────────── */}
+      {/* Visible only on mobile, only when the topic is votable and unvoted. */}
+      <AnimatePresence>
+        {isVotable && !hasVoted(topic.id) && (
+          <motion.div
+            initial={{ y: 80, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 80, opacity: 0 }}
+            transition={{ type: 'spring', stiffness: 320, damping: 30 }}
+            className={cn(
+              'fixed bottom-6 left-0 right-0 z-40',
+              'flex justify-center px-6',
+              'md:hidden', // Desktop has inline vote buttons; sheet is mobile-only
+            )}
+          >
+            <button
+              type="button"
+              onClick={() => setVoteSheetOpen(true)}
+              aria-label="Open voting panel"
+              className={cn(
+                'inline-flex items-center gap-2.5 px-6 py-3.5 rounded-2xl',
+                'bg-for-600 hover:bg-for-500 active:scale-95',
+                'text-white font-mono font-semibold text-sm tracking-wide',
+                'shadow-lg shadow-for-900/40',
+                'transition-all duration-150',
+                'border border-for-500/60',
+                'w-full max-w-xs justify-center',
+              )}
+            >
+              <ThumbsUp className="h-4 w-4" aria-hidden="true" />
+              Cast Your Vote
+              {/* Live percentage teaser */}
+              <span className="ml-auto font-mono text-xs text-for-200 tabular-nums">
+                {Math.round(topic.blue_pct)}% FOR
+              </span>
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── Vote Sheet ────────────────────────────────────────────────────── */}
+      <VoteSheet
+        open={voteSheetOpen}
+        onClose={() => setVoteSheetOpen(false)}
+        topic={topic}
+        onVote={handleVote}
+        hasVoted={hasVoted(topic.id)}
+        votedSide={votedSide}
+      />
     </div>
   )
 }
