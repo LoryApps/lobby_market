@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useState, type ReactNode } from 'react'
-import { motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import {
   AtSign,
   BarChart2,
@@ -18,6 +18,7 @@ import Link from 'next/link'
 import { Avatar } from '@/components/ui/Avatar'
 import { Button } from '@/components/ui/Button'
 import { RoleBadge, getRoleRingClass } from './RoleBadge'
+import { FollowersModal, type FollowTab } from './FollowersModal'
 
 // ── Inline bio markdown renderer ──────────────────────────────────────────────
 // Supports: **bold**, *italic*, `code`, [text](url)
@@ -147,10 +148,29 @@ function formatCount(n: number): string {
 function FollowStat({
   label,
   value,
+  onClick,
 }: {
   label: string
   value: number
+  onClick?: () => void
 }) {
+  if (onClick) {
+    return (
+      <button
+        type="button"
+        onClick={onClick}
+        className="flex flex-col items-center gap-0.5 min-w-[52px] group focus:outline-none"
+      >
+        <span className="text-base font-mono font-bold text-white tabular-nums group-hover:text-for-400 transition-colors">
+          {formatCount(value)}
+        </span>
+        <span className="text-[10px] font-mono text-surface-500 uppercase tracking-wider group-hover:text-surface-400 transition-colors">
+          {label}
+        </span>
+      </button>
+    )
+  }
+
   return (
     <div className="flex flex-col items-center gap-0.5 min-w-[52px]">
       <span className="text-base font-mono font-bold text-white tabular-nums">
@@ -175,6 +195,7 @@ export function ProfileHeader({
   const [followersCount, setFollowersCount] = useState(
     profile.followers_count ?? 0
   )
+  const [modalTab, setModalTab] = useState<FollowTab | null>(null)
 
   const ring = getRoleRingClass(profile.role)
   const displayName = profile.display_name || profile.username
@@ -248,6 +269,7 @@ export function ProfileHeader({
   }
 
   return (
+    <>
     <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-surface-100 to-surface-200 border border-surface-300 p-6 md:p-8">
       {/* Background blurs */}
       <div className="pointer-events-none absolute inset-0 opacity-20">
@@ -294,13 +316,18 @@ export function ProfileHeader({
 
           {profile.bio && <BioText text={profile.bio} />}
 
-          {/* Follow stats row */}
+          {/* Follow stats row — counts are clickable to open the modal */}
           <div className="flex items-center gap-4 mb-3">
-            <FollowStat label="followers" value={followersCount} />
+            <FollowStat
+              label="followers"
+              value={followersCount}
+              onClick={() => setModalTab('followers')}
+            />
             <div className="h-6 w-px bg-surface-400" aria-hidden />
             <FollowStat
               label="following"
               value={profile.following_count ?? 0}
+              onClick={() => setModalTab('following')}
             />
           </div>
 
@@ -399,5 +426,21 @@ export function ProfileHeader({
         )}
       </div>
     </div>
+
+    {/* Followers / Following modal */}
+    <AnimatePresence>
+      {modalTab !== null && (
+        <FollowersModal
+          username={profile.username}
+          tab={modalTab}
+          followersCount={followersCount}
+          followingCount={profile.following_count ?? 0}
+          viewerId={viewerId}
+          onClose={() => setModalTab(null)}
+          onTabChange={(t) => setModalTab(t)}
+        />
+      )}
+    </AnimatePresence>
+    </>
   )
 }
