@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useCallback, useState } from 'react'
 import Link from 'next/link'
-import { Users, Search, Keyboard, X, RefreshCw, ChevronUp } from 'lucide-react'
+import { Users, Search, Keyboard, X, RefreshCw, ChevronUp, Sparkles } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useFeedStore } from '@/lib/stores/feed-store'
 import { useVoteStore } from '@/lib/stores/vote-store'
@@ -95,6 +95,70 @@ function FollowingEmptyState({ followingCount }: { followingCount: number }) {
           <Search className="h-4 w-4" />
           Find more people
         </Link>
+      </div>
+    </div>
+  )
+}
+
+// ─── For You empty states ─────────────────────────────────────────────────────
+
+function ForYouEmptyState({ hasPreferences }: { hasPreferences: boolean }) {
+  if (!hasPreferences) {
+    // User hasn't completed the calibration quiz
+    return (
+      <div className="feed-card flex items-center justify-center">
+        <div className="text-center px-8 max-w-xs">
+          <div className="flex items-center justify-center h-14 w-14 rounded-2xl bg-gold/10 border border-gold/30 mx-auto mb-5">
+            <Sparkles className="h-7 w-7 text-gold" />
+          </div>
+          <h2 className="text-xl font-bold text-white font-mono mb-2">
+            Calibrate your feed
+          </h2>
+          <p className="text-sm text-surface-500 leading-relaxed mb-6">
+            Take the 5-question calibration quiz to unlock a feed tuned to your
+            political and intellectual interests.
+          </p>
+          <Link
+            href="/onboarding"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gold/80 hover:bg-gold text-surface-50 text-sm font-mono font-medium transition-colors"
+          >
+            <Sparkles className="h-4 w-4" />
+            Start calibration
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
+  // User has preferences but no topics matched (rare — categories might not have topics yet)
+  return (
+    <div className="feed-card flex items-center justify-center">
+      <div className="text-center px-8 max-w-xs">
+        <div className="flex items-center justify-center h-14 w-14 rounded-2xl bg-surface-200 border border-surface-300 mx-auto mb-5">
+          <Sparkles className="h-7 w-7 text-surface-500" />
+        </div>
+        <h2 className="text-xl font-bold text-white font-mono mb-2">
+          All caught up
+        </h2>
+        <p className="text-sm text-surface-500 leading-relaxed mb-6">
+          No new topics in your preferred categories right now. Explore the full
+          feed or broaden your calibration.
+        </p>
+        <div className="flex flex-col gap-2">
+          <Link
+            href="/"
+            onClick={() => {}}
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-for-600 hover:bg-for-500 text-white text-sm font-mono font-medium transition-colors"
+          >
+            Explore all topics
+          </Link>
+          <Link
+            href="/onboarding"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-surface-200 border border-surface-300 hover:bg-surface-300 text-white text-sm font-mono font-medium transition-colors"
+          >
+            Recalibrate
+          </Link>
+        </div>
       </div>
     </div>
   )
@@ -282,7 +346,7 @@ function EndOfFeed({
 // ─── Main feed container ──────────────────────────────────────────────────────
 
 export function FeedContainer() {
-  const { topics, isLoading, hasMore, feedMode, followingCount, fetchNextPage, updateTopic, prependTopic } = useFeedStore()
+  const { topics, isLoading, hasMore, feedMode, followingCount, hasPreferences, fetchNextPage, updateTopic, prependTopic } = useFeedStore()
   const { castVote } = useVoteStore()
   const [showHelp, setShowHelp] = useState(false)
   const [pendingNew, setPendingNew] = useState<Topic[]>([])
@@ -305,8 +369,12 @@ export function FeedContainer() {
       // onInsert — queue new topics; don't auto-scroll the user away
       (newTopic) => {
         if (!mounted) return
-        const { statusFilter, categoryFilter, scopeFilter, feedMode: mode } = useFeedStore.getState()
+        const { statusFilter, categoryFilter, scopeFilter, feedMode: mode, preferredCategories } = useFeedStore.getState()
         if (mode === 'following') return
+        // For You mode: only queue topics that match the user's preferred categories
+        if (mode === 'foryou') {
+          if (!newTopic.category || !preferredCategories.includes(newTopic.category)) return
+        }
         if (!['proposed', 'active', 'voting', 'law'].includes(newTopic.status)) return
         if (statusFilter && newTopic.status !== statusFilter) return
         if (categoryFilter && newTopic.category !== categoryFilter) return
@@ -553,6 +621,11 @@ export function FeedContainer() {
         {/* Empty state: following feed */}
         {!isLoading && topics.length === 0 && feedMode === 'following' && (
           <FollowingEmptyState followingCount={followingCount} />
+        )}
+
+        {/* Empty state: for you feed */}
+        {!isLoading && topics.length === 0 && feedMode === 'foryou' && (
+          <ForYouEmptyState hasPreferences={hasPreferences} />
         )}
 
         {/* Sentinel for infinite scroll */}

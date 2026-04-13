@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { TrendingUp, Clock, Flame, Scale, FileText, Zap, Gavel, Tag, LayoutGrid, Globe, Users, MapPin } from 'lucide-react'
+import { TrendingUp, Clock, Flame, Scale, FileText, Zap, Gavel, Tag, LayoutGrid, Globe, Users, MapPin, Sparkles } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { useFeedStore } from '@/lib/stores/feed-store'
 import type { FeedSort, FeedStatus, FeedMode, FeedScope } from '@/lib/stores/feed-store'
@@ -78,6 +78,7 @@ const SCOPE_OPTIONS: {
 const FEED_MODES: { id: FeedMode; label: string; icon: typeof Globe }[] = [
   { id: 'discover', label: 'Discover', icon: Globe },
   { id: 'following', label: 'Following', icon: Users },
+  { id: 'foryou', label: 'For You', icon: Sparkles },
 ]
 
 export function FeedFilters() {
@@ -87,6 +88,7 @@ export function FeedFilters() {
     categoryFilter,
     scopeFilter,
     feedMode,
+    preferredCategories,
     setSort,
     setStatusFilter,
     setCategoryFilter,
@@ -109,6 +111,8 @@ export function FeedFilters() {
                 feedMode === id
                   ? id === 'following'
                     ? 'bg-purple/90 text-white shadow-sm'
+                    : id === 'foryou'
+                    ? 'bg-gold/20 text-gold border border-gold/40 shadow-sm'
                     : 'bg-for-600 text-white shadow-sm'
                   : 'text-surface-500 hover:text-surface-300'
               )}
@@ -279,6 +283,72 @@ export function FeedFilters() {
               </button>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* For You mode: sort strip + preferred category pills */}
+      {feedMode === 'foryou' && (
+        <div className="flex flex-col gap-1 pb-1">
+          {/* Sort controls */}
+          <div
+            className={cn(
+              'flex items-center gap-2 px-3 py-1.5',
+              'overflow-x-auto',
+              '[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
+            )}
+          >
+            <div className="flex items-center gap-0.5 flex-shrink-0 bg-surface-200/80 border border-surface-300 rounded-lg p-0.5 backdrop-blur-sm">
+              {SORT_OPTIONS.map(({ id, label, icon: Icon }) => (
+                <button
+                  key={id}
+                  onClick={() => setSort(id)}
+                  aria-pressed={sort === id}
+                  className={cn(
+                    'flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-mono font-medium transition-all duration-150',
+                    sort === id
+                      ? 'bg-gold/20 text-gold shadow-sm border border-gold/30'
+                      : 'text-surface-500 hover:text-surface-700'
+                  )}
+                >
+                  <Icon className="h-3 w-3 flex-shrink-0" />
+                  <span>{label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Preferred category pills — read-only, shows calibration */}
+          {preferredCategories.length > 0 && (
+            <div
+              className={cn(
+                'flex items-center gap-1.5 px-3 pb-1',
+                'overflow-x-auto',
+                '[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
+              )}
+              aria-label="Your preferred categories"
+            >
+              <Sparkles className="h-3 w-3 text-gold/70 flex-shrink-0" aria-hidden />
+              {preferredCategories.map((cat) => (
+                <span
+                  key={cat}
+                  className="flex-shrink-0 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-gold/10 text-gold border border-gold/20"
+                >
+                  {cat}
+                </span>
+              ))}
+              <Link
+                href="/onboarding"
+                className={cn(
+                  'flex-shrink-0 flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium',
+                  'border border-surface-500/40 text-surface-500',
+                  'hover:text-surface-300 hover:border-surface-400 transition-all duration-150 ml-1'
+                )}
+                aria-label="Recalibrate your feed preferences"
+              >
+                Recalibrate
+              </Link>
+            </div>
+          )}
         </div>
       )}
     </div>

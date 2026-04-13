@@ -5,7 +5,7 @@ export type FeedSort = "top" | "new" | "hot";
 export type FeedStatus = "proposed" | "active" | "voting" | "law" | null;
 export type FeedCategory = string | null;
 export type FeedScope = "Global" | "National" | "Regional" | "Local" | null;
-export type FeedMode = "discover" | "following";
+export type FeedMode = "discover" | "following" | "foryou";
 
 interface FeedState {
   topics: Topic[];
@@ -19,6 +19,10 @@ interface FeedState {
   feedMode: FeedMode;
   /** How many users the current user follows (set from the API response) */
   followingCount: number;
+  /** Categories from onboarding quiz (set when foryou mode is active) */
+  preferredCategories: string[];
+  /** Whether the user has completed the onboarding calibration quiz */
+  hasPreferences: boolean;
   _generation: number;
 
   fetchNextPage: () => Promise<void>;
@@ -42,6 +46,8 @@ export const useFeedStore = create<FeedState>((set, get) => ({
   scopeFilter: null,
   feedMode: "discover",
   followingCount: 0,
+  preferredCategories: [],
+  hasPreferences: true,
   _generation: 0,
 
   fetchNextPage: async () => {
@@ -93,6 +99,52 @@ export const useFeedStore = create<FeedState>((set, get) => ({
         set({ followingCount: json.followingCount });
 
         if (json.topics.length === 0) {
+          set({ hasMore: false });
+          return;
+        }
+
+        set((state) => ({
+          topics: [...state.topics, ...json.topics],
+          offset: state.offset + json.topics.length,
+          hasMore: json.topics.length === 20,
+        }));
+      } else if (feedMode === "foryou") {
+        // Personalized feed — topics filtered to the user's preferred categories
+        const params = new URLSearchParams({
+          limit: "20",
+          offset: String(offset),
+          sort,
+        });
+
+        const res = await fetch(`/api/feed/foryou?${params.toString()}`);
+
+        if (get()._generation !== capturedGen) return;
+
+        if (res.status === 401) {
+          // Not logged in — fall back gracefully
+          set({ hasMore: false, hasPreferences: false });
+          return;
+        }
+
+        if (!res.ok) {
+          console.error("Failed to fetch for-you feed:", res.statusText);
+          return;
+        }
+
+        const json: {
+          topics: Topic[];
+          preferredCategories: string[];
+          hasPreferences: boolean;
+        } = await res.json();
+
+        if (get()._generation !== capturedGen) return;
+
+        set({
+          preferredCategories: json.preferredCategories,
+          hasPreferences: json.hasPreferences,
+        });
+
+        if (!json.hasPreferences || json.topics.length === 0) {
           set({ hasMore: false });
           return;
         }
@@ -198,7 +250,7 @@ export const useFeedStore = create<FeedState>((set, get) => ({
 
   setFeedMode: (feedMode) => {
     const gen = get()._generation + 1;
-    // Reset sort to "new" for following (most relevant) and back to "top" for discover
+    // Reset sort to "new" for following, "top" for everything else
     const sort = feedMode === "following" ? "new" : "top";
     set({
       feedMode,
