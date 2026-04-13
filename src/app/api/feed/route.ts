@@ -8,6 +8,12 @@ export async function GET(request: NextRequest) {
   const sort = searchParams.get('sort') || 'top'
   const status = searchParams.get('status') || null
   const category = searchParams.get('category') || null
+  const scope = searchParams.get('scope') || null
+
+  const VALID_SCOPES = ['Global', 'National', 'Regional', 'Local'] as const
+  const validatedScope = VALID_SCOPES.includes(scope as typeof VALID_SCOPES[number])
+    ? (scope as typeof VALID_SCOPES[number])
+    : null
 
   const supabase = await createClient()
 
@@ -26,6 +32,11 @@ export async function GET(request: NextRequest) {
   // Category filter
   if (category) {
     query = query.eq('category', category)
+  }
+
+  // Scope filter
+  if (validatedScope) {
+    query = query.eq('scope', validatedScope)
   }
 
   // Sort order

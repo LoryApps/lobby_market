@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Share2, Eye, ThumbsUp, ThumbsDown } from 'lucide-react'
+import { Share2, Eye, ThumbsUp, ThumbsDown, MapPin } from 'lucide-react'
 import { motion, useMotionValue, useTransform, animate } from 'framer-motion'
 import { cn } from '@/lib/utils/cn'
 import type { Topic, VoteSide } from '@/lib/supabase/types'
@@ -228,13 +228,26 @@ export function TopicCard({ topic, authorName, authorAvatar }: TopicCardProps) {
               'bg-surface-100 overflow-hidden',
             )}
           >
-            {/* Top row: category + status */}
+            {/* Top row: category + scope (left) / status (right) */}
             <div className="flex items-center justify-between mb-6">
-              {topic.category && (
-                <Badge variant="proposed" className="text-surface-500">
-                  {topic.category}
-                </Badge>
-              )}
+              <div className="flex items-center gap-1.5 flex-wrap">
+                {topic.category && (
+                  <Badge variant="proposed" className="text-surface-500">
+                    {topic.category}
+                  </Badge>
+                )}
+                {topic.scope && topic.scope !== 'Global' && (
+                  <span className={cn(
+                    'inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium border',
+                    topic.scope === 'National' && 'bg-emerald/10 text-emerald border-emerald/30',
+                    topic.scope === 'Regional' && 'bg-gold/10 text-gold border-gold/30',
+                    topic.scope === 'Local' && 'bg-against-500/10 text-against-300 border-against-500/30',
+                  )}>
+                    <MapPin className="h-2.5 w-2.5" aria-hidden="true" />
+                    {topic.scope}
+                  </span>
+                )}
+              </div>
               <Badge variant={statusBadgeVariant[topic.status] ?? 'proposed'}>
                 {statusLabel[topic.status] ?? topic.status}
               </Badge>

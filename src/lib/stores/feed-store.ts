@@ -4,6 +4,7 @@ import type { Topic } from "@/lib/supabase/types";
 export type FeedSort = "top" | "new" | "hot";
 export type FeedStatus = "proposed" | "active" | "voting" | "law" | null;
 export type FeedCategory = string | null;
+export type FeedScope = "Global" | "National" | "Regional" | "Local" | null;
 export type FeedMode = "discover" | "following";
 
 interface FeedState {
@@ -14,6 +15,7 @@ interface FeedState {
   sort: FeedSort;
   statusFilter: FeedStatus;
   categoryFilter: FeedCategory;
+  scopeFilter: FeedScope;
   feedMode: FeedMode;
   /** How many users the current user follows (set from the API response) */
   followingCount: number;
@@ -23,6 +25,7 @@ interface FeedState {
   setSort: (sort: FeedSort) => void;
   setStatusFilter: (status: FeedStatus) => void;
   setCategoryFilter: (category: FeedCategory) => void;
+  setScopeFilter: (scope: FeedScope) => void;
   setFeedMode: (mode: FeedMode) => void;
   prependTopic: (topic: Topic) => void;
   updateTopic: (id: string, updates: Partial<Topic>) => void;
@@ -36,6 +39,7 @@ export const useFeedStore = create<FeedState>((set, get) => ({
   sort: "top",
   statusFilter: null,
   categoryFilter: null,
+  scopeFilter: null,
   feedMode: "discover",
   followingCount: 0,
   _generation: 0,
@@ -48,6 +52,7 @@ export const useFeedStore = create<FeedState>((set, get) => ({
       sort,
       statusFilter,
       categoryFilter,
+      scopeFilter,
       feedMode,
       _generation,
     } = get();
@@ -106,6 +111,7 @@ export const useFeedStore = create<FeedState>((set, get) => ({
         });
         if (statusFilter) params.set("status", statusFilter);
         if (categoryFilter) params.set("category", categoryFilter);
+        if (scopeFilter) params.set("scope", scopeFilter);
 
         const res = await fetch(`/api/feed?${params.toString()}`);
 
@@ -177,6 +183,19 @@ export const useFeedStore = create<FeedState>((set, get) => ({
     get().fetchNextPage();
   },
 
+  setScopeFilter: (scopeFilter) => {
+    const gen = get()._generation + 1;
+    set({
+      scopeFilter,
+      topics: [],
+      offset: 0,
+      hasMore: true,
+      isLoading: false,
+      _generation: gen,
+    });
+    get().fetchNextPage();
+  },
+
   setFeedMode: (feedMode) => {
     const gen = get()._generation + 1;
     // Reset sort to "new" for following (most relevant) and back to "top" for discover
@@ -184,6 +203,7 @@ export const useFeedStore = create<FeedState>((set, get) => ({
     set({
       feedMode,
       sort,
+      scopeFilter: null,
       topics: [],
       offset: 0,
       hasMore: true,

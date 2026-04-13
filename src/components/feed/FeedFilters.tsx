@@ -1,10 +1,10 @@
 'use client'
 
 import Link from 'next/link'
-import { TrendingUp, Clock, Flame, Scale, FileText, Zap, Gavel, Tag, LayoutGrid, Globe, Users } from 'lucide-react'
+import { TrendingUp, Clock, Flame, Scale, FileText, Zap, Gavel, Tag, LayoutGrid, Globe, Users, MapPin } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { useFeedStore } from '@/lib/stores/feed-store'
-import type { FeedSort, FeedStatus, FeedMode } from '@/lib/stores/feed-store'
+import type { FeedSort, FeedStatus, FeedMode, FeedScope } from '@/lib/stores/feed-store'
 
 const SORT_OPTIONS: { id: FeedSort; label: string; icon: typeof TrendingUp }[] = [
   { id: 'top', label: 'Top', icon: TrendingUp },
@@ -63,6 +63,18 @@ const CATEGORIES = [
   'Education',
 ]
 
+const SCOPE_OPTIONS: {
+  id: FeedScope
+  label: string
+  activeClass: string
+}[] = [
+  { id: null, label: 'All', activeClass: 'bg-surface-300 text-white border-surface-400' },
+  { id: 'Global', label: 'Global', activeClass: 'bg-for-600/80 text-white border-for-600' },
+  { id: 'National', label: 'National', activeClass: 'bg-emerald/20 text-emerald border-emerald/50' },
+  { id: 'Regional', label: 'Regional', activeClass: 'bg-gold/20 text-gold border-gold/50' },
+  { id: 'Local', label: 'Local', activeClass: 'bg-against-600/20 text-against-300 border-against-500/50' },
+]
+
 const FEED_MODES: { id: FeedMode; label: string; icon: typeof Globe }[] = [
   { id: 'discover', label: 'Discover', icon: Globe },
   { id: 'following', label: 'Following', icon: Users },
@@ -73,10 +85,12 @@ export function FeedFilters() {
     sort,
     statusFilter,
     categoryFilter,
+    scopeFilter,
     feedMode,
     setSort,
     setStatusFilter,
     setCategoryFilter,
+    setScopeFilter,
     setFeedMode,
   } = useFeedStore()
 
@@ -159,7 +173,7 @@ export function FeedFilters() {
       {/* Row 2: Category chips (hidden in Following mode) */}
       {feedMode === 'discover' && <div
         className={cn(
-          'flex items-center gap-1.5 px-3 pb-2',
+          'flex items-center gap-1.5 px-3',
           'overflow-x-auto',
           '[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
         )}
@@ -209,6 +223,33 @@ export function FeedFilters() {
           <LayoutGrid className="h-2.5 w-2.5" />
           Browse
         </Link>
+      </div>}
+
+      {/* Row 3: Scope chips (hidden in Following mode) */}
+      {feedMode === 'discover' && <div
+        className={cn(
+          'flex items-center gap-1.5 px-3 pb-2',
+          'overflow-x-auto',
+          '[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
+        )}
+      >
+        <MapPin className="h-3 w-3 text-surface-500 flex-shrink-0" />
+        {SCOPE_OPTIONS.map(({ id, label, activeClass }) => (
+          <button
+            key={String(id)}
+            onClick={() => setScopeFilter(id)}
+            aria-pressed={scopeFilter === id}
+            className={cn(
+              'flex-shrink-0 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium',
+              'border transition-all duration-150',
+              scopeFilter === id
+                ? activeClass
+                : 'bg-transparent text-surface-500 border-surface-500/40 hover:text-surface-400 hover:border-surface-400'
+            )}
+          >
+            {label}
+          </button>
+        ))}
       </div>}
 
       {/* Following mode: sort strip (only New/Hot/Top, no status or category) */}
