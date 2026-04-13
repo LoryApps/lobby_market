@@ -27,6 +27,7 @@ import { ContinuationSection } from '@/components/chain/ContinuationSection'
 import { ChainVisualization } from '@/components/chain/ChainVisualization'
 import { LobbyBoard } from '@/components/lobby/LobbyBoard'
 import { ArgumentThread } from '@/components/topic/ArgumentThread'
+import { RelatedTopics } from '@/components/topic/RelatedTopics'
 import { ReportButton } from '@/components/moderation/ReportButton'
 import { SharePanel } from '@/components/ui/SharePanel'
 import { BookmarkButton } from '@/components/ui/BookmarkButton'
@@ -347,6 +348,9 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
                 </div>
               </div>
             </div>
+
+            {/* Related topics — discovery section */}
+            <RelatedTopics topicId={topic.id} className="mt-8" />
 
             {/* Extra bottom padding on mobile so the sticky CTA doesn't overlap content */}
             {isVotable && !hasVoted(topic.id) && (

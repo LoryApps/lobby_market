@@ -7,12 +7,15 @@
  *  - Live search input  (highlights matching nodes, dims others)
  *  - Category filter pills (click to show/hide each category)
  *  - "Reset view" button to re-center the simulation
+ *  - URL state encoding — filters are reflected in ?q= and ?hide= params
+ *    so views can be bookmarked and shared.
+ *  - "Copy link" button to copy the current filtered view URL to clipboard.
  *
  * Props come from the server-rendered page that prefetches laws + links.
  */
 
-import { useCallback, useMemo, useRef, useState } from 'react'
-import { RotateCcw, Search, X } from 'lucide-react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Check, Copy, RotateCcw, Search, X } from 'lucide-react'
 import { LawGraph, CATEGORY_COLORS, colorForCategory } from '@/components/law/LawGraph'
 import type { Law, LawLink } from '@/lib/supabase/types'
 import { cn } from '@/lib/utils/cn'
@@ -25,16 +28,76 @@ interface LawGraphViewProps {
   graphClassName?: string
 }
 
+// ─── URL param helpers ────────────────────────────────────────────────────────
+
+function readParams(): { q: string; hide: Set<string> } {
+  if (typeof window === 'undefined') return { q: '', hide: new Set() }
+  const sp = new URLSearchParams(window.location.search)
+  const q = sp.get('q') ?? ''
+  const hideStr = sp.get('hide') ?? ''
+  const hide = new Set(
+    hideStr
+      .split(',')
+      .map((s) => s.trim().toLowerCase())
+      .filter(Boolean)
+  )
+  return { q, hide }
+}
+
+function writeParams(q: string, hidden: Set<string>) {
+  if (typeof window === 'undefined') return
+  const sp = new URLSearchParams(window.location.search)
+
+  if (q) {
+    sp.set('q', q)
+  } else {
+    sp.delete('q')
+  }
+
+  if (hidden.size > 0) {
+    sp.set('hide', Array.from(hidden).join(','))
+  } else {
+    sp.delete('hide')
+  }
+
+  const newSearch = sp.toString()
+  const newUrl =
+    window.location.pathname + (newSearch ? `?${newSearch}` : '')
+
+  // Use replaceState so filter changes don't add browser history entries
+  window.history.replaceState(null, '', newUrl)
+}
+
+// ─── Component ────────────────────────────────────────────────────────────────
+
 export function LawGraphView({
   laws,
   links,
   currentLawId,
   graphClassName,
 }: LawGraphViewProps) {
+  // Initialise from URL params (only on first render — window may not exist during SSR)
+  const [initialised, setInitialised] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [hiddenCategories, setHiddenCategories] = useState<Set<string>>(new Set())
   const [graphKey, setGraphKey] = useState(0)
+  const [copied, setCopied] = useState(false)
+  const copyTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+
+  // Read URL params on first client render
+  useEffect(() => {
+    const { q, hide } = readParams()
+    if (q) setSearchQuery(q)
+    if (hide.size > 0) setHiddenCategories(hide)
+    setInitialised(true)
+  }, [])
+
+  // Sync URL params whenever filters change (but only after initial read)
+  useEffect(() => {
+    if (!initialised) return
+    writeParams(searchQuery, hiddenCategories)
+  }, [searchQuery, hiddenCategories, initialised])
 
   // Derive sorted list of categories present in the data
   const categories = useMemo(() => {
@@ -68,6 +131,32 @@ export function LawGraphView({
     setGraphKey((k) => k + 1)
   }, [])
 
+  /** Copy the current filtered view URL to clipboard */
+  const copyShareLink = useCallback(async () => {
+    if (typeof window === 'undefined') return
+    const url = window.location.href
+    try {
+      await navigator.clipboard.writeText(url)
+      setCopied(true)
+      if (copyTimer.current) clearTimeout(copyTimer.current)
+      copyTimer.current = setTimeout(() => setCopied(false), 2000)
+    } catch {
+      // Fallback for non-secure contexts
+      const ta = document.createElement('textarea')
+      ta.value = url
+      ta.style.position = 'fixed'
+      ta.style.opacity = '0'
+      document.body.appendChild(ta)
+      ta.focus()
+      ta.select()
+      document.execCommand('copy')
+      document.body.removeChild(ta)
+      setCopied(true)
+      if (copyTimer.current) clearTimeout(copyTimer.current)
+      copyTimer.current = setTimeout(() => setCopied(false), 2000)
+    }
+  }, [])
+
   const matchCount = useMemo(() => {
     const q = searchQuery.trim().toLowerCase()
     if (!q) return null
@@ -79,11 +168,13 @@ export function LawGraphView({
     return laws.filter((l) => !hiddenCategories.has((l.category ?? '').toLowerCase())).length
   }, [laws, hiddenCategories])
 
+  const hasActiveFilters = searchQuery.trim().length > 0 || hiddenCategories.size > 0
+
   return (
     <div className="flex flex-col gap-3 h-full">
       {/* ── Controls bar ─────────────────────────────────────────────────── */}
       <div className="flex flex-col gap-2">
-        {/* Row 1: search + reset */}
+        {/* Row 1: search + actions */}
         <div className="flex items-center gap-2">
           {/* Search */}
           <div className="relative flex-1 max-w-sm">
@@ -127,19 +218,45 @@ export function LawGraphView({
             </span>
           )}
 
-          {/* Reset view */}
-          <button
-            onClick={resetView}
-            title="Reset pan/zoom and restart simulation"
-            className={cn(
-              'ml-auto flex items-center gap-1.5 px-3 h-9 rounded-lg text-xs font-mono',
-              'bg-surface-200 border border-surface-300 text-surface-500',
-              'hover:bg-surface-300 hover:text-white transition-colors shrink-0',
-            )}
-          >
-            <RotateCcw className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">Reset</span>
-          </button>
+          <div className="ml-auto flex items-center gap-2 shrink-0">
+            {/* Share current view */}
+            <button
+              onClick={copyShareLink}
+              title={copied ? 'Link copied!' : 'Copy link to this view'}
+              aria-label={copied ? 'Link copied' : 'Copy link to current graph view'}
+              className={cn(
+                'flex items-center gap-1.5 px-3 h-9 rounded-lg text-xs font-mono',
+                'border transition-colors',
+                copied
+                  ? 'bg-emerald/10 border-emerald/40 text-emerald'
+                  : 'bg-surface-200 border-surface-300 text-surface-500 hover:bg-surface-300 hover:text-white',
+              )}
+            >
+              {copied ? (
+                <Check className="h-3.5 w-3.5" aria-hidden="true" />
+              ) : (
+                <Copy className="h-3.5 w-3.5" aria-hidden="true" />
+              )}
+              <span className="hidden sm:inline">
+                {copied ? 'Copied!' : hasActiveFilters ? 'Share view' : 'Share'}
+              </span>
+            </button>
+
+            {/* Reset view */}
+            <button
+              onClick={resetView}
+              title="Reset pan/zoom and restart simulation"
+              aria-label="Reset graph pan and zoom"
+              className={cn(
+                'flex items-center gap-1.5 px-3 h-9 rounded-lg text-xs font-mono',
+                'bg-surface-200 border border-surface-300 text-surface-500',
+                'hover:bg-surface-300 hover:text-white transition-colors',
+              )}
+            >
+              <RotateCcw className="h-3.5 w-3.5" aria-hidden="true" />
+              <span className="hidden sm:inline">Reset</span>
+            </button>
+          </div>
         </div>
 
         {/* Row 2: category filter pills */}
@@ -163,7 +280,7 @@ export function LawGraphView({
               {hiddenCategories.size > 0 ? 'Show all' : 'Hide all'}
             </button>
 
-            <div className="h-4 w-px bg-surface-400 shrink-0" aria-hidden />
+            <div className="h-4 w-px bg-surface-400 shrink-0" aria-hidden="true" />
 
             {categories.map((cat) => {
               const key = cat.toLowerCase()
@@ -175,6 +292,8 @@ export function LawGraphView({
                 <button
                   key={cat}
                   onClick={() => toggleCategory(cat)}
+                  aria-pressed={!isHidden}
+                  aria-label={`${isHidden ? 'Show' : 'Hide'} ${cat} laws`}
                   className={cn(
                     'shrink-0 flex items-center gap-1.5 px-2.5 h-7 rounded-full text-[11px] font-mono border transition-colors',
                     isHidden
@@ -190,18 +309,42 @@ export function LawGraphView({
                           color,
                         }
                   }
-                  aria-pressed={!isHidden}
                 >
                   <span
                     className="h-2 w-2 rounded-full shrink-0"
                     style={{ backgroundColor: isHidden ? '#71717a' : hexInCss }}
+                    aria-hidden="true"
                   />
                   {cat}
-                  {isHidden && <span className="opacity-40 ml-0.5 text-[9px]">✕</span>}
+                  {isHidden && <span className="opacity-40 ml-0.5 text-[9px]" aria-hidden="true">✕</span>}
                 </button>
               )
             })}
           </div>
+        )}
+
+        {/* Active filter summary — shown when URL has encoded state */}
+        {hasActiveFilters && (
+          <p className="text-[10px] font-mono text-surface-500 px-0.5" role="status" aria-live="polite">
+            {[
+              searchQuery.trim() ? `Searching "${searchQuery.trim()}"` : null,
+              hiddenCategories.size > 0
+                ? `${hiddenCategories.size} categor${hiddenCategories.size === 1 ? 'y' : 'ies'} hidden`
+                : null,
+            ]
+              .filter(Boolean)
+              .join(' · ')}
+            {' · '}
+            <button
+              onClick={() => {
+                setSearchQuery('')
+                setHiddenCategories(new Set())
+              }}
+              className="text-for-400 hover:text-for-300 underline underline-offset-2 transition-colors"
+            >
+              Clear all filters
+            </button>
+          </p>
         )}
       </div>
 
@@ -218,7 +361,7 @@ export function LawGraphView({
 
       {/* ── Category legend ───────────────────────────────────────────────── */}
       {categories.length > 0 && (
-        <div className="flex items-center gap-3 flex-wrap px-1">
+        <div className="flex items-center gap-3 flex-wrap px-1" aria-label="Category legend">
           {categories.map((cat) => {
             const color = colorForCategory(cat)
             const isHidden = hiddenCategories.has(cat.toLowerCase())
@@ -226,6 +369,8 @@ export function LawGraphView({
               <button
                 key={cat}
                 onClick={() => toggleCategory(cat)}
+                aria-pressed={!isHidden}
+                aria-label={`${isHidden ? 'Show' : 'Hide'} ${cat}`}
                 className={cn(
                   'flex items-center gap-1.5 text-[11px] font-mono transition-opacity',
                   isHidden ? 'opacity-30' : 'opacity-80 hover:opacity-100',
@@ -234,6 +379,7 @@ export function LawGraphView({
                 <span
                   className="inline-block h-2.5 w-2.5 rounded-full"
                   style={{ backgroundColor: color }}
+                  aria-hidden="true"
                 />
                 <span style={{ color }}>{cat}</span>
               </button>
