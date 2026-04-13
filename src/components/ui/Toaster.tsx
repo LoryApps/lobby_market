@@ -225,7 +225,18 @@ function ToastItem({
       )}
     >
       <div className="p-4 pr-10 flex items-start gap-3">
-        <Icon className={cn('h-4 w-4 flex-shrink-0 mt-0.5', iconClass)} />
+        {/* Show emoji icon if provided, otherwise fall back to Lucide icon */}
+        {toast.icon ? (
+          <span
+            className="text-xl leading-none flex-shrink-0 mt-0.5"
+            role="img"
+            aria-hidden="true"
+          >
+            {toast.icon}
+          </span>
+        ) : (
+          <Icon className={cn('h-4 w-4 flex-shrink-0 mt-0.5', iconClass)} />
+        )}
         <div>
           <p className="text-sm font-medium text-white">{toast.title}</p>
           {toast.body && (

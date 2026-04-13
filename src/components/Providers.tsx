@@ -2,7 +2,7 @@
 
 import { ReactNode } from 'react'
 import { ToastProvider } from '@/components/ui/Toaster'
-import { AchievementWatcher } from '@/components/ui/AchievementWatcher'
+import { NotificationWatcher } from '@/components/ui/NotificationWatcher'
 
 interface ProvidersProps {
   children: ReactNode
@@ -12,7 +12,7 @@ export function Providers({ children }: ProvidersProps) {
   return (
     <ToastProvider>
       {children}
-      <AchievementWatcher />
+      <NotificationWatcher />
     </ToastProvider>
   )
 }
