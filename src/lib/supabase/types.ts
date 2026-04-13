@@ -1093,6 +1093,54 @@ export type Database = {
         };
         Relationships: [];
       };
+      topic_arguments: {
+        Row: {
+          id: string;
+          topic_id: string;
+          user_id: string;
+          side: "blue" | "red";
+          content: string;
+          upvotes: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          topic_id: string;
+          user_id: string;
+          side: "blue" | "red";
+          content: string;
+          upvotes?: number;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          topic_id?: string;
+          user_id?: string;
+          side?: "blue" | "red";
+          content?: string;
+          upvotes?: number;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      topic_argument_votes: {
+        Row: {
+          argument_id: string;
+          user_id: string;
+          created_at: string;
+        };
+        Insert: {
+          argument_id: string;
+          user_id: string;
+          created_at?: string;
+        };
+        Update: {
+          argument_id?: string;
+          user_id?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -1395,3 +1443,22 @@ export interface UserFollow {
   following_id: string;
   created_at: string;
 }
+
+// Topic arguments
+export interface TopicArgument {
+  id: string;
+  topic_id: string;
+  user_id: string;
+  side: "blue" | "red";
+  content: string;
+  upvotes: number;
+  created_at: string;
+}
+
+export type TopicArgumentWithAuthor = TopicArgument & {
+  author: Pick<
+    Profile,
+    "id" | "username" | "display_name" | "avatar_url" | "role"
+  > | null;
+  has_upvoted: boolean;
+};

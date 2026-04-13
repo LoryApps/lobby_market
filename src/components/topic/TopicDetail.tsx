@@ -8,6 +8,7 @@ import {
   Globe,
   Info,
   Megaphone,
+  MessageSquare,
   Tag,
 } from 'lucide-react'
 import type { Topic, Profile, VoteSide } from '@/lib/supabase/types'
@@ -22,6 +23,7 @@ import { ChainBanner } from '@/components/chain/ChainBanner'
 import { ContinuationSection } from '@/components/chain/ContinuationSection'
 import { ChainVisualization } from '@/components/chain/ChainVisualization'
 import { LobbyBoard } from '@/components/lobby/LobbyBoard'
+import { ArgumentThread } from '@/components/topic/ArgumentThread'
 import { ReportButton } from '@/components/moderation/ReportButton'
 import { SharePanel } from '@/components/ui/SharePanel'
 import { cn } from '@/lib/utils/cn'
@@ -54,7 +56,7 @@ const statusBadgeVariant: Record<string, 'proposed' | 'active' | 'law' | 'failed
   archived: 'proposed',
 }
 
-type TopicTab = 'details' | 'lobbies'
+type TopicTab = 'details' | 'arguments' | 'lobbies'
 
 export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
   const router = useRouter()
@@ -186,7 +188,7 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
           />
         </div>
 
-        {/* Tabs — Details / Lobbies */}
+        {/* Tabs — Details / Arguments / Lobbies */}
         <div className="flex items-center gap-1 mb-8 border-b border-surface-300">
           <button
             type="button"
@@ -200,6 +202,19 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
           >
             <Info className="h-3.5 w-3.5" />
             Details
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('arguments')}
+            className={cn(
+              'inline-flex items-center gap-2 px-4 py-2 font-mono text-xs font-semibold transition-colors border-b-2',
+              activeTab === 'arguments'
+                ? 'text-emerald border-emerald'
+                : 'text-surface-500 border-transparent hover:text-white'
+            )}
+          >
+            <MessageSquare className="h-3.5 w-3.5" />
+            Arguments
           </button>
           <button
             type="button"
@@ -218,6 +233,8 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
 
         {activeTab === 'lobbies' ? (
           <LobbyBoard topicId={topic.id} />
+        ) : activeTab === 'arguments' ? (
+          <ArgumentThread topicId={topic.id} />
         ) : (
           <>
             {/* Chain banner — shown during the continuation lifecycle */}
