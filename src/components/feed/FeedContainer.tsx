@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useRef, useCallback } from 'react'
+import Link from 'next/link'
+import { Users, Search } from 'lucide-react'
 import { useFeedStore } from '@/lib/stores/feed-store'
 import { TopicCard } from '@/components/feed/TopicCard'
 import { FeedTutorial } from '@/components/feed/FeedTutorial'
@@ -39,8 +41,61 @@ function FeedSkeleton() {
   )
 }
 
+function FollowingEmptyState({ followingCount }: { followingCount: number }) {
+  if (followingCount === 0) {
+    // User isn't following anyone
+    return (
+      <div className="feed-card flex items-center justify-center">
+        <div className="text-center px-8 max-w-xs">
+          <div className="flex items-center justify-center h-14 w-14 rounded-2xl bg-purple/10 border border-purple/30 mx-auto mb-5">
+            <Users className="h-7 w-7 text-purple" />
+          </div>
+          <h2 className="text-xl font-bold text-white font-mono mb-2">
+            Nobody followed yet
+          </h2>
+          <p className="text-sm text-surface-500 leading-relaxed mb-6">
+            Follow people to see the topics they propose here — your own curated stream.
+          </p>
+          <Link
+            href="/search?tab=people"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-purple/80 hover:bg-purple text-white text-sm font-mono font-medium transition-colors"
+          >
+            <Search className="h-4 w-4" />
+            Find people to follow
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
+  // User follows people but they have no topics
+  return (
+    <div className="feed-card flex items-center justify-center">
+      <div className="text-center px-8 max-w-xs">
+        <div className="flex items-center justify-center h-14 w-14 rounded-2xl bg-surface-200 border border-surface-300 mx-auto mb-5">
+          <Users className="h-7 w-7 text-surface-500" />
+        </div>
+        <h2 className="text-xl font-bold text-white font-mono mb-2">
+          Nothing yet
+        </h2>
+        <p className="text-sm text-surface-500 leading-relaxed mb-6">
+          The {followingCount} {followingCount === 1 ? 'person' : 'people'} you follow
+          {' '}haven&apos;t proposed any topics yet. Check back soon.
+        </p>
+        <Link
+          href="/search?tab=people"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-surface-200 border border-surface-300 hover:bg-surface-300 text-white text-sm font-mono font-medium transition-colors"
+        >
+          <Search className="h-4 w-4" />
+          Find more people
+        </Link>
+      </div>
+    </div>
+  )
+}
+
 export function FeedContainer() {
-  const { topics, isLoading, hasMore, fetchNextPage } = useFeedStore()
+  const { topics, isLoading, hasMore, feedMode, followingCount, fetchNextPage } = useFeedStore()
   const sentinelRef = useRef<HTMLDivElement>(null)
 
   // Initial fetch
@@ -98,8 +153,8 @@ export function FeedContainer() {
           </>
         )}
 
-        {/* Empty state */}
-        {!isLoading && topics.length === 0 && (
+        {/* Empty state: discover feed */}
+        {!isLoading && topics.length === 0 && feedMode === 'discover' && (
           <div className="feed-card flex items-center justify-center">
             <div className="text-center px-6">
               <p className="text-2xl font-bold text-white mb-2">No topics yet</p>
@@ -108,6 +163,11 @@ export function FeedContainer() {
               </p>
             </div>
           </div>
+        )}
+
+        {/* Empty state: following feed */}
+        {!isLoading && topics.length === 0 && feedMode === 'following' && (
+          <FollowingEmptyState followingCount={followingCount} />
         )}
 
         {/* Sentinel for infinite scroll */}
