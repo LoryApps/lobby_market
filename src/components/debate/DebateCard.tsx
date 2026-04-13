@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Clock, Users, Calendar, Mic } from 'lucide-react'
+import { Clock, Users, Calendar, Mic, Trophy } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { DebateRSVPButton } from '@/components/debate/DebateRSVPButton'
 import type {
@@ -41,6 +41,7 @@ const TYPE_LABEL: Record<string, string> = {
 
 export function DebateCard({ debate, participants = [] }: DebateCardProps) {
   const isLive = debate.status === 'live'
+  const isEnded = debate.status === 'ended'
   const blueSpeaker = participants.find(
     (p) => p.side === 'blue' && p.is_speaker
   )
@@ -48,15 +49,25 @@ export function DebateCard({ debate, participants = [] }: DebateCardProps) {
     (p) => p.side === 'red' && p.is_speaker
   )
 
+  const winner: 'blue' | 'red' | 'draw' | null = isEnded
+    ? debate.blue_sway > debate.red_sway
+      ? 'blue'
+      : debate.red_sway > debate.blue_sway
+        ? 'red'
+        : 'draw'
+    : null
+
   return (
     <Link
-      href={`/debate/${debate.id}`}
+      href={isEnded ? `/debate/${debate.id}/recap` : `/debate/${debate.id}`}
       className={cn(
         'group block rounded-xl p-5 transition-all duration-200',
         'bg-surface-100 border border-surface-300',
         isLive
           ? 'hover:border-against-500/50 hover:bg-against-500/[0.03]'
-          : 'hover:border-for-500/50 hover:bg-for-500/[0.03]'
+          : isEnded
+            ? 'hover:border-surface-400/50 hover:bg-surface-200/20'
+            : 'hover:border-for-500/50 hover:bg-for-500/[0.03]'
       )}
     >
       {/* Top row: status + type */}
@@ -69,6 +80,13 @@ export function DebateCard({ debate, participants = [] }: DebateCardProps) {
             </span>
             <span className="font-mono text-[10px] font-bold text-against-400 uppercase tracking-wider">
               Live
+            </span>
+          </div>
+        ) : isEnded ? (
+          <div className="flex items-center gap-1.5">
+            <Trophy className="h-3 w-3 text-gold" />
+            <span className="font-mono text-[10px] font-bold text-gold uppercase tracking-wider">
+              Ended
             </span>
           </div>
         ) : (
@@ -147,8 +165,40 @@ export function DebateCard({ debate, participants = [] }: DebateCardProps) {
         </div>
       </div>
 
+      {/* Ended: show sway result + recap CTA */}
+      {isEnded && (
+        <div className="mt-3 pt-3 border-t border-surface-300/40">
+          <div className="flex items-center justify-between gap-2 mb-2">
+            <span className="text-[11px] font-mono text-for-400 font-bold">
+              {debate.blue_sway}% FOR
+            </span>
+            {winner && winner !== 'draw' && (
+              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-gold/20 text-gold">
+                {winner === 'blue' ? 'FOR wins' : 'AGAINST wins'}
+              </span>
+            )}
+            <span className="text-[11px] font-mono text-against-400 font-bold">
+              {debate.red_sway}% AGAINST
+            </span>
+          </div>
+          <div className="h-1.5 rounded-full bg-surface-200/40 overflow-hidden flex">
+            <div
+              className="h-full bg-for-600 rounded-l-full"
+              style={{ width: `${debate.blue_sway}%` }}
+            />
+            <div
+              className="h-full bg-against-600 rounded-r-full"
+              style={{ width: `${debate.red_sway}%` }}
+            />
+          </div>
+          <p className="text-[10px] font-mono text-surface-600 mt-2 text-center">
+            View full recap →
+          </p>
+        </div>
+      )}
+
       {/* RSVP row — only for scheduled (not yet live) debates */}
-      {!isLive && (
+      {!isLive && !isEnded && (
         <div className="mt-3 pt-3 border-t border-surface-300/40 flex items-center justify-between gap-3">
           <p className="text-[11px] text-surface-600 font-mono">
             Will you be watching?

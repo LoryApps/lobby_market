@@ -340,6 +340,32 @@ export function DebateArena({
           )}
         </div>
       )}
+
+      {/* Ended overlay — shows recap CTA */}
+      {debate.status === 'ended' && (
+        <div className="absolute inset-x-0 top-36 z-20 flex flex-col items-center gap-4 px-4">
+          <div className="flex flex-col items-center gap-1">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface-100/90 backdrop-blur-md border border-surface-300">
+              <span className="relative flex h-2 w-2">
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-surface-500" />
+              </span>
+              <span className="font-mono text-xs text-surface-500 uppercase tracking-widest">
+                Debate ended
+              </span>
+            </div>
+            <div className="flex items-center gap-3 mt-1 font-mono text-sm">
+              <span className="text-for-400 font-bold">{debate.blue_sway}% FOR</span>
+              <span className="text-surface-600">·</span>
+              <span className="text-against-400 font-bold">{debate.red_sway}% AGAINST</span>
+            </div>
+          </div>
+          <Link href={`/debate/${debate.id}/recap`}>
+            <button className="px-6 py-2.5 rounded-full bg-surface-100/90 backdrop-blur-md border border-surface-300 text-sm font-semibold text-white hover:bg-surface-200/90 hover:border-surface-400 transition-all">
+              View Recap
+            </button>
+          </Link>
+        </div>
+      )}
     </div>
   )
 }
