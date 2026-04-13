@@ -17,7 +17,10 @@ export function BottomNav() {
   const pathname = usePathname()
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-surface-100 border-t border-surface-300 h-16 pb-[env(safe-area-inset-bottom)]">
+    <nav
+      aria-label="Main navigation"
+      className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-surface-100 border-t border-surface-300 h-16 pb-[env(safe-area-inset-bottom)]"
+    >
       <div className="flex items-center justify-around h-full px-2">
         {tabs.map((tab) => {
           const isActive =
@@ -30,6 +33,8 @@ export function BottomNav() {
             <Link
               key={tab.href}
               href={tab.href}
+              aria-current={isActive ? 'page' : undefined}
+              aria-label={tab.label}
               className={cn(
                 'flex flex-col items-center justify-center gap-0.5 flex-1 h-full',
                 'text-xs transition-colors',
@@ -38,7 +43,7 @@ export function BottomNav() {
                   : 'text-surface-500 hover:text-surface-700'
               )}
             >
-              <Icon className={cn('h-5 w-5', isActive && 'fill-for-500/20')} />
+              <Icon className={cn('h-5 w-5', isActive && 'fill-for-500/20')} aria-hidden="true" />
               <span>{tab.label}</span>
             </Link>
           )

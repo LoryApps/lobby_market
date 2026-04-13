@@ -97,6 +97,7 @@ function FollowingEmptyState({ followingCount }: { followingCount: number }) {
 export function FeedContainer() {
   const { topics, isLoading, hasMore, feedMode, followingCount, fetchNextPage } = useFeedStore()
   const sentinelRef = useRef<HTMLDivElement>(null)
+  const scrollRef = useRef<HTMLDivElement>(null)
 
   // Initial fetch
   useEffect(() => {
@@ -130,6 +131,30 @@ export function FeedContainer() {
     return () => observer.disconnect()
   }, [observerCallback])
 
+  // Keyboard navigation: ArrowDown/j scrolls to the next snap card,
+  // ArrowUp/k scrolls to the previous one. Ignored when an interactive
+  // element has focus so normal keyboard use isn't disrupted.
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      const el = scrollRef.current
+      if (!el) return
+      const tag = (document.activeElement?.tagName ?? '').toLowerCase()
+      if (['input', 'textarea', 'button', 'select', 'a'].includes(tag)) return
+
+      const cardHeight = window.innerHeight
+      if (e.key === 'ArrowDown' || e.key === 'j') {
+        e.preventDefault()
+        el.scrollBy({ top: cardHeight, behavior: 'smooth' })
+      } else if (e.key === 'ArrowUp' || e.key === 'k') {
+        e.preventDefault()
+        el.scrollBy({ top: -cardHeight, behavior: 'smooth' })
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [])
+
   return (
     <div className="relative">
       {/* Filter bar — floats below the TopBar (h-14 = top-14) over the feed */}
@@ -139,7 +164,7 @@ export function FeedContainer() {
         </div>
       </div>
 
-      <div className="feed-scroll">
+      <div ref={scrollRef} className="feed-scroll" aria-label="Topic feed">
         <FeedTutorial />
         {topics.map((topic) => (
           <TopicCard key={topic.id} topic={topic} />

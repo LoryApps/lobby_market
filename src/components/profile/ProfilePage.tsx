@@ -89,6 +89,30 @@ export function ProfilePage({
 }: ProfilePageProps) {
   const [activeTab, setActiveTab] = useState<TabId>('overview')
 
+  // Arrow-key navigation between tabs (ARIA tabs pattern)
+  function handleTabKeyDown(e: React.KeyboardEvent, index: number) {
+    if (e.key === 'ArrowRight') {
+      e.preventDefault()
+      const next = tabs[(index + 1) % tabs.length]
+      setActiveTab(next.id)
+      document.getElementById(`tab-${next.id}`)?.focus()
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault()
+      const prev = tabs[(index - 1 + tabs.length) % tabs.length]
+      setActiveTab(prev.id)
+      document.getElementById(`tab-${prev.id}`)?.focus()
+    } else if (e.key === 'Home') {
+      e.preventDefault()
+      setActiveTab(tabs[0].id)
+      document.getElementById(`tab-${tabs[0].id}`)?.focus()
+    } else if (e.key === 'End') {
+      e.preventDefault()
+      const last = tabs[tabs.length - 1]
+      setActiveTab(last.id)
+      document.getElementById(`tab-${last.id}`)?.focus()
+    }
+  }
+
   return (
     <div className="max-w-5xl mx-auto space-y-6">
       <ProfileHeader
@@ -116,14 +140,24 @@ export function ProfilePage({
 
       {/* Tabs */}
       <div className="sticky top-14 z-20 -mx-4 px-4 py-2 bg-surface-50/80 backdrop-blur border-b border-surface-300">
-        <div className="flex items-center gap-1 overflow-x-auto">
-          {tabs.map((tab) => {
+        <div
+          role="tablist"
+          aria-label="Profile sections"
+          className="flex items-center gap-1 overflow-x-auto"
+        >
+          {tabs.map((tab, index) => {
             const Icon = tab.icon
             const isActive = activeTab === tab.id
             return (
               <button
                 key={tab.id}
+                id={`tab-${tab.id}`}
+                role="tab"
+                aria-selected={isActive}
+                aria-controls={`tabpanel-${tab.id}`}
+                tabIndex={isActive ? 0 : -1}
                 onClick={() => setActiveTab(tab.id)}
+                onKeyDown={(e) => handleTabKeyDown(e, index)}
                 className={cn(
                   'flex items-center gap-2 h-9 px-4 rounded-full text-sm font-medium whitespace-nowrap transition',
                   isActive
@@ -131,7 +165,7 @@ export function ProfilePage({
                     : 'text-surface-500 hover:text-surface-700 hover:bg-surface-200'
                 )}
               >
-                <Icon className="h-4 w-4" />
+                <Icon className="h-4 w-4" aria-hidden="true" />
                 {tab.label}
               </button>
             )
@@ -140,7 +174,13 @@ export function ProfilePage({
       </div>
 
       {/* Tab content */}
-      <div className="min-h-[300px]">
+      <div
+        id={`tabpanel-${activeTab}`}
+        role="tabpanel"
+        aria-labelledby={`tab-${activeTab}`}
+        tabIndex={0}
+        className="min-h-[300px] focus:outline-none"
+      >
         <AnimatePresence mode="wait">
           {activeTab === 'overview' && (
             <motion.div

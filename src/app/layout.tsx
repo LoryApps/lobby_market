@@ -32,7 +32,24 @@ export default function RootLayout({
       <body
         className="font-sans bg-surface-50 text-surface-700 min-h-screen antialiased"
       >
-        <Providers>{children}</Providers>
+        {/* Skip-to-content link — visible only on keyboard focus */}
+        <a
+          href="#main-content"
+          className={[
+            'sr-only focus:not-sr-only',
+            'focus:fixed focus:top-4 focus:left-4 focus:z-[200]',
+            'focus:px-4 focus:py-2 focus:rounded-lg',
+            'focus:bg-for-600 focus:text-white focus:font-medium focus:text-sm',
+            'focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-for-400 focus:ring-offset-2 focus:ring-offset-surface-50',
+          ].join(' ')}
+        >
+          Skip to main content
+        </a>
+        <Providers>
+          <div id="main-content" tabIndex={-1}>
+            {children}
+          </div>
+        </Providers>
       </body>
     </html>
   )

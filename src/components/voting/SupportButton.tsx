@@ -23,6 +23,7 @@ export function SupportButton(props: SupportButtonProps) {
   const progress = Math.min(supportCount / threshold, 1)
   const circumference = 2 * Math.PI * 36 // radius = 36
   const strokeDashoffset = circumference * (1 - progress)
+  const pct = Math.round(progress * 100)
 
   // Color transitions from surface-400 (low) to gold (near threshold)
   const strokeColor =
@@ -36,9 +37,16 @@ export function SupportButton(props: SupportButtonProps) {
 
   return (
     <div className={cn('flex flex-col items-center gap-3', className)}>
-      {/* Progress ring */}
-      <div className="relative w-24 h-24">
-        <svg className="w-24 h-24 -rotate-90" viewBox="0 0 80 80">
+      {/* Progress ring — announced as progressbar to screen readers */}
+      <div
+        role="progressbar"
+        aria-valuenow={supportCount}
+        aria-valuemin={0}
+        aria-valuemax={threshold}
+        aria-label={`Support progress: ${supportCount} of ${threshold} needed`}
+        className="relative w-24 h-24"
+      >
+        <svg className="w-24 h-24 -rotate-90" viewBox="0 0 80 80" aria-hidden="true">
           {/* Background circle */}
           <circle
             cx="40"
@@ -63,7 +71,7 @@ export function SupportButton(props: SupportButtonProps) {
           />
         </svg>
         {/* Center text */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <div className="absolute inset-0 flex flex-col items-center justify-center" aria-hidden="true">
           <span className="text-lg font-bold text-surface-700">
             {supportCount}
           </span>
@@ -75,6 +83,11 @@ export function SupportButton(props: SupportButtonProps) {
       <button
         onClick={onSupport}
         disabled={hasSupported}
+        aria-label={
+          hasSupported
+            ? 'You have supported this topic'
+            : `Support this topic — ${pct}% of the ${threshold} needed to activate`
+        }
         className={cn(
           'flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors',
           hasSupported
@@ -84,7 +97,7 @@ export function SupportButton(props: SupportButtonProps) {
       >
         {hasSupported ? (
           <>
-            <Check className="h-4 w-4" />
+            <Check className="h-4 w-4" aria-hidden="true" />
             Supported
           </>
         ) : (

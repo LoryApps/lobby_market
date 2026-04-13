@@ -100,6 +100,31 @@ body {
   animation: float-up 1.5s ease-out forwards;
 }
 
+/* Keyboard focus ring — show only for keyboard navigation, not mouse clicks */
+:focus-visible {
+  outline: 2px solid #3b82f6; /* for-500 */
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Override for elements that manage their own focus styles */
+[data-no-focus-ring]:focus-visible {
+  outline: none;
+}
+
+/* Screen-reader-only utility (mirrors Tailwind's sr-only) */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
 /* Scrollbar styling */
 ::-webkit-scrollbar {
   width: 4px;

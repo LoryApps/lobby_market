@@ -146,7 +146,11 @@ export function TopicCard({ topic, authorName, authorAvatar }: TopicCardProps) {
   }
 
   return (
-    <div className="feed-card relative flex items-center justify-center px-4 py-6">
+    <div
+      role="article"
+      aria-label={topic.statement}
+      className="feed-card relative flex items-center justify-center px-4 py-6"
+    >
       {/*
        * motion.div wraps only the card (not the action rail) so the rail
        * stays fixed while the card tilts and slides during swipe.
@@ -302,15 +306,21 @@ export function TopicCard({ topic, authorName, authorAvatar }: TopicCardProps) {
                     {authorName || 'Anonymous'}
                   </span>
                 </div>
-                <div className="flex items-center gap-1 text-xs text-surface-500">
-                  <Eye className="h-3.5 w-3.5" />
+                <div
+                  className="flex items-center gap-1 text-xs text-surface-500"
+                  aria-label={`${topic.view_count} views`}
+                >
+                  <Eye className="h-3.5 w-3.5" aria-hidden="true" />
                   <AnimatedNumber value={topic.view_count} />
                 </div>
               </div>
 
               {/* Swipe affordance hint — only on unvoted active cards */}
               {canSwipeVote && (
-                <div className="flex items-center justify-center gap-2 pb-0.5 select-none pointer-events-none">
+                <div
+                  className="flex items-center justify-center gap-2 pb-0.5 select-none pointer-events-none"
+                  aria-hidden="true"
+                >
                   <ThumbsDown className="h-3 w-3 text-against-500/50" />
                   <span className="text-[10px] font-mono text-surface-600 tracking-widest uppercase">
                     swipe to vote
