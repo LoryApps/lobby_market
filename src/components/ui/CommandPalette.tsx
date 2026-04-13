@@ -47,6 +47,7 @@ import {
   Bell,
   Settings,
   HelpCircle,
+  Zap,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -165,6 +166,16 @@ const QUICK_LINKS: QuickLink[] = [
     icon: Activity,
     iconColor: 'text-purple',
     iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
+    id: 'pulse',
+    label: 'Community Pulse',
+    sublabel: 'Top FOR/AGAINST arguments from active debates',
+    href: '/pulse',
+    icon: Zap,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
   },
   {
     type: 'link',

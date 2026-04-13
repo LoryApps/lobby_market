@@ -314,6 +314,18 @@ function EndOfFeed({
           </button>
           <div className="flex gap-2">
             <Link
+              href="/pulse"
+              className={cn(
+                'flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl',
+                'bg-gold/10 border border-gold/30 hover:bg-gold/20',
+                'text-gold text-xs font-mono font-medium',
+                'transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gold/40',
+              )}
+            >
+              <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
+              Community Pulse
+            </Link>
+            <Link
               href="/topic/categories"
               className={cn(
                 'flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl',
