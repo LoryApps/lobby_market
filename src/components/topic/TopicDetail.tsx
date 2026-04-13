@@ -28,6 +28,7 @@ import { ChainVisualization } from '@/components/chain/ChainVisualization'
 import { LobbyBoard } from '@/components/lobby/LobbyBoard'
 import { ArgumentThread } from '@/components/topic/ArgumentThread'
 import { RelatedTopics } from '@/components/topic/RelatedTopics'
+import { VoteTrend } from '@/components/topic/VoteTrend'
 import { ReportButton } from '@/components/moderation/ReportButton'
 import { SharePanel } from '@/components/ui/SharePanel'
 import { BookmarkButton } from '@/components/ui/BookmarkButton'
@@ -348,6 +349,14 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
                 </div>
               </div>
             </div>
+
+            {/* Vote trend — sparkline momentum chart */}
+            {topic.total_votes >= 2 && topic.status !== 'proposed' && (
+              <VoteTrend
+                topicId={topic.id}
+                className="mt-6"
+              />
+            )}
 
             {/* Related topics — discovery section */}
             <RelatedTopics topicId={topic.id} className="mt-8" />
