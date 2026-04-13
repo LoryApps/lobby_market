@@ -2,14 +2,17 @@
 
 import { useEffect, useRef, useCallback, useState } from 'react'
 import Link from 'next/link'
-import { Users, Search, Keyboard, X } from 'lucide-react'
+import { Users, Search, Keyboard, X, RefreshCw, ChevronUp } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useFeedStore } from '@/lib/stores/feed-store'
 import { useVoteStore } from '@/lib/stores/vote-store'
+import { subscribeToFeed } from '@/lib/supabase/realtime'
 import { TopicCard } from '@/components/feed/TopicCard'
 import { FeedTutorial } from '@/components/feed/FeedTutorial'
 import { FeedFilters } from '@/components/feed/FeedFilters'
+import { PulseDot } from '@/components/simulation/PulseDot'
 import { cn } from '@/lib/utils/cn'
+import type { Topic } from '@/lib/supabase/types'
 
 function FeedSkeleton() {
   return (
@@ -178,10 +181,112 @@ function KeyboardHelpOverlay({ onClose }: { onClose: () => void }) {
   )
 }
 
+// ─── End-of-feed rich state ───────────────────────────────────────────────────
+
+function EndOfFeed({
+  topicCount,
+  pendingCount,
+  onShowNew,
+  onScrollTop,
+}: {
+  topicCount: number
+  pendingCount: number
+  onShowNew: () => void
+  onScrollTop: () => void
+}) {
+  return (
+    <div className="feed-card flex items-center justify-center px-6">
+      <div className="w-full max-w-sm text-center space-y-6">
+        {/* Divider mark */}
+        <div className="flex items-center justify-center gap-3">
+          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-for-500/40 to-transparent" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-for-600/20 border border-for-500/30">
+            <span className="font-mono text-xs font-bold text-for-400">∎</span>
+          </div>
+          <div className="h-px flex-1 bg-gradient-to-l from-transparent via-against-500/40 to-transparent" />
+        </div>
+
+        {/* Copy */}
+        <div className="space-y-2">
+          <p className="font-mono text-lg font-bold text-white">
+            You&apos;re all caught up
+          </p>
+          <p className="text-sm text-surface-500 leading-relaxed">
+            {topicCount === 1
+              ? 'You reviewed 1 topic in this session.'
+              : `You reviewed ${topicCount.toLocaleString()} topics in this session.`}{' '}
+            New debates land every hour.
+          </p>
+        </div>
+
+        {/* Actions */}
+        <div className="flex flex-col gap-2">
+          {pendingCount > 0 && (
+            <button
+              type="button"
+              onClick={onShowNew}
+              className={cn(
+                'flex items-center justify-center gap-2 w-full py-2.5 rounded-xl',
+                'bg-for-600 hover:bg-for-500 text-white text-sm font-mono font-medium',
+                'transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-for-400/50',
+              )}
+            >
+              <ChevronUp className="h-4 w-4" aria-hidden="true" />
+              {pendingCount === 1 ? 'See 1 new topic' : `See ${pendingCount} new topics`}
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={onScrollTop}
+            className={cn(
+              'flex items-center justify-center gap-2 w-full py-2.5 rounded-xl',
+              'bg-surface-200 border border-surface-300 hover:bg-surface-300',
+              'text-white text-sm font-mono font-medium',
+              'transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-surface-400/50',
+            )}
+          >
+            <RefreshCw className="h-4 w-4" aria-hidden="true" />
+            Back to top
+          </button>
+          <div className="flex gap-2">
+            <Link
+              href="/topic/categories"
+              className={cn(
+                'flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl',
+                'bg-surface-200/60 border border-surface-300/60 hover:bg-surface-200',
+                'text-surface-500 hover:text-white text-xs font-mono font-medium',
+                'transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-surface-400/50',
+              )}
+            >
+              Browse categories
+            </Link>
+            <Link
+              href="/search"
+              className={cn(
+                'flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl',
+                'bg-surface-200/60 border border-surface-300/60 hover:bg-surface-200',
+                'text-surface-500 hover:text-white text-xs font-mono font-medium',
+                'transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-surface-400/50',
+              )}
+            >
+              <Search className="h-3.5 w-3.5" aria-hidden="true" />
+              Search
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ─── Main feed container ──────────────────────────────────────────────────────
+
 export function FeedContainer() {
-  const { topics, isLoading, hasMore, feedMode, followingCount, fetchNextPage, updateTopic } = useFeedStore()
+  const { topics, isLoading, hasMore, feedMode, followingCount, fetchNextPage, updateTopic, prependTopic } = useFeedStore()
   const { castVote } = useVoteStore()
   const [showHelp, setShowHelp] = useState(false)
+  const [pendingNew, setPendingNew] = useState<Topic[]>([])
+  const [isLive, setIsLive] = useState(false)
   const sentinelRef = useRef<HTMLDivElement>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
 
@@ -191,6 +296,53 @@ export function FeedContainer() {
       fetchNextPage()
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ── Realtime: subscribe to feed INSERT + UPDATE events ─────────────────────
+  useEffect(() => {
+    let mounted = true
+
+    const channel = subscribeToFeed(
+      // onInsert — queue new topics; don't auto-scroll the user away
+      (newTopic) => {
+        if (!mounted) return
+        const { statusFilter, categoryFilter, scopeFilter, feedMode: mode } = useFeedStore.getState()
+        if (mode === 'following') return
+        if (!['proposed', 'active', 'voting', 'law'].includes(newTopic.status)) return
+        if (statusFilter && newTopic.status !== statusFilter) return
+        if (categoryFilter && newTopic.category !== categoryFilter) return
+        if (scopeFilter && newTopic.scope !== scopeFilter) return
+        setPendingNew((prev) => {
+          // De-dupe in case of double delivery
+          if (prev.some((t) => t.id === newTopic.id)) return prev
+          return [newTopic, ...prev]
+        })
+      },
+      // onUpdate — apply vote-count changes immediately; AnimatedNumber handles smoothing
+      (updatedTopic) => {
+        if (!mounted) return
+        useFeedStore.getState().updateTopic(updatedTopic.id, updatedTopic)
+      },
+    )
+
+    setIsLive(true)
+
+    return () => {
+      mounted = false
+      setIsLive(false)
+      channel.unsubscribe()
+    }
+  }, [])
+
+  // ── Show pending new topics: prepend + scroll to top ──────────────────────
+  function showPendingTopics() {
+    if (pendingNew.length === 0) return
+    // Prepend in reverse so the most-recent ends up first
+    for (const t of [...pendingNew].reverse()) {
+      prependTopic(t)
+    }
+    setPendingNew([])
+    scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
+  }
 
   // IntersectionObserver for infinite scroll
   const observerCallback = useCallback(
@@ -298,9 +450,62 @@ export function FeedContainer() {
       {/* Filter bar — floats below the TopBar (h-14 = top-14) over the feed */}
       <div className="fixed top-14 left-0 right-0 z-40 pointer-events-none">
         <div className="pointer-events-auto bg-gradient-to-b from-surface-50/95 via-surface-50/70 to-transparent pb-2">
+          {/* LIVE indicator — shown when the realtime channel is open */}
+          <AnimatePresence>
+            {isLive && (
+              <motion.div
+                key="live-badge"
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.25 }}
+                className="flex items-center justify-end px-3 pt-1.5 pb-0.5"
+                aria-live="polite"
+                aria-label="Feed is live"
+              >
+                <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-surface-200/60 border border-surface-300/50 backdrop-blur-sm">
+                  <PulseDot color="green" className="h-2 w-2" />
+                  <span className="text-[10px] font-mono font-semibold text-emerald tracking-wider uppercase">
+                    Live
+                  </span>
+                </span>
+              </motion.div>
+            )}
+          </AnimatePresence>
           <FeedFilters />
         </div>
       </div>
+
+      {/* "New topics" floating banner — appears when realtime queues new arrivals */}
+      <AnimatePresence>
+        {pendingNew.length > 0 && (
+          <motion.div
+            key="new-topics-banner"
+            initial={{ opacity: 0, y: -16, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -16, scale: 0.95 }}
+            transition={{ type: 'spring', stiffness: 380, damping: 28 }}
+            className="fixed z-50 top-[calc(3.5rem+var(--filter-h,5rem))] left-1/2 -translate-x-1/2"
+          >
+            <button
+              type="button"
+              onClick={showPendingTopics}
+              className={cn(
+                'flex items-center gap-2 pl-3 pr-4 py-2 rounded-full shadow-lg',
+                'bg-for-600 hover:bg-for-500 text-white',
+                'text-xs font-mono font-semibold',
+                'transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-for-400/50',
+              )}
+              aria-label={`${pendingNew.length} new ${pendingNew.length === 1 ? 'topic' : 'topics'} — tap to view`}
+            >
+              <ChevronUp className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
+              {pendingNew.length === 1
+                ? '1 new topic'
+                : `${pendingNew.length} new topics`}
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Keyboard shortcut hint — desktop only */}
       <button
@@ -355,9 +560,12 @@ export function FeedContainer() {
 
         {/* End of feed */}
         {!hasMore && topics.length > 0 && (
-          <div className="flex items-center justify-center py-10 text-surface-500 text-sm">
-            You have reached the end of the feed.
-          </div>
+          <EndOfFeed
+            topicCount={topics.length}
+            pendingCount={pendingNew.length}
+            onShowNew={showPendingTopics}
+            onScrollTop={() => scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' })}
+          />
         )}
       </div>
 
