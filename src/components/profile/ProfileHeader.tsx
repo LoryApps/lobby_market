@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useState } from 'react'
+import { useCallback, useState, type ReactNode } from 'react'
 import { motion } from 'framer-motion'
 import {
   AtSign,
@@ -18,6 +18,108 @@ import Link from 'next/link'
 import { Avatar } from '@/components/ui/Avatar'
 import { Button } from '@/components/ui/Button'
 import { RoleBadge, getRoleRingClass } from './RoleBadge'
+
+// ── Inline bio markdown renderer ──────────────────────────────────────────────
+// Supports: **bold**, *italic*, `code`, [text](url)
+
+type InlineToken =
+  | { t: 'text'; v: string }
+  | { t: 'bold'; v: string }
+  | { t: 'italic'; v: string }
+  | { t: 'code'; v: string }
+  | { t: 'link'; v: string; href: string }
+
+function tokenizeBio(input: string): InlineToken[] {
+  const tokens: InlineToken[] = []
+  let s = input
+
+  while (s.length > 0) {
+    // Bold **…**
+    const bold = s.match(/^\*\*([^*]+)\*\*/)
+    if (bold) {
+      tokens.push({ t: 'bold', v: bold[1] })
+      s = s.slice(bold[0].length)
+      continue
+    }
+    // Italic *…*
+    const italic = s.match(/^\*([^*]+)\*/)
+    if (italic) {
+      tokens.push({ t: 'italic', v: italic[1] })
+      s = s.slice(italic[0].length)
+      continue
+    }
+    // Inline code `…`
+    const code = s.match(/^`([^`]+)`/)
+    if (code) {
+      tokens.push({ t: 'code', v: code[1] })
+      s = s.slice(code[0].length)
+      continue
+    }
+    // Link [text](url)
+    const link = s.match(/^\[([^\]]+)\]\((https?:\/\/[^)]+)\)/)
+    if (link) {
+      tokens.push({ t: 'link', v: link[1], href: link[2] })
+      s = s.slice(link[0].length)
+      continue
+    }
+    // Consume one char as plain text
+    const next = s.match(/^[^*`[]+/) ?? [s[0]]
+    tokens.push({ t: 'text', v: next[0] })
+    s = s.slice(next[0].length)
+  }
+
+  return tokens
+}
+
+function BioText({ text }: { text: string }) {
+  const tokens = tokenizeBio(text)
+
+  const nodes: ReactNode[] = tokens.map((tok, i) => {
+    switch (tok.t) {
+      case 'bold':
+        return (
+          <strong key={i} className="font-semibold text-white">
+            {tok.v}
+          </strong>
+        )
+      case 'italic':
+        return (
+          <em key={i} className="italic">
+            {tok.v}
+          </em>
+        )
+      case 'code':
+        return (
+          <code
+            key={i}
+            className="px-1 py-0.5 rounded bg-surface-300 text-emerald font-mono text-xs"
+          >
+            {tok.v}
+          </code>
+        )
+      case 'link':
+        return (
+          <a
+            key={i}
+            href={tok.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-for-400 hover:text-for-300 underline underline-offset-2 transition-colors"
+          >
+            {tok.v}
+          </a>
+        )
+      default:
+        return <span key={i}>{tok.v}</span>
+    }
+  })
+
+  return (
+    <p className="text-sm text-surface-600 max-w-prose mb-3 leading-relaxed">
+      {nodes}
+    </p>
+  )
+}
 import { ReputationMeter } from './ReputationMeter'
 import type { Profile } from '@/lib/supabase/types'
 import { cn } from '@/lib/utils/cn'
@@ -190,11 +292,7 @@ export function ProfileHeader({
             @{profile.username}
           </div>
 
-          {profile.bio && (
-            <p className="text-sm text-surface-600 max-w-prose mb-3">
-              {profile.bio}
-            </p>
-          )}
+          {profile.bio && <BioText text={profile.bio} />}
 
           {/* Follow stats row */}
           <div className="flex items-center gap-4 mb-3">

@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
@@ -16,8 +17,75 @@ import type {
 
 export const dynamic = 'force-dynamic'
 
+// ── Role display labels ────────────────────────────────────────────────────────
+
+const ROLE_LABEL: Record<string, string> = {
+  person: 'Citizen',
+  debator: 'Debator',
+  troll_catcher: 'Troll Catcher',
+  elder: 'Elder',
+}
+
 interface ProfilePageRouteProps {
   params: { username: string }
+}
+
+// ── Open Graph metadata ────────────────────────────────────────────────────────
+
+export async function generateMetadata({
+  params,
+}: ProfilePageRouteProps): Promise<Metadata> {
+  const supabase = await createClient()
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('username, display_name, bio, role, clout, total_votes')
+    .eq('username', params.username)
+    .maybeSingle()
+
+  if (!profile) {
+    return { title: 'Profile · Lobby Market' }
+  }
+
+  const displayName = profile.display_name || profile.username
+  const roleLabel = ROLE_LABEL[profile.role] ?? profile.role
+  const description = [
+    `${roleLabel} on Lobby Market`,
+    profile.bio ? profile.bio.slice(0, 120) : null,
+    `${profile.total_votes.toLocaleString()} votes cast`,
+    `${profile.clout.toLocaleString()} clout`,
+  ]
+    .filter(Boolean)
+    .join(' · ')
+
+  const title = `${displayName} (@${profile.username}) · Lobby Market`
+  const ogImageUrl = `/api/og/profile/${encodeURIComponent(profile.username)}`
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: 'profile',
+      siteName: 'Lobby Market',
+      username: profile.username,
+      images: [
+        {
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
+          alt: `${displayName}'s profile on Lobby Market`,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [ogImageUrl],
+    },
+  }
 }
 
 export default async function ProfileUsernamePage({
