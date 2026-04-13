@@ -158,6 +158,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'activity',
+    label: 'Activity',
+    sublabel: 'What\'s happening in the Lobby',
+    href: '/activity',
+    icon: Activity,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
     id: 'categories',
     label: 'Categories',
     sublabel: 'Browse topics by category',
