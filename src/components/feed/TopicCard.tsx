@@ -15,6 +15,7 @@ import { VoteTimer } from '@/components/voting/VoteTimer'
 import { SupportButton } from '@/components/voting/SupportButton'
 import { useVoteStore } from '@/lib/stores/vote-store'
 import { useFeedStore } from '@/lib/stores/feed-store'
+import { BookmarkButton } from '@/components/ui/BookmarkButton'
 
 interface TopicCardProps {
   topic: Topic
@@ -341,6 +342,7 @@ export function TopicCard({ topic, authorName, authorAvatar }: TopicCardProps) {
             <AnimatedNumber value={topic.total_votes} />
           </span>
         </div>
+        <BookmarkButton topicId={topic.id} />
         <button
           onClick={handleShare}
           className="flex items-center justify-center h-10 w-10 rounded-full bg-surface-200 text-surface-500 hover:bg-surface-300 hover:text-white transition-colors"

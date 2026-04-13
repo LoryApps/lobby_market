@@ -28,6 +28,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   Activity,
   BarChart2,
+  Bookmark,
   Flame,
   LayoutGrid,
   Loader2,
@@ -194,6 +195,16 @@ const QUICK_LINKS: QuickLink[] = [
     icon: User,
     iconColor: 'text-surface-400',
     iconBg: 'bg-surface-300/20',
+  },
+  {
+    type: 'link',
+    id: 'saved',
+    label: 'Saved Topics',
+    sublabel: 'Your bookmarked topics',
+    href: '/saved',
+    icon: Bookmark,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
   },
   {
     type: 'link',

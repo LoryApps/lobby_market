@@ -1141,6 +1141,27 @@ export type Database = {
         };
         Relationships: [];
       };
+      topic_bookmarks: {
+        Row: {
+          id: string;
+          user_id: string;
+          topic_id: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          topic_id: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          topic_id?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;

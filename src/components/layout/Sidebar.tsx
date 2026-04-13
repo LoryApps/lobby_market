@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
+  Bookmark,
   Newspaper,
   TrendingUp,
   Landmark,
@@ -46,6 +47,7 @@ const navItems: NavItem[] = [
     icon: Shield,
     moderatorOnly: true,
   },
+  { href: '/saved', label: 'Saved', icon: Bookmark },
   { href: '/leaderboard', label: 'Leaderboard', icon: Trophy },
   { href: '/profile/me', label: 'My Profile', icon: UserCircle },
 ]

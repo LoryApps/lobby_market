@@ -29,6 +29,7 @@ import { LobbyBoard } from '@/components/lobby/LobbyBoard'
 import { ArgumentThread } from '@/components/topic/ArgumentThread'
 import { ReportButton } from '@/components/moderation/ReportButton'
 import { SharePanel } from '@/components/ui/SharePanel'
+import { BookmarkButton } from '@/components/ui/BookmarkButton'
 import { cn } from '@/lib/utils/cn'
 import { useVoteStore } from '@/lib/stores/vote-store'
 import { useFeedStore } from '@/lib/stores/feed-store'
@@ -165,6 +166,7 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
           </button>
           <span className="text-sm font-medium text-surface-500">Topic</span>
           <div className="ml-auto flex items-center gap-2">
+            <BookmarkButton topicId={topic.id} />
             <SharePanel
               url={typeof window !== 'undefined' ? window.location.href : `/topic/${topic.id}`}
               text={`${topic.statement} — ${Math.round(topic.blue_pct)}% For on Lobby Market`}
