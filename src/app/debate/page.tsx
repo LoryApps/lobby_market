@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Mic, Plus } from 'lucide-react'
+import { Calendar, Mic, Plus } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -160,17 +160,30 @@ export default async function DebateIndexPage() {
               </p>
             </div>
           </div>
-          <Link
-            href="/debate/create"
-            className={cn(
-              'inline-flex items-center gap-2 px-3 py-2 rounded-lg',
-              'bg-for-600 border border-for-500 text-white',
-              'hover:bg-for-700 text-xs font-mono font-medium transition-colors'
-            )}
-          >
-            <Plus className="h-4 w-4" />
-            <span className="hidden sm:inline">Schedule Debate</span>
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/debate/calendar"
+              className={cn(
+                'inline-flex items-center gap-2 px-3 py-2 rounded-lg',
+                'bg-surface-200 border border-surface-300 text-surface-500',
+                'hover:bg-surface-300 hover:text-white text-xs font-mono font-medium transition-colors'
+              )}
+            >
+              <Calendar className="h-4 w-4" />
+              <span className="hidden sm:inline">Calendar</span>
+            </Link>
+            <Link
+              href="/debate/create"
+              className={cn(
+                'inline-flex items-center gap-2 px-3 py-2 rounded-lg',
+                'bg-for-600 border border-for-500 text-white',
+                'hover:bg-for-700 text-xs font-mono font-medium transition-colors'
+              )}
+            >
+              <Plus className="h-4 w-4" />
+              <span className="hidden sm:inline">Schedule Debate</span>
+            </Link>
+          </div>
         </div>
 
         {/* Empty state */}
