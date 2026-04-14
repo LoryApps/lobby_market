@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { Gavel, Network, Rss } from 'lucide-react'
+import { Clock, Gavel, Network, Rss } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -69,6 +69,18 @@ export default async function LawIndexPage() {
                 )}
               >
                 <Rss className="h-4 w-4" />
+              </Link>
+
+              <Link
+                href="/law/timeline"
+                className={cn(
+                  'inline-flex items-center gap-2 px-3 py-2 rounded-lg',
+                  'bg-surface-200 border border-surface-300 text-surface-500 text-xs font-mono font-medium',
+                  'hover:bg-surface-300 hover:text-white transition-colors'
+                )}
+              >
+                <Clock className="h-4 w-4" />
+                <span className="hidden sm:inline">Timeline</span>
               </Link>
 
               <Link

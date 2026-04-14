@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ArrowLeft, FileText, Network } from 'lucide-react'
+import { ArrowLeft, Clock, FileText, Network } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { LawGraphView } from '@/components/law/LawGraphView'
 import { cn } from '@/lib/utils/cn'
@@ -52,6 +52,14 @@ export default async function LawFullGraphPage() {
             <span>{laws.length} laws</span>
             <span className="text-surface-600">·</span>
             <span>{links.length} connections</span>
+            <span className="text-surface-600">·</span>
+            <Link
+              href="/law/timeline"
+              className="flex items-center gap-1 text-surface-500 hover:text-white transition-colors"
+            >
+              <Clock className="h-3 w-3" />
+              Timeline →
+            </Link>
             <span className="text-surface-600">·</span>
             <Link
               href="/topic/graph"
