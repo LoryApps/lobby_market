@@ -151,6 +151,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'challenge',
+    label: 'Daily Quorum',
+    sublabel: "Today's 3 topics — vote to earn Clout",
+    href: '/challenge',
+    icon: Flame,
+    iconColor: 'text-for-300',
+    iconBg: 'bg-for-600/15',
+  },
+  {
+    type: 'link',
     id: 'analytics',
     label: 'Analytics',
     sublabel: 'Your voting patterns and stats',

@@ -9,6 +9,7 @@ import { useVoteStore } from '@/lib/stores/vote-store'
 import { subscribeToFeed } from '@/lib/supabase/realtime'
 import { TopicCard } from '@/components/feed/TopicCard'
 import { FeedTutorial } from '@/components/feed/FeedTutorial'
+import { DailyQuorumNudge } from '@/components/feed/DailyQuorumNudge'
 import { FeedFilters } from '@/components/feed/FeedFilters'
 import { PulseDot } from '@/components/simulation/PulseDot'
 import { cn } from '@/lib/utils/cn'
@@ -606,6 +607,7 @@ export function FeedContainer() {
 
       <div ref={scrollRef} className="feed-scroll" aria-label="Topic feed">
         <FeedTutorial />
+        <DailyQuorumNudge />
         {topics.map((topic) => (
           <TopicCard key={topic.id} topic={topic} />
         ))}

@@ -1227,6 +1227,33 @@ export type Database = {
         };
         Relationships: [];
       };
+      daily_quorum_completions: {
+        Row: {
+          id: string;
+          user_id: string;
+          quorum_date: string;
+          topic_ids: string[];
+          clout_earned: number;
+          completed_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          quorum_date?: string;
+          topic_ids: string[];
+          clout_earned?: number;
+          completed_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          quorum_date?: string;
+          topic_ids?: string[];
+          clout_earned?: number;
+          completed_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -1235,6 +1262,14 @@ export type Database = {
       refresh_topic_prediction_stats: {
         Args: { p_topic_id: string };
         Returns: undefined;
+      };
+      claim_daily_quorum: {
+        Args: {
+          p_user_id: string;
+          p_topic_ids: string[];
+          p_quorum_date?: string;
+        };
+        Returns: unknown;
       };
     };
     Enums: {
