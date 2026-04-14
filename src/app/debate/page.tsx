@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Calendar, Mic, Plus } from 'lucide-react'
+import { BookOpen, Calendar, Mic, Plus, Trophy } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -28,19 +28,30 @@ interface DebateWithParticipants extends DebateWithTopic {
 export default async function DebateIndexPage() {
   const supabase = await createClient()
 
-  const { data: rawDebates } = await supabase
-    .from('debates')
-    .select('*')
-    .in('status', ['scheduled', 'live'])
-    .order('status', { ascending: true }) // live < scheduled alphabetically
-    .order('scheduled_at', { ascending: true })
+  // Active debates (live + scheduled) and recently ended in parallel
+  const [activeRes, endedRes] = await Promise.all([
+    supabase
+      .from('debates')
+      .select('*')
+      .in('status', ['scheduled', 'live'])
+      .order('status', { ascending: true }) // live < scheduled alphabetically
+      .order('scheduled_at', { ascending: true }),
+    supabase
+      .from('debates')
+      .select('*')
+      .eq('status', 'ended')
+      .order('ended_at', { ascending: false })
+      .limit(6),
+  ])
 
-  const baseDebates = (rawDebates ?? []) as Debate[]
+  const baseDebates = (activeRes.data ?? []) as Debate[]
+  const recentEnded = (endedRes.data ?? []) as Debate[]
 
-  // Batch fetch topics, creators, and speakers for this set of debates.
-  const topicIds = Array.from(new Set(baseDebates.map((d) => d.topic_id)))
-  const creatorIds = Array.from(new Set(baseDebates.map((d) => d.creator_id)))
-  const debateIds = baseDebates.map((d) => d.id)
+  // Batch fetch topics, creators, and speakers for all debates (active + recently ended).
+  const allDebates = [...baseDebates, ...recentEnded]
+  const topicIds = Array.from(new Set(allDebates.map((d) => d.topic_id)))
+  const creatorIds = Array.from(new Set(allDebates.map((d) => d.creator_id)))
+  const debateIds = allDebates.map((d) => d.id)
 
   const [topicsRes, creatorsRes, speakerRes] = await Promise.all([
     topicIds.length
@@ -123,6 +134,13 @@ export default async function DebateIndexPage() {
     participants: participantsByDebate.get(d.id) ?? [],
   }))
 
+  const endedWithParticipants: DebateWithParticipants[] = recentEnded.map((d) => ({
+    ...d,
+    topic: topicMap.get(d.topic_id) ?? null,
+    creator: creatorMap.get(d.creator_id) ?? null,
+    participants: participantsByDebate.get(d.id) ?? [],
+  }))
+
   const now = Date.now()
   const oneDay = 24 * 60 * 60 * 1000
 
@@ -161,6 +179,17 @@ export default async function DebateIndexPage() {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <Link
+              href="/debate/archive"
+              className={cn(
+                'inline-flex items-center gap-2 px-3 py-2 rounded-lg',
+                'bg-surface-200 border border-surface-300 text-surface-500',
+                'hover:bg-surface-300 hover:text-white text-xs font-mono font-medium transition-colors'
+              )}
+            >
+              <BookOpen className="h-4 w-4" />
+              <span className="hidden sm:inline">Archive</span>
+            </Link>
             <Link
               href="/debate/calendar"
               className={cn(
@@ -267,6 +296,44 @@ export default async function DebateIndexPage() {
               {upcomingLater.map((d) => (
                 <DebateCard key={d.id} debate={d} participants={d.participants} />
               ))}
+            </div>
+          </section>
+        )}
+
+        {/* Recent Recaps */}
+        {endedWithParticipants.length > 0 && (
+          <section className="mt-12">
+            <div className="flex items-center gap-2 mb-4 pb-2 border-b border-surface-300">
+              <Trophy className="h-3.5 w-3.5 text-gold" />
+              <h2 className="font-mono text-sm font-semibold text-gold/80 uppercase tracking-wider">
+                Recent Recaps
+              </h2>
+              <span className="ml-auto flex items-center gap-1">
+                <Link
+                  href="/debate/archive"
+                  className="text-[11px] font-mono text-surface-500 hover:text-white transition-colors"
+                >
+                  View all {endedWithParticipants.length >= 6 ? '→' : ''}
+                </Link>
+              </span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {endedWithParticipants.map((d) => (
+                <DebateCard key={d.id} debate={d} participants={d.participants} />
+              ))}
+            </div>
+            <div className="mt-4 text-center">
+              <Link
+                href="/debate/archive"
+                className={cn(
+                  'inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-mono',
+                  'bg-surface-200 border border-surface-300 text-surface-500',
+                  'hover:bg-surface-300 hover:text-white transition-colors'
+                )}
+              >
+                <BookOpen className="h-4 w-4" />
+                Browse full archive
+              </Link>
             </div>
           </section>
         )}
