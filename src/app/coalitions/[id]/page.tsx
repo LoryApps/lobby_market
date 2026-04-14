@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import { ArrowLeft, Crown, Trophy, Users, Zap } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { CoalitionManagePanel } from '@/components/lobby/CoalitionManagePanel'
+import { CoalitionBulletinBoard } from '@/components/lobby/CoalitionBulletinBoard'
 import type {
   Coalition,
   CoalitionMember,
@@ -348,6 +349,13 @@ export default async function CoalitionPage({ params }: CoalitionPageProps) {
             </div>
           )}
         </section>
+
+        {/* ── Bulletin Board ───────────────────────────────────────────── */}
+        <CoalitionBulletinBoard
+          coalitionId={typedCoalition.id}
+          currentUserId={authUser?.id ?? null}
+          currentUserRole={currentMember?.role ?? null}
+        />
 
         {/* ── Members + Management Panel ─────────────────────────────── */}
         <section>

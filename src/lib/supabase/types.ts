@@ -652,6 +652,36 @@ export type Database = {
         };
         Relationships: [];
       };
+      coalition_posts: {
+        Row: {
+          id: string;
+          coalition_id: string;
+          author_id: string;
+          content: string;
+          is_pinned: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          coalition_id: string;
+          author_id: string;
+          content: string;
+          is_pinned?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          coalition_id?: string;
+          author_id?: string;
+          content?: string;
+          is_pinned?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       clout_transactions: {
         Row: {
           id: string;
@@ -1608,3 +1638,16 @@ export interface TopicPredictionStats {
   law_confidence: number;
   updated_at: string;
 }
+
+// Coalition bulletin board
+export type CoalitionPost =
+  Database["public"]["Tables"]["coalition_posts"]["Row"];
+export type CoalitionPostInsert =
+  Database["public"]["Tables"]["coalition_posts"]["Insert"];
+
+export type CoalitionPostWithAuthor = CoalitionPost & {
+  author: Pick<
+    Profile,
+    "id" | "username" | "display_name" | "avatar_url" | "role"
+  > | null;
+};
