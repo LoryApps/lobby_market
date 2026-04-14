@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ArrowLeft, Crown, Trophy, Users, Zap } from 'lucide-react'
@@ -17,6 +18,60 @@ interface CoalitionPageProps {
 }
 
 export const dynamic = 'force-dynamic'
+
+export async function generateMetadata({ params }: CoalitionPageProps): Promise<Metadata> {
+  const supabase = await createClient()
+
+  const { data: coalition } = await supabase
+    .from('coalitions')
+    .select('name, description, member_count, max_members, coalition_influence, wins, losses, is_public')
+    .eq('id', params.id)
+    .single()
+
+  if (!coalition) {
+    return { title: 'Coalition · Lobby Market' }
+  }
+
+  const name = coalition.name ?? 'Unnamed Coalition'
+  const totalMatches = coalition.wins + coalition.losses
+  const winRate =
+    totalMatches > 0 ? Math.round((coalition.wins / totalMatches) * 100) : null
+
+  const descriptionParts = [
+    `${coalition.member_count} members · ${Math.round(coalition.coalition_influence)} influence`,
+    winRate !== null ? `${winRate}% win rate across ${totalMatches} campaigns` : null,
+    coalition.description ?? null,
+  ].filter(Boolean)
+
+  const description = descriptionParts.join(' · ')
+  const fullTitle = `${name} · Lobby Market`
+  const ogImageUrl = `/api/og/coalition/${params.id}`
+
+  return {
+    title: fullTitle,
+    description,
+    openGraph: {
+      title: fullTitle,
+      description,
+      type: 'website',
+      siteName: 'Lobby Market',
+      images: [
+        {
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
+          alt: name,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: fullTitle,
+      description,
+      images: [ogImageUrl],
+    },
+  }
+}
 
 export default async function CoalitionPage({ params }: CoalitionPageProps) {
   const supabase = await createClient()

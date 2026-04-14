@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { DebateArena } from '@/components/debate/DebateArena'
@@ -17,6 +18,81 @@ interface DebatePageProps {
 }
 
 export const dynamic = 'force-dynamic'
+
+const STATUS_LABEL: Record<string, string> = {
+  scheduled: 'Scheduled',
+  live: 'Live Now',
+  ended: 'Ended',
+  cancelled: 'Cancelled',
+}
+
+const TYPE_LABEL: Record<string, string> = {
+  oxford: 'Oxford Debate',
+  town_hall: 'Town Hall',
+  rapid_fire: 'Rapid Fire',
+  panel: 'Panel',
+}
+
+export async function generateMetadata({ params }: DebatePageProps): Promise<Metadata> {
+  const supabase = await createClient()
+
+  const { data: debate } = await supabase
+    .from('debates')
+    .select('title, description, type, status, scheduled_at, topic_id, viewer_count')
+    .eq('id', params.id)
+    .single()
+
+  if (!debate) {
+    return { title: 'Debate · Lobby Market' }
+  }
+
+  const { data: topic } = await supabase
+    .from('topics')
+    .select('statement, category')
+    .eq('id', debate.topic_id)
+    .single()
+
+  const title = debate.title ?? 'Untitled Debate'
+  const statusLabel = STATUS_LABEL[debate.status] ?? debate.status
+  const typeLabel = TYPE_LABEL[debate.type] ?? debate.type
+
+  const descriptionParts = [
+    `${typeLabel} · ${statusLabel}`,
+    topic?.statement ? `On: ${topic.statement}` : null,
+    debate.description ?? null,
+  ].filter(Boolean)
+
+  const description = descriptionParts.join(' — ')
+  const fullTitle = `${title} · Lobby Market`
+  const ogImageUrl = `/api/og/debate/${params.id}`
+
+  return {
+    title: fullTitle,
+    description,
+    openGraph: {
+      title: fullTitle,
+      description,
+      type: 'article',
+      siteName: 'Lobby Market',
+      publishedTime: debate.scheduled_at,
+      tags: topic?.category ? [topic.category, 'debate'] : ['debate'],
+      images: [
+        {
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: fullTitle,
+      description,
+      images: [ogImageUrl],
+    },
+  }
+}
 
 export default async function DebatePage({ params }: DebatePageProps) {
   const supabase = await createClient()
