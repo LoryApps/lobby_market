@@ -17,6 +17,7 @@ import {
 import Link from 'next/link'
 import { Avatar } from '@/components/ui/Avatar'
 import { Button } from '@/components/ui/Button'
+import { GiftCloutButton } from '@/components/clout/GiftCloutButton'
 import { RoleBadge, getRoleRingClass } from './RoleBadge'
 import { FollowersModal, type FollowTab } from './FollowersModal'
 
@@ -404,25 +405,35 @@ export function ProfileHeader({
             </Link>
           </div>
         ) : (
-          <Button
-            variant={following ? 'default' : 'for'}
-            size="md"
-            disabled={toggling}
-            onClick={handleFollow}
-            onMouseEnter={() => setHovered(true)}
-            onMouseLeave={() => setHovered(false)}
-            className={cn(
-              'min-w-[110px] transition-colors',
-              following && hovered && 'border-against-500/50 text-against-400 hover:bg-against-950/40'
+          <div className="flex items-center gap-2">
+            <Button
+              variant={following ? 'default' : 'for'}
+              size="md"
+              disabled={toggling}
+              onClick={handleFollow}
+              onMouseEnter={() => setHovered(true)}
+              onMouseLeave={() => setHovered(false)}
+              className={cn(
+                'min-w-[110px] transition-colors',
+                following && hovered && 'border-against-500/50 text-against-400 hover:bg-against-950/40'
+              )}
+            >
+              {toggling ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <FollowIcon className="h-4 w-4" />
+              )}
+              {followLabel}
+            </Button>
+
+            {/* Gift Clout — only shown to logged-in viewers */}
+            {viewerId && (
+              <GiftCloutButton
+                recipientId={profile.id}
+                recipientName={profile.display_name || profile.username}
+              />
             )}
-          >
-            {toggling ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <FollowIcon className="h-4 w-4" />
-            )}
-            {followLabel}
-          </Button>
+          </div>
         )}
       </div>
     </div>

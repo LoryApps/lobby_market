@@ -31,6 +31,7 @@ import { Avatar } from '@/components/ui/Avatar'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { Skeleton } from '@/components/ui/Skeleton'
+import { GiftCloutButton } from '@/components/clout/GiftCloutButton'
 import { cn } from '@/lib/utils/cn'
 import type { TopicArgumentWithAuthor } from '@/lib/supabase/types'
 
@@ -174,8 +175,9 @@ function ArgumentCard({
         <p className="text-sm text-surface-300 leading-relaxed">{arg.content}</p>
       </div>
 
-      {/* Right: upvote button */}
-      <div className="flex-shrink-0 flex flex-col items-center gap-0.5 pl-1">
+      {/* Right: upvote + tip column */}
+      <div className="flex-shrink-0 flex flex-col items-center gap-1.5 pl-1">
+        {/* Upvote */}
         <button
           type="button"
           onClick={handleUpvote}
@@ -198,6 +200,15 @@ function ArgumentCard({
           )}
           <span className="text-[10px] font-mono">{arg.upvotes}</span>
         </button>
+
+        {/* Tip Clout — only for other users' arguments */}
+        {canUpvote && arg.author && (
+          <GiftCloutButton
+            recipientId={arg.user_id}
+            recipientName={arg.author.display_name || arg.author.username || 'this user'}
+            size="sm"
+          />
+        )}
       </div>
     </div>
   )

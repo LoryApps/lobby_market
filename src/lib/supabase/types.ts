@@ -1348,6 +1348,19 @@ export type Database = {
         };
         Returns: unknown;
       };
+      gift_clout: {
+        Args: {
+          p_recipient_id: string;
+          p_amount: number;
+          p_reason?: string;
+        };
+        Returns: {
+          status: string;
+          new_balance?: number;
+          balance?: number;
+          recipient_username?: string;
+        };
+      };
     };
     Enums: {
       user_role: "person" | "debator" | "troll_catcher" | "elder";
