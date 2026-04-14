@@ -11,6 +11,7 @@ import {
   LayoutGrid,
 } from 'lucide-react'
 import { ProfileHeader } from './ProfileHeader'
+import { ProfileCompletionBanner } from './ProfileCompletionBanner'
 import { VoteHistoryTimeline, type VoteHistoryEntry } from './VoteHistoryTimeline'
 import { AchievementGrid } from './AchievementGrid'
 import type {
@@ -121,6 +122,11 @@ export function ProfilePage({
         initialFollowing={initialFollowing}
         viewerId={viewerId}
       />
+
+      {/* Profile completion prompt — only visible to owner when profile is incomplete */}
+      {isOwner && (
+        <ProfileCompletionBanner profile={profile} userId={profile.id} />
+      )}
 
       {/* Stats row */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
