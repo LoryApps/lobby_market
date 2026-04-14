@@ -15,7 +15,19 @@ import { cn } from '@/lib/utils/cn'
 export const metadata: Metadata = {
   title: 'Community Guidelines · Lobby Market',
   description:
-    'The rules and norms that govern participation on Lobby Market.',
+    'The rules and norms that govern participation on Lobby Market — argue in good faith, keep it about ideas, and build consensus.',
+  openGraph: {
+    title: 'Community Guidelines · Lobby Market',
+    description:
+      'Argue in good faith, keep it about ideas, and build real consensus.',
+    type: 'website',
+    siteName: 'Lobby Market',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Community Guidelines · Lobby Market',
+    description: 'Argue in good faith, keep it about ideas, and build real consensus.',
+  },
 }
 
 const PRINCIPLES = [

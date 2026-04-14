@@ -24,6 +24,19 @@ export const metadata: Metadata = {
   title: 'About · Lobby Market',
   description:
     'Lobby Market is a consensus-building platform where ideas compete, votes decide, and the best arguments become law.',
+  openGraph: {
+    title: 'About · Lobby Market',
+    description:
+      'A platform where ideas compete, votes decide, and the best arguments become law.',
+    type: 'website',
+    siteName: 'Lobby Market',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'About · Lobby Market',
+    description:
+      'A platform where ideas compete, votes decide, and the best arguments become law.',
+  },
 }
 
 const HOW_IT_WORKS = [

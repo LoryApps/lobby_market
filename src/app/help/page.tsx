@@ -8,6 +8,17 @@ import { cn } from '@/lib/utils/cn'
 export const metadata: Metadata = {
   title: 'Help & FAQ · Lobby Market',
   description: 'Answers to common questions about Lobby Market — voting, debates, laws, Clout, and more.',
+  openGraph: {
+    title: 'Help & FAQ · Lobby Market',
+    description: 'Voting, debates, laws, Clout — everything you need to know about the Lobby.',
+    type: 'website',
+    siteName: 'Lobby Market',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Help & FAQ · Lobby Market',
+    description: 'Voting, debates, laws, Clout — everything you need to know about the Lobby.',
+  },
 }
 
 type FaqItem = { q: string; a: string }
