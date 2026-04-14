@@ -26,11 +26,11 @@ export async function GET() {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  // Fetch core profile stats
+  // Fetch core profile stats (include daily vote fields + role for limit calc)
   const { data: profile } = await supabase
     .from('profiles')
     .select(
-      'total_votes, blue_vote_count, red_vote_count, vote_streak, clout, reputation_score, total_arguments, created_at'
+      'total_votes, blue_vote_count, red_vote_count, vote_streak, clout, reputation_score, total_arguments, created_at, role, daily_votes_used, daily_votes_reset_at'
     )
     .eq('id', user.id)
     .maybeSingle()
@@ -163,6 +163,22 @@ export async function GET() {
       ? Math.round((correctPredictions.length / resolvedPredictions.length) * 100)
       : null
 
+  // Daily vote limit by role
+  const DAILY_LIMITS: Record<string, number> = {
+    person: 10,
+    debator: 20,
+    troll_catcher: 30,
+    elder: 50,
+  }
+  const dailyLimit = DAILY_LIMITS[profile.role ?? 'person'] ?? 10
+
+  // Determine effective votes today (reset if past reset_at)
+  const resetAt = profile.daily_votes_reset_at
+    ? new Date(profile.daily_votes_reset_at)
+    : null
+  const votesToday =
+    resetAt && new Date() < resetAt ? (profile.daily_votes_used ?? 0) : 0
+
   return NextResponse.json({
     profile: {
       total_votes: profile.total_votes,
@@ -173,6 +189,11 @@ export async function GET() {
       reputation_score: profile.reputation_score,
       total_arguments: profile.total_arguments,
       member_since: profile.created_at,
+    },
+    today: {
+      votes_used: votesToday,
+      daily_limit: dailyLimit,
+      reset_at: profile.daily_votes_reset_at ?? null,
     },
     accuracy,
     resolved_votes: resolvedVotes.length,

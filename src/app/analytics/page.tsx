@@ -16,6 +16,8 @@ import {
   MessageSquare,
   Award,
   ChevronRight,
+  CheckCircle2,
+  Circle,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -37,6 +39,11 @@ interface AnalyticsData {
   }
   accuracy: number | null
   resolved_votes: number
+  today?: {
+    votes_used: number
+    daily_limit: number
+    reset_at: string | null
+  }
   topCategories: Array<{
     category: string
     count: number
@@ -93,6 +100,136 @@ function AnalyticsSkeleton() {
 }
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
+
+function TodayProgressCard({
+  votesUsed,
+  dailyLimit,
+  streak,
+}: {
+  votesUsed: number
+  dailyLimit: number
+  streak: number
+}) {
+  const pct = Math.min((votesUsed / dailyLimit) * 100, 100)
+  const goalMet = votesUsed >= dailyLimit
+  const hasVotedToday = votesUsed > 0
+
+  // Streak-driven heat color
+  const streakColor =
+    streak >= 30
+      ? 'text-against-300'
+      : streak >= 7
+      ? 'text-gold'
+      : streak >= 1
+      ? 'text-amber-400'
+      : 'text-surface-500'
+
+  const barColor =
+    pct >= 100
+      ? 'bg-gradient-to-r from-emerald to-emerald/70'
+      : pct >= 60
+      ? 'bg-gradient-to-r from-for-500 to-for-400'
+      : 'bg-gradient-to-r from-for-700 to-for-500'
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35, delay: 0 }}
+      className="rounded-2xl bg-surface-100 border border-surface-300 p-5"
+    >
+      <div className="flex items-center gap-2 text-xs font-mono text-surface-500 uppercase tracking-wider mb-4">
+        <Flame className="h-3.5 w-3.5 text-gold" />
+        Today&apos;s Progress
+      </div>
+
+      <div className="flex items-start gap-4">
+        {/* Streak display */}
+        <div className="flex flex-col items-center gap-1 flex-shrink-0">
+          <div className={cn('text-3xl font-mono font-bold', streakColor)}>
+            {streak}
+          </div>
+          <div className="text-[10px] font-mono text-surface-500 uppercase tracking-wider">
+            day{streak !== 1 ? 's' : ''}
+          </div>
+          <div className="flex items-center gap-0.5 text-[10px] font-mono text-surface-500">
+            <Flame className={cn('h-3 w-3', streakColor)} />
+            streak
+          </div>
+        </div>
+
+        {/* Separator */}
+        <div className="w-px self-stretch bg-surface-300 flex-shrink-0" />
+
+        {/* Daily vote progress */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-mono font-medium text-white">
+              Daily votes
+            </span>
+            <span className={cn(
+              'text-sm font-mono font-bold',
+              goalMet ? 'text-emerald' : 'text-for-400'
+            )}>
+              {votesUsed}
+              <span className="text-surface-500 font-normal">/{dailyLimit}</span>
+            </span>
+          </div>
+
+          {/* Progress bar */}
+          <div className="relative h-2.5 rounded-full bg-surface-300 overflow-hidden mb-3">
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: `${pct}%` }}
+              transition={{ duration: 0.7, delay: 0.2, ease: 'easeOut' }}
+              className={cn('absolute inset-y-0 left-0 rounded-full', barColor)}
+            />
+          </div>
+
+          {/* Status message */}
+          {goalMet ? (
+            <div className="flex items-center gap-1.5 text-xs font-mono text-emerald">
+              <CheckCircle2 className="h-3.5 w-3.5 flex-shrink-0" />
+              Daily goal complete — streak extended!
+            </div>
+          ) : hasVotedToday ? (
+            <div className="flex items-center gap-1.5 text-xs font-mono text-surface-500">
+              <Circle className="h-3.5 w-3.5 flex-shrink-0 text-for-500" />
+              {dailyLimit - votesUsed} more vote{dailyLimit - votesUsed !== 1 ? 's' : ''} to reach your daily goal
+            </div>
+          ) : streak > 0 ? (
+            <div className="flex items-center gap-1.5 text-xs font-mono text-against-400">
+              <Flame className="h-3.5 w-3.5 flex-shrink-0" />
+              Vote today to keep your {streak}-day streak alive!
+            </div>
+          ) : (
+            <div className="flex items-center gap-1.5 text-xs font-mono text-surface-500">
+              <Circle className="h-3.5 w-3.5 flex-shrink-0 text-surface-400" />
+              Cast your first vote today to start a streak
+            </div>
+          )}
+        </div>
+      </div>
+
+      {!goalMet && (
+        <div className="mt-4 pt-4 border-t border-surface-300">
+          <Link
+            href="/"
+            className={cn(
+              'inline-flex items-center gap-2 px-3 py-1.5 rounded-lg',
+              'bg-for-600/20 border border-for-600/30 text-for-400',
+              'text-xs font-mono font-medium',
+              'hover:bg-for-600/30 transition-colors'
+            )}
+          >
+            Go vote
+            <ChevronRight className="h-3.5 w-3.5" />
+          </Link>
+        </div>
+      )}
+    </motion.div>
+  )
+}
 
 function StatCard({
   label,
@@ -551,6 +688,15 @@ export default function AnalyticsPage() {
 
         {!loading && data && (
           <div className="space-y-4">
+            {/* Today's progress — streak + daily vote goal */}
+            {data.today && (
+              <TodayProgressCard
+                votesUsed={data.today.votes_used}
+                dailyLimit={data.today.daily_limit}
+                streak={data.profile.vote_streak}
+              />
+            )}
+
             {/* Hero stats row */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <StatCard

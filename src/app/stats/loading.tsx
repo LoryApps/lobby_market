@@ -1,10 +1,121 @@
+import { BarChart2 } from 'lucide-react'
+import { TopBar } from '@/components/layout/TopBar'
+import { BottomNav } from '@/components/layout/BottomNav'
+import { Skeleton } from '@/components/ui/Skeleton'
+
+function SkeletonStatCard() {
+  return (
+    <div className="rounded-2xl bg-surface-100 border border-surface-300 p-5 flex flex-col gap-2">
+      <Skeleton className="h-3 w-14" />
+      <Skeleton className="h-8 w-20" />
+      <Skeleton className="h-3 w-12" />
+    </div>
+  )
+}
+
 export default function StatsLoading() {
   return (
-    <div className="min-h-screen bg-surface-50 flex items-center justify-center">
-      <div className="flex flex-col items-center gap-3">
-        <div className="h-8 w-8 rounded-full border-2 border-for-500/30 border-t-for-500 animate-spin" />
-        <p className="text-xs font-mono text-surface-500">Loading stats…</p>
-      </div>
+    <div className="min-h-screen bg-surface-50">
+      <TopBar />
+      <main className="max-w-6xl mx-auto px-4 py-8 pb-24 md:pb-10">
+        {/* Header */}
+        <div className="flex items-center gap-3 mb-8">
+          <div className="flex items-center justify-center h-11 w-11 rounded-xl bg-for-500/10 border border-for-500/30 flex-shrink-0">
+            <BarChart2 className="h-5 w-5 text-for-400" />
+          </div>
+          <div className="space-y-1.5">
+            <Skeleton className="h-7 w-36" />
+            <Skeleton className="h-3.5 w-56" />
+          </div>
+        </div>
+
+        {/* Totals grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 mb-6">
+          {Array.from({ length: 7 }).map((_, i) => (
+            <SkeletonStatCard key={i} />
+          ))}
+        </div>
+
+        {/* Two-column section: topic status + top topics */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          {/* Topic status breakdown */}
+          <div className="rounded-2xl bg-surface-100 border border-surface-300 p-6">
+            <Skeleton className="h-3 w-28 mb-5" />
+            <div className="space-y-3">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <Skeleton className="h-5 w-5 rounded-md flex-shrink-0" />
+                  <div className="flex-1 space-y-1.5">
+                    <div className="flex justify-between">
+                      <Skeleton className="h-3.5 w-20" />
+                      <Skeleton className="h-3.5 w-8" />
+                    </div>
+                    <Skeleton className="h-1.5 w-full rounded-full" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Top topics */}
+          <div className="rounded-2xl bg-surface-100 border border-surface-300 p-6">
+            <Skeleton className="h-3 w-24 mb-5" />
+            <div className="space-y-3">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-surface-200">
+                  <Skeleton className="h-5 w-5 rounded flex-shrink-0 mt-0.5" />
+                  <div className="flex-1 space-y-1.5">
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-3 w-3/4" />
+                    <Skeleton className="h-1.5 w-full rounded-full" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom row: category distribution + top debaters */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Category distribution */}
+          <div className="rounded-2xl bg-surface-100 border border-surface-300 p-6">
+            <Skeleton className="h-3 w-36 mb-5" />
+            <div className="space-y-2.5">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <Skeleton className="h-3 w-20 flex-shrink-0" />
+                  <div className="flex-1">
+                    <div
+                      className="h-4 rounded-full animate-pulse bg-surface-300/50"
+                      style={{ width: `${65 - i * 8}%` }}
+                    />
+                  </div>
+                  <Skeleton className="h-3 w-8 flex-shrink-0" />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Top debaters */}
+          <div className="rounded-2xl bg-surface-100 border border-surface-300 p-6">
+            <Skeleton className="h-3 w-28 mb-5" />
+            <div className="space-y-3">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <Skeleton className="h-5 w-5 rounded flex-shrink-0 text-surface-500" />
+                  <Skeleton className="h-9 w-9 rounded-full flex-shrink-0" />
+                  <div className="flex-1 space-y-1.5">
+                    <Skeleton className="h-4 w-28" />
+                    <Skeleton className="h-3 w-16" />
+                  </div>
+                  <Skeleton className="h-5 w-16 rounded-full flex-shrink-0" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </main>
+      <BottomNav />
     </div>
   )
 }
