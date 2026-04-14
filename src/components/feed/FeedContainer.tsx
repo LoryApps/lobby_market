@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useCallback, useState } from 'react'
 import Link from 'next/link'
-import { Users, Search, Keyboard, X, RefreshCw, ChevronUp, Sparkles } from 'lucide-react'
+import { Users, Search, Keyboard, X, RefreshCw, ChevronUp, Sparkles, UserPlus, Check, Loader2 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useFeedStore } from '@/lib/stores/feed-store'
 import { useVoteStore } from '@/lib/stores/vote-store'
@@ -12,8 +12,105 @@ import { FeedTutorial } from '@/components/feed/FeedTutorial'
 import { DailyQuorumNudge } from '@/components/feed/DailyQuorumNudge'
 import { FeedFilters } from '@/components/feed/FeedFilters'
 import { PulseDot } from '@/components/simulation/PulseDot'
+import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
 import type { Topic } from '@/lib/supabase/types'
+
+// ─── Suggested user types ─────────────────────────────────────────────────────
+
+interface SuggestedFeedUser {
+  id: string
+  username: string
+  display_name: string | null
+  avatar_url: string | null
+  role: string
+  clout: number
+  bio: string | null
+}
+
+function SuggestedUserRow({ user }: { user: SuggestedFeedUser }) {
+  const [following, setFollowing] = useState(false)
+  const [busy, setBusy] = useState(false)
+
+  async function toggle(e: React.MouseEvent) {
+    e.preventDefault()
+    if (busy) return
+    setBusy(true)
+    try {
+      await fetch('/api/follow', {
+        method: following ? 'DELETE' : 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ target_id: user.id }),
+      })
+      setFollowing((f) => !f)
+    } catch {
+      // best-effort
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <div className="flex items-center gap-3 p-3 rounded-xl bg-surface-200/60 border border-surface-300/60 hover:border-surface-400/60 transition-colors">
+      <Link href={`/profile/${user.username}`} className="flex items-center gap-2.5 flex-1 min-w-0">
+        <Avatar src={user.avatar_url} fallback={user.display_name || user.username} size="sm" />
+        <div className="min-w-0">
+          <p className="text-xs font-semibold text-white truncate">
+            {user.display_name || user.username}
+          </p>
+          <p className="text-[11px] text-surface-500 truncate">@{user.username}</p>
+        </div>
+      </Link>
+      <button
+        onClick={toggle}
+        disabled={busy}
+        aria-label={following ? `Unfollow @${user.username}` : `Follow @${user.username}`}
+        className={cn(
+          'flex-shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-mono font-semibold',
+          'border transition-all disabled:opacity-50',
+          following
+            ? 'bg-for-600/20 border-for-600/40 text-for-400'
+            : 'bg-purple/80 border-purple/50 text-white hover:bg-purple'
+        )}
+      >
+        {busy ? <Loader2 className="h-3 w-3 animate-spin" /> : following ? <Check className="h-3 w-3" /> : <UserPlus className="h-3 w-3" />}
+        {following ? 'Following' : 'Follow'}
+      </button>
+    </div>
+  )
+}
+
+function SuggestedPeoplePanel() {
+  const [people, setPeople] = useState<SuggestedFeedUser[]>([])
+
+  useEffect(() => {
+    fetch('/api/users/suggestions?limit=5')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (d?.suggestions) setPeople(d.suggestions as SuggestedFeedUser[]) })
+      .catch(() => {})
+  }, [])
+
+  if (people.length === 0) return null
+
+  return (
+    <div className="w-full max-w-xs mt-6">
+      <p className="text-[11px] font-mono font-semibold text-surface-500 uppercase tracking-wider mb-2 text-center">
+        Suggested to follow
+      </p>
+      <div className="space-y-1.5">
+        {people.map((u) => (
+          <SuggestedUserRow key={u.id} user={u} />
+        ))}
+      </div>
+      <Link
+        href="/search?tab=people"
+        className="mt-3 block text-center text-[11px] font-mono text-purple hover:text-purple/80 transition-colors"
+      >
+        Find more people →
+      </Link>
+    </div>
+  )
+}
 
 function FeedSkeleton() {
   return (
@@ -50,26 +147,20 @@ function FeedSkeleton() {
 
 function FollowingEmptyState({ followingCount }: { followingCount: number }) {
   if (followingCount === 0) {
-    // User isn't following anyone
+    // User isn't following anyone — show suggestions
     return (
-      <div className="feed-card flex items-center justify-center">
-        <div className="text-center px-8 max-w-xs">
-          <div className="flex items-center justify-center h-14 w-14 rounded-2xl bg-purple/10 border border-purple/30 mx-auto mb-5">
+      <div className="feed-card flex items-center justify-center py-8">
+        <div className="flex flex-col items-center px-6 max-w-sm w-full">
+          <div className="flex items-center justify-center h-14 w-14 rounded-2xl bg-purple/10 border border-purple/30 mb-4">
             <Users className="h-7 w-7 text-purple" />
           </div>
-          <h2 className="text-xl font-bold text-white font-mono mb-2">
+          <h2 className="text-xl font-bold text-white font-mono mb-2 text-center">
             Nobody followed yet
           </h2>
-          <p className="text-sm text-surface-500 leading-relaxed mb-6">
-            Follow people to see the topics they propose here — your own curated stream.
+          <p className="text-sm text-surface-500 leading-relaxed mb-2 text-center">
+            Follow people to see the topics they propose — your own curated stream.
           </p>
-          <Link
-            href="/search?tab=people"
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-purple/80 hover:bg-purple text-white text-sm font-mono font-medium transition-colors"
-          >
-            <Search className="h-4 w-4" />
-            Find people to follow
-          </Link>
+          <SuggestedPeoplePanel />
         </div>
       </div>
     )

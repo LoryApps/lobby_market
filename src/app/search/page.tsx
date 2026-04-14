@@ -16,6 +16,8 @@ import {
   Clock,
   Tag,
   X,
+  UserPlus,
+  Check,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -57,6 +59,18 @@ interface PersonResult {
   role: string
   clout: number
   reputation_score: number
+}
+
+interface SuggestedUser {
+  id: string
+  username: string
+  display_name: string | null
+  avatar_url: string | null
+  role: string
+  clout: number
+  reputation_score: number
+  total_votes: number
+  bio: string | null
 }
 
 interface TrendingData {
@@ -247,6 +261,95 @@ function PersonRow({ item }: { item: PersonResult }) {
   )
 }
 
+// ─── Suggested person card (with inline follow button) ───────────────────────
+
+function SuggestPersonCard({ user }: { user: SuggestedUser }) {
+  const [following, setFollowing] = useState(false)
+  const [loading, setLoading] = useState(false)
+
+  async function handleFollow(e: React.MouseEvent) {
+    e.preventDefault()
+    e.stopPropagation()
+    if (loading) return
+    setLoading(true)
+    try {
+      if (following) {
+        await fetch('/api/follow', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ target_id: user.id }),
+        })
+        setFollowing(false)
+      } else {
+        await fetch('/api/follow', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ target_id: user.id }),
+        })
+        setFollowing(true)
+      }
+    } catch {
+      // best-effort
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div className="flex items-center gap-3 p-3.5 rounded-xl bg-surface-100 border border-surface-300 hover:border-surface-400 transition-colors group">
+      <Link href={`/profile/${user.username}`} className="flex items-center gap-3 flex-1 min-w-0">
+        <Avatar
+          src={user.avatar_url}
+          fallback={user.display_name || user.username}
+          size="md"
+        />
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-semibold text-white group-hover:text-for-400 transition-colors truncate">
+            {user.display_name || user.username}
+          </p>
+          <div className="flex items-center gap-2 mt-0.5">
+            <p className="text-xs text-surface-500">@{user.username}</p>
+            <span className="text-surface-600 text-xs">·</span>
+            <div className="flex items-center gap-1 text-xs text-gold">
+              <TrendingUp className="h-2.5 w-2.5" />
+              <span>{user.clout.toLocaleString()}</span>
+            </div>
+          </div>
+          {user.bio && (
+            <p className="text-xs text-surface-500 mt-0.5 line-clamp-1">{user.bio}</p>
+          )}
+        </div>
+      </Link>
+      <button
+        onClick={handleFollow}
+        disabled={loading}
+        aria-label={following ? `Unfollow @${user.username}` : `Follow @${user.username}`}
+        className={cn(
+          'flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-semibold',
+          'border transition-all duration-150 disabled:opacity-50',
+          following
+            ? 'bg-for-600/20 border-for-600/50 text-for-400 hover:bg-against-500/10 hover:border-against-500/40 hover:text-against-400'
+            : 'bg-surface-300 border-surface-400 text-white hover:bg-for-600 hover:border-for-600'
+        )}
+      >
+        {loading ? (
+          <Loader2 className="h-3 w-3 animate-spin" />
+        ) : following ? (
+          <>
+            <Check className="h-3 w-3" />
+            Following
+          </>
+        ) : (
+          <>
+            <UserPlus className="h-3 w-3" />
+            Follow
+          </>
+        )}
+      </button>
+    </div>
+  )
+}
+
 // ─── Discovery panel (shown when query is empty) ──────────────────────────────
 
 function DiscoveryPanelSkeleton() {
@@ -272,11 +375,13 @@ function DiscoveryPanelSkeleton() {
 
 function DiscoveryPanel({
   data,
+  suggestedPeople,
   recentSearches,
   onQuery,
   onRemoveRecent,
 }: {
   data: TrendingData | null
+  suggestedPeople: SuggestedUser[]
   recentSearches: string[]
   onQuery: (q: string) => void
   onRemoveRecent: (q: string) => void
@@ -471,8 +576,33 @@ function DiscoveryPanel({
         </section>
       )}
 
+      {/* Suggested people to follow */}
+      {suggestedPeople.length > 0 && (
+        <section>
+          <div className="flex items-center justify-between mb-2.5">
+            <div className="flex items-center gap-2">
+              <Users className="h-3.5 w-3.5 text-purple" />
+              <h2 className="text-xs font-mono font-semibold text-surface-500 uppercase tracking-wider">
+                People to Follow
+              </h2>
+            </div>
+            <Link
+              href="/search?tab=people"
+              className="text-xs font-mono text-purple hover:text-purple/80 transition-colors"
+            >
+              See all →
+            </Link>
+          </div>
+          <div className="space-y-2">
+            {suggestedPeople.map((u) => (
+              <SuggestPersonCard key={u.id} user={u} />
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* Empty discovery state (DB not seeded) */}
-      {data.trending.length === 0 && data.recentLaws.length === 0 && data.categories.length === 0 && (
+      {data.trending.length === 0 && data.recentLaws.length === 0 && data.categories.length === 0 && suggestedPeople.length === 0 && (
         <div className="flex flex-col items-center justify-center py-16 text-center">
           <div className="h-12 w-12 rounded-xl bg-surface-200 flex items-center justify-center mb-4">
             <Search className="h-5 w-5 text-surface-500" />
@@ -522,6 +652,7 @@ function SearchContent() {
   const [results, setResults] = useState<SearchResult[]>([])
   const [loading, setLoading] = useState(false)
   const [discoveryData, setDiscoveryData] = useState<TrendingData | null>(null)
+  const [suggestedPeople, setSuggestedPeople] = useState<SuggestedUser[]>([])
   const [recentSearches, setRecentSearches] = useState<string[]>([])
   const inputRef = useRef<HTMLInputElement>(null)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -530,10 +661,13 @@ function SearchContent() {
   useEffect(() => {
     setRecentSearches(loadRecent())
 
-    fetch('/api/search/trending')
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d: TrendingData | null) => {
-        if (d) setDiscoveryData(d)
+    Promise.all([
+      fetch('/api/search/trending').then((r) => (r.ok ? r.json() : null)),
+      fetch('/api/users/suggestions?limit=6').then((r) => (r.ok ? r.json() : null)),
+    ])
+      .then(([trending, suggestions]) => {
+        if (trending) setDiscoveryData(trending as TrendingData)
+        if (suggestions?.suggestions) setSuggestedPeople(suggestions.suggestions as SuggestedUser[])
       })
       .catch(() => {})
   }, [])
@@ -682,6 +816,7 @@ function SearchContent() {
         {showDiscovery ? (
           <DiscoveryPanel
             data={discoveryData}
+            suggestedPeople={suggestedPeople}
             recentSearches={recentSearches}
             onQuery={handleRecentClick}
             onRemoveRecent={handleRemoveRecent}
