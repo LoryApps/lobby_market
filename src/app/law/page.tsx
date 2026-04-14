@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { Gavel, Network } from 'lucide-react'
+import { Gavel, Network, Rss } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -58,17 +58,31 @@ export default async function LawIndexPage() {
               </div>
             </div>
 
-            <Link
-              href="/law/graph"
-              className={cn(
-                'flex-shrink-0 inline-flex items-center gap-2 px-3 py-2 rounded-lg',
-                'bg-emerald/10 border border-emerald/30 text-emerald text-xs font-mono font-medium',
-                'hover:bg-emerald/20 hover:border-emerald/50 transition-colors'
-              )}
-            >
-              <Network className="h-4 w-4" />
-              <span className="hidden sm:inline">Law Graph</span>
-            </Link>
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <Link
+                href="/api/rss"
+                aria-label="RSS feed of laws and active topics"
+                className={cn(
+                  'inline-flex items-center justify-center h-9 w-9 rounded-lg',
+                  'bg-gold/10 border border-gold/30 text-gold',
+                  'hover:bg-gold/20 hover:border-gold/50 transition-colors'
+                )}
+              >
+                <Rss className="h-4 w-4" />
+              </Link>
+
+              <Link
+                href="/law/graph"
+                className={cn(
+                  'inline-flex items-center gap-2 px-3 py-2 rounded-lg',
+                  'bg-emerald/10 border border-emerald/30 text-emerald text-xs font-mono font-medium',
+                  'hover:bg-emerald/20 hover:border-emerald/50 transition-colors'
+                )}
+              >
+                <Network className="h-4 w-4" />
+                <span className="hidden sm:inline">Law Graph</span>
+              </Link>
+            </div>
           </div>
         </div>
 

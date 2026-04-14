@@ -9,6 +9,13 @@ export const metadata: Metadata = {
   },
   description: 'Write the law. Build the consensus. A platform where ideas compete, votes decide, and the best arguments become law.',
   metadataBase: new URL('https://lobby.market'),
+  alternates: {
+    types: {
+      'application/rss+xml': [
+        { url: 'https://lobby.market/api/rss', title: 'Lobby Market — Laws & Active Topics' },
+      ],
+    },
+  },
   openGraph: {
     type: 'website',
     siteName: 'Lobby Market',

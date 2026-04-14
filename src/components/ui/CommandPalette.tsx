@@ -768,10 +768,23 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
                 close
               </div>
               <div className="ml-auto flex items-center gap-1.5 text-[10px] font-mono text-surface-600">
-                <HelpCircle className="h-3 w-3" />
-                <kbd className="px-1 py-0.5 rounded bg-surface-200 border border-surface-400 text-surface-500">
-                  ⌘K
-                </kbd>
+                <button
+                  type="button"
+                  onClick={() => {
+                    onClose()
+                    import('@/lib/hooks/useKeyboardShortcuts').then(({ openKeyboardShortcuts }) => {
+                      openKeyboardShortcuts()
+                    })
+                  }}
+                  className="flex items-center gap-1.5 text-surface-600 hover:text-surface-700 transition-colors"
+                  aria-label="Show keyboard shortcuts"
+                >
+                  <HelpCircle className="h-3 w-3" />
+                  <kbd className="px-1 py-0.5 rounded bg-surface-200 border border-surface-400 text-surface-500">
+                    ?
+                  </kbd>
+                  shortcuts
+                </button>
               </div>
             </div>
           </motion.div>
