@@ -9,6 +9,7 @@ import { Rostrum } from '@/components/floor/Rostrum'
 import { TopicCarousel } from '@/components/floor/TopicCarousel'
 import { SpectatorCount } from '@/components/floor/SpectatorCount'
 import { FloorControls } from '@/components/floor/FloorControls'
+import { FloorGraph } from '@/components/floor/FloorGraph'
 import { cn } from '@/lib/utils/cn'
 
 interface TheFloorProps {
@@ -144,17 +145,11 @@ export function TheFloor({ topics: initialTopics }: TheFloorProps) {
             onVotePulse={pulseTicket}
           />
         ) : (
-          <div className="h-full w-full flex items-center justify-center">
-            <div className="text-center max-w-md px-6">
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-surface-500 mb-3">
-                Graph View
-              </p>
-              <p className="text-lg text-surface-700">
-                Topic connection graph coming soon. For now, watch the chamber
-                breathe.
-              </p>
-            </div>
-          </div>
+          <FloorGraph
+            topics={topics}
+            selectedId={selectedTopicId}
+            onSelect={setSelectedTopicId}
+          />
         )}
       </div>
 
