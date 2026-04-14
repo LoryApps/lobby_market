@@ -49,6 +49,7 @@ import {
   HelpCircle,
   Zap,
   GitFork,
+  Calendar,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -257,6 +258,16 @@ const QUICK_LINKS: QuickLink[] = [
     icon: Settings,
     iconColor: 'text-surface-400',
     iconBg: 'bg-surface-300/20',
+  },
+  {
+    type: 'link',
+    id: 'digest',
+    label: 'Weekly Digest',
+    sublabel: 'Laws, debates, and top voices this week',
+    href: '/digest',
+    icon: Calendar,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
   },
 ]
 

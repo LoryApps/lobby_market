@@ -8,6 +8,7 @@ import {
   ArrowLeft,
   ArrowRight,
   BarChart2,
+  Calendar,
   FileText,
   Gavel,
   Landmark,
@@ -861,6 +862,23 @@ export default function StatsPage() {
                 </div>
               </motion.section>
             )}
+
+            {/* ── Digest link ── */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.75 }}
+              className="flex justify-center pb-2"
+            >
+              <Link
+                href="/digest"
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-surface-200 border border-surface-300 hover:border-surface-400 hover:bg-surface-300 transition-colors text-sm font-mono text-surface-500 hover:text-white"
+              >
+                <Calendar className="h-4 w-4" />
+                View Weekly Digest
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </motion.div>
 
             {/* ── Footer note ── */}
             <motion.p
