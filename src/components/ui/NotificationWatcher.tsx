@@ -7,8 +7,11 @@
  * push-based notification toasts — no polling needed.
  *
  * Behaviour:
- * - On mount, subscribes to INSERT events on the `notifications` table
- *   filtered to the current user.
+ * - On mount, fetches authoritative preferences from /api/notification-prefs
+ *   (server-synced) and writes them to localStorage so the Settings page sees
+ *   the canonical values.
+ * - Subscribes to INSERT events on the `notifications` table filtered to the
+ *   current user.
  * - Also runs a one-time initial fetch to catch any unread notifications
  *   from the last 15 minutes that arrived before the subscription was
  *   established.
@@ -207,6 +210,25 @@ export function NotificationWatcher() {
         data: { user },
       } = await supabase.auth.getUser()
       if (!user || !mounted) return
+
+      // ── 0. Sync prefs from server → localStorage ─────────────────────────
+      // This ensures preferences set on another device are respected here.
+      try {
+        const prefsRes = await fetch('/api/notification-prefs', { cache: 'no-store' })
+        if (prefsRes.ok && mounted) {
+          const serverPrefs = (await prefsRes.json()) as Partial<NotifPrefs>
+          const merged: NotifPrefs = { ...DEFAULT_PREFS, ...serverPrefs }
+          try {
+            localStorage.setItem(NOTIF_PREFS_KEY, JSON.stringify(merged))
+          } catch {
+            // localStorage unavailable
+          }
+        }
+      } catch {
+        // Server unreachable — keep whatever is in localStorage
+      }
+
+      if (!mounted) return
 
       // ── 1. Real-time subscription ────────────────────────────────────────
       channel = supabase

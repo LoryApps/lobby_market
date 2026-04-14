@@ -1284,6 +1284,53 @@ export type Database = {
         };
         Relationships: [];
       };
+      user_notification_prefs: {
+        Row: {
+          user_id: string;
+          achievement_earned: boolean;
+          debate_starting: boolean;
+          law_established: boolean;
+          topic_activated: boolean;
+          vote_threshold: boolean;
+          reply_received: boolean;
+          role_promoted: boolean;
+          lobby_update: boolean;
+          updated_at: string;
+        };
+        Insert: {
+          user_id: string;
+          achievement_earned?: boolean;
+          debate_starting?: boolean;
+          law_established?: boolean;
+          topic_activated?: boolean;
+          vote_threshold?: boolean;
+          reply_received?: boolean;
+          role_promoted?: boolean;
+          lobby_update?: boolean;
+          updated_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          achievement_earned?: boolean;
+          debate_starting?: boolean;
+          law_established?: boolean;
+          topic_activated?: boolean;
+          vote_threshold?: boolean;
+          reply_received?: boolean;
+          role_promoted?: boolean;
+          lobby_update?: boolean;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "user_notification_prefs_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: true;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
     };
     Views: {
       [_ in never]: never;

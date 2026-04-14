@@ -196,7 +196,7 @@ export default function SettingsPage() {
   const [savedBanner, setSavedBanner] = useState(false)
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  // Load user + prefs
+  // Load user + prefs (localStorage first for instant display, then server to sync)
   useEffect(() => {
     const supabase = createClient()
 
@@ -223,8 +223,22 @@ export default function SettingsPage() {
         role: profile?.role ?? 'person',
       })
 
+      // Show local prefs immediately while server fetch is in-flight
       setPrefs(loadPrefs())
       setLoading(false)
+
+      // Sync from server — overrides localStorage with authoritative values
+      try {
+        const res = await fetch('/api/notification-prefs')
+        if (res.ok) {
+          const serverPrefs = (await res.json()) as Partial<NotifPrefs>
+          const merged: NotifPrefs = { ...DEFAULT_PREFS, ...serverPrefs }
+          savePrefs(merged) // write server truth back to localStorage
+          setPrefs(merged)
+        }
+      } catch {
+        // Server unavailable — keep localStorage values
+      }
     }
 
     load()
@@ -234,6 +248,13 @@ export default function SettingsPage() {
     setPrefs((prev) => {
       const next = { ...prev, [key]: value }
       savePrefs(next)
+
+      // Persist to server (best-effort, no await)
+      fetch('/api/notification-prefs', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(next),
+      }).catch(() => {})
 
       // Flash "saved" banner
       if (saveTimer.current) clearTimeout(saveTimer.current)
