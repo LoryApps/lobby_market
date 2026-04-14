@@ -25,14 +25,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  let body: { statement?: string; category?: string; scope?: string }
+  let body: { statement?: string; description?: string; category?: string; scope?: string }
   try {
     body = await request.json()
   } catch {
     return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 })
   }
 
-  const { statement, category, scope } = body
+  const { statement, description, category, scope } = body
 
   // Validate statement
   if (!statement || typeof statement !== 'string' || statement.trim().length === 0) {
@@ -47,6 +47,19 @@ export async function POST(request: NextRequest) {
       { error: 'Statement must be 280 characters or fewer' },
       { status: 400 }
     )
+  }
+
+  // Validate optional description
+  if (description !== undefined && description !== null) {
+    if (typeof description !== 'string') {
+      return NextResponse.json({ error: 'Invalid description' }, { status: 400 })
+    }
+    if (description.trim().length > 2000) {
+      return NextResponse.json(
+        { error: 'Description must be 2000 characters or fewer' },
+        { status: 400 }
+      )
+    }
   }
 
   // Validate category
@@ -71,6 +84,7 @@ export async function POST(request: NextRequest) {
     .insert({
       author_id: user.id,
       statement: statement.trim(),
+      description: description?.trim() || null,
       category: category || null,
       scope: scope || 'Global',
       status: 'proposed',

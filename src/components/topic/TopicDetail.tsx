@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import {
   ArrowLeft,
   Calendar,
+  FileText,
   Globe,
   Info,
   Megaphone,
@@ -350,6 +351,19 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
                 </div>
               </div>
             </div>
+
+            {/* Topic context / description */}
+            {topic.description && (
+              <div className="mt-5 rounded-xl border border-surface-300 bg-surface-100 p-5">
+                <div className="flex items-center gap-2 text-xs font-mono text-surface-500 uppercase tracking-wider mb-3">
+                  <FileText className="h-3.5 w-3.5" aria-hidden="true" />
+                  Context
+                </div>
+                <p className="text-sm text-surface-700 leading-relaxed whitespace-pre-wrap break-words">
+                  {topic.description}
+                </p>
+              </div>
+            )}
 
             {/* Vote trend — sparkline momentum chart */}
             {topic.total_votes >= 2 && topic.status !== 'proposed' && (

@@ -87,6 +87,7 @@ export type Database = {
           id: string;
           author_id: string;
           statement: string;
+          description: string | null;
           category: string | null;
           scope: string;
           status: Database["public"]["Enums"]["topic_status"];
@@ -112,6 +113,7 @@ export type Database = {
           id?: string;
           author_id: string;
           statement: string;
+          description?: string | null;
           category?: string | null;
           scope?: string;
           status?: Database["public"]["Enums"]["topic_status"];
@@ -137,6 +139,7 @@ export type Database = {
           id?: string;
           author_id?: string;
           statement?: string;
+          description?: string | null;
           category?: string | null;
           scope?: string;
           status?: Database["public"]["Enums"]["topic_status"];

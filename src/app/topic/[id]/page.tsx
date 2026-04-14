@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: TopicPageProps): Promise<Meta
 
   const { data: topic } = await supabase
     .from('topics')
-    .select('statement, category, status, blue_pct, total_votes, created_at')
+    .select('statement, description, category, status, blue_pct, total_votes, created_at')
     .eq('id', params.id)
     .single()
 
@@ -32,7 +32,9 @@ export async function generateMetadata({ params }: TopicPageProps): Promise<Meta
   const label = statusLabel[topic.status] ?? topic.status
   const forPct = Math.round(topic.blue_pct ?? 50)
   const againstPct = 100 - forPct
-  const description = [
+  // Use the topic's own description as OG description when available,
+  // otherwise fall back to the stats summary.
+  const statsSummary = [
     `${label} · ${forPct}% For / ${againstPct}% Against`,
     topic.total_votes
       ? `${topic.total_votes.toLocaleString()} votes cast`
@@ -41,6 +43,11 @@ export async function generateMetadata({ params }: TopicPageProps): Promise<Meta
   ]
     .filter(Boolean)
     .join(' · ')
+
+  const topicDescription = (topic as { description?: string | null }).description
+  const description = topicDescription
+    ? `${topicDescription.slice(0, 160)}${topicDescription.length > 160 ? '…' : ''} · ${statsSummary}`
+    : statsSummary
 
   const title = `${topic.statement} · Lobby Market`
 

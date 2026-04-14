@@ -253,11 +253,16 @@ export function TopicCard({ topic, authorName, authorAvatar }: TopicCardProps) {
               </Badge>
             </div>
 
-            {/* Center: statement */}
-            <div className="flex-1 flex items-center justify-center py-4">
+            {/* Center: statement + optional context snippet */}
+            <div className="flex-1 flex flex-col items-center justify-center py-4 gap-3">
               <p className="text-2xl md:text-3xl font-bold text-center text-white leading-tight">
                 {topic.statement}
               </p>
+              {topic.description && (
+                <p className="text-xs text-surface-500 text-center leading-relaxed line-clamp-2 max-w-xs px-2">
+                  {topic.description}
+                </p>
+              )}
             </div>
 
             {/* Bottom: voting / support / law */}

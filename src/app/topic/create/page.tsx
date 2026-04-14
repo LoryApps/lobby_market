@@ -285,6 +285,7 @@ function WritingTips() {
 export default function CreateTopicPage() {
   const router = useRouter()
   const [statement, setStatement] = useState('')
+  const [description, setDescription] = useState('')
   const [category, setCategory] = useState('')
   const [scope, setScope] = useState('Global')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -299,6 +300,8 @@ export default function CreateTopicPage() {
 
   const charCount = statement.length
   const isOverLimit = charCount > MAX_CHARS
+  const descCount = description.length
+  const DESC_MAX = 2000
 
   // ── Similar topic search ─────────────────────────────────────────────────
 
@@ -362,6 +365,9 @@ export default function CreateTopicPage() {
     } else if (statement.length > MAX_CHARS) {
       newErrors.statement = `Statement must be ${MAX_CHARS} characters or fewer`
     }
+    if (description.trim().length > DESC_MAX) {
+      newErrors.description = `Context must be ${DESC_MAX} characters or fewer`
+    }
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
@@ -379,6 +385,7 @@ export default function CreateTopicPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           statement: statement.trim(),
+          description: description.trim() || undefined,
           category: category || undefined,
           scope,
         }),
@@ -501,6 +508,54 @@ export default function CreateTopicPage() {
             )}
           </AnimatePresence>
 
+          {/* Description / Context */}
+          <div className="space-y-2">
+            <label
+              htmlFor="description"
+              className="block text-sm font-mono font-medium text-surface-600"
+            >
+              Context
+              <span className="ml-2 text-[10px] font-normal text-surface-500 uppercase tracking-wider">
+                optional
+              </span>
+            </label>
+            <textarea
+              id="description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Add context, evidence, links, or reasoning to help the community understand this topic…"
+              rows={5}
+              className={cn(
+                'w-full rounded-xl border px-4 py-3 text-sm font-mono',
+                'bg-surface-200 text-white placeholder:text-surface-500',
+                'focus:outline-none focus:ring-2 transition-colors resize-none',
+                errors.description
+                  ? 'border-against-500 focus:ring-against-500/30'
+                  : 'border-surface-300 focus:border-for-500/50 focus:ring-for-500/20'
+              )}
+              aria-describedby={errors.description ? 'description-error' : 'description-hint'}
+            />
+            <div className="flex items-center justify-between gap-2">
+              {errors.description ? (
+                <p id="description-error" className="text-xs text-against-400 font-mono">
+                  {errors.description}
+                </p>
+              ) : (
+                <p id="description-hint" className="text-xs text-surface-500 font-mono">
+                  Background, evidence, external links — give voters the full picture.
+                </p>
+              )}
+              <span
+                className={cn(
+                  'text-xs font-mono flex-shrink-0',
+                  descCount > DESC_MAX ? 'text-against-400' : descCount > DESC_MAX * 0.85 ? 'text-gold' : 'text-surface-500'
+                )}
+              >
+                {descCount}/{DESC_MAX}
+              </span>
+            </div>
+          </div>
+
           {/* Category */}
           <div className="space-y-2">
             <label
@@ -580,7 +635,7 @@ export default function CreateTopicPage() {
             variant="for"
             size="lg"
             className="w-full"
-            disabled={isSubmitting || isOverLimit || !statement.trim()}
+            disabled={isSubmitting || isOverLimit || descCount > DESC_MAX || !statement.trim()}
           >
             {isSubmitting ? (
               <span className="flex items-center gap-2">
