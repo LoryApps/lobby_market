@@ -15,6 +15,8 @@ export interface LeaderboardRow {
   rank: number
   metricValue: number
   trend?: TrendDirection
+  /** Optional secondary metric shown below the main value (e.g. Brier score). */
+  subMetric?: string
 }
 
 interface LeaderboardTableProps {
@@ -135,6 +137,11 @@ export function LeaderboardTable({
                     <div className="text-[10px] font-mono text-surface-500 uppercase tracking-wider">
                       {metricLabel}
                     </div>
+                    {row.subMetric && (
+                      <div className="text-[10px] font-mono text-surface-600 mt-0.5">
+                        {row.subMetric}
+                      </div>
+                    )}
                   </div>
                   <div className="hidden sm:block">
                     <TrendIcon trend={row.trend} />

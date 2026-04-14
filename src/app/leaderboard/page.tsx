@@ -4,7 +4,7 @@ import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { LeaderboardTabs } from '@/components/leaderboard/LeaderboardTabs'
 import type { Profile, Topic, Vote } from '@/lib/supabase/types'
-import type { LeaderboardCategory } from '@/components/leaderboard/LeaderboardTabs'
+import type { LeaderboardCategory, PredictorStats } from '@/components/leaderboard/LeaderboardTabs'
 
 export const dynamic = 'force-dynamic'
 
@@ -107,6 +107,77 @@ export default async function LeaderboardPage() {
     }
   }
 
+  // ── Predictors: aggregate prediction accuracy per user ────────────────────
+  // Fetch all resolved predictions (resolved_at IS NOT NULL).
+  // We group by user_id in JS because Supabase JS client doesn't support
+  // GROUP BY directly. We cap at 5000 rows which covers any realistic scale.
+  interface PredRow {
+    user_id: string
+    correct: boolean | null
+    brier_score: number | null
+    resolved_at: string | null
+  }
+  const { data: predRows } = (await supabase
+    .from('topic_predictions')
+    .select('user_id, correct, brier_score, resolved_at')
+    .not('resolved_at', 'is', null)
+    .limit(5000)) as { data: PredRow[] | null }
+
+  // Aggregate per-user
+  const predAgg: Record<
+    string,
+    { total: number; correct: number; brierSum: number; brierCount: number }
+  > = {}
+  for (const row of predRows ?? []) {
+    if (!predAgg[row.user_id]) {
+      predAgg[row.user_id] = { total: 0, correct: 0, brierSum: 0, brierCount: 0 }
+    }
+    predAgg[row.user_id].total += 1
+    if (row.correct === true) predAgg[row.user_id].correct += 1
+    if (row.brier_score !== null) {
+      predAgg[row.user_id].brierSum += row.brier_score
+      predAgg[row.user_id].brierCount += 1
+    }
+  }
+
+  // Qualify: min 3 resolved predictions. Sort by accuracy DESC, then total DESC.
+  const MIN_PREDICTIONS = 3
+  const qualifiedPredictorIds = Object.entries(predAgg)
+    .filter(([, agg]) => agg.total >= MIN_PREDICTIONS)
+    .sort(([, a], [, b]) => {
+      const accA = a.total > 0 ? a.correct / a.total : 0
+      const accB = b.total > 0 ? b.correct / b.total : 0
+      if (accB !== accA) return accB - accA          // higher accuracy first
+      return b.total - a.total                        // more predictions as tiebreak
+    })
+    .slice(0, LIMIT)
+    .map(([id]) => id)
+
+  // Build predictorsStatsMap for the component
+  const predictorsStatsMap: Record<string, PredictorStats> = {}
+  for (const [userId, agg] of Object.entries(predAgg)) {
+    if (agg.total < MIN_PREDICTIONS) continue
+    predictorsStatsMap[userId] = {
+      accuracy: agg.total > 0 ? Math.round((agg.correct / agg.total) * 100) : 0,
+      total: agg.total,
+      avgBrier: agg.brierCount > 0 ? agg.brierSum / agg.brierCount : null,
+    }
+  }
+
+  // Fetch profiles for qualified predictors in ranked order
+  const predictorsSorted: Profile[] = []
+  if (qualifiedPredictorIds.length > 0) {
+    const { data: predProfiles } = (await supabase
+      .from('profiles')
+      .select('*')
+      .in('id', qualifiedPredictorIds)) as { data: Profile[] | null }
+    const profileMap = new Map((predProfiles ?? []).map((p) => [p.id, p]))
+    for (const id of qualifiedPredictorIds) {
+      const profile = profileMap.get(id)
+      if (profile) predictorsSorted.push(profile)
+    }
+  }
+
   const initial: Record<LeaderboardCategory, Profile[]> = {
     overall,
     votes,
@@ -114,6 +185,7 @@ export default async function LeaderboardPage() {
     active: activeSorted,
     rising,
     troll_catchers: trollCatchers,
+    predictors: predictorsSorted,
   }
 
   return (
@@ -139,6 +211,7 @@ export default async function LeaderboardPage() {
           initial={initial}
           lawsAuthoredMap={lawsAuthoredMap}
           recentVotesMap={recentVotesMap}
+          predictorsStatsMap={predictorsStatsMap}
         />
       </main>
       <BottomNav />
