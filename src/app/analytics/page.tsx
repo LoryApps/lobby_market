@@ -45,6 +45,14 @@ interface AnalyticsData {
   }>
   dailyActivity: Array<{ date: string; count: number }>
   monthlyActivity: Array<{ month: string; count: number }>
+  predictions?: {
+    total: number
+    resolved: number
+    correct: number
+    accuracy: number | null
+    avg_brier: number | null
+    clout_earned: number
+  }
 }
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
@@ -642,6 +650,80 @@ export default function AnalyticsPage() {
                 Reputation increases with accurate votes, quality arguments, and consistent participation.
               </p>
             </motion.div>
+
+            {/* Prediction market stats */}
+            {data.predictions && data.predictions.total > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.35, delay: 0.45 }}
+                className="rounded-2xl bg-surface-100 border border-surface-300 p-6"
+              >
+                <div className="flex items-center gap-2 text-xs font-mono text-surface-500 uppercase tracking-wider mb-5">
+                  <Target className="h-3.5 w-3.5 text-purple" />
+                  Prediction Market
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                  <div>
+                    <div className="text-[10px] font-mono text-surface-500 uppercase tracking-wider mb-1">
+                      Predictions
+                    </div>
+                    <div className="text-2xl font-mono font-bold text-white">
+                      {data.predictions.total}
+                    </div>
+                    <div className="text-[10px] text-surface-500 mt-0.5">
+                      {data.predictions.resolved} resolved
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-[10px] font-mono text-surface-500 uppercase tracking-wider mb-1">
+                      Accuracy
+                    </div>
+                    <div className={cn(
+                      'text-2xl font-mono font-bold',
+                      data.predictions.accuracy !== null
+                        ? data.predictions.accuracy >= 70 ? 'text-emerald'
+                          : data.predictions.accuracy >= 55 ? 'text-for-400'
+                          : 'text-gold'
+                        : 'text-surface-500'
+                    )}>
+                      {data.predictions.accuracy !== null ? `${data.predictions.accuracy}%` : '—'}
+                    </div>
+                    <div className="text-[10px] text-surface-500 mt-0.5">
+                      {data.predictions.correct} correct
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-[10px] font-mono text-surface-500 uppercase tracking-wider mb-1">
+                      Avg Brier
+                    </div>
+                    <div className={cn(
+                      'text-2xl font-mono font-bold',
+                      data.predictions.avg_brier !== null
+                        ? data.predictions.avg_brier <= 0.1 ? 'text-emerald'
+                          : data.predictions.avg_brier <= 0.2 ? 'text-for-400'
+                          : 'text-gold'
+                        : 'text-surface-500'
+                    )}>
+                      {data.predictions.avg_brier !== null ? data.predictions.avg_brier.toFixed(3) : '—'}
+                    </div>
+                    <div className="text-[10px] text-surface-500 mt-0.5">lower is sharper</div>
+                  </div>
+                  <div>
+                    <div className="text-[10px] font-mono text-surface-500 uppercase tracking-wider mb-1">
+                      Clout Earned
+                    </div>
+                    <div className="text-2xl font-mono font-bold text-gold">
+                      +{data.predictions.clout_earned.toLocaleString()}
+                    </div>
+                    <div className="text-[10px] text-surface-500 mt-0.5">from predictions</div>
+                  </div>
+                </div>
+                <p className="text-xs text-surface-500 mt-4 border-t border-surface-300 pt-3">
+                  Brier score measures calibration: 0.0 = perfect, 1.0 = maximally wrong. Sharp predictors earn clout bonuses when topics resolve.
+                </p>
+              </motion.div>
+            )}
           </div>
         )}
 

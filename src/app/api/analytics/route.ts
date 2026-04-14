@@ -141,6 +141,28 @@ export async function GET() {
     count,
   }))
 
+  // Prediction market stats
+  const { data: predictionsRaw } = await supabase
+    .from('topic_predictions')
+    .select('predicted_law, confidence, resolved_at, correct, brier_score, clout_earned')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false })
+    .limit(200)
+
+  const predictions = predictionsRaw ?? []
+  const resolvedPredictions = predictions.filter((p) => p.resolved_at !== null)
+  const correctPredictions = resolvedPredictions.filter((p) => p.correct === true)
+  const totalCloutFromPredictions = predictions.reduce((sum, p) => sum + (p.clout_earned ?? 0), 0)
+  const avgBrier =
+    resolvedPredictions.length > 0
+      ? resolvedPredictions.reduce((sum, p) => sum + (p.brier_score ?? 0.5), 0) /
+        resolvedPredictions.length
+      : null
+  const predictionAccuracy =
+    resolvedPredictions.length > 0
+      ? Math.round((correctPredictions.length / resolvedPredictions.length) * 100)
+      : null
+
   return NextResponse.json({
     profile: {
       total_votes: profile.total_votes,
@@ -157,5 +179,13 @@ export async function GET() {
     topCategories,
     dailyActivity,
     monthlyActivity,
+    predictions: {
+      total: predictions.length,
+      resolved: resolvedPredictions.length,
+      correct: correctPredictions.length,
+      accuracy: predictionAccuracy,
+      avg_brier: avgBrier ? Number(avgBrier.toFixed(4)) : null,
+      clout_earned: totalCloutFromPredictions,
+    },
   })
 }

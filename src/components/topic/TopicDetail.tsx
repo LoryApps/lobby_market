@@ -27,6 +27,7 @@ import { ContinuationSection } from '@/components/chain/ContinuationSection'
 import { ChainVisualization } from '@/components/chain/ChainVisualization'
 import { LobbyBoard } from '@/components/lobby/LobbyBoard'
 import { ArgumentThread } from '@/components/topic/ArgumentThread'
+import { PredictionPanel } from '@/components/topic/PredictionPanel'
 import { RelatedTopics } from '@/components/topic/RelatedTopics'
 import { VoteTrend } from '@/components/topic/VoteTrend'
 import { ReportButton } from '@/components/moderation/ReportButton'
@@ -357,6 +358,9 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
                 className="mt-6"
               />
             )}
+
+            {/* Prediction market — Polymarket-style crowd predictions */}
+            <PredictionPanel topicId={topic.id} topicStatus={topic.status} />
 
             {/* Related topics — discovery section */}
             <RelatedTopics topicId={topic.id} className="mt-8" />

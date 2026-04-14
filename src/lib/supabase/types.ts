@@ -1162,12 +1162,77 @@ export type Database = {
         };
         Relationships: [];
       };
+      topic_predictions: {
+        Row: {
+          id: string;
+          topic_id: string;
+          user_id: string;
+          predicted_law: boolean;
+          confidence: number;
+          resolved_at: string | null;
+          correct: boolean | null;
+          brier_score: number | null;
+          clout_earned: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          topic_id: string;
+          user_id: string;
+          predicted_law: boolean;
+          confidence: number;
+          resolved_at?: string | null;
+          correct?: boolean | null;
+          brier_score?: number | null;
+          clout_earned?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          topic_id?: string;
+          user_id?: string;
+          predicted_law?: boolean;
+          confidence?: number;
+          resolved_at?: string | null;
+          correct?: boolean | null;
+          brier_score?: number | null;
+          clout_earned?: number;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      topic_prediction_stats: {
+        Row: {
+          topic_id: string;
+          total_predictions: number;
+          law_confidence: number;
+          updated_at: string;
+        };
+        Insert: {
+          topic_id: string;
+          total_predictions?: number;
+          law_confidence?: number;
+          updated_at?: string;
+        };
+        Update: {
+          topic_id?: string;
+          total_predictions?: number;
+          law_confidence?: number;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      refresh_topic_prediction_stats: {
+        Args: { p_topic_id: string };
+        Returns: undefined;
+      };
     };
     Enums: {
       user_role: "person" | "debator" | "troll_catcher" | "elder";
@@ -1483,3 +1548,25 @@ export type TopicArgumentWithAuthor = TopicArgument & {
   > | null;
   has_upvoted: boolean;
 };
+
+// Prediction market
+export interface TopicPrediction {
+  id: string;
+  topic_id: string;
+  user_id: string;
+  predicted_law: boolean;
+  confidence: number;
+  resolved_at: string | null;
+  correct: boolean | null;
+  brier_score: number | null;
+  clout_earned: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TopicPredictionStats {
+  topic_id: string;
+  total_predictions: number;
+  law_confidence: number;
+  updated_at: string;
+}
