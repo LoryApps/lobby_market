@@ -18,6 +18,7 @@ import {
   FileText,
   Tag,
   ArrowRight,
+  Network,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
@@ -380,18 +381,32 @@ export default async function CategoriesPage() {
                 Browse {totalTopics.toLocaleString()} topics across {sorted.length} categories
               </p>
             </div>
-            <Link
-              href="/"
-              className={cn(
-                'ml-auto inline-flex items-center gap-2 px-3 py-2 rounded-lg',
-                'bg-surface-200 border border-surface-300 text-surface-400',
-                'hover:bg-surface-300 hover:text-white',
-                'text-xs font-mono font-medium transition-colors'
-              )}
-            >
-              All Topics
-              <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
+            <div className="ml-auto flex items-center gap-2">
+              <Link
+                href="/topic/graph"
+                className={cn(
+                  'inline-flex items-center gap-2 px-3 py-2 rounded-lg',
+                  'bg-for-500/10 border border-for-500/30 text-for-400',
+                  'hover:bg-for-500/20 hover:border-for-500/50',
+                  'text-xs font-mono font-medium transition-colors'
+                )}
+              >
+                <Network className="h-3.5 w-3.5" />
+                Network
+              </Link>
+              <Link
+                href="/"
+                className={cn(
+                  'inline-flex items-center gap-2 px-3 py-2 rounded-lg',
+                  'bg-surface-200 border border-surface-300 text-surface-400',
+                  'hover:bg-surface-300 hover:text-white',
+                  'text-xs font-mono font-medium transition-colors'
+                )}
+              >
+                All Topics
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
           </div>
         </div>
 
