@@ -8,20 +8,29 @@
  *
  * Each user can post exactly one argument per topic.
  * Users cannot upvote their own argument.
+ *
+ * UX enhancements:
+ *  - Sort toggle: Top (upvotes desc) / New (created_at desc)
+ *  - Mobile tab view: All / For / Against (stacked)
+ *  - Skeleton card loading instead of a spinner
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import {
+  ArrowUpDown,
   ChevronUp,
   Loader2,
   MessageSquarePlus,
-  ThumbsUp,
   ThumbsDown,
+  ThumbsUp,
+  TrendingUp,
+  Clock,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { Avatar } from '@/components/ui/Avatar'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
+import { Skeleton } from '@/components/ui/Skeleton'
 import { cn } from '@/lib/utils/cn'
 import type { TopicArgumentWithAuthor } from '@/lib/supabase/types'
 
@@ -44,6 +53,43 @@ function relativeTime(date: string): string {
 
 interface ArgumentThreadProps {
   topicId: string
+}
+
+type SortMode = 'top' | 'new'
+type MobileTab = 'all' | 'for' | 'against'
+
+// ─── Skeleton loading cards ───────────────────────────────────────────────────
+
+function ArgumentSkeleton() {
+  return (
+    <div className="flex gap-3 p-4 rounded-xl border border-surface-300/30 bg-surface-200/40 animate-pulse">
+      <div className="flex-shrink-0 pt-1.5">
+        <div className="h-2.5 w-2.5 rounded-full bg-surface-400/50" />
+      </div>
+      <div className="flex-1 min-w-0 space-y-2">
+        <div className="flex items-center gap-2">
+          <div className="h-5 w-5 rounded-full bg-surface-400/50 flex-shrink-0" />
+          <Skeleton className="h-3 w-24" />
+          <Skeleton className="h-3 w-16 ml-auto" />
+        </div>
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-5/6" />
+      </div>
+      <div className="flex-shrink-0 flex flex-col items-center gap-1 pl-1">
+        <Skeleton className="h-7 w-8 rounded-lg" />
+      </div>
+    </div>
+  )
+}
+
+function ArgumentThreadSkeleton() {
+  return (
+    <div className="space-y-3">
+      <ArgumentSkeleton />
+      <ArgumentSkeleton />
+      <ArgumentSkeleton />
+    </div>
+  )
 }
 
 // ─── Single argument card ─────────────────────────────────────────────────────
@@ -301,6 +347,53 @@ function PostArgumentForm({
   )
 }
 
+// ─── Side column ──────────────────────────────────────────────────────────────
+
+function SideColumn({
+  side,
+  args,
+  currentUserId,
+  onUpvote,
+}: {
+  side: 'for' | 'against'
+  args: TopicArgumentWithAuthor[]
+  currentUserId: string | null
+  onUpvote: (argId: string, currentlyUpvoted: boolean) => Promise<void>
+}) {
+  const isFor = side === 'for'
+  const dotClass = isFor ? 'bg-for-500' : 'bg-against-500'
+  const labelClass = isFor ? 'text-for-400' : 'text-against-400'
+  const label = isFor ? 'For' : 'Against'
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center gap-2 mb-3">
+        <div className={cn('h-2 w-2 rounded-full', dotClass)} aria-hidden />
+        <span className={cn('text-xs font-mono font-semibold uppercase tracking-wide', labelClass)}>
+          {label} · {args.length}
+        </span>
+      </div>
+      {args.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-8 rounded-xl border border-dashed border-surface-400/30 text-center">
+          <p className="text-xs text-surface-500 italic">
+            No {label.toLowerCase()} arguments yet.
+          </p>
+          <p className="text-[11px] text-surface-600 mt-0.5">Be the first to argue {isFor ? 'for' : 'against'} this.</p>
+        </div>
+      ) : (
+        args.map((arg) => (
+          <ArgumentCard
+            key={arg.id}
+            arg={arg}
+            currentUserId={currentUserId}
+            onUpvote={onUpvote}
+          />
+        ))
+      )}
+    </div>
+  )
+}
+
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export function ArgumentThread({ topicId }: ArgumentThreadProps) {
@@ -309,6 +402,8 @@ export function ArgumentThread({ topicId }: ArgumentThreadProps) {
   const [currentUserId, setCurrentUserId] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
+  const [sortMode, setSortMode] = useState<SortMode>('top')
+  const [mobileTab, setMobileTab] = useState<MobileTab>('all')
 
   // Get current user id for self-detection
   useEffect(() => {
@@ -336,7 +431,6 @@ export function ArgumentThread({ topicId }: ArgumentThreadProps) {
 
   // Append a newly posted argument and hide the form
   const handlePosted = (_newArg: TopicArgumentWithAuthor) => {
-    // Re-fetch the full list so the new argument is enriched with author info
     loadArguments()
     setShowForm(false)
   }
@@ -366,7 +460,6 @@ export function ArgumentThread({ topicId }: ArgumentThreadProps) {
         )
         if (res.ok) {
           const json = await res.json()
-          // Sync actual count from server
           setArgs((prev) =>
             prev.map((a) =>
               a.id === argId
@@ -412,21 +505,47 @@ export function ArgumentThread({ topicId }: ArgumentThreadProps) {
 
   const hasPosted = myArgumentId !== null
 
-  const forArgs = args.filter((a) => a.side === 'blue')
-  const againstArgs = args.filter((a) => a.side === 'red')
+  // Client-side sort
+  const sorted = [...args].sort((a, b) => {
+    if (sortMode === 'new') {
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    }
+    // top: by upvotes desc, then newest
+    if (b.upvotes !== a.upvotes) return b.upvotes - a.upvotes
+    return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+  })
+
+  const forArgs = sorted.filter((a) => a.side === 'blue')
+  const againstArgs = sorted.filter((a) => a.side === 'red')
+
+  // For mobile stacked tab view
+  const mobileArgs =
+    mobileTab === 'for'
+      ? forArgs
+      : mobileTab === 'against'
+        ? againstArgs
+        : sorted
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <Loader2 className="h-5 w-5 animate-spin text-surface-500" />
+      <div className="space-y-6">
+        {/* Header skeleton */}
+        <div className="flex items-center justify-between">
+          <div className="space-y-1.5">
+            <Skeleton className="h-4 w-28" />
+            <Skeleton className="h-3 w-44" />
+          </div>
+          <Skeleton className="h-8 w-20 rounded-lg" />
+        </div>
+        <ArgumentThreadSkeleton />
       </div>
     )
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header + CTA */}
-      <div className="flex items-center justify-between">
+    <div className="space-y-5">
+      {/* ── Header ── */}
+      <div className="flex items-center justify-between gap-3 flex-wrap">
         <div>
           <h3 className="text-sm font-mono font-semibold text-white">
             Arguments
@@ -440,23 +559,54 @@ export function ArgumentThread({ topicId }: ArgumentThreadProps) {
             Make your case — one argument per person.
           </p>
         </div>
-        {currentUserId && !hasPosted && !showForm && (
-          <button
-            type="button"
-            onClick={() => setShowForm(true)}
-            className={cn(
-              'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-medium',
-              'bg-surface-200 text-surface-400 border border-surface-300',
-              'hover:bg-surface-300 hover:text-white transition-colors'
-            )}
-          >
-            <MessageSquarePlus className="h-3.5 w-3.5" />
-            Argue
-          </button>
-        )}
+
+        <div className="flex items-center gap-2 flex-shrink-0">
+          {/* Sort toggle */}
+          {args.length > 1 && (
+            <button
+              type="button"
+              onClick={() => setSortMode((m) => (m === 'top' ? 'new' : 'top'))}
+              aria-label={`Sort by ${sortMode === 'top' ? 'newest' : 'top'}`}
+              className={cn(
+                'flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-mono font-medium',
+                'bg-surface-200 border border-surface-300 text-surface-400',
+                'hover:bg-surface-300 hover:text-white transition-colors'
+              )}
+            >
+              {sortMode === 'top' ? (
+                <>
+                  <TrendingUp className="h-3 w-3" aria-hidden />
+                  Top
+                </>
+              ) : (
+                <>
+                  <Clock className="h-3 w-3" aria-hidden />
+                  New
+                </>
+              )}
+              <ArrowUpDown className="h-3 w-3 text-surface-500" aria-hidden />
+            </button>
+          )}
+
+          {/* Post CTA */}
+          {currentUserId && !hasPosted && !showForm && (
+            <button
+              type="button"
+              onClick={() => setShowForm(true)}
+              className={cn(
+                'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-medium',
+                'bg-surface-200 text-surface-400 border border-surface-300',
+                'hover:bg-surface-300 hover:text-white transition-colors'
+              )}
+            >
+              <MessageSquarePlus className="h-3.5 w-3.5" />
+              Argue
+            </button>
+          )}
+        </div>
       </div>
 
-      {/* Post form (shown when user clicks Argue) */}
+      {/* ── Post form ── */}
       {showForm && currentUserId && !hasPosted && (
         <div className="bg-surface-100 border border-surface-300 rounded-xl p-4">
           <div className="flex items-center justify-between mb-3">
@@ -492,7 +642,7 @@ export function ArgumentThread({ topicId }: ArgumentThreadProps) {
         </div>
       )}
 
-      {/* Arguments split by side */}
+      {/* ── Empty state ── */}
       {args.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
           <div className="h-10 w-10 rounded-xl bg-surface-200 flex items-center justify-center mb-3">
@@ -504,21 +654,45 @@ export function ArgumentThread({ topicId }: ArgumentThreadProps) {
           </p>
         </div>
       ) : (
-        <div className="grid md:grid-cols-2 gap-4">
-          {/* FOR column */}
-          <div className="space-y-2">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="h-2 w-2 rounded-full bg-for-500" aria-hidden />
-              <span className="text-xs font-mono text-for-400 font-semibold uppercase tracking-wide">
-                For · {forArgs.length}
-              </span>
-            </div>
-            {forArgs.length === 0 ? (
-              <p className="text-xs text-surface-600 italic px-1">
-                No FOR arguments yet.
-              </p>
+        <>
+          {/* ── Mobile: tab switcher (All / For / Against) ── */}
+          <div className="flex gap-1 md:hidden">
+            {([
+              { id: 'all', label: `All (${args.length})` },
+              { id: 'for', label: `For (${forArgs.length})` },
+              { id: 'against', label: `Against (${againstArgs.length})` },
+            ] as { id: MobileTab; label: string }[]).map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setMobileTab(tab.id)}
+                aria-pressed={mobileTab === tab.id}
+                className={cn(
+                  'flex-1 py-1.5 rounded-lg text-[11px] font-mono font-semibold border transition-colors',
+                  mobileTab === tab.id
+                    ? tab.id === 'for'
+                      ? 'bg-for-500/15 text-for-400 border-for-500/40'
+                      : tab.id === 'against'
+                        ? 'bg-against-500/15 text-against-400 border-against-500/40'
+                        : 'bg-surface-300 text-white border-surface-400'
+                    : 'bg-transparent text-surface-500 border-surface-400 hover:text-white'
+                )}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          {/* ── Mobile stacked list ── */}
+          <div className="md:hidden space-y-2">
+            {mobileArgs.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-8 rounded-xl border border-dashed border-surface-400/30 text-center">
+                <p className="text-xs text-surface-500 italic">
+                  No {mobileTab === 'for' ? 'FOR' : 'AGAINST'} arguments yet.
+                </p>
+              </div>
             ) : (
-              forArgs.map((arg) => (
+              mobileArgs.map((arg) => (
                 <ArgumentCard
                   key={arg.id}
                   arg={arg}
@@ -529,30 +703,22 @@ export function ArgumentThread({ topicId }: ArgumentThreadProps) {
             )}
           </div>
 
-          {/* AGAINST column */}
-          <div className="space-y-2">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="h-2 w-2 rounded-full bg-against-500" aria-hidden />
-              <span className="text-xs font-mono text-against-400 font-semibold uppercase tracking-wide">
-                Against · {againstArgs.length}
-              </span>
-            </div>
-            {againstArgs.length === 0 ? (
-              <p className="text-xs text-surface-600 italic px-1">
-                No AGAINST arguments yet.
-              </p>
-            ) : (
-              againstArgs.map((arg) => (
-                <ArgumentCard
-                  key={arg.id}
-                  arg={arg}
-                  currentUserId={currentUserId}
-                  onUpvote={handleUpvote}
-                />
-              ))
-            )}
+          {/* ── Desktop 2-column layout ── */}
+          <div className="hidden md:grid md:grid-cols-2 gap-4">
+            <SideColumn
+              side="for"
+              args={forArgs}
+              currentUserId={currentUserId}
+              onUpvote={handleUpvote}
+            />
+            <SideColumn
+              side="against"
+              args={againstArgs}
+              currentUserId={currentUserId}
+              onUpvote={handleUpvote}
+            />
           </div>
-        </div>
+        </>
       )}
     </div>
   )
