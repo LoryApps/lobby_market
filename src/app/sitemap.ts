@@ -7,6 +7,7 @@ const BASE_URL = 'https://lobby.market'
 const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/`, changeFrequency: 'always', priority: 1.0 },
   { url: `${BASE_URL}/trending`, changeFrequency: 'hourly', priority: 0.9 },
+  { url: `${BASE_URL}/split`, changeFrequency: 'hourly', priority: 0.85 },
   { url: `${BASE_URL}/law`, changeFrequency: 'daily', priority: 0.85 },
   { url: `${BASE_URL}/law/graph`, changeFrequency: 'daily', priority: 0.7 },
   { url: `${BASE_URL}/debate`, changeFrequency: 'hourly', priority: 0.8 },

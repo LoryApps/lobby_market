@@ -12,6 +12,7 @@ import {
   Scale,
   Clock,
   ChevronRight,
+  GitFork,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
@@ -707,6 +708,7 @@ export default async function TrendingPage() {
                 </p>
                 <div className="space-y-0.5">
                   {[
+                    { href: '/split', label: 'The Split', icon: GitFork },
                     { href: '/topic/categories', label: 'Browse Categories', icon: Scale },
                     { href: '/leaderboard', label: 'Leaderboard', icon: TrendingUp },
                     { href: '/floor', label: 'The Floor', icon: Gavel },

@@ -48,6 +48,7 @@ import {
   Settings,
   HelpCircle,
   Zap,
+  GitFork,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -176,6 +177,16 @@ const QUICK_LINKS: QuickLink[] = [
     icon: Zap,
     iconColor: 'text-gold',
     iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'split',
+    label: 'The Split',
+    sublabel: 'Most contested topics — vote where it matters',
+    href: '/split',
+    icon: GitFork,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-500/10',
   },
   {
     type: 'link',
