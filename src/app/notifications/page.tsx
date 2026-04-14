@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { Bell } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
@@ -7,6 +8,11 @@ import { NotificationsList } from '@/components/profile/NotificationsList'
 import type { Notification } from '@/lib/supabase/types'
 
 export const dynamic = 'force-dynamic'
+
+export const metadata: Metadata = {
+  title: 'Notifications · Lobby Market',
+  description: 'Your latest updates from the Lobby — votes, debates, laws, and achievements.',
+}
 
 export default async function NotificationsPage() {
   const supabase = await createClient()
@@ -24,25 +30,31 @@ export default async function NotificationsPage() {
     .select('*')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
-    .limit(50)) as { data: Notification[] | null }
+    .limit(100)) as { data: Notification[] | null }
 
   const notifications = data ?? []
+  const unreadCount = notifications.filter((n) => !n.is_read).length
 
   return (
     <div className="min-h-screen bg-surface-50">
       <TopBar />
       <main className="max-w-3xl mx-auto px-4 py-8 pb-24 md:pb-12">
-        <div className="mb-6 flex items-center gap-3">
-          <div className="flex items-center justify-center h-11 w-11 rounded-xl bg-for-500/10 border border-for-500/30">
-            <Bell className="h-5 w-5 text-for-400" />
-          </div>
-          <div>
-            <h1 className="font-mono text-2xl font-bold text-white">
-              Notifications
-            </h1>
-            <p className="text-sm font-mono text-surface-500 mt-0.5">
-              Updates from the Lobby, debates, and your achievements.
-            </p>
+        {/* Header */}
+        <div className="mb-6 flex items-start justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center h-11 w-11 rounded-xl bg-for-500/10 border border-for-500/30">
+              <Bell className="h-5 w-5 text-for-400" />
+            </div>
+            <div>
+              <h1 className="font-mono text-2xl font-bold text-white">
+                Notifications
+              </h1>
+              <p className="text-sm font-mono text-surface-500 mt-0.5">
+                {unreadCount > 0
+                  ? `${unreadCount} unread · ${notifications.length} total`
+                  : `${notifications.length} notification${notifications.length !== 1 ? 's' : ''}`}
+              </p>
+            </div>
           </div>
         </div>
 
