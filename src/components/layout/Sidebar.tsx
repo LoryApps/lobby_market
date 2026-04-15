@@ -23,6 +23,7 @@ import {
   Gavel,
   Vote,
   Zap,
+  Target,
 } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { createClient } from '@/lib/supabase/client'
@@ -38,6 +39,7 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   { href: '/', label: 'Feed', icon: Newspaper },
+  { href: '/predictions', label: 'Predictions', icon: Target },
   { href: '/trending', label: 'Trending', icon: TrendingUp },
   { href: '/split', label: 'The Split', icon: GitFork },
   { href: '/floor', label: 'The Floor', icon: Landmark },

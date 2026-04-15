@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Activity, BarChart2, BookOpen, Flame, HelpCircle, LogOut, Search, Plus, Settings, TrendingUp, User, Zap } from 'lucide-react'
+import { Activity, BarChart2, BookOpen, Flame, HelpCircle, LogOut, Search, Plus, Settings, Target, TrendingUp, User, Zap } from 'lucide-react'
 import { NotificationBell } from '@/components/profile/NotificationBell'
 import { openCommandPalette } from '@/lib/hooks/useCommandPalette'
 import { createClient } from '@/lib/supabase/client'
@@ -145,6 +145,15 @@ export function TopBar() {
               >
                 <Flame className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
                 Daily Quorum
+              </Link>
+              <Link
+                href="/predictions"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <Target className="h-3.5 w-3.5 flex-shrink-0 text-purple" aria-hidden="true" />
+                Predictions
               </Link>
               <Link
                 href="/analytics"
