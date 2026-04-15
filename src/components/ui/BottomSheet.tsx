@@ -18,6 +18,7 @@ import { createPortal } from 'react-dom'
 import { motion, AnimatePresence, useDragControls, useMotionValue, useTransform } from 'framer-motion'
 import { X } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
+import { useFocusTrap } from '@/lib/hooks/useFocusTrap'
 
 interface BottomSheetProps {
   open: boolean
@@ -43,6 +44,9 @@ export function BottomSheet({
   // Dim the backdrop slightly as the user drags down
   const backdropOpacity = useTransform(y, [0, 200], [1, 0])
   const panelRef = useRef<HTMLDivElement>(null)
+
+  // Trap keyboard focus inside the sheet while it is open
+  useFocusTrap(panelRef, open)
 
   // Keyboard: close on Escape
   useEffect(() => {

@@ -70,6 +70,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Establish early connections to Supabase so API calls pay zero DNS + TLS
+            round-trip overhead when the first authenticated request fires. */}
+        <link rel="preconnect" href="https://jysabvbfruvyhbqdhnmh.supabase.co" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://jysabvbfruvyhbqdhnmh.supabase.co" />
+      </head>
       <body
         className="font-sans bg-surface-50 text-surface-700 min-h-screen antialiased"
       >

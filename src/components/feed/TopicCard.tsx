@@ -369,9 +369,20 @@ export function TopicCard({ topic, authorName, authorAvatar }: TopicCardProps) {
         </Link>
       </motion.div>
 
+      {/* Screen-reader live region: announces vote count changes without visual disruption */}
+      <div
+        aria-live="polite"
+        aria-atomic="true"
+        className="sr-only"
+      >
+        {topic.total_votes > 0
+          ? `${topic.total_votes.toLocaleString()} votes cast — ${Math.round(topic.blue_pct)}% agree`
+          : 'No votes yet'}
+      </div>
+
       {/* Right-side action rail — outside motion.div so it stays fixed */}
       <div className="absolute right-2 md:right-6 top-1/2 -translate-y-1/2 flex flex-col items-center gap-5">
-        <div className="flex flex-col items-center gap-1">
+        <div className="flex flex-col items-center gap-1" aria-hidden="true">
           <span className="text-xs text-surface-500">Votes</span>
           <span className="text-sm font-semibold text-white">
             <AnimatedNumber value={topic.total_votes} />

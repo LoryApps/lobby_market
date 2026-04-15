@@ -25,6 +25,7 @@ import {
 import { useRouter } from 'next/navigation'
 import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useFocusTrap } from '@/lib/hooks/useFocusTrap'
 import {
   Activity,
   BarChart2,
@@ -495,6 +496,7 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
   const router = useRouter()
   const inputRef = useRef<HTMLInputElement>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
+  const panelRef = useRef<HTMLDivElement>(null)
 
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<PaletteItem[]>([])
@@ -504,6 +506,10 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
 
   // Derived flat list of all navigable items
   const items: PaletteItem[] = query.trim().length < 2 ? QUICK_LINKS : results
+
+  // Trap keyboard focus inside the palette while it is open.
+  // autoFocus=false because we manually focus the input below.
+  useFocusTrap(panelRef, open, false)
 
   // Auto-focus input when palette opens; reset state on close
   useEffect(() => {
@@ -660,6 +666,7 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
 
           {/* Panel */}
           <motion.div
+            ref={panelRef}
             key="command-palette-panel"
             initial={{ opacity: 0, y: -12, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
