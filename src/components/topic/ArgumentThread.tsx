@@ -13,16 +13,21 @@
  *  - Sort toggle: Top (upvotes desc) / New (created_at desc)
  *  - Mobile tab view: All / For / Against (stacked)
  *  - Skeleton card loading instead of a spinner
+ *  - Inline reply threads beneath each argument (lazy-loaded)
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import {
   ArrowUpDown,
   ChevronUp,
   Loader2,
+  MessageSquare,
   MessageSquarePlus,
+  Send,
   ThumbsDown,
   ThumbsUp,
+  Trash2,
   TrendingUp,
   Clock,
 } from 'lucide-react'
@@ -33,7 +38,9 @@ import { Button } from '@/components/ui/Button'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { GiftCloutButton } from '@/components/clout/GiftCloutButton'
 import { cn } from '@/lib/utils/cn'
-import type { TopicArgumentWithAuthor } from '@/lib/supabase/types'
+import type { TopicArgumentWithAuthor, ArgumentReplyWithAuthor } from '@/lib/supabase/types'
+
+const MAX_REPLY_CHARS = 300
 
 const MAX_CHARS = 500
 const MIN_CHARS = 10
@@ -93,18 +100,225 @@ function ArgumentThreadSkeleton() {
   )
 }
 
+// ─── Reply panel ──────────────────────────────────────────────────────────────
+
+function ReplyPanel({
+  topicId,
+  argumentId,
+  currentUserId,
+  side,
+}: {
+  topicId: string
+  argumentId: string
+  currentUserId: string | null
+  side: 'blue' | 'red'
+}) {
+  const [replies, setReplies] = useState<ArgumentReplyWithAuthor[]>([])
+  const [loading, setLoading] = useState(true)
+  const [content, setContent] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const inputRef = useRef<HTMLTextAreaElement>(null)
+
+  const accentColor = side === 'blue' ? 'border-for-500/30' : 'border-against-500/30'
+
+  const load = useCallback(async () => {
+    try {
+      const res = await fetch(
+        `/api/topics/${topicId}/arguments/${argumentId}/replies`
+      )
+      if (!res.ok) return
+      const json = await res.json()
+      setReplies(json.replies ?? [])
+    } finally {
+      setLoading(false)
+    }
+  }, [topicId, argumentId])
+
+  useEffect(() => {
+    load()
+  }, [load])
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const trimmed = content.trim()
+    if (!trimmed || submitting || !currentUserId) return
+    setSubmitting(true)
+    setError(null)
+    try {
+      const res = await fetch(
+        `/api/topics/${topicId}/arguments/${argumentId}/replies`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content: trimmed }),
+        }
+      )
+      const json = await res.json()
+      if (!res.ok) {
+        setError(json.error ?? 'Failed to post reply')
+        return
+      }
+      setReplies((prev) => [...prev, json.reply as ArgumentReplyWithAuthor])
+      setContent('')
+      inputRef.current?.focus()
+    } catch {
+      setError('Network error — please try again')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const handleDelete = async (replyId: string) => {
+    setReplies((prev) => prev.filter((r) => r.id !== replyId))
+    try {
+      await fetch(
+        `/api/topics/${topicId}/arguments/${argumentId}/replies?replyId=${replyId}`,
+        { method: 'DELETE' }
+      )
+    } catch {
+      // best-effort; re-load on failure
+      load()
+    }
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, height: 0 }}
+      animate={{ opacity: 1, height: 'auto' }}
+      exit={{ opacity: 0, height: 0 }}
+      transition={{ duration: 0.2, ease: 'easeInOut' }}
+      className="overflow-hidden"
+    >
+      <div className={cn('ml-5 mt-2 pl-3 border-l-2', accentColor)}>
+        {/* Existing replies */}
+        {loading ? (
+          <div className="flex items-center gap-1.5 py-2">
+            <Loader2 className="h-3 w-3 animate-spin text-surface-500" />
+            <span className="text-[11px] text-surface-500 font-mono">Loading replies…</span>
+          </div>
+        ) : replies.length > 0 ? (
+          <div className="space-y-2 py-2">
+            {replies.map((reply) => {
+              const isOwn = reply.user_id === currentUserId
+              return (
+                <div key={reply.id} className="group flex items-start gap-2">
+                  <Avatar
+                    src={reply.author?.avatar_url ?? null}
+                    fallback={reply.author?.display_name || reply.author?.username || '?'}
+                    size="xs"
+                    className="flex-shrink-0 mt-0.5"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-baseline gap-1.5 flex-wrap">
+                      <span className="text-[11px] font-semibold text-surface-300">
+                        {reply.author?.display_name || reply.author?.username || 'Anonymous'}
+                      </span>
+                      <span className="text-[10px] text-surface-600">
+                        {relativeTime(reply.created_at)}
+                      </span>
+                    </div>
+                    <p className="text-xs text-surface-400 leading-relaxed mt-0.5">
+                      {reply.content}
+                    </p>
+                  </div>
+                  {isOwn && (
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(reply.id)}
+                      aria-label="Delete reply"
+                      className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded text-surface-600 hover:text-against-400"
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </button>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+        ) : null}
+
+        {/* Reply form */}
+        {currentUserId ? (
+          <form onSubmit={handleSubmit} className="flex items-end gap-2 py-2">
+            <div className="flex-1 relative">
+              <textarea
+                ref={inputRef}
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault()
+                    handleSubmit(e as unknown as React.FormEvent)
+                  }
+                }}
+                placeholder="Reply…"
+                rows={1}
+                maxLength={MAX_REPLY_CHARS}
+                className={cn(
+                  'w-full resize-none rounded-lg px-3 py-2 text-xs',
+                  'bg-surface-300/50 border border-surface-400/50',
+                  'text-white placeholder:text-surface-600',
+                  'focus:outline-none focus:border-surface-400 transition-colors',
+                  'leading-relaxed'
+                )}
+              />
+              {content.length > MAX_REPLY_CHARS * 0.8 && (
+                <span className="absolute bottom-2 right-2 text-[9px] font-mono text-surface-600">
+                  {MAX_REPLY_CHARS - content.length}
+                </span>
+              )}
+            </div>
+            <button
+              type="submit"
+              disabled={!content.trim() || submitting}
+              aria-label="Post reply"
+              className={cn(
+                'flex-shrink-0 flex items-center justify-center h-8 w-8 rounded-lg transition-colors',
+                'bg-surface-300 border border-surface-400',
+                content.trim() && !submitting
+                  ? 'text-white hover:bg-surface-400'
+                  : 'text-surface-600 cursor-not-allowed'
+              )}
+            >
+              {submitting ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <Send className="h-3.5 w-3.5" />
+              )}
+            </button>
+          </form>
+        ) : (
+          <p className="py-2 text-[11px] text-surface-600">
+            <a href="/login" className="text-for-400 hover:underline">Sign in</a> to reply.
+          </p>
+        )}
+
+        {error && (
+          <p role="alert" className="text-[11px] text-against-400 font-mono pb-2">
+            {error}
+          </p>
+        )}
+      </div>
+    </motion.div>
+  )
+}
+
 // ─── Single argument card ─────────────────────────────────────────────────────
 
 function ArgumentCard({
   arg,
+  topicId,
   currentUserId,
   onUpvote,
 }: {
   arg: TopicArgumentWithAuthor
+  topicId: string
   currentUserId: string | null
   onUpvote: (argId: string, currentlyUpvoted: boolean) => Promise<void>
 }) {
   const [upvoting, setUpvoting] = useState(false)
+  const [showReplies, setShowReplies] = useState(false)
   const isOwn = arg.user_id === currentUserId
   const canUpvote = currentUserId !== null && !isOwn
 
@@ -125,11 +339,13 @@ function ArgumentCard({
   const sideDot = isFor ? 'bg-for-500' : 'bg-against-500'
 
   return (
+    <div>
     <div
       className={cn(
         'flex gap-3 p-4 rounded-xl border transition-colors',
         sideBg,
         sideBorder,
+        showReplies && (isFor ? 'rounded-b-none border-b-0' : 'rounded-b-none border-b-0'),
         isOwn && 'ring-1 ring-surface-400/20'
       )}
     >
@@ -173,6 +389,21 @@ function ArgumentCard({
 
         {/* Content */}
         <p className="text-sm text-surface-300 leading-relaxed">{arg.content}</p>
+
+        {/* Reply toggle */}
+        <button
+          type="button"
+          onClick={() => setShowReplies((v) => !v)}
+          className={cn(
+            'mt-2 flex items-center gap-1 text-[11px] font-mono transition-colors',
+            showReplies
+              ? 'text-surface-400 hover:text-surface-300'
+              : 'text-surface-600 hover:text-surface-400'
+          )}
+        >
+          <MessageSquare className="h-3 w-3" aria-hidden />
+          {showReplies ? 'Hide replies' : 'Reply'}
+        </button>
       </div>
 
       {/* Right: upvote + tip column */}
@@ -210,6 +441,26 @@ function ArgumentCard({
           />
         )}
       </div>
+    </div>
+
+    {/* Inline reply thread */}
+    <AnimatePresence>
+      {showReplies && (
+        <div
+          className={cn(
+            'border-x border-b rounded-b-xl px-4 pb-3',
+            isFor ? 'bg-for-500/5 border-for-500/30' : 'bg-against-500/5 border-against-500/30'
+          )}
+        >
+          <ReplyPanel
+            topicId={topicId}
+            argumentId={arg.id}
+            currentUserId={currentUserId}
+            side={arg.side}
+          />
+        </div>
+      )}
+    </AnimatePresence>
     </div>
   )
 }
@@ -363,11 +614,13 @@ function PostArgumentForm({
 function SideColumn({
   side,
   args,
+  topicId,
   currentUserId,
   onUpvote,
 }: {
   side: 'for' | 'against'
   args: TopicArgumentWithAuthor[]
+  topicId: string
   currentUserId: string | null
   onUpvote: (argId: string, currentlyUpvoted: boolean) => Promise<void>
 }) {
@@ -396,6 +649,7 @@ function SideColumn({
           <ArgumentCard
             key={arg.id}
             arg={arg}
+            topicId={topicId}
             currentUserId={currentUserId}
             onUpvote={onUpvote}
           />
@@ -707,6 +961,7 @@ export function ArgumentThread({ topicId }: ArgumentThreadProps) {
                 <ArgumentCard
                   key={arg.id}
                   arg={arg}
+                  topicId={topicId}
                   currentUserId={currentUserId}
                   onUpvote={handleUpvote}
                 />
@@ -719,12 +974,14 @@ export function ArgumentThread({ topicId }: ArgumentThreadProps) {
             <SideColumn
               side="for"
               args={forArgs}
+              topicId={topicId}
               currentUserId={currentUserId}
               onUpvote={handleUpvote}
             />
             <SideColumn
               side="against"
               args={againstArgs}
+              topicId={topicId}
               currentUserId={currentUserId}
               onUpvote={handleUpvote}
             />

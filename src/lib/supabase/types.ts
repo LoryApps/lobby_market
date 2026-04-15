@@ -1156,6 +1156,33 @@ export type Database = {
         };
         Relationships: [];
       };
+      argument_replies: {
+        Row: {
+          id: string;
+          argument_id: string;
+          topic_id: string;
+          user_id: string;
+          content: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          argument_id: string;
+          topic_id: string;
+          user_id: string;
+          content: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          argument_id?: string;
+          topic_id?: string;
+          user_id?: string;
+          content?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       topic_argument_votes: {
         Row: {
           argument_id: string;
@@ -1677,6 +1704,23 @@ export type TopicArgumentWithAuthor = TopicArgument & {
     "id" | "username" | "display_name" | "avatar_url" | "role"
   > | null;
   has_upvoted: boolean;
+};
+
+// Argument replies (threaded discussion beneath a single argument)
+export interface ArgumentReply {
+  id: string;
+  argument_id: string;
+  topic_id: string;
+  user_id: string;
+  content: string;
+  created_at: string;
+}
+
+export type ArgumentReplyWithAuthor = ArgumentReply & {
+  author: Pick<
+    Profile,
+    "id" | "username" | "display_name" | "avatar_url" | "role"
+  > | null;
 };
 
 // Prediction market
