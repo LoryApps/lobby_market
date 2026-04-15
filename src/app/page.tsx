@@ -2,6 +2,7 @@ import { FeedContainer } from '@/components/feed/FeedContainer'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { FeedAtmosphere } from '@/components/simulation/FeedAtmosphere'
+import { LobbyRail } from '@/components/feed/LobbyRail'
 
 export default function Home() {
   return (
@@ -12,6 +13,8 @@ export default function Home() {
         <FeedContainer />
       </main>
       <BottomNav />
+      {/* Desktop live rail — fixed right panel, only visible on 2xl+ screens */}
+      <LobbyRail />
     </div>
   )
 }
