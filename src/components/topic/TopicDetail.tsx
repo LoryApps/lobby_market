@@ -22,6 +22,7 @@ import { VoteBar } from '@/components/voting/VoteBar'
 import { VoteButton } from '@/components/voting/VoteButton'
 import { VoteTimer } from '@/components/voting/VoteTimer'
 import { VoteSheet } from '@/components/voting/VoteSheet'
+import { StanceShareButton } from '@/components/voting/StanceShareButton'
 import { SupportButton } from '@/components/voting/SupportButton'
 import { ChainBanner } from '@/components/chain/ChainBanner'
 import { ContinuationSection } from '@/components/chain/ContinuationSection'
@@ -268,6 +269,19 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
                   disabled={hasVoted(topic.id)}
                   votedSide={votedSide}
                 />
+                {/* Share stance — surfaces after the user votes */}
+                {hasVoted(topic.id) && votedSide && (
+                  <div className="flex justify-center">
+                    <StanceShareButton
+                      topicId={topic.id}
+                      statement={topic.statement}
+                      votedSide={votedSide}
+                      forPct={topic.blue_pct}
+                      totalVotes={topic.total_votes}
+                      category={topic.category}
+                    />
+                  </div>
+                )}
                 {topic.voting_ends_at && (
                   <div className="flex justify-center">
                     <VoteTimer endsAt={topic.voting_ends_at} />

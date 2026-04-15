@@ -16,6 +16,7 @@ import { SupportButton } from '@/components/voting/SupportButton'
 import { useVoteStore } from '@/lib/stores/vote-store'
 import { useFeedStore } from '@/lib/stores/feed-store'
 import { BookmarkButton } from '@/components/ui/BookmarkButton'
+import { StanceShareButton } from '@/components/voting/StanceShareButton'
 
 interface TopicCardProps {
   topic: Topic
@@ -282,6 +283,22 @@ export function TopicCard({ topic, authorName, authorAvatar }: TopicCardProps) {
                       votedSide={votedSide}
                     />
                   </div>
+                  {/* Share stance — appears after voting */}
+                  {hasVoted(topic.id) && votedSide && (
+                    <div
+                      className="flex justify-center"
+                      onClick={(e) => e.preventDefault()}
+                    >
+                      <StanceShareButton
+                        topicId={topic.id}
+                        statement={topic.statement}
+                        votedSide={votedSide}
+                        forPct={topic.blue_pct}
+                        totalVotes={topic.total_votes}
+                        category={topic.category}
+                      />
+                    </div>
+                  )}
                   {topic.voting_ends_at && (
                     <div className="flex justify-center">
                       <VoteTimer endsAt={topic.voting_ends_at} />

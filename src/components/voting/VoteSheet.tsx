@@ -17,6 +17,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { CheckCircle2, ThumbsDown, ThumbsUp, Timer } from 'lucide-react'
 import { BottomSheet } from '@/components/ui/BottomSheet'
+import { StanceShareButton } from '@/components/voting/StanceShareButton'
 import { cn } from '@/lib/utils/cn'
 import type { Topic, VoteSide } from '@/lib/supabase/types'
 
@@ -94,14 +95,16 @@ function VoteCountdown({ endsAt }: { endsAt: string }) {
 
 function VoteConfirmed({
   side,
+  topic,
   onClose,
 }: {
   side: VoteSide
+  topic: Topic
   onClose: () => void
 }) {
-  // Auto-close after 1.5 s
+  // Auto-close after 3.5 s — slightly longer so users have time to share
   useEffect(() => {
-    const t = setTimeout(onClose, 1500)
+    const t = setTimeout(onClose, 3500)
     return () => clearTimeout(t)
   }, [onClose])
 
@@ -112,7 +115,7 @@ function VoteConfirmed({
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ type: 'spring', stiffness: 300, damping: 24 }}
-      className="flex flex-col items-center justify-center py-10 gap-4"
+      className="flex flex-col items-center justify-center py-8 gap-5"
     >
       <div
         className={cn(
@@ -134,6 +137,15 @@ function VoteConfirmed({
           Your vote is on the record.
         </p>
       </div>
+      {/* Share stance CTA */}
+      <StanceShareButton
+        topicId={topic.id}
+        statement={topic.statement}
+        votedSide={side}
+        forPct={topic.blue_pct}
+        totalVotes={topic.total_votes}
+        category={topic.category}
+      />
     </motion.div>
   )
 }
@@ -206,7 +218,7 @@ export function VoteSheet({
       <div className="px-5 py-5 space-y-5">
         <AnimatePresence mode="wait" initial={false}>
           {confirmed ? (
-            <VoteConfirmed key="confirmed" side={confirmed} onClose={onClose} />
+            <VoteConfirmed key="confirmed" side={confirmed} topic={topic} onClose={onClose} />
           ) : (
             <motion.div
               key="voting"
