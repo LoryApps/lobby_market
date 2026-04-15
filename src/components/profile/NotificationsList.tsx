@@ -8,8 +8,10 @@ import {
   AlertCircle,
   Award,
   Bell,
+  Bookmark,
   Gavel,
   MessageCircle,
+  Scale,
   Swords,
   TrendingUp,
   User,
@@ -31,6 +33,7 @@ const typeConfig: Record<
 > = {
   topic_activated: { icon: Activity, color: 'text-for-400' },
   vote_threshold: { icon: TrendingUp, color: 'text-for-400' },
+  vote_started: { icon: Scale, color: 'text-purple' },
   law_established: { icon: Gavel, color: 'text-emerald' },
   debate_starting: { icon: Swords, color: 'text-gold' },
   achievement_earned: { icon: Award, color: 'text-gold' },
@@ -39,6 +42,7 @@ const typeConfig: Record<
   role_promoted: { icon: User, color: 'text-emerald' },
   coalition_invite: { icon: Users, color: 'text-purple' },
   coalition_invite_accepted: { icon: CheckCircle, color: 'text-emerald' },
+  bookmark_update: { icon: Bookmark, color: 'text-gold' },
 }
 
 function buildHref(notification: Notification): string {

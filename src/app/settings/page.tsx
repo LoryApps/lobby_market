@@ -371,14 +371,14 @@ export default function SettingsPage() {
                   onChange={(v) => updatePref('law_established', v)}
                 />
                 <SettingRow
-                  label="Topic activated"
-                  description="When a proposed topic moves to active voting"
+                  label="Topic & bookmark updates"
+                  description="When a topic goes active, and when a saved topic changes status"
                   checked={prefs.topic_activated}
                   onChange={(v) => updatePref('topic_activated', v)}
                 />
                 <SettingRow
-                  label="Vote milestones"
-                  description="When a topic hits a significant vote threshold"
+                  label="Vote milestones & final voting"
+                  description="When a topic you voted on enters final voting or hits a vote threshold"
                   checked={prefs.vote_threshold}
                   onChange={(v) => updatePref('vote_threshold', v)}
                 />

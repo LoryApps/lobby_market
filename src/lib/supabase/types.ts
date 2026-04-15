@@ -1454,6 +1454,7 @@ export type ContinuationStatus =
 export type NotificationType =
   | "topic_activated"
   | "vote_threshold"
+  | "vote_started"
   | "law_established"
   | "debate_starting"
   | "achievement_earned"
@@ -1461,7 +1462,8 @@ export type NotificationType =
   | "lobby_update"
   | "role_promoted"
   | "coalition_invite"
-  | "coalition_invite_accepted";
+  | "coalition_invite_accepted"
+  | "bookmark_update";
 
 export type AchievementTier = "common" | "rare" | "epic" | "legendary";
 

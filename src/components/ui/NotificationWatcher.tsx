@@ -158,6 +158,18 @@ const TYPE_CONFIG: Record<NotificationType, TypeConfig> = {
     emoji: '✅',
     duration: 5000,
   },
+  vote_started: {
+    // Final voting phase opened — gate under the existing vote_threshold pref
+    prefKey: 'vote_threshold',
+    emoji: '🗳️',
+    duration: 6000,
+  },
+  bookmark_update: {
+    // Status change on a saved topic — gate under topic_activated pref
+    prefKey: 'topic_activated',
+    emoji: '🔖',
+    duration: 5000,
+  },
 }
 
 // ─── Achievement body parser (reused logic from AchievementWatcher) ───────────
