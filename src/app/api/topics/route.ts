@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { checkAndGrantAchievements } from '@/lib/achievements'
 
 const CATEGORIES = [
   'Politics',
@@ -104,6 +105,9 @@ export async function POST(request: NextRequest) {
     user_id: user.id,
     topic_id: topic.id,
   })
+
+  // Check and grant achievements in the background
+  checkAndGrantAchievements(user.id, supabase).catch(() => {/* best-effort */})
 
   return NextResponse.json(topic, { status: 201 })
 }

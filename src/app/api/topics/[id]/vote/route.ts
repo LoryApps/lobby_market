@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import type { VoteSide } from '@/lib/supabase/types'
+import { checkAndGrantAchievements } from '@/lib/achievements'
 
 export async function POST(
   request: NextRequest,
@@ -85,6 +86,9 @@ export async function POST(
     .select('*')
     .eq('id', params.id)
     .single()
+
+  // Check and grant achievements in the background (non-blocking to the caller)
+  checkAndGrantAchievements(user.id, supabase).catch(() => {/* best-effort */})
 
   return NextResponse.json({ success: true, topic: updatedTopic })
 }
