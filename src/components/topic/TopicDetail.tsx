@@ -34,6 +34,7 @@ import { RelatedTopics } from '@/components/topic/RelatedTopics'
 import { VoteTrend } from '@/components/topic/VoteTrend'
 import { TopicStatusJourney } from '@/components/topic/TopicStatusJourney'
 import { CoalitionStancePanel } from '@/components/topic/CoalitionStancePanel'
+import { TopicDebatePanel } from '@/components/topic/TopicDebatePanel'
 import { ReportButton } from '@/components/moderation/ReportButton'
 import { SharePanel } from '@/components/ui/SharePanel'
 import { BookmarkButton } from '@/components/ui/BookmarkButton'
@@ -400,6 +401,12 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
                 className="mt-6"
               />
             )}
+
+            {/* Debates — upcoming, live, and recently ended for this topic */}
+            <TopicDebatePanel
+              topicId={topic.id}
+              className="mt-6"
+            />
 
             {/* Vote trend — sparkline momentum chart */}
             {topic.total_votes >= 2 && topic.status !== 'proposed' && (
