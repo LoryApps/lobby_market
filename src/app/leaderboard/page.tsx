@@ -1,9 +1,10 @@
-import { Trophy } from 'lucide-react'
+import { Shield, Trophy } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { LeaderboardTabs } from '@/components/leaderboard/LeaderboardTabs'
-import type { Profile, Topic, Vote } from '@/lib/supabase/types'
+import { CoalitionLeaderboard } from '@/components/leaderboard/CoalitionLeaderboard'
+import type { Coalition, Profile, Topic, Vote } from '@/lib/supabase/types'
 import type { LeaderboardCategory, PredictorStats } from '@/components/leaderboard/LeaderboardTabs'
 
 export const dynamic = 'force-dynamic'
@@ -178,6 +179,15 @@ export default async function LeaderboardPage() {
     }
   }
 
+  // ── Coalitions ────────────────────────────────────────────────────────────
+  const { data: coalitionsRaw } = (await supabase
+    .from('coalitions')
+    .select('*')
+    .eq('is_public', true)
+    .order('coalition_influence', { ascending: false })
+    .limit(50)) as { data: Coalition[] | null }
+  const coalitions = coalitionsRaw ?? []
+
   const initial: Record<LeaderboardCategory, Profile[]> = {
     overall,
     votes,
@@ -207,12 +217,31 @@ export default async function LeaderboardPage() {
           </div>
         </div>
 
+        {/* Individual rankings */}
         <LeaderboardTabs
           initial={initial}
           lawsAuthoredMap={lawsAuthoredMap}
           recentVotesMap={recentVotesMap}
           predictorsStatsMap={predictorsStatsMap}
         />
+
+        {/* Coalition rankings */}
+        <section className="mt-16">
+          <div className="mb-6 flex items-center gap-3">
+            <div className="flex items-center justify-center h-11 w-11 rounded-xl bg-purple/10 border border-purple/30">
+              <Shield className="h-5 w-5 text-purple" />
+            </div>
+            <div>
+              <h2 className="font-mono text-2xl font-bold text-white">
+                Coalition Rankings
+              </h2>
+              <p className="text-sm font-mono text-surface-500 mt-0.5">
+                The most powerful alliances in the Lobby.
+              </p>
+            </div>
+          </div>
+          <CoalitionLeaderboard coalitions={coalitions} />
+        </section>
       </main>
       <BottomNav />
     </div>
