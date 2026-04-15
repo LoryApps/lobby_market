@@ -652,6 +652,39 @@ export type Database = {
         };
         Relationships: [];
       };
+      coalition_stances: {
+        Row: {
+          id: string;
+          coalition_id: string;
+          topic_id: string;
+          stance: "for" | "against" | "neutral";
+          statement: string | null;
+          declared_by: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          coalition_id: string;
+          topic_id: string;
+          stance: "for" | "against" | "neutral";
+          statement?: string | null;
+          declared_by: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          coalition_id?: string;
+          topic_id?: string;
+          stance?: "for" | "against" | "neutral";
+          statement?: string | null;
+          declared_by?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       coalition_posts: {
         Row: {
           id: string;

@@ -5,6 +5,7 @@ import { ArrowLeft, Crown, Trophy, Users, Zap } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { CoalitionManagePanel } from '@/components/lobby/CoalitionManagePanel'
 import { CoalitionBulletinBoard } from '@/components/lobby/CoalitionBulletinBoard'
+import { CoalitionStanceDeclare } from '@/components/lobby/CoalitionStanceDeclare'
 import type {
   Coalition,
   CoalitionMember,
@@ -355,6 +356,15 @@ export default async function CoalitionPage({ params }: CoalitionPageProps) {
           coalitionId={typedCoalition.id}
           currentUserId={authUser?.id ?? null}
           currentUserRole={currentMember?.role ?? null}
+        />
+
+        {/* ── Official Stances ─────────────────────────────────────────── */}
+        <CoalitionStanceDeclare
+          coalitionId={typedCoalition.id}
+          isLeaderOrOfficer={
+            currentMember !== null &&
+            ['leader', 'officer'].includes(currentMember.role)
+          }
         />
 
         {/* ── Members + Management Panel ─────────────────────────────── */}

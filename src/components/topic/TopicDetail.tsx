@@ -32,6 +32,8 @@ import { ArgumentThread } from '@/components/topic/ArgumentThread'
 import { PredictionPanel } from '@/components/topic/PredictionPanel'
 import { RelatedTopics } from '@/components/topic/RelatedTopics'
 import { VoteTrend } from '@/components/topic/VoteTrend'
+import { TopicStatusJourney } from '@/components/topic/TopicStatusJourney'
+import { CoalitionStancePanel } from '@/components/topic/CoalitionStancePanel'
 import { ReportButton } from '@/components/moderation/ReportButton'
 import { SharePanel } from '@/components/ui/SharePanel'
 import { BookmarkButton } from '@/components/ui/BookmarkButton'
@@ -377,6 +379,26 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
                   {topic.description}
                 </p>
               </div>
+            )}
+
+            {/* Topic journey — lifecycle progress stepper */}
+            <TopicStatusJourney
+              status={topic.status}
+              supportCount={topic.support_count}
+              activationThreshold={topic.activation_threshold}
+              totalVotes={topic.total_votes}
+              bluePct={topic.blue_pct}
+              votingEndsAt={topic.voting_ends_at}
+              createdAt={topic.created_at}
+              className="mt-6"
+            />
+
+            {/* Coalition stances — which factions are FOR / AGAINST */}
+            {topic.status !== 'proposed' && (
+              <CoalitionStancePanel
+                topicId={topic.id}
+                className="mt-6"
+              />
             )}
 
             {/* Vote trend — sparkline momentum chart */}
