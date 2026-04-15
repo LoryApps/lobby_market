@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
   // 2. Fetch topics authored by followed users (live statuses only)
   let query = supabase
     .from('topics')
-    .select('*')
+    .select('*, author:profiles!author_id(id, username, display_name, avatar_url, role)')
     .in('author_id', followingIds)
     .in('status', ['proposed', 'active', 'voting', 'law'])
     .range(offset, offset + limit - 1)

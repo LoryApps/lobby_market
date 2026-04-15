@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
 
   let query = supabase
     .from('topics')
-    .select('*')
+    .select('*, author:profiles!author_id(id, username, display_name, avatar_url, role)')
     .range(offset, offset + limit - 1)
 
   // Status filter — default shows all live statuses

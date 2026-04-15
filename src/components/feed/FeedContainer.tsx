@@ -10,11 +10,12 @@ import { subscribeToFeed } from '@/lib/supabase/realtime'
 import { TopicCard } from '@/components/feed/TopicCard'
 import { FeedTutorial } from '@/components/feed/FeedTutorial'
 import { DailyQuorumNudge } from '@/components/feed/DailyQuorumNudge'
+import { FeedInsightStrip } from '@/components/feed/FeedInsightStrip'
 import { FeedFilters } from '@/components/feed/FeedFilters'
 import { PulseDot } from '@/components/simulation/PulseDot'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
-import type { Topic } from '@/lib/supabase/types'
+import type { TopicWithAuthor } from '@/lib/supabase/types'
 
 // ─── Suggested user types ─────────────────────────────────────────────────────
 
@@ -453,7 +454,7 @@ export function FeedContainer() {
   const { topics, isLoading, hasMore, feedMode, followingCount, hasPreferences, fetchNextPage, updateTopic, prependTopic } = useFeedStore()
   const { castVote } = useVoteStore()
   const [showHelp, setShowHelp] = useState(false)
-  const [pendingNew, setPendingNew] = useState<Topic[]>([])
+  const [pendingNew, setPendingNew] = useState<TopicWithAuthor[]>([])
   const [isLive, setIsLive] = useState(false)
   const sentinelRef = useRef<HTMLDivElement>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -486,7 +487,8 @@ export function FeedContainer() {
         setPendingNew((prev) => {
           // De-dupe in case of double delivery
           if (prev.some((t) => t.id === newTopic.id)) return prev
-          return [newTopic, ...prev]
+          // Realtime topics don't carry author data — null is safe; TopicCard falls back gracefully
+          return [{ ...newTopic, author: null }, ...prev]
         })
       },
       // onUpdate — apply vote-count changes immediately; AnimatedNumber handles smoothing
@@ -699,8 +701,18 @@ export function FeedContainer() {
       <div ref={scrollRef} className="feed-scroll" aria-label="Topic feed">
         <FeedTutorial />
         <DailyQuorumNudge />
-        {topics.map((topic) => (
-          <TopicCard key={topic.id} topic={topic} />
+        {topics.map((topic, index) => (
+          <div key={topic.id}>
+            <TopicCard
+              topic={topic}
+              authorName={topic.author?.display_name ?? topic.author?.username ?? undefined}
+              authorAvatar={topic.author?.avatar_url ?? undefined}
+            />
+            {/* Inject a live-stats strip after every 8th topic */}
+            {(index + 1) % 8 === 0 && (
+              <FeedInsightStrip groupIndex={Math.floor(index / 8) + 1} />
+            )}
+          </div>
         ))}
 
         {/* Loading skeletons */}

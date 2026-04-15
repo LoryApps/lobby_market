@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
   // Build query filtered to the user's preferred categories
   let query = supabase
     .from('topics')
-    .select('*')
+    .select('*, author:profiles!author_id(id, username, display_name, avatar_url, role)')
     .in('status', ['proposed', 'active', 'voting', 'law'])
     .in('category', preferredCategories)
     .range(offset, offset + limit - 1)

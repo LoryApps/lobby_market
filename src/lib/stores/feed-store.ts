@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { Topic } from "@/lib/supabase/types";
+import type { Topic, TopicWithAuthor } from "@/lib/supabase/types";
 
 export type FeedSort = "top" | "new" | "hot";
 export type FeedStatus = "proposed" | "active" | "voting" | "law" | null;
@@ -8,7 +8,7 @@ export type FeedScope = "Global" | "National" | "Regional" | "Local" | null;
 export type FeedMode = "discover" | "following" | "foryou";
 
 interface FeedState {
-  topics: Topic[];
+  topics: TopicWithAuthor[];
   isLoading: boolean;
   hasMore: boolean;
   offset: number;
@@ -31,7 +31,8 @@ interface FeedState {
   setCategoryFilter: (category: FeedCategory) => void;
   setScopeFilter: (scope: FeedScope) => void;
   setFeedMode: (mode: FeedMode) => void;
-  prependTopic: (topic: Topic) => void;
+  /** Realtime-injected topics don't have author data — treated as TopicWithAuthor with null author */
+  prependTopic: (topic: Topic | TopicWithAuthor) => void;
   updateTopic: (id: string, updates: Partial<Topic>) => void;
 }
 
@@ -91,7 +92,7 @@ export const useFeedStore = create<FeedState>((set, get) => ({
           return;
         }
 
-        const json: { topics: Topic[]; followingCount: number } =
+        const json: { topics: TopicWithAuthor[]; followingCount: number } =
           await res.json();
 
         if (get()._generation !== capturedGen) return;
@@ -132,7 +133,7 @@ export const useFeedStore = create<FeedState>((set, get) => ({
         }
 
         const json: {
-          topics: Topic[];
+          topics: TopicWithAuthor[];
           preferredCategories: string[];
           hasPreferences: boolean;
         } = await res.json();
@@ -174,7 +175,7 @@ export const useFeedStore = create<FeedState>((set, get) => ({
           return;
         }
 
-        const data: Topic[] = await res.json();
+        const data: TopicWithAuthor[] = await res.json();
 
         if (get()._generation !== capturedGen) return;
 
@@ -267,7 +268,8 @@ export const useFeedStore = create<FeedState>((set, get) => ({
 
   prependTopic: (topic) =>
     set((state) => ({
-      topics: [topic, ...state.topics],
+      // Realtime topics don't have author data — add null author for type safety
+      topics: [{ author: null, ...topic } as TopicWithAuthor, ...state.topics],
     })),
 
   updateTopic: (id, updates) =>

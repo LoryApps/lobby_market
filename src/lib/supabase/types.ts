@@ -1468,6 +1468,13 @@ export type Topic = Database["public"]["Tables"]["topics"]["Row"];
 export type TopicInsert = Database["public"]["Tables"]["topics"]["Insert"];
 export type TopicUpdate = Database["public"]["Tables"]["topics"]["Update"];
 
+// Topic with joined author profile (returned by the enriched feed API)
+export type TopicAuthor = Pick<
+  Profile,
+  "id" | "username" | "display_name" | "avatar_url" | "role"
+>;
+export type TopicWithAuthor = Topic & { author: TopicAuthor | null };
+
 export type Vote = Database["public"]["Tables"]["votes"]["Row"];
 export type VoteInsert = Database["public"]["Tables"]["votes"]["Insert"];
 
