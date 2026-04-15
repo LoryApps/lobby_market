@@ -24,6 +24,7 @@ import {
   Vote,
   Zap,
   Target,
+  ThumbsUp,
 } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { createClient } from '@/lib/supabase/client'
@@ -55,6 +56,7 @@ const navItems: NavItem[] = [
     icon: Shield,
     moderatorOnly: true,
   },
+  { href: '/arguments', label: 'Top Arguments', icon: ThumbsUp },
   { href: '/saved', label: 'Saved', icon: Bookmark },
   { href: '/leaderboard', label: 'Leaderboard', icon: Trophy },
   { href: '/profile/me', label: 'My Profile', icon: UserCircle },
