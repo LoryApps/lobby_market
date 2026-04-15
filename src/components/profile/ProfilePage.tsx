@@ -9,11 +9,13 @@ import {
   Scale,
   Trophy,
   LayoutGrid,
+  ThumbsUp,
 } from 'lucide-react'
 import { ProfileHeader } from './ProfileHeader'
 import { ProfileCompletionBanner } from './ProfileCompletionBanner'
 import { VoteHistoryTimeline, type VoteHistoryEntry } from './VoteHistoryTimeline'
 import { AchievementGrid } from './AchievementGrid'
+import { ProfileArguments, type ProfileArgumentEntry } from './ProfileArguments'
 import type {
   Profile,
   Topic,
@@ -30,11 +32,12 @@ interface ProfilePageProps {
   laws: Law[]
   allAchievements: Achievement[]
   earnedAchievementIds: string[]
+  profileArguments?: ProfileArgumentEntry[]
   initialFollowing?: boolean
   viewerId?: string | null
 }
 
-type TabId = 'overview' | 'votes' | 'topics' | 'laws' | 'achievements'
+type TabId = 'overview' | 'votes' | 'topics' | 'laws' | 'achievements' | 'arguments'
 
 const tabs: { id: TabId; label: string; icon: typeof Activity }[] = [
   { id: 'overview', label: 'Overview', icon: LayoutGrid },
@@ -42,6 +45,7 @@ const tabs: { id: TabId; label: string; icon: typeof Activity }[] = [
   { id: 'topics', label: 'Topics', icon: MessageSquare },
   { id: 'laws', label: 'Laws', icon: Scale },
   { id: 'achievements', label: 'Achievements', icon: Trophy },
+  { id: 'arguments', label: 'Arguments', icon: ThumbsUp },
 ]
 
 function StatCard({
@@ -85,6 +89,7 @@ export function ProfilePage({
   laws,
   allAchievements,
   earnedAchievementIds,
+  profileArguments = [],
   initialFollowing = false,
   viewerId = null,
 }: ProfilePageProps) {
@@ -131,7 +136,7 @@ export function ProfilePage({
       {/* Stats row */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <StatCard label="Total votes" value={profile.total_votes} accent="for" />
-        <StatCard label="Topics" value={topics.length} />
+        <StatCard label="Arguments" value={profile.total_arguments ?? profileArguments.length} />
         <StatCard
           label="Laws influenced"
           value={laws.length}
@@ -252,6 +257,62 @@ export function ProfilePage({
                   )}
                 </div>
               </div>
+
+              {/* Top arguments preview */}
+              {profileArguments.length > 0 && (
+                <div className="rounded-2xl border border-surface-300 bg-surface-100 p-5">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-[11px] font-mono text-surface-500 uppercase tracking-wider">
+                      Top arguments
+                    </h3>
+                    <button
+                      onClick={() => setActiveTab('arguments')}
+                      className="text-[10px] font-mono text-for-400 hover:text-for-300 transition-colors"
+                    >
+                      View all →
+                    </button>
+                  </div>
+                  <ul className="space-y-3">
+                    {profileArguments.slice(0, 3).map((arg) => (
+                      <li
+                        key={arg.id}
+                        className={cn(
+                          'flex items-start gap-2.5 rounded-xl p-3 border',
+                          arg.side === 'blue'
+                            ? 'bg-for-500/5 border-for-500/15'
+                            : 'bg-against-500/5 border-against-500/15'
+                        )}
+                      >
+                        <span
+                          className={cn(
+                            'mt-0.5 h-2 w-2 rounded-full flex-shrink-0',
+                            arg.side === 'blue' ? 'bg-for-500' : 'bg-against-500'
+                          )}
+                        />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs text-surface-700 line-clamp-2">
+                            {arg.content}
+                          </p>
+                          {arg.topic_statement && (
+                            <Link
+                              href={`/topic/${arg.topic_id}`}
+                              className="text-[10px] font-mono text-surface-500 hover:text-surface-700 transition-colors line-clamp-1 mt-1 block"
+                            >
+                              {arg.topic_statement}
+                            </Link>
+                          )}
+                        </div>
+                        {arg.upvotes > 0 && (
+                          <span className="flex-shrink-0 flex items-center gap-0.5 text-[10px] font-mono text-gold">
+                            <ThumbsUp className="h-2.5 w-2.5" aria-hidden="true" />
+                            {arg.upvotes}
+                          </span>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </motion.div>
           )}
 
@@ -369,6 +430,20 @@ export function ProfilePage({
               <AchievementGrid
                 earnedAchievementIds={earnedAchievementIds}
                 allAchievements={allAchievements}
+              />
+            </motion.div>
+          )}
+
+          {activeTab === 'arguments' && (
+            <motion.div
+              key="arguments"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+            >
+              <ProfileArguments
+                arguments={profileArguments}
+                username={profile.username}
               />
             </motion.div>
           )}

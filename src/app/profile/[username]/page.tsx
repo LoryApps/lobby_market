@@ -5,6 +5,7 @@ import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { ProfilePage } from '@/components/profile/ProfilePage'
 import type { VoteHistoryEntry } from '@/components/profile/VoteHistoryTimeline'
+import type { ProfileArgumentEntry } from '@/components/profile/ProfileArguments'
 import type {
   Profile,
   Topic,
@@ -201,6 +202,52 @@ export default async function ProfileUsernamePage({
     (row) => row.achievement_id
   )
 
+  // Fetch arguments posted by this user, sorted by upvotes desc
+  const { data: argsRaw } = await supabase
+    .from('topic_arguments')
+    .select('id, side, content, upvotes, created_at, topic_id')
+    .eq('user_id', profile.id)
+    .order('upvotes', { ascending: false })
+    .order('created_at', { ascending: false })
+    .limit(50)
+
+  const argRows = argsRaw ?? []
+
+  // Enrich with topic info
+  const argTopicIds = Array.from(new Set(argRows.map((a) => a.topic_id)))
+  const argTopicMap = new Map<
+    string,
+    { statement: string; status: string; category: string | null }
+  >()
+  if (argTopicIds.length > 0) {
+    const { data: argTopics } = await supabase
+      .from('topics')
+      .select('id, statement, status, category')
+      .in('id', argTopicIds)
+    for (const t of argTopics ?? []) {
+      argTopicMap.set(t.id, {
+        statement: t.statement,
+        status: t.status,
+        category: t.category ?? null,
+      })
+    }
+  }
+
+  const profileArguments: ProfileArgumentEntry[] = argRows.map((a) => {
+    const topic = argTopicMap.get(a.topic_id)
+    return {
+      id: a.id,
+      side: a.side as 'blue' | 'red',
+      content: a.content,
+      upvotes: a.upvotes,
+      created_at: a.created_at,
+      topic_id: a.topic_id,
+      topic_statement: topic?.statement ?? null,
+      topic_status: topic?.status ?? null,
+      topic_category: topic?.category ?? null,
+    }
+  })
+
   return (
     <div className="min-h-screen bg-surface-50">
       <TopBar />
@@ -213,6 +260,7 @@ export default async function ProfileUsernamePage({
           laws={laws}
           allAchievements={allAchievements}
           earnedAchievementIds={earnedAchievementIds}
+          profileArguments={profileArguments}
           initialFollowing={initialFollowing}
           viewerId={user?.id ?? null}
         />
