@@ -18,11 +18,15 @@ import {
   ChevronRight,
   CheckCircle2,
   Circle,
+  XCircle,
+  Clock,
+  ChevronDown,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber'
 import { cn } from '@/lib/utils/cn'
+import type { PredictionRecord } from '@/app/api/analytics/predictions/route'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -611,6 +615,229 @@ function MonthlyBars({
   )
 }
 
+// ─── Prediction history ───────────────────────────────────────────────────────
+
+const STATUS_LABEL: Record<string, string> = {
+  proposed: 'Proposed',
+  active: 'Active',
+  voting: 'Voting',
+  law: 'LAW',
+  failed: 'Failed',
+  archived: 'Archived',
+  continued: 'Continued',
+}
+
+function relativeTime(iso: string): string {
+  const diff = Date.now() - new Date(iso).getTime()
+  const m = Math.floor(diff / 60_000)
+  const h = Math.floor(m / 60)
+  const d = Math.floor(h / 24)
+  if (m < 2) return 'just now'
+  if (m < 60) return `${m}m ago`
+  if (h < 24) return `${h}h ago`
+  if (d < 30) return `${d}d ago`
+  return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+}
+
+function PredictionRow({ pred }: { pred: PredictionRecord }) {
+  const isResolved = pred.resolved_at !== null
+  const isPending = !isResolved
+
+  // Outcome badge
+  const outcome =
+    isPending
+      ? { label: 'Pending', color: 'text-surface-500', bg: 'bg-surface-300/50', icon: Clock }
+      : pred.correct
+      ? { label: 'Correct', color: 'text-emerald', bg: 'bg-emerald/10', icon: CheckCircle2 }
+      : { label: 'Wrong', color: 'text-against-400', bg: 'bg-against-500/10', icon: XCircle }
+
+  const OutcomeIcon = outcome.icon
+
+  // Prediction label
+  const predLabel = pred.predicted_law ? 'Will pass' : 'Will fail'
+  const predColor = pred.predicted_law ? 'text-for-400' : 'text-against-400'
+
+  return (
+    <Link
+      href={`/topic/${pred.topic_id}`}
+      className="flex items-start gap-3 px-4 py-4 hover:bg-surface-200/50 transition-colors"
+    >
+      {/* Outcome indicator */}
+      <div className={cn(
+        'flex-shrink-0 mt-0.5 h-7 w-7 rounded-lg flex items-center justify-center',
+        outcome.bg
+      )}>
+        <OutcomeIcon className={cn('h-3.5 w-3.5', outcome.color)} />
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 min-w-0">
+        <p className="text-sm text-surface-700 line-clamp-2 mb-1.5">
+          {pred.topic?.statement ?? 'Unknown topic'}
+        </p>
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] font-mono text-surface-500">
+          {/* Prediction */}
+          <span className={cn('font-semibold', predColor)}>
+            {predLabel} · {pred.confidence}% conf
+          </span>
+          {/* Topic status */}
+          {pred.topic && (
+            <span className={cn(
+              pred.topic.status === 'law' ? 'text-gold' :
+              pred.topic.status === 'failed' ? 'text-against-400' :
+              'text-surface-500'
+            )}>
+              {STATUS_LABEL[pred.topic.status] ?? pred.topic.status}
+            </span>
+          )}
+          {/* Brier score */}
+          {pred.brier_score !== null && (
+            <span title="Brier score (lower = better calibration)">
+              Brier {pred.brier_score.toFixed(3)}
+            </span>
+          )}
+          {/* Clout earned */}
+          {pred.clout_earned > 0 && (
+            <span className="text-gold">+{pred.clout_earned} clout</span>
+          )}
+          <span>{relativeTime(pred.created_at)}</span>
+        </div>
+      </div>
+
+      {/* Outcome badge — right side */}
+      <span className={cn(
+        'flex-shrink-0 text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full',
+        outcome.bg, outcome.color
+      )}>
+        {outcome.label}
+      </span>
+    </Link>
+  )
+}
+
+function PredictionHistorySection() {
+  const [predictions, setPredictions] = useState<PredictionRecord[]>([])
+  const [loading, setLoading] = useState(true)
+  const [expanded, setExpanded] = useState(false)
+
+  useEffect(() => {
+    fetch('/api/analytics/predictions', { cache: 'no-store' })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (data?.predictions) {
+          setPredictions(data.predictions as PredictionRecord[])
+        }
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false))
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="rounded-2xl bg-surface-100 border border-surface-300 p-6">
+        <div className="flex items-center gap-2 text-xs font-mono text-surface-500 uppercase tracking-wider mb-4">
+          <Target className="h-3.5 w-3.5 text-purple" />
+          My Predictions
+        </div>
+        <div className="space-y-3">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="flex items-start gap-3 animate-pulse">
+              <Skeleton className="h-7 w-7 rounded-lg flex-shrink-0" />
+              <div className="flex-1 space-y-2">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-3 w-2/3" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  if (predictions.length === 0) {
+    return (
+      <div className="rounded-2xl bg-surface-100 border border-surface-300 p-6">
+        <div className="flex items-center gap-2 text-xs font-mono text-surface-500 uppercase tracking-wider mb-4">
+          <Target className="h-3.5 w-3.5 text-purple" />
+          My Predictions
+        </div>
+        <div className="flex flex-col items-center justify-center py-8 text-center">
+          <div className="h-10 w-10 rounded-xl bg-purple/10 border border-purple/20 flex items-center justify-center mb-3">
+            <Target className="h-5 w-5 text-purple" />
+          </div>
+          <p className="text-sm text-surface-500">No predictions yet.</p>
+          <p className="text-xs text-surface-600 mt-1">
+            Open any active topic and stake a prediction to earn clout when it resolves.
+          </p>
+          <Link
+            href="/"
+            className="mt-4 inline-flex items-center gap-1.5 text-xs font-mono text-purple hover:text-purple/80 transition-colors"
+          >
+            Browse topics
+            <ChevronRight className="h-3.5 w-3.5" />
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
+  const SHOW_INITIAL = 5
+  const visible = expanded ? predictions : predictions.slice(0, SHOW_INITIAL)
+  const hasMore = predictions.length > SHOW_INITIAL
+
+  // Summary stats
+  const resolved = predictions.filter((p) => p.resolved_at !== null)
+  const correct = resolved.filter((p) => p.correct === true)
+  const pending = predictions.filter((p) => p.resolved_at === null)
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35, delay: 0.5 }}
+      className="rounded-2xl bg-surface-100 border border-surface-300 overflow-hidden"
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between px-6 py-4 border-b border-surface-300">
+        <div className="flex items-center gap-2 text-xs font-mono text-surface-500 uppercase tracking-wider">
+          <Target className="h-3.5 w-3.5 text-purple" />
+          My Predictions
+          <span className="text-surface-600">({predictions.length})</span>
+        </div>
+        {/* Mini stats */}
+        <div className="flex items-center gap-3 text-[11px] font-mono">
+          {pending.length > 0 && (
+            <span className="text-surface-500">{pending.length} pending</span>
+          )}
+          {resolved.length > 0 && (
+            <span className="text-emerald">
+              {correct.length}/{resolved.length} correct
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* List */}
+      <div className="divide-y divide-surface-300/60">
+        {visible.map((pred) => (
+          <PredictionRow key={pred.id} pred={pred} />
+        ))}
+      </div>
+
+      {/* Show more */}
+      {hasMore && (
+        <button
+          onClick={() => setExpanded((e) => !e)}
+          className="w-full flex items-center justify-center gap-1.5 py-3 text-xs font-mono text-surface-500 hover:text-white transition-colors border-t border-surface-300/60"
+        >
+          {expanded ? 'Show less' : `Show all ${predictions.length} predictions`}
+          <ChevronDown className={cn('h-3.5 w-3.5 transition-transform', expanded && 'rotate-180')} />
+        </button>
+      )}
+    </motion.div>
+  )
+}
+
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 export default function AnalyticsPage() {
@@ -796,6 +1023,9 @@ export default function AnalyticsPage() {
                 Reputation increases with accurate votes, quality arguments, and consistent participation.
               </p>
             </motion.div>
+
+            {/* Individual predictions history */}
+            <PredictionHistorySection />
 
             {/* Prediction market stats */}
             {data.predictions && data.predictions.total > 0 && (
