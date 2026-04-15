@@ -5,12 +5,11 @@ import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { ProfilePage } from '@/components/profile/ProfilePage'
 import type { VoteHistoryEntry } from '@/components/profile/VoteHistoryTimeline'
+import type { DebateHistoryEntry } from '@/components/profile/DebateHistory'
 import type {
   Profile,
   Topic,
   Law,
-  Achievement,
-  UserAchievement,
   Vote,
   VoteSide,
 } from '@/lib/supabase/types'
@@ -182,24 +181,97 @@ export default async function ProfileUsernamePage({
     laws = lawsRaw ?? []
   }
 
-  // Fetch achievements catalog + earned set
-  const { data: allAchievementsRaw } = (await supabase
-    .from('achievements')
-    .select('*')
-    .order('tier', { ascending: true })) as {
-    data: Achievement[] | null
-  }
-  const allAchievements = allAchievementsRaw ?? []
+  // Fetch achievements catalog + earned set + debate participation — in parallel
+  const [achievementsRes, earnedRes, participantsRes] = await Promise.all([
+    supabase.from('achievements').select('*').order('tier', { ascending: true }),
+    supabase.from('user_achievements').select('achievement_id').eq('user_id', profile.id),
+    supabase
+      .from('debate_participants')
+      .select('debate_id, side, is_speaker, joined_at')
+      .eq('user_id', profile.id)
+      .order('joined_at', { ascending: false })
+      .limit(30),
+  ])
 
-  const { data: earnedRaw } = (await supabase
-    .from('user_achievements')
-    .select('achievement_id')
-    .eq('user_id', profile.id)) as {
-    data: Pick<UserAchievement, 'achievement_id'>[] | null
-  }
+  const allAchievementsRaw = achievementsRes.data
+  const earnedRaw = earnedRes.data
+  const participantsRaw = participantsRes.data
+
+  const allAchievements = allAchievementsRaw ?? []
   const earnedAchievementIds = (earnedRaw ?? []).map(
     (row) => row.achievement_id
   )
+
+  // Build debate history
+  const participants = participantsRaw ?? []
+  let debateHistory: DebateHistoryEntry[] = []
+
+  if (participants.length > 0) {
+    const debateIds = Array.from(new Set(participants.map((p) => p.debate_id)))
+
+    const { data: debatesRaw } = (await supabase
+      .from('debates')
+      .select('id, topic_id, title, type, status, scheduled_at, started_at, ended_at, blue_sway, red_sway')
+      .in('id', debateIds)) as {
+      data: {
+        id: string
+        topic_id: string
+        title: string
+        type: string
+        status: string
+        scheduled_at: string
+        started_at: string | null
+        ended_at: string | null
+        blue_sway: number
+        red_sway: number
+      }[] | null
+    }
+
+    const debates = debatesRaw ?? []
+
+    const topicIds = Array.from(new Set(debates.map((d) => d.topic_id)))
+    const { data: debateTopicsRaw } = topicIds.length
+      ? (await supabase
+          .from('topics')
+          .select('id, statement, category')
+          .in('id', topicIds)) as {
+          data: { id: string; statement: string; category: string | null }[] | null
+        }
+      : { data: [] as { id: string; statement: string; category: string | null }[] }
+
+    const topicMap = new Map((debateTopicsRaw ?? []).map((t) => [t.id, t]))
+    const debateMap = new Map(debates.map((d) => [d.id, d]))
+
+    debateHistory = participants
+      .map((p) => {
+        const d = debateMap.get(p.debate_id)
+        if (!d) return null
+        const topic = topicMap.get(d.topic_id) ?? null
+        return {
+          debateId: d.id,
+          title: d.title,
+          topicStatement: topic?.statement ?? null,
+          topicCategory: topic?.category ?? null,
+          type: d.type as 'quick' | 'grand' | 'tribunal',
+          status: d.status as 'scheduled' | 'live' | 'ended' | 'cancelled',
+          side: p.side as 'blue' | 'red' | null,
+          isSpeaker: p.is_speaker,
+          scheduledAt: d.scheduled_at,
+          endedAt: d.ended_at,
+          blueSway: d.blue_sway,
+          redSway: d.red_sway,
+        } satisfies DebateHistoryEntry
+      })
+      .filter((e): e is DebateHistoryEntry => e !== null)
+      // Sort: live first, then upcoming, then ended (most-recent first)
+      .sort((a, b) => {
+        const order = { live: 0, scheduled: 1, ended: 2, cancelled: 3 }
+        const ao = order[a.status] ?? 4
+        const bo = order[b.status] ?? 4
+        if (ao !== bo) return ao - bo
+        return new Date(b.scheduledAt).getTime() - new Date(a.scheduledAt).getTime()
+      })
+  }
 
   return (
     <div className="min-h-screen bg-surface-50">
@@ -215,6 +287,7 @@ export default async function ProfileUsernamePage({
           earnedAchievementIds={earnedAchievementIds}
           initialFollowing={initialFollowing}
           viewerId={user?.id ?? null}
+          debateHistory={debateHistory}
         />
       </main>
       <BottomNav />

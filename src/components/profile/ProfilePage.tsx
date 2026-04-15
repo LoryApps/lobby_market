@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   Activity,
   MessageSquare,
+  Mic,
   Scale,
   Trophy,
   LayoutGrid,
@@ -14,6 +15,7 @@ import { ProfileHeader } from './ProfileHeader'
 import { ProfileCompletionBanner } from './ProfileCompletionBanner'
 import { VoteHistoryTimeline, type VoteHistoryEntry } from './VoteHistoryTimeline'
 import { AchievementGrid } from './AchievementGrid'
+import { DebateHistory, type DebateHistoryEntry } from './DebateHistory'
 import type {
   Profile,
   Topic,
@@ -32,15 +34,17 @@ interface ProfilePageProps {
   earnedAchievementIds: string[]
   initialFollowing?: boolean
   viewerId?: string | null
+  debateHistory?: DebateHistoryEntry[]
 }
 
-type TabId = 'overview' | 'votes' | 'topics' | 'laws' | 'achievements'
+type TabId = 'overview' | 'votes' | 'topics' | 'laws' | 'achievements' | 'debates'
 
 const tabs: { id: TabId; label: string; icon: typeof Activity }[] = [
   { id: 'overview', label: 'Overview', icon: LayoutGrid },
   { id: 'votes', label: 'Votes', icon: Activity },
   { id: 'topics', label: 'Topics', icon: MessageSquare },
   { id: 'laws', label: 'Laws', icon: Scale },
+  { id: 'debates', label: 'Debates', icon: Mic },
   { id: 'achievements', label: 'Achievements', icon: Trophy },
 ]
 
@@ -87,6 +91,7 @@ export function ProfilePage({
   earnedAchievementIds,
   initialFollowing = false,
   viewerId = null,
+  debateHistory = [],
 }: ProfilePageProps) {
   const [activeTab, setActiveTab] = useState<TabId>('overview')
 
@@ -143,6 +148,35 @@ export function ProfilePage({
           accent="gold"
         />
       </div>
+
+      {/* Debate stats strip — only show if user has debate history */}
+      {debateHistory.length > 0 && (() => {
+        const speakerDebates = debateHistory.filter((d) => d.isSpeaker && d.status === 'ended')
+        if (speakerDebates.length === 0) return null
+        const wins = speakerDebates.filter((d) => {
+          const diff = d.blueSway - d.redSway
+          if (Math.abs(diff) < 2) return false
+          return (d.side === 'blue' && diff > 0) || (d.side === 'red' && diff < 0)
+        }).length
+        const winRate = speakerDebates.length > 0 ? Math.round((wins / speakerDebates.length) * 100) : 0
+        return (
+          <div className="flex items-center gap-3 rounded-2xl border border-purple/30 bg-purple/5 px-5 py-3">
+            <Mic className="h-4 w-4 text-purple flex-shrink-0" aria-hidden="true" />
+            <span className="text-xs font-mono text-surface-500">
+              <span className="text-white font-semibold">{debateHistory.length}</span> debate{debateHistory.length !== 1 ? 's' : ''} ·{' '}
+              <span className="text-for-400 font-semibold">{wins}</span> wins ·{' '}
+              <span className="text-purple font-semibold">{winRate}%</span> win rate
+            </span>
+            <button
+              onClick={() => setActiveTab('debates')}
+              className="ml-auto text-[10px] font-mono text-purple hover:text-white transition-colors"
+              aria-label="View debate history"
+            >
+              View all
+            </button>
+          </div>
+        )
+      })()}
 
       {/* Tabs */}
       <div className="sticky top-14 z-20 -mx-4 px-4 py-2 bg-surface-50/80 backdrop-blur border-b border-surface-300">
@@ -356,6 +390,21 @@ export function ProfilePage({
                   </Link>
                 ))
               )}
+            </motion.div>
+          )}
+
+          {activeTab === 'debates' && (
+            <motion.div
+              key="debates"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+            >
+              <DebateHistory
+                debates={debateHistory}
+                username={profile.username}
+                isOwner={isOwner}
+              />
             </motion.div>
           )}
 
