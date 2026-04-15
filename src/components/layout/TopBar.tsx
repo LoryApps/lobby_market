@@ -3,16 +3,56 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Activity, BarChart2, BookOpen, Flame, HelpCircle, LogOut, Search, Plus, Settings, Target, TrendingUp, User, Zap } from 'lucide-react'
+import { Activity, BarChart2, BookOpen, Coins, Flame, HelpCircle, LogOut, Search, Plus, Settings, Target, TrendingUp, User, Zap } from 'lucide-react'
 import { NotificationBell } from '@/components/profile/NotificationBell'
+import { Avatar } from '@/components/ui/Avatar'
 import { openCommandPalette } from '@/lib/hooks/useCommandPalette'
 import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils/cn'
+
+// ─── Mini profile type ────────────────────────────────────────────────────────
+
+interface MiniProfile {
+  username: string
+  display_name: string | null
+  avatar_url: string | null
+  role: string
+  clout: number
+}
+
+// ─── Role label helper ────────────────────────────────────────────────────────
+
+const ROLE_LABELS: Record<string, { label: string; color: string }> = {
+  citizen: { label: 'Citizen', color: 'text-surface-500' },
+  senator: { label: 'Senator', color: 'text-for-400' },
+  magistrate: { label: 'Magistrate', color: 'text-gold' },
+  oracle: { label: 'Oracle', color: 'text-purple' },
+  troll_catcher: { label: 'Troll Catcher', color: 'text-emerald' },
+  moderator: { label: 'Moderator', color: 'text-against-400' },
+  admin: { label: 'Admin', color: 'text-gold' },
+}
 
 export function TopBar() {
   const router = useRouter()
   const [menuOpen, setMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
+  const [profile, setProfile] = useState<MiniProfile | null>(null)
+
+  // Fetch current user profile for personalization
+  useEffect(() => {
+    async function loadProfile() {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+      const { data } = await supabase
+        .from('profiles')
+        .select('username, display_name, avatar_url, role, clout')
+        .eq('id', user.id)
+        .maybeSingle()
+      if (data) setProfile(data as MiniProfile)
+    }
+    loadProfile()
+  }, [])
 
   // Close dropdown when clicking outside or pressing Escape
   useEffect(() => {
@@ -40,6 +80,8 @@ export function TopBar() {
     await supabase.auth.signOut()
     router.push('/login')
   }
+
+  const roleInfo = profile ? (ROLE_LABELS[profile.role] ?? ROLE_LABELS.citizen) : null
 
   return (
     <header className="sticky top-0 z-50 h-14 bg-surface-100 border-b border-surface-300 flex items-center px-4 gap-4">
@@ -110,24 +152,68 @@ export function TopBar() {
           <button
             onClick={() => setMenuOpen((o) => !o)}
             className={cn(
-              'flex items-center justify-center h-8 w-8 rounded-full',
-              'bg-surface-200 text-surface-500',
-              'hover:bg-surface-300 hover:text-surface-700 transition-colors',
-              menuOpen && 'bg-surface-300 text-white'
+              'flex items-center justify-center rounded-full overflow-hidden',
+              'ring-2 ring-transparent transition-all',
+              menuOpen ? 'ring-for-500/50' : 'hover:ring-surface-400/50',
+              profile?.avatar_url ? 'h-8 w-8' : 'h-8 w-8 bg-surface-200 text-surface-500 hover:bg-surface-300 hover:text-surface-700'
             )}
-            aria-label="User menu"
+            aria-label={profile ? `User menu — ${profile.display_name ?? profile.username}` : 'User menu'}
             aria-expanded={menuOpen}
             aria-haspopup="menu"
           >
-            <User className="h-4 w-4" aria-hidden="true" />
+            {profile ? (
+              <Avatar
+                src={profile.avatar_url}
+                fallback={profile.display_name ?? profile.username}
+                size="sm"
+                className="h-8 w-8"
+              />
+            ) : (
+              <User className="h-4 w-4" aria-hidden="true" />
+            )}
           </button>
 
           {menuOpen && (
             <div
               role="menu"
               aria-label="User menu"
-              className="absolute right-0 top-10 w-48 rounded-xl bg-surface-100 border border-surface-300 shadow-xl shadow-black/40 overflow-hidden z-[60]"
+              className="absolute right-0 top-10 w-56 rounded-xl bg-surface-100 border border-surface-300 shadow-xl shadow-black/40 overflow-hidden z-[60]"
             >
+              {/* Profile header — shows who is logged in */}
+              {profile && (
+                <Link
+                  href="/profile/me"
+                  role="menuitem"
+                  onClick={() => setMenuOpen(false)}
+                  className="flex items-center gap-3 px-4 py-3 bg-surface-200/60 hover:bg-surface-200 border-b border-surface-300 transition-colors"
+                >
+                  <Avatar
+                    src={profile.avatar_url}
+                    fallback={profile.display_name ?? profile.username}
+                    size="md"
+                    className="flex-shrink-0"
+                  />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-semibold text-white truncate leading-tight">
+                      {profile.display_name ?? profile.username}
+                    </p>
+                    <p className="text-[11px] text-surface-500 font-mono truncate leading-tight">
+                      @{profile.username}
+                    </p>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      {roleInfo && (
+                        <span className={cn('text-[10px] font-mono font-semibold', roleInfo.color)}>
+                          {roleInfo.label}
+                        </span>
+                      )}
+                      <span className="flex items-center gap-0.5 text-[10px] font-mono text-gold">
+                        <Coins className="h-2.5 w-2.5" aria-hidden="true" />
+                        {profile.clout.toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              )}
               <Link
                 href="/profile/me"
                 role="menuitem"
