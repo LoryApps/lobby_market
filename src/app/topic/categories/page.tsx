@@ -19,6 +19,7 @@ import {
   Tag,
   ArrowRight,
   Network,
+  FileEdit,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
@@ -382,6 +383,18 @@ export default async function CategoriesPage() {
               </p>
             </div>
             <div className="ml-auto flex items-center gap-2">
+              <Link
+                href="/topic/wiki/recent"
+                className={cn(
+                  'inline-flex items-center gap-2 px-3 py-2 rounded-lg',
+                  'bg-emerald/10 border border-emerald/30 text-emerald',
+                  'hover:bg-emerald/20 hover:border-emerald/50',
+                  'text-xs font-mono font-medium transition-colors'
+                )}
+              >
+                <FileEdit className="h-3.5 w-3.5" />
+                Wiki Edits
+              </Link>
               <Link
                 href="/topic/graph"
                 className={cn(

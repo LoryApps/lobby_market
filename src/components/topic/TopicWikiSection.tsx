@@ -19,6 +19,7 @@ import {
   Loader2,
   Plus,
   Network,
+  Clock,
 } from 'lucide-react'
 import { parseBlocks } from '@/components/law/LawDocument'
 import { createClient } from '@/lib/supabase/client'
@@ -314,12 +315,28 @@ function applyToolbarAction(
 
 const MAX_CHARS = 5000
 
+function wikiRelativeTime(iso: string): string {
+  const diff = Date.now() - new Date(iso).getTime()
+  const m = Math.floor(diff / 60_000)
+  const h = Math.floor(m / 60)
+  const d = Math.floor(h / 24)
+  if (m < 1) return 'just now'
+  if (m < 60) return `${m}m ago`
+  if (h < 24) return `${h}h ago`
+  if (d < 7) return `${d}d ago`
+  return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+}
+
 interface TopicWikiSectionProps {
   topicId: string
   authorId: string
   description: string | null | undefined
   onUpdate: (description: string | null) => void
   className?: string
+  /** ISO timestamp of the last description edit */
+  updatedAt?: string | null
+  /** Username of the editor (display without @) */
+  updatedByUsername?: string | null
 }
 
 export function TopicWikiSection({
@@ -328,6 +345,8 @@ export function TopicWikiSection({
   description,
   onUpdate,
   className,
+  updatedAt,
+  updatedByUsername,
 }: TopicWikiSectionProps) {
   const [currentUserId, setCurrentUserId] = useState<string | null>(null)
   const [editing, setEditing] = useState(false)
@@ -711,22 +730,37 @@ export function TopicWikiSection({
   return (
     <div className={cn('mt-5 rounded-xl border border-surface-300 bg-surface-100 overflow-hidden', className)}>
       {/* Header */}
-      <div className="flex items-center gap-2 px-4 py-2.5 border-b border-surface-300">
+      <div className="flex items-center gap-2 px-4 py-2.5 border-b border-surface-300 flex-wrap">
         <BookOpen className="h-3.5 w-3.5 text-for-400 flex-shrink-0" aria-hidden="true" />
-        <span className="text-xs font-mono text-surface-500 uppercase tracking-wider flex-1">
+        <span className="text-xs font-mono text-surface-500 uppercase tracking-wider">
           Context
         </span>
-        {isAuthor && (
-          <button
-            onClick={startEditing}
-            className="flex items-center gap-1.5 px-2 py-1 rounded-md text-[11px] font-mono text-surface-500 hover:text-white hover:bg-surface-300 transition-colors"
-            title="Edit context"
-            aria-label="Edit context"
-          >
-            <Pencil className="h-3 w-3" />
-            Edit
-          </button>
+        {/* Editor attribution */}
+        {updatedAt && (
+          <span className="flex items-center gap-1 text-[11px] font-mono text-surface-600 ml-1 min-w-0">
+            <Clock className="h-3 w-3 flex-shrink-0" aria-hidden="true" />
+            <span className="truncate">
+              {updatedByUsername ? (
+                <>edited by <span className="text-surface-500">@{updatedByUsername}</span> · {wikiRelativeTime(updatedAt)}</>
+              ) : (
+                <>edited {wikiRelativeTime(updatedAt)}</>
+              )}
+            </span>
+          </span>
         )}
+        <div className="ml-auto flex items-center gap-1">
+          {isAuthor && (
+            <button
+              onClick={startEditing}
+              className="flex items-center gap-1.5 px-2 py-1 rounded-md text-[11px] font-mono text-surface-500 hover:text-white hover:bg-surface-300 transition-colors"
+              title="Edit context"
+              aria-label="Edit context"
+            >
+              <Pencil className="h-3 w-3" />
+              Edit
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Rendered content */}

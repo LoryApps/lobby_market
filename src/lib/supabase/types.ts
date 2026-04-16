@@ -108,6 +108,8 @@ export type Database = {
           view_count: number;
           created_at: string;
           updated_at: string;
+          description_updated_at: string | null;
+          description_updated_by: string | null;
         };
         Insert: {
           id?: string;
@@ -134,6 +136,8 @@ export type Database = {
           view_count?: number;
           created_at?: string;
           updated_at?: string;
+          description_updated_at?: string | null;
+          description_updated_by?: string | null;
         };
         Update: {
           id?: string;
@@ -160,6 +164,8 @@ export type Database = {
           view_count?: number;
           created_at?: string;
           updated_at?: string;
+          description_updated_at?: string | null;
+          description_updated_by?: string | null;
         };
         Relationships: [];
       };

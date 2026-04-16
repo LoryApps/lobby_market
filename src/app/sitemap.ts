@@ -15,6 +15,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/leaderboard`, changeFrequency: 'daily', priority: 0.7 },
   { url: `${BASE_URL}/stats`, changeFrequency: 'hourly', priority: 0.65 },
   { url: `${BASE_URL}/topic/categories`, changeFrequency: 'weekly', priority: 0.7 },
+  { url: `${BASE_URL}/topic/wiki/recent`, changeFrequency: 'hourly', priority: 0.65 },
   { url: `${BASE_URL}/about`, changeFrequency: 'monthly', priority: 0.6 },
   { url: `${BASE_URL}/help`, changeFrequency: 'monthly', priority: 0.55 },
   { url: `${BASE_URL}/guidelines`, changeFrequency: 'monthly', priority: 0.5 },

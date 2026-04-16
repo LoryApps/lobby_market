@@ -75,6 +75,7 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
   const [hasSupported, setHasSupported] = useState(false)
   const [activeTab, setActiveTab] = useState<TopicTab>('details')
   const [voteSheetOpen, setVoteSheetOpen] = useState(false)
+  const [editorUsername, setEditorUsername] = useState<string | null>(null)
   const { castVote, hasVoted, getVoteSide } = useVoteStore()
   const updateTopic = useFeedStore((s) => s.updateTopic)
   const votedSide = getVoteSide(topic.id)
@@ -87,6 +88,24 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
     !isInContinuationVote
   const showChainBanner = isContinued || isInContinuationVote
   const hasChainHistory = topic.chain_depth > 0 || topic.parent_id !== null
+
+  // Fetch editor username when description_updated_by is set
+  const descUpdatedBy = (topic as { description_updated_by?: string | null }).description_updated_by
+  useEffect(() => {
+    if (!descUpdatedBy) {
+      setEditorUsername(null)
+      return
+    }
+    const supabase = createClient()
+    supabase
+      .from('profiles')
+      .select('username')
+      .eq('id', descUpdatedBy)
+      .maybeSingle()
+      .then(({ data }) => {
+        setEditorUsername(data?.username ?? null)
+      })
+  }, [descUpdatedBy])
 
   // Subscribe to Supabase Realtime for live vote updates
   useEffect(() => {
@@ -376,6 +395,8 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
               authorId={topic.author_id}
               description={topic.description}
               onUpdate={(desc) => setTopic((prev) => ({ ...prev, description: desc }))}
+              updatedAt={(topic as { description_updated_at?: string | null }).description_updated_at ?? null}
+              updatedByUsername={editorUsername}
             />
 
             {/* Topic journey — lifecycle progress stepper */}
