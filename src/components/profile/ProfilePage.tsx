@@ -16,6 +16,7 @@ import { ProfileCompletionBanner } from './ProfileCompletionBanner'
 import { VoteHistoryTimeline, type VoteHistoryEntry } from './VoteHistoryTimeline'
 import { AchievementGrid } from './AchievementGrid'
 import { ProfileArguments, type ProfileArgumentEntry } from './ProfileArguments'
+import { VoteDnaPanel, type VoteCategoryBreakdown } from './VoteDnaPanel'
 import type {
   Profile,
   Topic,
@@ -35,6 +36,7 @@ interface ProfilePageProps {
   profileArguments?: ProfileArgumentEntry[]
   initialFollowing?: boolean
   viewerId?: string | null
+  voteCategoryBreakdown?: VoteCategoryBreakdown[]
 }
 
 type TabId = 'overview' | 'votes' | 'topics' | 'laws' | 'achievements' | 'arguments'
@@ -92,6 +94,7 @@ export function ProfilePage({
   profileArguments = [],
   initialFollowing = false,
   viewerId = null,
+  voteCategoryBreakdown = [],
 }: ProfilePageProps) {
   const [activeTab, setActiveTab] = useState<TabId>('overview')
 
@@ -202,6 +205,25 @@ export function ProfilePage({
               className="space-y-6"
             >
               <VoteHistoryTimeline votes={voteHistory} />
+
+              {/* Vote DNA: stance split + category breakdown */}
+              {profile.total_votes > 0 && (
+                <VoteDnaPanel
+                  bluePct={
+                    profile.total_votes > 0
+                      ? Math.round((profile.blue_vote_count / profile.total_votes) * 100)
+                      : 50
+                  }
+                  redPct={
+                    profile.total_votes > 0
+                      ? Math.round((profile.red_vote_count / profile.total_votes) * 100)
+                      : 50
+                  }
+                  totalVotes={profile.total_votes}
+                  categoryBreakdown={voteCategoryBreakdown}
+                />
+              )}
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="rounded-2xl border border-surface-300 bg-surface-100 p-5">
                   <h3 className="text-[11px] font-mono text-surface-500 uppercase tracking-wider mb-3">

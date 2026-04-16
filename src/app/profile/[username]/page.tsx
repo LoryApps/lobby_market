@@ -6,6 +6,7 @@ import { BottomNav } from '@/components/layout/BottomNav'
 import { ProfilePage } from '@/components/profile/ProfilePage'
 import type { VoteHistoryEntry } from '@/components/profile/VoteHistoryTimeline'
 import type { ProfileArgumentEntry } from '@/components/profile/ProfileArguments'
+import type { VoteCategoryBreakdown } from '@/components/profile/VoteDnaPanel'
 import type {
   Profile,
   Topic,
@@ -133,17 +134,32 @@ export default async function ProfileUsernamePage({
 
   const votes = votesRaw ?? []
   const voteTopicIds = Array.from(new Set(votes.map((v) => v.topic_id)))
-  let voteTopics: Pick<Topic, 'id' | 'statement' | 'blue_pct'>[] = []
+  let voteTopics: Pick<Topic, 'id' | 'statement' | 'blue_pct' | 'category'>[] = []
   if (voteTopicIds.length > 0) {
     const { data } = (await supabase
       .from('topics')
-      .select('id, statement, blue_pct')
+      .select('id, statement, blue_pct, category')
       .in('id', voteTopicIds)) as {
-      data: Pick<Topic, 'id' | 'statement' | 'blue_pct'>[] | null
+      data: Pick<Topic, 'id' | 'statement' | 'blue_pct' | 'category'>[] | null
     }
     voteTopics = data ?? []
   }
   const voteTopicMap = new Map(voteTopics.map((t) => [t.id, t]))
+
+  // Compute category breakdown from the 50 most recent votes
+  const categoryMap = new Map<string, { total: number; blue: number; red: number }>()
+  for (const v of votes) {
+    const topic = voteTopicMap.get(v.topic_id)
+    const cat = topic?.category ?? 'Other'
+    const existing = categoryMap.get(cat) ?? { total: 0, blue: 0, red: 0 }
+    existing.total += 1
+    if ((v.side as string) === 'blue') existing.blue += 1
+    else existing.red += 1
+    categoryMap.set(cat, existing)
+  }
+  const voteCategoryBreakdown: VoteCategoryBreakdown[] = Array.from(
+    categoryMap.entries()
+  ).map(([category, counts]) => ({ category, ...counts }))
 
   const voteHistory: VoteHistoryEntry[] = votes.map((v) => {
     const topic = voteTopicMap.get(v.topic_id)
@@ -263,6 +279,7 @@ export default async function ProfileUsernamePage({
           profileArguments={profileArguments}
           initialFollowing={initialFollowing}
           viewerId={user?.id ?? null}
+          voteCategoryBreakdown={voteCategoryBreakdown}
         />
       </main>
       <BottomNav />
