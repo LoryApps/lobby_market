@@ -14,6 +14,8 @@ export interface Toast {
   tier?: ToastTier
   /** ms before auto-dismiss; default 5000 */
   duration?: number
+  /** Optional URL shown as a "Share" CTA on achievement toasts */
+  link?: string
 }
 
 export interface ToastContextValue {

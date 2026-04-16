@@ -133,6 +133,12 @@ export function AchievementWatcher() {
             }
           }
 
+          // Build a shareable link when reference_type is 'achievement'
+          const link =
+            n.reference_type === 'achievement' && n.reference_id
+              ? `/achievements/${n.reference_id}`
+              : undefined
+
           addToast({
             variant: 'achievement',
             title: n.title,
@@ -140,6 +146,7 @@ export function AchievementWatcher() {
             icon,
             tier,
             duration: 8000,
+            link,
           })
 
           // Mark as read on server

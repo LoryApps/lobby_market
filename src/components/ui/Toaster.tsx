@@ -2,7 +2,8 @@
 
 import { useState, useCallback, useEffect, useRef, type ReactNode } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Award, CheckCircle2, AlertCircle, Info, X } from 'lucide-react'
+import { Award, CheckCircle2, AlertCircle, Info, Share2, X } from 'lucide-react'
+import Link from 'next/link'
 import { ToastContext, type Toast, type ToastContextValue } from '@/lib/hooks/useToast'
 import { cn } from '@/lib/utils/cn'
 
@@ -140,7 +141,7 @@ function ToastItem({
                 {toast.icon}
               </span>
             )}
-            <div>
+            <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-white leading-snug">
                 {toast.title}
               </p>
@@ -151,6 +152,29 @@ function ToastItem({
               )}
             </div>
           </div>
+
+          {/* Share / View link — only shown when `link` is provided */}
+          {toast.link && (
+            <div className="mt-3 pt-2.5 border-t border-surface-300/60">
+              <Link
+                href={toast.link}
+                className={cn(
+                  'inline-flex items-center gap-1.5 text-xs font-mono font-semibold transition-colors',
+                  tier === 'legendary'
+                    ? 'text-gold hover:text-gold/80'
+                    : tier === 'epic'
+                    ? 'text-purple hover:text-purple/80'
+                    : tier === 'rare'
+                    ? 'text-for-400 hover:text-for-300'
+                    : 'text-surface-400 hover:text-surface-300',
+                )}
+                aria-label="View and share this achievement"
+              >
+                <Share2 className="h-3 w-3" aria-hidden />
+                View &amp; Share
+              </Link>
+            </div>
+          )}
         </div>
 
         {/* Dismiss button */}
