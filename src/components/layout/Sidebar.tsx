@@ -25,6 +25,7 @@ import {
   Zap,
   Target,
   ThumbsUp,
+  Flame,
 } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { createClient } from '@/lib/supabase/client'
@@ -42,6 +43,7 @@ const navItems: NavItem[] = [
   { href: '/', label: 'Feed', icon: Newspaper },
   { href: '/predictions', label: 'Predictions', icon: Target },
   { href: '/trending', label: 'Trending', icon: TrendingUp },
+  { href: '/surge', label: 'Surge', icon: Flame },
   { href: '/split', label: 'The Split', icon: GitFork },
   { href: '/floor', label: 'The Floor', icon: Landmark },
   { href: '/law', label: 'Codex', icon: Scale },
