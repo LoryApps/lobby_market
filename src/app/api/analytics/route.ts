@@ -40,12 +40,16 @@ export async function GET() {
   }
 
   // Fetch all votes with topic info for deeper analysis
+  const yearAgo = new Date()
+  yearAgo.setFullYear(yearAgo.getFullYear() - 1)
+
   const { data: votesRaw } = await supabase
     .from('votes')
     .select('id, side, created_at, topic_id')
     .eq('user_id', user.id)
+    .gte('created_at', yearAgo.toISOString())
     .order('created_at', { ascending: false })
-    .limit(500)
+    .limit(2000)
 
   const votes = votesRaw ?? []
 
@@ -101,12 +105,12 @@ export async function GET() {
     .sort((a, b) => b.count - a.count)
     .slice(0, 6)
 
-  // Daily activity for last 28 days
+  // Daily activity for last 364 days (52 complete weeks for the year calendar)
   const now = new Date()
   const dailyMap = new Map<string, number>()
 
-  // Initialize last 28 days
-  for (let i = 27; i >= 0; i--) {
+  // Initialize last 364 days
+  for (let i = 363; i >= 0; i--) {
     const d = new Date(now)
     d.setDate(d.getDate() - i)
     dailyMap.set(d.toISOString().slice(0, 10), 0)

@@ -26,6 +26,7 @@ import {
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber'
+import { VoteCalendar } from '@/components/profile/VoteCalendar'
 import { cn } from '@/lib/utils/cn'
 import type { PredictionRecord } from '@/app/api/analytics/predictions/route'
 
@@ -482,88 +483,6 @@ function CategoryBreakdown({
   )
 }
 
-function ActivityGrid({
-  days,
-}: {
-  days: Array<{ date: string; count: number }>
-}) {
-  const max = Math.max(...days.map((d) => d.count), 1)
-
-  function intensityClass(count: number): string {
-    if (count === 0) return 'bg-surface-300'
-    const pct = count / max
-    if (pct <= 0.25) return 'bg-for-800'
-    if (pct <= 0.5) return 'bg-for-700'
-    if (pct <= 0.75) return 'bg-for-600'
-    return 'bg-for-400'
-  }
-
-  // Build 4-week grid (7 cols × 4 rows)
-  const weeks: Array<typeof days> = []
-  for (let w = 0; w < 4; w++) {
-    weeks.push(days.slice(w * 7, w * 7 + 7))
-  }
-
-  // Day labels
-  const dayLabels = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, delay: 0.3 }}
-      className="rounded-2xl bg-surface-100 border border-surface-300 p-6"
-    >
-      <div className="flex items-center gap-2 text-xs font-mono text-surface-500 uppercase tracking-wider mb-5">
-        <Flame className="h-3.5 w-3.5" />
-        28-Day Activity
-      </div>
-
-      <div className="flex gap-1">
-        {/* Day-of-week labels */}
-        <div className="flex flex-col gap-1 mr-1">
-          {dayLabels.map((d, i) => (
-            <div
-              key={i}
-              className="h-6 w-4 flex items-center justify-center text-[9px] font-mono text-surface-500"
-            >
-              {d}
-            </div>
-          ))}
-        </div>
-
-        {/* Grid */}
-        {weeks.map((week, wi) => (
-          <div key={wi} className="flex flex-col gap-1 flex-1">
-            {week.map((day, di) => (
-              <motion.div
-                key={day.date}
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ duration: 0.2, delay: 0.4 + wi * 0.05 + di * 0.01 }}
-                title={`${day.date}: ${day.count} vote${day.count !== 1 ? 's' : ''}`}
-                className={cn(
-                  'h-6 rounded-sm transition-colors',
-                  intensityClass(day.count)
-                )}
-              />
-            ))}
-          </div>
-        ))}
-      </div>
-
-      <div className="flex items-center gap-2 mt-4 text-[10px] font-mono text-surface-500">
-        <span>Less</span>
-        {['bg-surface-300', 'bg-for-800', 'bg-for-600', 'bg-for-400'].map(
-          (cls, i) => (
-            <span key={i} className={cn('h-3 w-3 rounded-sm', cls)} />
-          )
-        )}
-        <span>More</span>
-      </div>
-    </motion.div>
-  )
-}
 
 function MonthlyBars({
   months,
@@ -983,11 +902,11 @@ export default function AnalyticsPage() {
               />
             </div>
 
-            {/* Activity grid + Monthly bars */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <ActivityGrid days={data.dailyActivity} />
-              <MonthlyBars months={data.monthlyActivity} />
-            </div>
+            {/* Full-year vote calendar */}
+            <VoteCalendar days={data.dailyActivity} />
+
+            {/* Monthly bars */}
+            <MonthlyBars months={data.monthlyActivity} />
 
             {/* Category breakdown */}
             {data.topCategories.length > 0 && (
