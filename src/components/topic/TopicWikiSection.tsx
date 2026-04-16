@@ -18,10 +18,32 @@ import {
   X,
   Loader2,
   Plus,
+  Network,
 } from 'lucide-react'
 import { parseBlocks } from '@/components/law/LawDocument'
 import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils/cn'
+import {
+  WikilinkAutocomplete,
+  type WikilinkSuggestion,
+} from '@/components/topic/WikilinkAutocomplete'
+
+// ─── Wikilink helpers ─────────────────────────────────────────────────────────
+
+/**
+ * Returns the [[query string if the cursor is currently inside a [[...
+ * pattern (no closing ]] yet), or null otherwise.
+ */
+function getWikilinkContext(
+  text: string,
+  cursorPos: number
+): { query: string; startPos: number } | null {
+  const before = text.slice(0, cursorPos)
+  const match = before.match(/\[\[([^\][]*)$/)
+  if (!match) return null
+  const startPos = before.length - match[0].length
+  return { query: match[1], startPos }
+}
 
 // ─── Inline token renderer (subset used for topic descriptions) ───────────────
 
@@ -96,8 +118,28 @@ function renderTokens(tokens: Token[], keyPrefix: string): ReactNode {
             {token.value}
           </code>
         )
-      case 'link':
-        return (
+      case 'link': {
+        // Internal topic links (inserted via [[wikilink]] autocomplete)
+        // get a distinctive cross-reference style; external links get standard style.
+        const isInternal =
+          token.href.startsWith('/topic/') ||
+          token.href.startsWith('/law/')
+        return isInternal ? (
+          <a
+            key={key}
+            href={token.href}
+            className={cn(
+              'inline-flex items-center gap-0.5 font-mono text-[0.85em]',
+              'text-for-300 bg-for-600/15 border border-for-500/30',
+              'rounded px-1 py-0.5 hover:bg-for-600/25 hover:text-for-200',
+              'transition-colors no-underline'
+            )}
+            title="Related topic"
+          >
+            <Network className="h-2.5 w-2.5 flex-shrink-0 opacity-70" aria-hidden />
+            {token.value}
+          </a>
+        ) : (
           <a
             key={key}
             href={token.href}
@@ -108,6 +150,7 @@ function renderTokens(tokens: Token[], keyPrefix: string): ReactNode {
             {token.value}
           </a>
         )
+      }
       case 'bold':
         return (
           <strong key={key} className="text-white font-semibold">
@@ -233,6 +276,7 @@ const TOOLBAR: ToolbarAction[] = [
   { label: 'Bullet list', icon: List, prefix: '- ', block: true },
   { label: 'Numbered list', icon: ListOrdered, prefix: '1. ', block: true },
   { label: 'Link', icon: Link2, prefix: '[', suffix: '](url)', wrap: true },
+  // Wikilink button is handled specially below — not in applyToolbarAction
 ]
 
 function applyToolbarAction(
@@ -293,6 +337,15 @@ export function TopicWikiSection({
   const [error, setError] = useState<string | null>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
+  // ── Wikilink autocomplete state ────────────────────────────────────────────
+  const [wikilinkOpen, setWikilinkOpen] = useState(false)
+  const [wikilinkQuery, setWikilinkQuery] = useState('')
+  const [wikilinkStartPos, setWikilinkStartPos] = useState(0)
+  const [wikilinkSelectedIdx, setWikilinkSelectedIdx] = useState(0)
+  const [wikilinkResultCount, setWikilinkResultCount] = useState(0)
+  // Store latest results so we can select on Enter
+  const wikilinkResultsRef = useRef<WikilinkSuggestion[]>([])
+
   // Detect auth
   useEffect(() => {
     const supabase = createClient()
@@ -343,6 +396,52 @@ export function TopicWikiSection({
       setSaving(false)
     }
   }, [topicId, draft, saving, onUpdate])
+
+  // Insert a [[wikilink]] — replaces `[[query` with `[Statement](/topic/id)`
+  const handleWikilinkSelect = useCallback(
+    (suggestion: WikilinkSuggestion) => {
+      const ta = textareaRef.current
+      if (!ta) return
+      const replacement = `[${suggestion.statement}](/topic/${suggestion.id})`
+      const newValue =
+        draft.slice(0, wikilinkStartPos) +
+        replacement +
+        draft.slice(ta.selectionStart)
+      setDraft(newValue)
+      setWikilinkOpen(false)
+      setWikilinkQuery('')
+      setWikilinkSelectedIdx(0)
+      // Move cursor to end of inserted link
+      const newCursor = wikilinkStartPos + replacement.length
+      setTimeout(() => {
+        ta.focus()
+        ta.setSelectionRange(newCursor, newCursor)
+      }, 0)
+    },
+    [draft, wikilinkStartPos]
+  )
+
+  // Insert `[[` to trigger wikilink mode manually (toolbar button)
+  const insertWikilinkTrigger = useCallback(() => {
+    const ta = textareaRef.current
+    if (!ta) return
+    const pos = ta.selectionStart
+    const newValue = draft.slice(0, pos) + '[[' + draft.slice(pos)
+    setDraft(newValue)
+    setTimeout(() => {
+      ta.focus()
+      const newPos = pos + 2
+      ta.setSelectionRange(newPos, newPos)
+      // Manually trigger the autocomplete
+      const ctx = getWikilinkContext(newValue, newPos)
+      if (ctx) {
+        setWikilinkStartPos(ctx.startPos)
+        setWikilinkQuery(ctx.query)
+        setWikilinkSelectedIdx(0)
+        setWikilinkOpen(true)
+      }
+    }, 0)
+  }, [draft])
 
   const applyFormat = useCallback((action: ToolbarAction) => {
     const ta = textareaRef.current
@@ -448,6 +547,26 @@ export function TopicWikiSection({
                 </button>
               )
             })}
+
+            {/* Wikilink button — inserts [[ to trigger autocomplete */}
+            <div className="h-4 w-px bg-surface-400/40 mx-0.5" aria-hidden />
+            <button
+              type="button"
+              title="Link to related topic  ([[)"
+              aria-label="Insert topic wikilink"
+              onMouseDown={(e) => {
+                e.preventDefault()
+                insertWikilinkTrigger()
+              }}
+              className={cn(
+                'flex items-center gap-1 h-7 px-2 rounded-md',
+                'text-for-400/80 hover:text-for-300 hover:bg-for-600/20',
+                'transition-colors text-[11px] font-mono font-semibold'
+              )}
+            >
+              <Network className="h-3 w-3 flex-shrink-0" />
+              [[
+            </button>
           </div>
         )}
 
@@ -462,22 +581,82 @@ export function TopicWikiSection({
               )}
             </div>
           ) : (
-            <textarea
-              ref={textareaRef}
-              value={draft}
-              onChange={(e) => setDraft(e.target.value.slice(0, MAX_CHARS))}
-              placeholder="Add background context, evidence links, key facts, or reasoning that helps people understand this topic…
+            <div className="relative">
+              <textarea
+                ref={textareaRef}
+                value={draft}
+                onChange={(e) => {
+                  const newVal = e.target.value.slice(0, MAX_CHARS)
+                  setDraft(newVal)
+                  // Detect [[ trigger for wikilink autocomplete
+                  const pos = e.target.selectionStart
+                  const ctx = getWikilinkContext(newVal, pos)
+                  if (ctx) {
+                    setWikilinkStartPos(ctx.startPos)
+                    setWikilinkQuery(ctx.query)
+                    setWikilinkSelectedIdx(0)
+                    setWikilinkOpen(true)
+                  } else {
+                    setWikilinkOpen(false)
+                    setWikilinkQuery('')
+                  }
+                }}
+                onKeyDown={(e) => {
+                  if (!wikilinkOpen) return
+                  if (e.key === 'ArrowDown') {
+                    e.preventDefault()
+                    setWikilinkSelectedIdx((i) =>
+                      Math.min(i + 1, wikilinkResultCount - 1)
+                    )
+                  } else if (e.key === 'ArrowUp') {
+                    e.preventDefault()
+                    setWikilinkSelectedIdx((i) => Math.max(i - 1, 0))
+                  } else if (e.key === 'Escape') {
+                    e.preventDefault()
+                    setWikilinkOpen(false)
+                    setWikilinkQuery('')
+                  } else if (e.key === 'Enter') {
+                    const suggestion = wikilinkResultsRef.current[wikilinkSelectedIdx]
+                    if (suggestion) {
+                      e.preventDefault()
+                      handleWikilinkSelect(suggestion)
+                    }
+                  }
+                }}
+                placeholder={`Add background context, evidence links, key facts, or reasoning…\n\nUse **bold**, *italic*, > blockquotes, and - bullets.\nType [[ to link to a related topic.`}
+                rows={5}
+                className={cn(
+                  'w-full bg-transparent text-sm text-surface-700 placeholder-surface-500',
+                  'font-mono leading-relaxed resize-none outline-none',
+                  'min-h-[120px] transition-all'
+                )}
+                aria-label="Topic context editor"
+                aria-autocomplete="list"
+                aria-haspopup="listbox"
+                spellCheck
+              />
 
-Use **bold**, *italic*, > blockquotes, and - bullet points for structure."
-              rows={5}
-              className={cn(
-                'w-full bg-transparent text-sm text-surface-700 placeholder-surface-500',
-                'font-mono leading-relaxed resize-none outline-none',
-                'min-h-[120px] transition-all'
+              {/* Wikilink autocomplete dropdown */}
+              {wikilinkOpen && (
+                <WikilinkAutocomplete
+                  query={wikilinkQuery}
+                  excludeTopicId={topicId}
+                  selectedIndex={wikilinkSelectedIdx}
+                  onSelect={handleWikilinkSelect}
+                  onClose={() => {
+                    setWikilinkOpen(false)
+                    setWikilinkQuery('')
+                  }}
+                  onResultsChange={(count) => {
+                    setWikilinkResultCount(count)
+                    setWikilinkSelectedIdx((i) => Math.min(i, Math.max(0, count - 1)))
+                  }}
+                  onResultsReady={(results) => {
+                    wikilinkResultsRef.current = results
+                  }}
+                />
               )}
-              aria-label="Topic context editor"
-              spellCheck
-            />
+            </div>
           )}
         </div>
 
