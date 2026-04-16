@@ -13,6 +13,7 @@ import {
   Eye,
   EyeOff,
   BookOpen,
+  History,
   Pencil,
   Check,
   X,
@@ -21,6 +22,7 @@ import {
   Network,
   Clock,
 } from 'lucide-react'
+import NextLink from 'next/link'
 import { parseBlocks } from '@/components/law/LawDocument'
 import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils/cn'
@@ -749,6 +751,15 @@ export function TopicWikiSection({
           </span>
         )}
         <div className="ml-auto flex items-center gap-1">
+          <NextLink
+            href={`/topic/wiki/${topicId}/history`}
+            className="flex items-center gap-1.5 px-2 py-1 rounded-md text-[11px] font-mono text-surface-500 hover:text-white hover:bg-surface-300 transition-colors"
+            title="View edit history"
+            aria-label="View edit history"
+          >
+            <History className="h-3 w-3" />
+            History
+          </NextLink>
           {isAuthor && (
             <button
               onClick={startEditing}
