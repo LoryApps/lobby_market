@@ -21,6 +21,7 @@ import {
   XCircle,
   Clock,
   ChevronDown,
+  Compass,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -896,13 +897,22 @@ export default function AnalyticsPage() {
               </p>
             )}
           </div>
-          <Link
-            href="/profile/me"
-            className="ml-auto flex items-center gap-1 text-xs text-surface-500 hover:text-white transition-colors"
-          >
-            Profile
-            <ChevronRight className="h-3.5 w-3.5" />
-          </Link>
+          <div className="ml-auto flex items-center gap-3">
+            <Link
+              href="/compass"
+              className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"
+            >
+              <Compass className="h-3.5 w-3.5" />
+              Compass
+            </Link>
+            <Link
+              href="/profile/me"
+              className="flex items-center gap-1 text-xs text-surface-500 hover:text-white transition-colors"
+            >
+              Profile
+              <ChevronRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
         </div>
 
         {error && (

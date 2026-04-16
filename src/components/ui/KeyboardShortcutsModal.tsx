@@ -51,6 +51,7 @@ const SECTIONS: ShortcutSection[] = [
       { keys: ['G', 'D'], description: 'Go to Debates' },
       { keys: ['G', 'P'], description: 'Go to your Profile' },
       { keys: ['G', 'A'], description: 'Go to Analytics' },
+      { keys: ['G', 'C'], description: 'Go to Civic Compass' },
     ],
   },
   {
