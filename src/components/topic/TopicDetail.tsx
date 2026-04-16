@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import {
   ArrowLeft,
   Calendar,
@@ -11,6 +12,7 @@ import {
   MessageSquare,
   Tag,
   ThumbsUp,
+  Users,
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { Topic, Profile, VoteSide } from '@/lib/supabase/types'
@@ -285,6 +287,17 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
                   totalVotes={topic.total_votes}
                   showLabels
                 />
+                {topic.total_votes > 0 && (
+                  <div className="flex justify-center">
+                    <Link
+                      href={`/topic/${topic.id}/voters`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-white transition-colors"
+                    >
+                      <Users className="h-3.5 w-3.5" />
+                      See who voted
+                    </Link>
+                  </div>
+                )}
                 <VoteButton
                   topicId={topic.id}
                   bluePct={topic.blue_pct}
@@ -386,6 +399,15 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
                   <Calendar className="h-4 w-4" />
                   <span>{createdDate}</span>
                 </div>
+                {topic.total_votes > 0 && (
+                  <Link
+                    href={`/topic/${topic.id}/voters`}
+                    className="flex items-center gap-2 text-sm text-surface-500 hover:text-for-400 transition-colors group"
+                  >
+                    <Users className="h-4 w-4 group-hover:text-for-400 transition-colors" />
+                    <span>{topic.total_votes.toLocaleString()} voters</span>
+                  </Link>
+                )}
               </div>
             </div>
 
