@@ -1,24 +1,34 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { Share2, Link2, Check } from 'lucide-react'
+import { Share2, Link2, Check, Code2 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils/cn'
+
+const BASE_URL = 'https://lobby.market'
 
 interface SharePanelProps {
   /** Full canonical URL to share */
   url: string
   /** Short text for the tweet / share message */
   text: string
+  /**
+   * When provided, a "Copy embed code" option appears in the dropdown.
+   * Should be the topic ID — the embed API path is constructed internally
+   * as /api/embed/topic/<topicId>.
+   */
+  topicId?: string
   /** Optional additional className for the root wrapper */
   className?: string
 }
 
-export function SharePanel({ url, text, className }: SharePanelProps) {
+export function SharePanel({ url, text, topicId, className }: SharePanelProps) {
   const [open, setOpen] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [embedCopied, setEmbedCopied] = useState(false)
   const panelRef = useRef<HTMLDivElement>(null)
   const copyTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const embedTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Close on outside click
   useEffect(() => {
@@ -62,6 +72,30 @@ export function SharePanel({ url, text, className }: SharePanelProps) {
     setOpen(false)
   }
 
+  async function handleCopyEmbed() {
+    if (!topicId) return
+    const embedSrc = `${BASE_URL}/api/embed/topic/${topicId}`
+    const code = [
+      `<iframe`,
+      `  src="${embedSrc}"`,
+      `  width="420"`,
+      `  height="230"`,
+      `  frameborder="0"`,
+      `  scrolling="no"`,
+      `  title="Lobby Market Vote Widget"`,
+      `  style="border-radius:14px;overflow:hidden;display:block"`,
+      `></iframe>`,
+    ].join('\n')
+    try {
+      await navigator.clipboard.writeText(code)
+      setEmbedCopied(true)
+      if (embedTimer.current) clearTimeout(embedTimer.current)
+      embedTimer.current = setTimeout(() => setEmbedCopied(false), 2500)
+    } catch {
+      // ignore
+    }
+  }
+
   return (
     <div ref={panelRef} className={cn('relative', className)}>
       {/* Trigger button */}
@@ -90,7 +124,8 @@ export function SharePanel({ url, text, className }: SharePanelProps) {
             exit={{ opacity: 0, scale: 0.95, y: -4 }}
             transition={{ duration: 0.12 }}
             className={cn(
-              'absolute right-0 top-full mt-2 z-50 w-48',
+              'absolute right-0 top-full mt-2 z-50',
+              topicId ? 'w-52' : 'w-48',
               'rounded-xl border border-surface-300 bg-surface-100 shadow-xl',
               'overflow-hidden'
             )}
@@ -141,6 +176,31 @@ export function SharePanel({ url, text, className }: SharePanelProps) {
               </svg>
               Post on X
             </button>
+
+            {/* Embed code — only rendered when topicId is provided */}
+            {topicId && (
+              <>
+                <div className="border-t border-surface-300" />
+                <button
+                  type="button"
+                  role="menuitem"
+                  onClick={handleCopyEmbed}
+                  className={cn(
+                    'w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors',
+                    'text-white hover:bg-surface-200'
+                  )}
+                >
+                  {embedCopied ? (
+                    <Check className="h-4 w-4 text-emerald flex-shrink-0" />
+                  ) : (
+                    <Code2 className="h-4 w-4 text-surface-500 flex-shrink-0" />
+                  )}
+                  <span className={cn(embedCopied && 'text-emerald')}>
+                    {embedCopied ? 'Embed copied!' : 'Copy embed code'}
+                  </span>
+                </button>
+              </>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

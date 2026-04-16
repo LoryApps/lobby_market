@@ -41,8 +41,10 @@ const nextConfig = {
   async headers() {
     return [
       {
-        // Apply to all routes
-        source: '/(.*)',
+        // All routes EXCEPT embed endpoints get the standard security headers.
+        // Negative lookahead excludes /api/embed/* so embed widgets can be
+        // iframed on any external site.
+        source: '/((?!api/embed).*)',
         headers: [
           // Prevent the page from being embedded in iframes on foreign origins
           { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
@@ -57,6 +59,17 @@ const nextConfig = {
           },
           // Basic XSS protection for older browsers
           { key: 'X-XSS-Protection', value: '1; mode=block' },
+        ],
+      },
+      {
+        // Embed widget endpoints — allow cross-origin iframing from any site.
+        // CSP frame-ancestors is the modern successor to X-Frame-Options.
+        source: '/api/embed/(.*)',
+        headers: [
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'Content-Security-Policy', value: 'frame-ancestors *' },
+          // Short cache: vote data changes frequently
+          { key: 'Cache-Control', value: 'public, s-maxage=30, stale-while-revalidate=60' },
         ],
       },
       {

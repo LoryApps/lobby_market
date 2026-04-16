@@ -178,6 +178,7 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
             <SharePanel
               url={typeof window !== 'undefined' ? window.location.href : `/topic/${topic.id}`}
               text={`${topic.statement} — ${Math.round(topic.blue_pct)}% For on Lobby Market`}
+              topicId={topic.id}
             />
             <Badge variant={statusBadgeVariant[topic.status] ?? 'proposed'}>
               {statusLabel[topic.status] ?? topic.status}
