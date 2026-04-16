@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import {
   ArrowLeft,
   Calendar,
-  FileText,
   Globe,
   Info,
   Megaphone,
@@ -35,6 +34,7 @@ import { VoteTrend } from '@/components/topic/VoteTrend'
 import { TopicStatusJourney } from '@/components/topic/TopicStatusJourney'
 import { CoalitionStancePanel } from '@/components/topic/CoalitionStancePanel'
 import { TopicDebatePanel } from '@/components/topic/TopicDebatePanel'
+import { TopicWikiSection } from '@/components/topic/TopicWikiSection'
 import { ReportButton } from '@/components/moderation/ReportButton'
 import { SharePanel } from '@/components/ui/SharePanel'
 import { BookmarkButton } from '@/components/ui/BookmarkButton'
@@ -369,18 +369,13 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
               </div>
             </div>
 
-            {/* Topic context / description */}
-            {topic.description && (
-              <div className="mt-5 rounded-xl border border-surface-300 bg-surface-100 p-5">
-                <div className="flex items-center gap-2 text-xs font-mono text-surface-500 uppercase tracking-wider mb-3">
-                  <FileText className="h-3.5 w-3.5" aria-hidden="true" />
-                  Context
-                </div>
-                <p className="text-sm text-surface-700 leading-relaxed whitespace-pre-wrap break-words">
-                  {topic.description}
-                </p>
-              </div>
-            )}
+            {/* Topic context / wiki description — editable by author */}
+            <TopicWikiSection
+              topicId={topic.id}
+              authorId={topic.author_id}
+              description={topic.description}
+              onUpdate={(desc) => setTopic((prev) => ({ ...prev, description: desc }))}
+            />
 
             {/* Topic journey — lifecycle progress stepper */}
             <TopicStatusJourney
