@@ -13,6 +13,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/debate`, changeFrequency: 'hourly', priority: 0.8 },
   { url: `${BASE_URL}/floor`, changeFrequency: 'always', priority: 0.75 },
   { url: `${BASE_URL}/leaderboard`, changeFrequency: 'daily', priority: 0.7 },
+  { url: `${BASE_URL}/achievements`, changeFrequency: 'weekly', priority: 0.65 },
   { url: `${BASE_URL}/stats`, changeFrequency: 'hourly', priority: 0.65 },
   { url: `${BASE_URL}/topic/categories`, changeFrequency: 'weekly', priority: 0.7 },
   { url: `${BASE_URL}/topic/wiki/recent`, changeFrequency: 'hourly', priority: 0.65 },

@@ -453,6 +453,14 @@ export function ProfilePage({
                 earnedAchievementIds={earnedAchievementIds}
                 allAchievements={allAchievements}
               />
+              <div className="mt-4 text-center">
+                <a
+                  href="/achievements"
+                  className="text-xs font-mono text-surface-500 hover:text-surface-300 transition-colors underline underline-offset-2"
+                >
+                  Browse all achievements →
+                </a>
+              </div>
             </motion.div>
           )}
 
