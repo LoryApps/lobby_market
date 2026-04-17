@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { CoalitionCard } from '@/components/lobby/CoalitionCard'
+import { RecommendedCoalitions } from '@/components/lobby/RecommendedCoalitions'
 import type { Coalition, CoalitionInvite, Profile } from '@/lib/supabase/types'
 import { cn } from '@/lib/utils/cn'
 
@@ -157,6 +158,9 @@ export default async function CoalitionsIndexPage() {
             </div>
           </div>
         )}
+
+        {/* ── Recommended (client-side, only for auth users) ──────────── */}
+        {authUser && <RecommendedCoalitions />}
 
         {/* ── Coalition Grid ──────────────────────────────────────────── */}
         {enriched.length === 0 ? (
