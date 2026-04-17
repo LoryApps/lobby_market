@@ -125,7 +125,7 @@ function EditCard({ edit, index }: { edit: WikiRecentEdit; index: number }) {
       transition={{ duration: 0.25, delay: index * 0.03 }}
     >
       <Link
-        href={`/topic/${edit.id}`}
+        href={`/topic/wiki/${edit.id}`}
         className={cn(
           'group block rounded-2xl bg-surface-100 border border-surface-300',
           'hover:border-surface-400 hover:bg-surface-200/60 transition-all duration-150',

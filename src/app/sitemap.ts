@@ -47,6 +47,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: topic.status === 'law' ? 0.7 : 0.8,
     }))
 
+    // Wiki pages for topics that have descriptions
+    const { data: topicsWithWiki } = await supabase
+      .from('topics')
+      .select('id, description_updated_at, updated_at')
+      .not('description', 'is', null)
+      .order('description_updated_at', { ascending: false })
+      .limit(500)
+
+    const wikiUrls: MetadataRoute.Sitemap = (topicsWithWiki ?? []).map((t) => ({
+      url: `${BASE_URL}/topic/wiki/${t.id}`,
+      lastModified: new Date(t.description_updated_at ?? t.updated_at),
+      changeFrequency: 'weekly' as const,
+      priority: 0.55,
+    }))
+
     // Fetch all established laws — these are canonical, stable pages
     const { data: laws } = await supabase
       .from('laws')
@@ -76,7 +91,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.5,
     }))
 
-    return [...STATIC_ROUTES, ...topicUrls, ...lawUrls, ...profileUrls]
+    return [...STATIC_ROUTES, ...topicUrls, ...wikiUrls, ...lawUrls, ...profileUrls]
   } catch {
     // If DB is unavailable (e.g. during build), return only static routes
     return STATIC_ROUTES

@@ -21,6 +21,7 @@ import {
   Plus,
   Network,
   Clock,
+  ExternalLink,
 } from 'lucide-react'
 import NextLink from 'next/link'
 import { parseBlocks } from '@/components/law/LawDocument'
@@ -751,6 +752,15 @@ export function TopicWikiSection({
           </span>
         )}
         <div className="ml-auto flex items-center gap-1">
+          <NextLink
+            href={`/topic/wiki/${topicId}`}
+            className="flex items-center gap-1.5 px-2 py-1 rounded-md text-[11px] font-mono text-surface-500 hover:text-white hover:bg-surface-300 transition-colors"
+            title="Open full wiki page"
+            aria-label="Open full wiki page"
+          >
+            <ExternalLink className="h-3 w-3" />
+            Full page
+          </NextLink>
           <NextLink
             href={`/topic/wiki/${topicId}/history`}
             className="flex items-center gap-1.5 px-2 py-1 rounded-md text-[11px] font-mono text-surface-500 hover:text-white hover:bg-surface-300 transition-colors"
