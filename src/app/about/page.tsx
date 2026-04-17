@@ -343,6 +343,12 @@ export default function AboutPage() {
             >
               Read the FAQ
             </Link>
+            <Link
+              href="/developers"
+              className="px-6 py-2.5 rounded-xl border border-surface-300 hover:border-surface-400 text-surface-700 hover:text-white text-sm font-medium font-mono transition-colors"
+            >
+              Developer API
+            </Link>
           </div>
         </section>
       </main>

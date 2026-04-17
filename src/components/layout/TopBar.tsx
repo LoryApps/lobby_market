@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Activity, BarChart2, BookOpen, Coins, Compass, Flame, HelpCircle, LogOut, Search, Plus, Settings, Target, TrendingUp, User, Zap } from 'lucide-react'
+import { Activity, BarChart2, BookOpen, Coins, Compass, FileText, Flame, HelpCircle, LogOut, Search, Plus, Settings, Target, TrendingUp, User, Zap } from 'lucide-react'
 import { NotificationBell } from '@/components/profile/NotificationBell'
 import { Avatar } from '@/components/ui/Avatar'
 import { openCommandPalette } from '@/lib/hooks/useCommandPalette'
@@ -313,6 +313,15 @@ export function TopBar() {
               >
                 <HelpCircle className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
                 Help & FAQ
+              </Link>
+              <Link
+                href="/developers"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <FileText className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
+                Developer API
               </Link>
               <div className="border-t border-surface-300" role="separator" />
               <button

@@ -35,18 +35,20 @@ export function TheFloor({ topics: initialTopics }: TheFloorProps) {
 
   // Realtime subscription to the selected topic — trigger a pulse
   // whenever its vote counts change.
+  // We key on selectedTopicId (the primitive string) rather than selectedTopic
+  // so we only re-subscribe when the topic changes, not when vote data updates.
   useEffect(() => {
-    if (!selectedTopic) return
+    if (!selectedTopicId) return
     const supabase = createClient()
     const channel = supabase
-      .channel(`floor-topic:${selectedTopic.id}`)
+      .channel(`floor-topic:${selectedTopicId}`)
       .on(
         'postgres_changes',
         {
           event: 'UPDATE',
           schema: 'public',
           table: 'topics',
-          filter: `id=eq.${selectedTopic.id}`,
+          filter: `id=eq.${selectedTopicId}`,
         },
         (payload) => {
           const next = payload.new as Topic
@@ -72,7 +74,7 @@ export function TheFloor({ topics: initialTopics }: TheFloorProps) {
     return () => {
       channel.unsubscribe()
     }
-  }, [selectedTopic?.id])
+  }, [selectedTopicId])
 
   // Fullscreen handling
   const toggleFullscreen = useCallback(() => {
