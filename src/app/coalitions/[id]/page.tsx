@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { ArrowLeft, Crown, Trophy, Users, Zap } from 'lucide-react'
+import { ArrowLeft, BarChart2, Crown, Trophy, Users, Zap } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { CoalitionManagePanel } from '@/components/lobby/CoalitionManagePanel'
 import { CoalitionBulletinBoard } from '@/components/lobby/CoalitionBulletinBoard'
@@ -366,6 +366,28 @@ export default async function CoalitionPage({ params }: CoalitionPageProps) {
             ['leader', 'officer'].includes(currentMember.role)
           }
         />
+
+        {/* ── War Room link ─────────────────────────────────────────────── */}
+        <Link
+          href={`/coalitions/${typedCoalition.id}/analytics`}
+          className={cn(
+            'flex items-center justify-between rounded-xl border border-surface-300 bg-surface-100 px-4 py-3',
+            'hover:border-for-500/40 hover:bg-surface-200 transition-colors group',
+          )}
+        >
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-for-500/10 border border-for-500/20 text-for-400">
+              <BarChart2 className="h-4.5 w-4.5" />
+            </div>
+            <div>
+              <div className="font-mono text-sm font-semibold text-white">War Room</div>
+              <div className="font-mono text-[11px] text-surface-500">
+                Stance alignment · category activity · top members
+              </div>
+            </div>
+          </div>
+          <ArrowLeft className="h-4 w-4 text-surface-500 rotate-180 group-hover:text-for-400 transition-colors" />
+        </Link>
 
         {/* ── Members + Management Panel ─────────────────────────────── */}
         <section>
