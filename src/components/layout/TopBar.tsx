@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Activity, BarChart2, BookOpen, Coins, Compass, FileText, Flame, HelpCircle, LogOut, Search, Plus, Settings, Target, TrendingUp, User, Zap } from 'lucide-react'
+import { Activity, BarChart2, BookOpen, Coins, Compass, FileText, Flame, HelpCircle, LayoutGrid, LogOut, Search, Plus, Settings, Target, TrendingUp, User, Zap } from 'lucide-react'
 import { NotificationBell } from '@/components/profile/NotificationBell'
 import { Avatar } from '@/components/ui/Avatar'
 import { openCommandPalette } from '@/lib/hooks/useCommandPalette'
@@ -267,6 +267,15 @@ export function TopBar() {
               >
                 <Zap className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />
                 Community Pulse
+              </Link>
+              <Link
+                href="/categories"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <LayoutGrid className="h-3.5 w-3.5 flex-shrink-0 text-purple" aria-hidden="true" />
+                Browse Categories
               </Link>
               <Link
                 href="/activity"
