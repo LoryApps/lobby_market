@@ -367,6 +367,27 @@ export type Database = {
         };
         Relationships: [];
       };
+      topic_links: {
+        Row: {
+          id: string;
+          source_topic_id: string;
+          target_topic_id: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          source_topic_id: string;
+          target_topic_id: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          source_topic_id?: string;
+          target_topic_id?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       law_revisions: {
         Row: {
           id: string;
@@ -1490,6 +1511,7 @@ export type Law = Database["public"]["Tables"]["laws"]["Row"];
 export type LawInsert = Database["public"]["Tables"]["laws"]["Insert"];
 
 export type LawLink = Database["public"]["Tables"]["law_links"]["Row"];
+export type TopicLink = Database["public"]["Tables"]["topic_links"]["Row"];
 
 export type LawRevision = Database["public"]["Tables"]["law_revisions"]["Row"];
 

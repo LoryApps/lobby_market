@@ -37,6 +37,7 @@ import { TopicStatusJourney } from '@/components/topic/TopicStatusJourney'
 import { CoalitionStancePanel } from '@/components/topic/CoalitionStancePanel'
 import { TopicDebatePanel } from '@/components/topic/TopicDebatePanel'
 import { TopicWikiSection } from '@/components/topic/TopicWikiSection'
+import { TopicBacklinks } from '@/components/topic/TopicBacklinks'
 import { ReportButton } from '@/components/moderation/ReportButton'
 import { SharePanel } from '@/components/ui/SharePanel'
 import { BookmarkButton } from '@/components/ui/BookmarkButton'
@@ -420,6 +421,9 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
               updatedAt={(topic as { description_updated_at?: string | null }).description_updated_at ?? null}
               updatedByUsername={editorUsername}
             />
+
+            {/* Wiki link graph — backlinks & outgoing topic wikilinks */}
+            <TopicBacklinks topicId={topic.id} className="mt-4" />
 
             {/* Topic journey — lifecycle progress stepper */}
             <TopicStatusJourney
