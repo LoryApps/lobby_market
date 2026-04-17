@@ -20,6 +20,7 @@ import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { Avatar } from '@/components/ui/Avatar'
 import { Skeleton } from '@/components/ui/Skeleton'
+import { EmptyState } from '@/components/ui/EmptyState'
 import { cn } from '@/lib/utils/cn'
 import type { ActivityEvent, ActivityEventType } from '@/app/api/activity/route'
 
@@ -334,27 +335,14 @@ function ActivitySkeleton() {
 
 // ─── Empty state ──────────────────────────────────────────────────────────────
 
-function EmptyState() {
+function ActivityEmptyState() {
   return (
-    <div className="flex flex-col items-center justify-center py-24 text-center gap-4">
-      <div className="flex items-center justify-center h-14 w-14 rounded-2xl bg-surface-200 border border-surface-300">
-        <Activity className="h-7 w-7 text-surface-500" />
-      </div>
-      <div>
-        <p className="font-mono font-semibold text-white text-base">
-          No recent activity
-        </p>
-        <p className="text-sm text-surface-500 mt-1">
-          Platform events will appear here as they happen.
-        </p>
-      </div>
-      <Link
-        href="/topic/create"
-        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-for-600 text-white text-sm font-mono font-medium hover:bg-for-500 transition-colors"
-      >
-        Propose the first topic
-      </Link>
-    </div>
+    <EmptyState
+      icon={Activity}
+      title="No recent activity"
+      description="Platform events will appear here as they happen."
+      actions={[{ label: 'Propose the first topic', href: '/topic/create' }]}
+    />
   )
 }
 
@@ -620,7 +608,7 @@ export default function ActivityPage() {
         )}
 
         {/* ── Empty state ───────────────────────────────────────────────── */}
-        {!loading && events.length === 0 && !error && <EmptyState />}
+        {!loading && events.length === 0 && !error && <ActivityEmptyState />}
 
         {/* ── Spinner overlay during refresh (non-blocking) ─────────────── */}
         {refreshing && (

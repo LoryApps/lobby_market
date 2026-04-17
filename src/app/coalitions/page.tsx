@@ -5,6 +5,7 @@ import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { CoalitionCard } from '@/components/lobby/CoalitionCard'
 import { RecommendedCoalitions } from '@/components/lobby/RecommendedCoalitions'
+import { EmptyState } from '@/components/ui/EmptyState'
 import type { Coalition, CoalitionInvite, Profile } from '@/lib/supabase/types'
 import { cn } from '@/lib/utils/cn'
 
@@ -164,15 +165,18 @@ export default async function CoalitionsIndexPage() {
 
         {/* ── Coalition Grid ──────────────────────────────────────────── */}
         {enriched.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-24 text-center">
-            <Users className="h-12 w-12 text-surface-500 mb-4" />
-            <h2 className="font-mono text-lg text-white mb-2">
-              No coalitions yet
-            </h2>
-            <p className="text-sm font-mono text-surface-500 max-w-md">
-              Forge the first alliance and start recruiting members.
-            </p>
-          </div>
+          <EmptyState
+            icon={Users}
+            iconColor="text-purple"
+            iconBg="bg-purple/10"
+            iconBorder="border-purple/20"
+            title="No coalitions yet"
+            description="Forge the first alliance and start recruiting members across topics."
+            actions={[
+              { label: 'Create Coalition', href: '/coalitions/create', icon: Plus },
+              { label: 'Browse topics', href: '/', variant: 'secondary' },
+            ]}
+          />
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {enriched.map((coalition) => (

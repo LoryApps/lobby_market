@@ -21,6 +21,7 @@ import {
 import type { LucideIcon } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import type { Notification, NotificationType } from '@/lib/supabase/types'
+import { EmptyState } from '@/components/ui/EmptyState'
 import { cn } from '@/lib/utils/cn'
 
 interface NotificationsListProps {
@@ -116,15 +117,13 @@ export function NotificationsList({ notifications }: NotificationsListProps) {
 
   if (notifications.length === 0) {
     return (
-      <div className="rounded-2xl border border-surface-300 bg-surface-100 p-12 text-center">
-        <Bell className="h-10 w-10 text-surface-500 mx-auto mb-3" />
-        <div className="text-base font-mono text-surface-700">
-          No notifications
-        </div>
-        <div className="text-sm font-mono text-surface-500 mt-1">
-          You&rsquo;ll see updates from the Lobby here.
-        </div>
-      </div>
+      <EmptyState
+        icon={Bell}
+        title="No notifications"
+        description="You'll see updates from the Lobby here — votes, debates, achievements, and more."
+        actions={[{ label: 'Explore the feed', href: '/' }]}
+        size="sm"
+      />
     )
   }
 

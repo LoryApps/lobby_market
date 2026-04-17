@@ -20,6 +20,7 @@ import { BottomNav } from '@/components/layout/BottomNav'
 import { Avatar } from '@/components/ui/Avatar'
 import { Badge } from '@/components/ui/Badge'
 import { Skeleton } from '@/components/ui/Skeleton'
+import { EmptyState } from '@/components/ui/EmptyState'
 import { cn } from '@/lib/utils/cn'
 import type { TopArgument, TopArgumentsResponse } from '@/app/api/arguments/top/route'
 
@@ -131,28 +132,14 @@ function ArgumentSkeletons() {
 
 // ─── Empty state ──────────────────────────────────────────────────────────────
 
-function EmptyState({ onReset }: { onReset: () => void }) {
+function ArgumentsEmptyState({ onReset }: { onReset: () => void }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="flex flex-col items-center justify-center py-24 text-center"
-    >
-      <div className="h-16 w-16 rounded-full bg-surface-200 border border-surface-300 flex items-center justify-center mb-4">
-        <MessageSquare className="h-7 w-7 text-surface-500" />
-      </div>
-      <h2 className="font-mono text-lg text-white mb-2">No arguments found</h2>
-      <p className="text-sm font-mono text-surface-500 max-w-sm">
-        Try widening your filters — there may not be any arguments that match yet.
-      </p>
-      <button
-        onClick={onReset}
-        className="mt-6 flex items-center gap-2 px-4 py-2 rounded-lg bg-surface-200 border border-surface-300 text-surface-400 text-sm font-mono hover:text-white hover:border-surface-400 transition-colors"
-      >
-        <RefreshCw className="h-3.5 w-3.5" />
-        Reset filters
-      </button>
-    </motion.div>
+    <EmptyState
+      icon={MessageSquare}
+      title="No arguments found"
+      description="Try widening your filters — there may not be any arguments that match yet."
+      actions={[{ label: 'Reset filters', onClick: onReset, variant: 'secondary', icon: RefreshCw }]}
+    />
   )
 }
 
@@ -541,7 +528,7 @@ export default function ArgumentsPage() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
-              <EmptyState onReset={resetFilters} />
+              <ArgumentsEmptyState onReset={resetFilters} />
             </motion.div>
           ) : (
             <motion.div

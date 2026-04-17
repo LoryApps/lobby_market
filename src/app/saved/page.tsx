@@ -7,7 +7,7 @@ import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { Badge } from '@/components/ui/Badge'
 import { BookmarkButton } from '@/components/ui/BookmarkButton'
-import { cn } from '@/lib/utils/cn'
+import { EmptyState } from '@/components/ui/EmptyState'
 import type { Topic } from '@/lib/supabase/types'
 
 export const dynamic = 'force-dynamic'
@@ -143,44 +143,21 @@ function SavedTopicRow({
 
 // ─── Empty state ──────────────────────────────────────────────────────────────
 
-function EmptyState() {
+function SavedEmptyState() {
   return (
-    <div className="flex flex-col items-center justify-center py-24 text-center px-4">
-      <div className="flex items-center justify-center h-16 w-16 rounded-2xl bg-gold/10 border border-gold/20 mb-6">
-        <BookmarkX className="h-8 w-8 text-gold/60" />
-      </div>
-      <h2 className="font-mono text-xl font-bold text-white mb-2">
-        No saved topics yet
-      </h2>
-      <p className="text-sm text-surface-500 leading-relaxed max-w-xs mb-8">
-        Tap the bookmark icon on any topic to save it here. Come back to track
-        how it progresses toward becoming law.
-      </p>
-      <div className="flex flex-col sm:flex-row gap-3 justify-center">
-        <Link
-          href="/"
-          className={cn(
-            'inline-flex items-center gap-2 px-5 py-2.5 rounded-xl',
-            'bg-for-600 hover:bg-for-500 text-white font-mono text-sm font-medium',
-            'transition-colors'
-          )}
-        >
-          <Compass className="h-4 w-4" />
-          Browse the Feed
-        </Link>
-        <Link
-          href="/trending"
-          className={cn(
-            'inline-flex items-center gap-2 px-5 py-2.5 rounded-xl',
-            'bg-surface-200 hover:bg-surface-300 border border-surface-300',
-            'text-white font-mono text-sm font-medium transition-colors'
-          )}
-        >
-          <TrendingUp className="h-4 w-4" />
-          Trending Now
-        </Link>
-      </div>
-    </div>
+    <EmptyState
+      icon={BookmarkX}
+      iconColor="text-gold/60"
+      iconBg="bg-gold/10"
+      iconBorder="border-gold/20"
+      title="No saved topics yet"
+      description="Tap the bookmark icon on any topic to save it here. Come back to track how it progresses toward becoming law."
+      actions={[
+        { label: 'Browse the Feed', href: '/', icon: Compass },
+        { label: 'Trending Now', href: '/trending', icon: TrendingUp, variant: 'secondary' },
+      ]}
+      size="lg"
+    />
   )
 }
 
@@ -247,7 +224,7 @@ export default async function SavedTopicsPage() {
         </div>
 
         {items.length === 0 ? (
-          <EmptyState />
+          <SavedEmptyState />
         ) : (
           <div className="space-y-3">
             {items.map(({ topic, savedAt }) => (

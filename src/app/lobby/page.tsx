@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { LobbyCard } from '@/components/lobby/LobbyCard'
+import { EmptyState } from '@/components/ui/EmptyState'
 import type { Lobby, Profile, Topic } from '@/lib/supabase/types'
 import { cn } from '@/lib/utils/cn'
 
@@ -124,15 +125,18 @@ export default async function LobbyIndexPage() {
         </div>
 
         {enriched.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-24 text-center">
-            <Megaphone className="h-12 w-12 text-surface-500 mb-4" />
-            <h2 className="font-mono text-lg text-white mb-2">
-              No active lobbies
-            </h2>
-            <p className="text-sm font-mono text-surface-500 max-w-md">
-              Start the first campaign rallying FOR or AGAINST a topic.
-            </p>
-          </div>
+          <EmptyState
+            icon={Megaphone}
+            iconColor="text-gold"
+            iconBg="bg-gold/10"
+            iconBorder="border-gold/20"
+            title="No active lobbies"
+            description="Start the first campaign rallying FOR or AGAINST a topic."
+            actions={[
+              { label: 'Start a Lobby', href: '/lobby/create', icon: Plus },
+              { label: 'Browse topics', href: '/', variant: 'secondary' },
+            ]}
+          />
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {enriched.map((lobby) => (

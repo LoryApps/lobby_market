@@ -13,6 +13,7 @@ import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { Avatar } from '@/components/ui/Avatar'
+import { EmptyState } from '@/components/ui/EmptyState'
 import { cn } from '@/lib/utils/cn'
 import type {
   Debate,
@@ -307,26 +308,17 @@ export default async function DebateArchivePage() {
               </div>
             </div>
           </div>
-          <div className="flex flex-col items-center justify-center py-24 text-center">
-            <div className="flex items-center justify-center h-14 w-14 rounded-2xl bg-surface-200 border border-surface-300 mx-auto mb-5">
-              <BookOpen className="h-7 w-7 text-surface-500" />
-            </div>
-            <h2 className="font-mono text-lg text-white mb-2">No past debates yet</h2>
-            <p className="text-sm font-mono text-surface-500 max-w-sm">
-              Debates will appear here once they finish. Check back after the first live debate ends.
-            </p>
-            <Link
-              href="/debate"
-              className={cn(
-                'mt-6 inline-flex items-center gap-2 px-4 py-2 rounded-lg',
-                'bg-for-600 text-white text-sm font-medium',
-                'hover:bg-for-700 transition-colors'
-              )}
-            >
-              <Mic className="h-4 w-4" />
-              See live debates
-            </Link>
-          </div>
+          <EmptyState
+            icon={BookOpen}
+            iconColor="text-gold"
+            iconBg="bg-gold/10"
+            iconBorder="border-gold/20"
+            title="No past debates yet"
+            description="Debates will appear here once they finish. Check back after the first live debate ends."
+            actions={[
+              { label: 'See live debates', href: '/debate', icon: Mic },
+            ]}
+          />
         </main>
         <BottomNav />
       </div>

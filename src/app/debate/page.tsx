@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { DebateCard } from '@/components/debate/DebateCard'
+import { EmptyState } from '@/components/ui/EmptyState'
 import type {
   Debate,
   DebateWithTopic,
@@ -217,26 +218,18 @@ export default async function DebateIndexPage() {
 
         {/* Empty state */}
         {withParticipants.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-24 text-center">
-            <Mic className="h-12 w-12 text-surface-500 mb-4" />
-            <h2 className="font-mono text-lg text-white mb-2">
-              No debates scheduled
-            </h2>
-            <p className="text-sm font-mono text-surface-500 max-w-md">
-              Be the first to schedule a live debate on an active topic.
-            </p>
-            <Link
-              href="/debate/create"
-              className={cn(
-                'mt-6 inline-flex items-center gap-2 px-4 py-2 rounded-lg',
-                'bg-for-600 text-white text-sm font-medium',
-                'hover:bg-for-700 transition-colors'
-              )}
-            >
-              <Plus className="h-4 w-4" />
-              Schedule a Debate
-            </Link>
-          </div>
+          <EmptyState
+            icon={Mic}
+            iconColor="text-against-400"
+            iconBg="bg-against-500/10"
+            iconBorder="border-against-500/20"
+            title="No debates scheduled"
+            description="Be the first to schedule a live debate on an active topic."
+            actions={[
+              { label: 'Schedule a Debate', href: '/debate/create', icon: Plus },
+              { label: 'View archive', href: '/debate/archive', variant: 'secondary' },
+            ]}
+          />
         )}
 
         {/* Live now */}

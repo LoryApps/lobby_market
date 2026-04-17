@@ -21,6 +21,7 @@ import { BottomNav } from '@/components/layout/BottomNav'
 import { Avatar } from '@/components/ui/Avatar'
 import { Badge } from '@/components/ui/Badge'
 import { Skeleton } from '@/components/ui/Skeleton'
+import { EmptyState } from '@/components/ui/EmptyState'
 import { cn } from '@/lib/utils/cn'
 import type { PulseArgument, ActiveDebateTopic, PulseResponse } from '@/app/api/pulse/route'
 
@@ -265,28 +266,14 @@ function DebatedTopicRow({
 
 // ─── Empty state ──────────────────────────────────────────────────────────────
 
-function EmptyState() {
+function PulseEmptyState() {
   return (
-    <div className="flex flex-col items-center justify-center py-24 text-center gap-5">
-      <div className="flex items-center justify-center h-14 w-14 rounded-2xl bg-surface-200 border border-surface-300">
-        <MessageSquarePlus className="h-7 w-7 text-surface-500" />
-      </div>
-      <div>
-        <p className="font-mono font-semibold text-white text-base">
-          No arguments yet
-        </p>
-        <p className="text-sm text-surface-500 mt-1">
-          Vote on active topics, then share your reasoning to fuel the pulse.
-        </p>
-      </div>
-      <Link
-        href="/"
-        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-for-600 text-white text-sm font-mono font-medium hover:bg-for-500 transition-colors"
-      >
-        <Flame className="h-4 w-4" />
-        Go to Feed
-      </Link>
-    </div>
+    <EmptyState
+      icon={MessageSquarePlus}
+      title="No arguments yet"
+      description="Vote on active topics, then share your reasoning to fuel the pulse."
+      actions={[{ label: 'Go to Feed', href: '/', icon: Flame }]}
+    />
   )
 }
 
@@ -433,7 +420,7 @@ export default function PulsePage() {
         {loading && <PulseSkeleton />}
 
         {/* Empty */}
-        {isEmpty && <EmptyState />}
+        {isEmpty && <PulseEmptyState />}
 
         {/* Content */}
         {!loading && data && !isEmpty && (
