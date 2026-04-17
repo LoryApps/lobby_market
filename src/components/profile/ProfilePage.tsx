@@ -15,6 +15,7 @@ import { ProfileHeader } from './ProfileHeader'
 import { ProfileCompletionBanner } from './ProfileCompletionBanner'
 import { VoteHistoryTimeline, type VoteHistoryEntry } from './VoteHistoryTimeline'
 import { AchievementGrid } from './AchievementGrid'
+import { NextAchievementsPanel } from './NextAchievementsPanel'
 import { ProfileArguments, type ProfileArgumentEntry } from './ProfileArguments'
 import { VoteDnaPanel, type VoteCategoryBreakdown } from './VoteDnaPanel'
 import type {
@@ -280,6 +281,24 @@ export function ProfilePage({
                 </div>
               </div>
 
+              {/* Next achievements — compact preview for owner */}
+              {isOwner && (
+                <div className="rounded-2xl border border-surface-300 bg-surface-100 p-5">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-[11px] font-mono text-surface-500 uppercase tracking-wider">
+                      Next achievements
+                    </h3>
+                    <button
+                      onClick={() => setActiveTab('achievements')}
+                      className="text-[10px] font-mono text-for-400 hover:text-for-300 transition-colors"
+                    >
+                      View all →
+                    </button>
+                  </div>
+                  <NextAchievementsPanel userId={profile.id} limit={2} />
+                </div>
+              )}
+
               {/* Top arguments preview */}
               {profileArguments.length > 0 && (
                 <div className="rounded-2xl border border-surface-300 bg-surface-100 p-5">
@@ -448,7 +467,14 @@ export function ProfilePage({
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
+              className="space-y-6"
             >
+              {/* Next achievements progress — only for profile owner */}
+              {isOwner && (
+                <NextAchievementsPanel userId={profile.id} limit={3} />
+              )}
+
+              {/* Full earned/unearned grid */}
               <AchievementGrid
                 earnedAchievementIds={earnedAchievementIds}
                 allAchievements={allAchievements}
