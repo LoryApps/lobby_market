@@ -37,6 +37,11 @@ import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { GiftCloutButton } from '@/components/clout/GiftCloutButton'
+import {
+  MentionAutocomplete,
+  getMentionContext,
+  type MentionSuggestion,
+} from '@/components/ui/MentionAutocomplete'
 import { cn } from '@/lib/utils/cn'
 import { renderWithMentions } from '@/lib/utils/mentions'
 import type { TopicArgumentWithAuthor, ArgumentReplyWithAuthor } from '@/lib/supabase/types'
@@ -121,6 +126,12 @@ function ReplyPanel({
   const [error, setError] = useState<string | null>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
 
+  // @mention autocomplete state
+  const [mentionQuery, setMentionQuery] = useState<string | null>(null)
+  const [mentionSelectedIndex, setMentionSelectedIndex] = useState(0)
+  const [mentionResultCount, setMentionResultCount] = useState(0)
+  const mentionResultsRef = useRef<MentionSuggestion[]>([])
+
   const accentColor = side === 'blue' ? 'border-for-500/30' : 'border-against-500/30'
 
   const load = useCallback(async () => {
@@ -162,11 +173,77 @@ function ReplyPanel({
       }
       setReplies((prev) => [...prev, json.reply as ArgumentReplyWithAuthor])
       setContent('')
+      setMentionQuery(null)
       inputRef.current?.focus()
     } catch {
       setError('Network error — please try again')
     } finally {
       setSubmitting(false)
+    }
+  }
+
+  function handleReplyContentChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    const val = e.target.value
+    setContent(val)
+    const cursor = e.target.selectionStart ?? val.length
+    const ctx = getMentionContext(val, cursor)
+    if (ctx) {
+      setMentionQuery(ctx.query)
+      setMentionSelectedIndex(0)
+    } else {
+      setMentionQuery(null)
+    }
+  }
+
+  function insertReplyMention(s: MentionSuggestion) {
+    const textarea = inputRef.current
+    const cursor = textarea?.selectionStart ?? content.length
+    const ctx = getMentionContext(content, cursor)
+    if (!ctx) return
+    const before = content.slice(0, ctx.startPos)
+    const after = content.slice(cursor)
+    const inserted = `@${s.username} `
+    const newContent = before + inserted + after
+    setContent(newContent)
+    setMentionQuery(null)
+    // Restore focus and move cursor to end of inserted text
+    setTimeout(() => {
+      if (!textarea) return
+      textarea.focus()
+      const newCursor = before.length + inserted.length
+      textarea.setSelectionRange(newCursor, newCursor)
+    }, 0)
+  }
+
+  function handleReplyKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
+    if (mentionQuery !== null && mentionResultCount > 0) {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault()
+        setMentionSelectedIndex((i) => Math.min(i + 1, mentionResultCount - 1))
+        return
+      }
+      if (e.key === 'ArrowUp') {
+        e.preventDefault()
+        setMentionSelectedIndex((i) => Math.max(i - 1, 0))
+        return
+      }
+      if (e.key === 'Enter' || e.key === 'Tab') {
+        const selected = mentionResultsRef.current[mentionSelectedIndex]
+        if (selected) {
+          e.preventDefault()
+          insertReplyMention(selected)
+          return
+        }
+      }
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        setMentionQuery(null)
+        return
+      }
+    }
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      handleSubmit(e as unknown as React.FormEvent)
     }
   }
 
@@ -243,17 +320,23 @@ function ReplyPanel({
         {currentUserId ? (
           <form onSubmit={handleSubmit} className="flex items-end gap-2 py-2">
             <div className="flex-1 relative">
+              {mentionQuery !== null && (
+                <MentionAutocomplete
+                  query={mentionQuery}
+                  selectedIndex={mentionSelectedIndex}
+                  onSelect={insertReplyMention}
+                  onClose={() => setMentionQuery(null)}
+                  onResultsChange={setMentionResultCount}
+                  onResultsReady={(r) => { mentionResultsRef.current = r }}
+                  position="above"
+                />
+              )}
               <textarea
                 ref={inputRef}
                 value={content}
-                onChange={(e) => setContent(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault()
-                    handleSubmit(e as unknown as React.FormEvent)
-                  }
-                }}
-                placeholder="Reply… (use @username to mention someone)"
+                onChange={handleReplyContentChange}
+                onKeyDown={handleReplyKeyDown}
+                placeholder="Reply… (@username to mention)"
                 rows={1}
                 maxLength={MAX_REPLY_CHARS}
                 className={cn(
@@ -481,6 +564,12 @@ function PostArgumentForm({
   const [error, setError] = useState<string | null>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
+  // @mention autocomplete state
+  const [mentionQuery, setMentionQuery] = useState<string | null>(null)
+  const [mentionSelectedIndex, setMentionSelectedIndex] = useState(0)
+  const [mentionResultCount, setMentionResultCount] = useState(0)
+  const mentionResultsRef = useRef<MentionSuggestion[]>([])
+
   const remaining = MAX_CHARS - content.length
   const isValid = side !== null && content.trim().length >= MIN_CHARS && content.trim().length <= MAX_CHARS
 
@@ -507,10 +596,71 @@ function PostArgumentForm({
       onPosted(json.argument as TopicArgumentWithAuthor)
       setContent('')
       setSide(null)
+      setMentionQuery(null)
     } catch {
       setError('Network error — please try again')
     } finally {
       setSubmitting(false)
+    }
+  }
+
+  function handleArgContentChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    const val = e.target.value
+    setContent(val)
+    const cursor = e.target.selectionStart ?? val.length
+    const ctx = getMentionContext(val, cursor)
+    if (ctx) {
+      setMentionQuery(ctx.query)
+      setMentionSelectedIndex(0)
+    } else {
+      setMentionQuery(null)
+    }
+  }
+
+  function insertArgMention(s: MentionSuggestion) {
+    const textarea = textareaRef.current
+    const cursor = textarea?.selectionStart ?? content.length
+    const ctx = getMentionContext(content, cursor)
+    if (!ctx) return
+    const before = content.slice(0, ctx.startPos)
+    const after = content.slice(cursor)
+    const inserted = `@${s.username} `
+    const newContent = before + inserted + after
+    setContent(newContent)
+    setMentionQuery(null)
+    setTimeout(() => {
+      if (!textarea) return
+      textarea.focus()
+      const newCursor = before.length + inserted.length
+      textarea.setSelectionRange(newCursor, newCursor)
+    }, 0)
+  }
+
+  function handleArgKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
+    if (mentionQuery !== null && mentionResultCount > 0) {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault()
+        setMentionSelectedIndex((i) => Math.min(i + 1, mentionResultCount - 1))
+        return
+      }
+      if (e.key === 'ArrowUp') {
+        e.preventDefault()
+        setMentionSelectedIndex((i) => Math.max(i - 1, 0))
+        return
+      }
+      if (e.key === 'Enter' || e.key === 'Tab') {
+        const selected = mentionResultsRef.current[mentionSelectedIndex]
+        if (selected) {
+          e.preventDefault()
+          insertArgMention(selected)
+          return
+        }
+      }
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        setMentionQuery(null)
+        return
+      }
     }
   }
 
@@ -550,15 +700,27 @@ function PostArgumentForm({
 
       {/* Text area */}
       <div className="relative">
+        {mentionQuery !== null && (
+          <MentionAutocomplete
+            query={mentionQuery}
+            selectedIndex={mentionSelectedIndex}
+            onSelect={insertArgMention}
+            onClose={() => setMentionQuery(null)}
+            onResultsChange={setMentionResultCount}
+            onResultsReady={(r) => { mentionResultsRef.current = r }}
+            position="above"
+          />
+        )}
         <textarea
           ref={textareaRef}
           value={content}
-          onChange={(e) => setContent(e.target.value)}
+          onChange={handleArgContentChange}
+          onKeyDown={handleArgKeyDown}
           placeholder={
             side === 'blue'
-              ? 'Make your case for this proposition… (use @username to mention someone)'
+              ? 'Make your case for this proposition… (@username to mention)'
               : side === 'red'
-                ? 'Make your case against this proposition… (use @username to mention someone)'
+                ? 'Make your case against this proposition… (@username to mention)'
                 : 'Select a side, then make your argument…'
           }
           rows={3}
