@@ -6,6 +6,7 @@ import { NotificationWatcher } from '@/components/ui/NotificationWatcher'
 import { CommandPalette } from '@/components/ui/CommandPalette'
 import { useCommandPalette, toggleCommandPalette } from '@/lib/hooks/useCommandPalette'
 import { KeyboardShortcutsProvider } from '@/components/ui/KeyboardShortcutsModal'
+import { InstallPrompt } from '@/components/layout/InstallPrompt'
 
 interface ProvidersProps {
   children: ReactNode
@@ -40,6 +41,7 @@ export function Providers({ children }: ProvidersProps) {
       <NotificationWatcher />
       <CommandPaletteProvider />
       <KeyboardShortcutsProvider />
+      <InstallPrompt />
     </ToastProvider>
   )
 }

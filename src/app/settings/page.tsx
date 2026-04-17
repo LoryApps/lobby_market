@@ -8,11 +8,14 @@ import {
   ArrowLeft,
   Bell,
   ChevronRight,
+  Download,
   Eye,
   LogOut,
   Moon,
   Settings,
+  Share,
   Shield,
+  Smartphone,
   User,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
@@ -195,6 +198,33 @@ export default function SettingsPage() {
   const [signingOut, setSigningOut] = useState(false)
   const [savedBanner, setSavedBanner] = useState(false)
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // PWA install state
+  const [isInstalled, setIsInstalled] = useState(false)
+  const [isIOS, setIsIOS] = useState(false)
+  const deferredInstallRef = useRef<{ prompt: () => Promise<void>; userChoice: Promise<{ outcome: string }> } | null>(null)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const standaloneMode =
+      (window.navigator as Navigator & { standalone?: boolean }).standalone === true ||
+      window.matchMedia('(display-mode: standalone)').matches
+    setIsInstalled(standaloneMode)
+
+    const iosDevice = /iphone|ipad|ipod/i.test(navigator.userAgent)
+    setIsIOS(iosDevice)
+
+    function handleBeforeInstall(e: Event) {
+      e.preventDefault()
+      deferredInstallRef.current = e as unknown as NonNullable<typeof deferredInstallRef.current>
+    }
+    window.addEventListener('beforeinstallprompt', handleBeforeInstall as EventListener)
+    window.addEventListener('appinstalled', () => setIsInstalled(true))
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstall as EventListener)
+    }
+  }, [])
 
   // Load user + prefs (localStorage first for instant display, then server to sync)
   useEffect(() => {
@@ -424,6 +454,60 @@ export default function SettingsPage() {
                 </div>
               </div>
             </div>
+
+            {/* ── Install app ───────────────────────────────────────────── */}
+            {!isInstalled && (
+              <div className={cardClass}>
+                <SectionHeader icon={Smartphone} title="Install App" />
+                <div className="py-3">
+                  {isIOS ? (
+                    <div className="space-y-2">
+                      <p className="text-sm text-surface-600">
+                        To install on iOS, tap the
+                        <span className="inline-flex items-center justify-center h-5 w-5 mx-1 rounded bg-surface-300 border border-surface-400">
+                          <Share className="h-3 w-3 text-for-400" aria-hidden="true" />
+                        </span>
+                        Share button in Safari, then choose <strong className="text-white font-medium">&ldquo;Add to Home Screen&rdquo;</strong>.
+                      </p>
+                    </div>
+                  ) : deferredInstallRef.current ? (
+                    <div className="space-y-3">
+                      <p className="text-sm text-surface-600">
+                        Install Lobby Market as a native app for faster load times, offline access, and a full-screen experience.
+                      </p>
+                      <button
+                        onClick={async () => {
+                          const prompt = deferredInstallRef.current
+                          if (!prompt) return
+                          await prompt.prompt()
+                          const { outcome } = await prompt.userChoice
+                          if (outcome === 'accepted') setIsInstalled(true)
+                        }}
+                        className="flex items-center gap-2 px-4 py-2 rounded-lg bg-for-600 hover:bg-for-500 text-white text-sm font-mono font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-for-500/50"
+                      >
+                        <Download className="h-4 w-4" />
+                        Install App
+                      </button>
+                    </div>
+                  ) : (
+                    <p className="text-sm text-surface-600">
+                      Open Lobby Market in Chrome on Android to install as a native app, or use Safari on iOS.
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
+            {isInstalled && (
+              <div className={cardClass}>
+                <SectionHeader icon={Smartphone} title="Install App" />
+                <div className="py-3 flex items-center gap-2">
+                  <div className="flex items-center justify-center h-7 w-7 rounded-full bg-emerald/10 border border-emerald/30 flex-shrink-0">
+                    <Smartphone className="h-3.5 w-3.5 text-emerald" />
+                  </div>
+                  <p className="text-sm text-surface-600">App installed — running in standalone mode.</p>
+                </div>
+              </div>
+            )}
 
             {/* ── Privacy ───────────────────────────────────────────────── */}
             <div className={cardClass}>
