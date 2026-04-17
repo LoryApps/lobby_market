@@ -23,6 +23,7 @@ import { Badge } from '@/components/ui/Badge'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { cn } from '@/lib/utils/cn'
+import { renderWithMentions } from '@/lib/utils/mentions'
 import type { PulseArgument, ActiveDebateTopic, PulseResponse } from '@/app/api/pulse/route'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -118,7 +119,7 @@ function ArgumentCard({
 
       {/* Content */}
       <p className="text-sm text-surface-200 leading-relaxed">
-        &ldquo;{arg.content}&rdquo;
+        &ldquo;{renderWithMentions(arg.content)}&rdquo;
       </p>
 
       {/* Topic link */}

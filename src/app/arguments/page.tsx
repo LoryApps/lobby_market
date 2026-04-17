@@ -22,6 +22,7 @@ import { Badge } from '@/components/ui/Badge'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { cn } from '@/lib/utils/cn'
+import { renderWithMentions } from '@/lib/utils/mentions'
 import type { TopArgument, TopArgumentsResponse } from '@/app/api/arguments/top/route'
 
 // ─── Config ───────────────────────────────────────────────────────────────────
@@ -224,7 +225,7 @@ function ArgumentCard({ arg, rank }: { arg: TopArgument; rank: number }) {
       {/* Content */}
       <div className="pl-3">
         <p className="text-sm text-surface-700 leading-relaxed">
-          {displayContent}
+          {renderWithMentions(displayContent)}
           {isLong && !expanded && (
             <button
               onClick={() => setExpanded(true)}

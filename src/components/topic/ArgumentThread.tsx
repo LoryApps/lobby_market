@@ -38,6 +38,7 @@ import { Button } from '@/components/ui/Button'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { GiftCloutButton } from '@/components/clout/GiftCloutButton'
 import { cn } from '@/lib/utils/cn'
+import { renderWithMentions } from '@/lib/utils/mentions'
 import type { TopicArgumentWithAuthor, ArgumentReplyWithAuthor } from '@/lib/supabase/types'
 
 const MAX_REPLY_CHARS = 300
@@ -219,7 +220,7 @@ function ReplyPanel({
                       </span>
                     </div>
                     <p className="text-xs text-surface-400 leading-relaxed mt-0.5">
-                      {reply.content}
+                      {renderWithMentions(reply.content)}
                     </p>
                   </div>
                   {isOwn && (
@@ -252,7 +253,7 @@ function ReplyPanel({
                     handleSubmit(e as unknown as React.FormEvent)
                   }
                 }}
-                placeholder="Reply…"
+                placeholder="Reply… (use @username to mention someone)"
                 rows={1}
                 maxLength={MAX_REPLY_CHARS}
                 className={cn(
@@ -388,7 +389,7 @@ function ArgumentCard({
         </div>
 
         {/* Content */}
-        <p className="text-sm text-surface-300 leading-relaxed">{arg.content}</p>
+        <p className="text-sm text-surface-300 leading-relaxed">{renderWithMentions(arg.content)}</p>
 
         {/* Reply toggle */}
         <button
@@ -555,9 +556,9 @@ function PostArgumentForm({
           onChange={(e) => setContent(e.target.value)}
           placeholder={
             side === 'blue'
-              ? 'Make your case for this proposition…'
+              ? 'Make your case for this proposition… (use @username to mention someone)'
               : side === 'red'
-                ? 'Make your case against this proposition…'
+                ? 'Make your case against this proposition… (use @username to mention someone)'
                 : 'Select a side, then make your argument…'
           }
           rows={3}
