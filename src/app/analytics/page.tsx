@@ -22,13 +22,17 @@ import {
   Clock,
   ChevronDown,
   Compass,
+  Users,
+  Swords,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber'
 import { VoteCalendar } from '@/components/profile/VoteCalendar'
+import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
 import type { PredictionRecord } from '@/app/api/analytics/predictions/route'
+import type { KinProfile, KinResponse } from '@/app/api/analytics/kin/route'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -635,6 +639,154 @@ function PredictionRow({ pred }: { pred: PredictionRecord }) {
   )
 }
 
+// ─── Political Kin section ────────────────────────────────────────────────────
+
+function KinCard({ person, type }: { person: KinProfile; type: 'kin' | 'opposite' }) {
+  const isKin = type === 'kin'
+  const pct = person.agreement_pct
+
+  const barColor = isKin
+    ? pct >= 80 ? 'bg-emerald' : 'bg-for-400'
+    : 'bg-against-400'
+
+  const borderHover = isKin ? 'hover:border-emerald/40' : 'hover:border-against-400/40'
+
+  return (
+    <Link
+      href={`/profile/${person.username}`}
+      className={cn(
+        'flex items-center gap-3 rounded-xl px-3.5 py-3',
+        'border border-surface-300 bg-surface-100 transition-colors',
+        borderHover,
+        'group'
+      )}
+    >
+      <Avatar
+        src={person.avatar_url}
+        fallback={person.display_name ?? person.username}
+        size="sm"
+      />
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center justify-between gap-2 mb-1">
+          <span className="text-sm font-medium text-white truncate group-hover:text-surface-700 transition-colors">
+            {person.display_name ?? person.username}
+          </span>
+          <span
+            className={cn(
+              'text-xs font-mono font-bold flex-shrink-0',
+              isKin ? (pct >= 80 ? 'text-emerald' : 'text-for-400') : 'text-against-400'
+            )}
+          >
+            {pct}%
+          </span>
+        </div>
+        <div className="relative h-1.5 rounded-full bg-surface-300 overflow-hidden">
+          <div
+            className={cn('absolute inset-y-0 left-0 rounded-full transition-all', barColor)}
+            style={{ width: `${pct}%` }}
+          />
+        </div>
+        <div className="mt-1 text-[10px] font-mono text-surface-500">
+          {person.common_topics} shared topics
+        </div>
+      </div>
+    </Link>
+  )
+}
+
+function PoliticalKinSection() {
+  const [data, setData] = useState<KinResponse | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetch('/api/analytics/kin', { cache: 'no-store' })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (d) setData(d as KinResponse)
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false))
+  }, [])
+
+  const hasKin = !loading && data && (data.kin.length > 0 || data.opposites.length > 0)
+  const noData = !loading && (!data || (data.kin.length === 0 && data.opposites.length === 0))
+
+  if (loading) {
+    return (
+      <div className="rounded-2xl bg-surface-100 border border-surface-300 p-6">
+        <div className="flex items-center gap-2 text-xs font-mono text-surface-500 uppercase tracking-wider mb-5">
+          <Users className="h-3.5 w-3.5 text-emerald" />
+          Political Kin
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="flex items-center gap-3 rounded-xl p-3 border border-surface-300 animate-pulse">
+              <Skeleton className="h-8 w-8 rounded-full flex-shrink-0" />
+              <div className="flex-1 space-y-2">
+                <Skeleton className="h-3 w-3/4" />
+                <Skeleton className="h-1.5 w-full rounded-full" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  if (noData) return null
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35, delay: 0.42 }}
+      className="rounded-2xl bg-surface-100 border border-surface-300 p-6"
+    >
+      <div className="flex items-center gap-2 text-xs font-mono text-surface-500 uppercase tracking-wider mb-5">
+        <Users className="h-3.5 w-3.5 text-emerald" />
+        Political Kin
+      </div>
+
+      {hasKin && (
+        <div className="space-y-5">
+          {data!.kin.length > 0 && (
+            <div>
+              <div className="flex items-center gap-1.5 text-[10px] font-mono text-emerald uppercase tracking-wider mb-3">
+                <Users className="h-3 w-3" />
+                Allies — highest vote agreement
+              </div>
+              <div className="flex flex-col gap-2">
+                {data!.kin.map((person) => (
+                  <KinCard key={person.id} person={person} type="kin" />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {data!.opposites.length > 0 && (
+            <div>
+              <div className="flex items-center gap-1.5 text-[10px] font-mono text-against-400 uppercase tracking-wider mb-3">
+                <Swords className="h-3 w-3" />
+                Rivals — lowest vote agreement
+              </div>
+              <div className="flex flex-col gap-2">
+                {data!.opposites.map((person) => (
+                  <KinCard key={person.id} person={person} type="opposite" />
+                ))}
+              </div>
+            </div>
+          )}
+
+          <p className="text-[10px] font-mono text-surface-600 border-t border-surface-300 pt-3">
+            Based on your recent votes. Agreement % = shared votes where you chose the same side.
+            Minimum 3 topics in common required.
+          </p>
+        </div>
+      )}
+    </motion.div>
+  )
+}
+
 function PredictionHistorySection() {
   const [predictions, setPredictions] = useState<PredictionRecord[]>([])
   const [loading, setLoading] = useState(true)
@@ -912,6 +1064,9 @@ export default function AnalyticsPage() {
             {data.topCategories.length > 0 && (
               <CategoryBreakdown categories={data.topCategories} />
             )}
+
+            {/* Political kin */}
+            <PoliticalKinSection />
 
             {/* Reputation meter */}
             <motion.div
