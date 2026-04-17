@@ -41,6 +41,8 @@ import { TopicBacklinks } from '@/components/topic/TopicBacklinks'
 import { ReportButton } from '@/components/moderation/ReportButton'
 import { SharePanel } from '@/components/ui/SharePanel'
 import { BookmarkButton } from '@/components/ui/BookmarkButton'
+import { TopicViewers } from '@/components/topic/TopicViewers'
+import { ArgumentSpotlight } from '@/components/topic/ArgumentSpotlight'
 import { cn } from '@/lib/utils/cn'
 import { useVoteStore } from '@/lib/stores/vote-store'
 import { useFeedStore } from '@/lib/stores/feed-store'
@@ -195,6 +197,8 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
             <ArrowLeft className="h-5 w-5" />
           </button>
           <span className="text-sm font-medium text-surface-500">Topic</span>
+          {/* Live viewer presence — only shows when >1 person is viewing */}
+          <TopicViewers topicId={topic.id} className="ml-3" />
           <div className="ml-auto flex items-center gap-2">
             <BookmarkButton topicId={topic.id} />
             <SharePanel
@@ -270,7 +274,11 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
         {activeTab === 'lobbies' ? (
           <LobbyBoard topicId={topic.id} />
         ) : activeTab === 'arguments' ? (
-          <ArgumentThread topicId={topic.id} />
+          <>
+            {/* Spotlight: top FOR + AGAINST argument preview */}
+            <ArgumentSpotlight topicId={topic.id} className="mb-6" />
+            <ArgumentThread topicId={topic.id} />
+          </>
         ) : (
           <>
             {/* Chain banner — shown during the continuation lifecycle */}
