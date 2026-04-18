@@ -161,7 +161,7 @@ function CategoryCard({ stats }: { stats: CategoryStats }) {
 
   return (
     <Link
-      href={`/?category=${encodeURIComponent(stats.category)}`}
+      href={`/topic/categories/${encodeURIComponent(stats.category.toLowerCase())}`}
       className={cn(
         'group relative flex flex-col gap-4 rounded-2xl p-5',
         'bg-surface-100 border border-surface-300',

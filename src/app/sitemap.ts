@@ -16,6 +16,15 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/achievements`, changeFrequency: 'weekly', priority: 0.65 },
   { url: `${BASE_URL}/stats`, changeFrequency: 'hourly', priority: 0.65 },
   { url: `${BASE_URL}/topic/categories`, changeFrequency: 'weekly', priority: 0.7 },
+  // Individual category pages
+  ...([
+    'economics', 'politics', 'technology', 'science',
+    'ethics', 'philosophy', 'culture', 'health', 'environment', 'education',
+  ].map((slug) => ({
+    url: `${BASE_URL}/topic/categories/${slug}`,
+    changeFrequency: 'daily' as const,
+    priority: 0.65,
+  }))),
   { url: `${BASE_URL}/topic/wiki/recent`, changeFrequency: 'hourly', priority: 0.65 },
   { url: `${BASE_URL}/about`, changeFrequency: 'monthly', priority: 0.6 },
   { url: `${BASE_URL}/developers`, changeFrequency: 'monthly', priority: 0.55 },
