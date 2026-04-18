@@ -519,6 +519,11 @@ export default function SettingsPage() {
                   href="/coalitions"
                 />
                 <LinkRow
+                  label="My Positions"
+                  description="Every topic you've voted on with outcome tracking"
+                  href="/positions"
+                />
+                <LinkRow
                   label="Voting history"
                   description="View your vote timeline on your profile"
                   href="/profile/me"
