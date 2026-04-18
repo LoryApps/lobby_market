@@ -9,6 +9,7 @@ import {
   Sparkles,
   Shield,
   Target,
+  Zap,
 } from 'lucide-react'
 import { LeaderboardHero } from './LeaderboardHero'
 import { LeaderboardTable, type LeaderboardRow, type TrendDirection } from './LeaderboardTable'
@@ -23,6 +24,7 @@ export type LeaderboardCategory =
   | 'rising'
   | 'troll_catchers'
   | 'predictors'
+  | 'streaks'
 
 /** Per-user prediction stats passed from the server. */
 export interface PredictorStats {
@@ -69,6 +71,12 @@ const tabs: {
     label: 'Predictors',
     icon: Target,
     metricLabel: '% Acc',
+  },
+  {
+    id: 'streaks',
+    label: 'Streaks',
+    icon: Zap,
+    metricLabel: 'Days',
   },
 ]
 
@@ -129,9 +137,13 @@ export function LeaderboardTabs({
           trend = value >= 75 ? 'up' : value >= 50 ? 'flat' : 'down'
           break
         }
+        case 'streaks':
+          value = profile.vote_streak ?? 0
+          trend = value >= 30 ? 'up' : value >= 7 ? 'flat' : 'flat'
+          break
       }
 
-      // Build optional sub-metric string for predictors
+      // Build optional sub-metric string for predictors and streaks
       let subMetric: string | undefined
       if (activeTab === 'predictors') {
         const stats = predictorsStatsMap[profile.id]
@@ -143,6 +155,16 @@ export function LeaderboardTabs({
           const totalPart = `${stats.total} resolved`
           subMetric = [totalPart, brierPart].filter(Boolean).join(' · ')
         }
+      }
+      if (activeTab === 'streaks') {
+        const s = profile.vote_streak ?? 0
+        if (s >= 365) subMetric = 'Legendary streak'
+        else if (s >= 100) subMetric = '100+ day streak'
+        else if (s >= 30) subMetric = '30+ day streak'
+        else if (s >= 14) subMetric = '2-week streak'
+        else if (s >= 7) subMetric = '7-day streak'
+        else if (s >= 3) subMetric = 'Building momentum'
+        else subMetric = 'New streak'
       }
 
       return {
@@ -205,7 +227,24 @@ export function LeaderboardTabs({
         <div className="rounded-2xl border border-surface-300 bg-surface-100 p-8 text-center text-sm font-mono text-surface-500">
           {activeTab === 'predictors'
             ? 'No resolved predictions yet. Be the first to predict a topic outcome!'
-            : 'No data in this category yet.'}
+            : activeTab === 'streaks'
+              ? 'No active streaks yet. Vote every day to start one!'
+              : 'No data in this category yet.'}
+        </div>
+      )}
+
+      {/* Streaks footnote */}
+      {activeTab === 'streaks' && rows.length > 0 && (
+        <div className="mt-4 rounded-xl border border-surface-300 bg-surface-100 px-4 py-3">
+          <div className="flex flex-wrap items-start gap-x-6 gap-y-2 text-[11px] font-mono text-surface-500">
+            <span>
+              <span className="text-white font-semibold">Days</span> — consecutive days with at least one vote cast
+            </span>
+            <span>
+              <span className="text-white font-semibold">Streaks reset</span> at midnight UTC if you miss a day
+            </span>
+            <span>Vote daily in the <span className="text-gold">Challenge</span> to keep your streak alive</span>
+          </div>
         </div>
       )}
 

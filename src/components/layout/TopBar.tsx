@@ -18,6 +18,7 @@ interface MiniProfile {
   avatar_url: string | null
   role: string
   clout: number
+  vote_streak: number
 }
 
 // ─── Role label helper ────────────────────────────────────────────────────────
@@ -46,7 +47,7 @@ export function TopBar() {
       if (!user) return
       const { data } = await supabase
         .from('profiles')
-        .select('username, display_name, avatar_url, role, clout')
+        .select('username, display_name, avatar_url, role, clout, vote_streak')
         .eq('id', user.id)
         .maybeSingle()
       if (data) setProfile(data as MiniProfile)
@@ -144,6 +145,34 @@ export function TopBar() {
           <Plus className="h-4 w-4" aria-hidden="true" />
           <span className="hidden sm:inline">Create Topic</span>
         </Link>
+
+        {/* Streak indicator — only shown when user has an active streak */}
+        {profile && profile.vote_streak > 0 && (
+          <Link
+            href="/challenge"
+            aria-label={`Vote streak: ${profile.vote_streak} days — keep it alive`}
+            className={cn(
+              'flex items-center gap-1 h-8 px-2.5 rounded-lg',
+              'border transition-all',
+              profile.vote_streak >= 30
+                ? 'bg-gold/10 border-gold/40 text-gold hover:bg-gold/20'
+                : profile.vote_streak >= 7
+                  ? 'bg-amber-500/10 border-amber-500/30 text-amber-400 hover:bg-amber-500/20'
+                  : 'bg-surface-200 border-surface-300 text-surface-500 hover:bg-surface-300 hover:text-white'
+            )}
+          >
+            <Zap
+              className={cn(
+                'h-3.5 w-3.5 flex-shrink-0',
+                profile.vote_streak >= 7 && 'animate-pulse'
+              )}
+              aria-hidden="true"
+            />
+            <span className="text-xs font-mono font-semibold tabular-nums">
+              {profile.vote_streak}
+            </span>
+          </Link>
+        )}
 
         <NotificationBell />
 

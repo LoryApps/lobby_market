@@ -180,6 +180,15 @@ export default async function LeaderboardPage() {
     }
   }
 
+  // ── Streaks: by current vote_streak descending ───────────────────────────
+  const { data: streaksRaw } = (await supabase
+    .from('profiles')
+    .select('*')
+    .gt('vote_streak', 0)
+    .order('vote_streak', { ascending: false })
+    .limit(LIMIT)) as { data: Profile[] | null }
+  const streaks = streaksRaw ?? []
+
   // ── Coalitions ────────────────────────────────────────────────────────────
   const { data: coalitionsRaw } = (await supabase
     .from('coalitions')
@@ -197,6 +206,7 @@ export default async function LeaderboardPage() {
     rising,
     troll_catchers: trollCatchers,
     predictors: predictorsSorted,
+    streaks,
   }
 
   return (
