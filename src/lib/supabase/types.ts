@@ -1558,7 +1558,8 @@ export type NotificationType =
   | "role_promoted"
   | "coalition_invite"
   | "coalition_invite_accepted"
-  | "bookmark_update";
+  | "bookmark_update"
+  | "new_follower";
 
 export type AchievementTier = "common" | "rare" | "epic" | "legendary";
 

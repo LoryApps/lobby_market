@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect, useMemo } from 'react'
-import { motion } from 'framer-motion'
+import { useEffect, useMemo, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import Link from 'next/link'
 import {
   Activity,
@@ -15,6 +15,7 @@ import {
   Swords,
   TrendingUp,
   User,
+  UserPlus,
   Users,
   CheckCircle,
 } from 'lucide-react'
@@ -27,6 +28,8 @@ import { cn } from '@/lib/utils/cn'
 interface NotificationsListProps {
   notifications: Notification[]
 }
+
+// ─── Icon + colour mapping per type ──────────────────────────────────────────
 
 const typeConfig: Record<
   NotificationType,
@@ -44,7 +47,58 @@ const typeConfig: Record<
   coalition_invite: { icon: Users, color: 'text-purple' },
   coalition_invite_accepted: { icon: CheckCircle, color: 'text-emerald' },
   bookmark_update: { icon: Bookmark, color: 'text-gold' },
+  new_follower: { icon: UserPlus, color: 'text-purple' },
 }
+
+// ─── Filter tabs ──────────────────────────────────────────────────────────────
+
+type FilterTab = 'all' | 'unread' | 'social' | 'debates' | 'achievements'
+
+const FILTER_TABS: { id: FilterTab; label: string }[] = [
+  { id: 'all', label: 'All' },
+  { id: 'unread', label: 'Unread' },
+  { id: 'social', label: 'Social' },
+  { id: 'debates', label: 'Debates' },
+  { id: 'achievements', label: 'Achievements' },
+]
+
+const SOCIAL_TYPES: NotificationType[] = [
+  'new_follower',
+  'coalition_invite',
+  'coalition_invite_accepted',
+  'reply_received',
+  'role_promoted',
+]
+
+const DEBATE_TYPES: NotificationType[] = ['debate_starting']
+
+const ACHIEVEMENT_TYPES: NotificationType[] = ['achievement_earned']
+
+function filterNotifications(
+  notifications: Notification[],
+  tab: FilterTab
+): Notification[] {
+  switch (tab) {
+    case 'unread':
+      return notifications.filter((n) => !n.is_read)
+    case 'social':
+      return notifications.filter((n) =>
+        SOCIAL_TYPES.includes(n.type as NotificationType)
+      )
+    case 'debates':
+      return notifications.filter((n) =>
+        DEBATE_TYPES.includes(n.type as NotificationType)
+      )
+    case 'achievements':
+      return notifications.filter((n) =>
+        ACHIEVEMENT_TYPES.includes(n.type as NotificationType)
+      )
+    default:
+      return notifications
+  }
+}
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function buildHref(notification: Notification): string {
   const { reference_id, reference_type } = notification
@@ -88,8 +142,12 @@ function formatTime(iso: string): string {
   })
 }
 
+// ─── Component ────────────────────────────────────────────────────────────────
+
 export function NotificationsList({ notifications }: NotificationsListProps) {
-  // Auto-mark viewed as read
+  const [activeFilter, setActiveFilter] = useState<FilterTab>('all')
+
+  // Auto-mark all as read when the page is first viewed
   useEffect(() => {
     const unreadIds = notifications.filter((n) => !n.is_read).map((n) => n.id)
     if (unreadIds.length === 0) return
@@ -104,16 +162,38 @@ export function NotificationsList({ notifications }: NotificationsListProps) {
     markRead()
   }, [notifications])
 
+  const filtered = useMemo(
+    () => filterNotifications(notifications, activeFilter),
+    [notifications, activeFilter]
+  )
+
   const grouped = useMemo(() => {
     const result = new Map<string, Notification[]>()
-    for (const notification of notifications) {
+    for (const notification of filtered) {
       const key = formatDateGroup(notification.created_at)
       const list = result.get(key) ?? []
       list.push(notification)
       result.set(key, list)
     }
     return Array.from(result.entries())
-  }, [notifications])
+  }, [filtered])
+
+  // Tab badge counts
+  const counts = useMemo(
+    () => ({
+      unread: notifications.filter((n) => !n.is_read).length,
+      social: notifications.filter((n) =>
+        SOCIAL_TYPES.includes(n.type as NotificationType)
+      ).length,
+      debates: notifications.filter((n) =>
+        DEBATE_TYPES.includes(n.type as NotificationType)
+      ).length,
+      achievements: notifications.filter((n) =>
+        ACHIEVEMENT_TYPES.includes(n.type as NotificationType)
+      ).length,
+    }),
+    [notifications]
+  )
 
   if (notifications.length === 0) {
     return (
@@ -128,76 +208,146 @@ export function NotificationsList({ notifications }: NotificationsListProps) {
   }
 
   return (
-    <div className="space-y-8">
-      {grouped.map(([label, items]) => (
-        <section key={label}>
-          <div className="sticky top-14 z-10 -mx-1 px-1 py-2 bg-surface-50/80 backdrop-blur">
-            <h2 className="text-[11px] font-mono text-surface-500 uppercase tracking-wider">
-              {label}
-            </h2>
-          </div>
-          <div className="rounded-2xl border border-surface-300 bg-surface-100 divide-y divide-surface-300 overflow-hidden">
-            {items.map((notification, idx) => {
-              const config =
-                typeConfig[notification.type] ?? {
-                  icon: AlertCircle,
-                  color: 'text-surface-500',
-                }
-              const Icon = config.icon
-              const href = buildHref(notification)
-              const wasUnread = !notification.is_read
-
-              return (
-                <motion.div
-                  key={notification.id}
-                  initial={{ opacity: 0, x: -6 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: idx * 0.03 }}
+    <div className="space-y-6">
+      {/* ── Filter tabs ───────────────────────────────────────────────────── */}
+      <div
+        role="tablist"
+        aria-label="Filter notifications by type"
+        className="flex items-center gap-1 p-1 bg-surface-200 rounded-xl overflow-x-auto scrollbar-hide"
+      >
+        {FILTER_TABS.map((tab) => {
+          const count = counts[tab.id as keyof typeof counts] ?? 0
+          const isActive = activeFilter === tab.id
+          return (
+            <button
+              key={tab.id}
+              role="tab"
+              aria-selected={isActive}
+              onClick={() => setActiveFilter(tab.id)}
+              className={cn(
+                'flex items-center gap-1.5 flex-shrink-0 h-8 px-3 rounded-lg text-xs font-mono font-medium transition-colors whitespace-nowrap',
+                isActive
+                  ? 'bg-surface-100 text-white shadow-sm'
+                  : 'text-surface-500 hover:text-surface-300'
+              )}
+            >
+              {tab.label}
+              {tab.id !== 'all' && count > 0 && (
+                <span
+                  className={cn(
+                    'inline-flex items-center justify-center h-4 min-w-[1rem] px-1 rounded-full text-[10px] font-bold',
+                    isActive
+                      ? 'bg-for-500/20 text-for-400'
+                      : 'bg-surface-300 text-surface-500'
+                  )}
                 >
-                  <Link
-                    href={href}
-                    className={cn(
-                      'flex items-start gap-4 px-5 py-4 hover:bg-surface-200 transition-colors',
-                      wasUnread && 'bg-for-500/[0.04]'
-                    )}
-                  >
-                    <div
-                      className={cn(
-                        'flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-full border',
-                        wasUnread
-                          ? 'bg-surface-200 border-for-500/40'
-                          : 'bg-surface-200 border-surface-300'
-                      )}
-                    >
-                      <Icon className={cn('h-5 w-5', config.color)} />
-                    </div>
+                  {count}
+                </span>
+              )}
+            </button>
+          )
+        })}
+      </div>
 
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="font-semibold text-sm text-white truncate">
-                          {notification.title}
-                        </div>
-                        <span className="text-[10px] font-mono text-surface-500 whitespace-nowrap flex-shrink-0">
-                          {formatTime(notification.created_at)}
-                        </span>
-                      </div>
-                      {notification.body && (
-                        <p className="text-xs text-surface-600 mt-1 line-clamp-2">
-                          {notification.body}
-                        </p>
-                      )}
-                    </div>
+      {/* ── Notification list ─────────────────────────────────────────────── */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={activeFilter}
+          initial={{ opacity: 0, y: 4 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -4 }}
+          transition={{ duration: 0.15 }}
+          className="space-y-8"
+        >
+          {filtered.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16 text-center gap-3">
+              <div className="h-10 w-10 rounded-xl bg-surface-200 flex items-center justify-center">
+                <Bell className="h-5 w-5 text-surface-500" aria-hidden="true" />
+              </div>
+              <p className="text-surface-500 text-sm">
+                No {activeFilter === 'all' ? '' : activeFilter + ' '}
+                notifications yet.
+              </p>
+            </div>
+          ) : (
+            grouped.map(([label, items]) => (
+              <section key={label}>
+                <div className="sticky top-14 z-10 -mx-1 px-1 py-2 bg-surface-50/80 backdrop-blur">
+                  <h2 className="text-[11px] font-mono text-surface-500 uppercase tracking-wider">
+                    {label}
+                  </h2>
+                </div>
+                <div className="rounded-2xl border border-surface-300 bg-surface-100 divide-y divide-surface-300 overflow-hidden">
+                  {items.map((notification, idx) => {
+                    const config =
+                      typeConfig[notification.type as NotificationType] ?? {
+                        icon: AlertCircle,
+                        color: 'text-surface-500',
+                      }
+                    const Icon = config.icon
+                    const href = buildHref(notification)
+                    const wasUnread = !notification.is_read
 
-                    {wasUnread && (
-                      <span className="flex-shrink-0 h-2 w-2 rounded-full bg-for-500 mt-3" />
-                    )}
-                  </Link>
-                </motion.div>
-              )
-            })}
-          </div>
-        </section>
-      ))}
+                    return (
+                      <motion.div
+                        key={notification.id}
+                        initial={{ opacity: 0, x: -6 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: idx * 0.03 }}
+                      >
+                        <Link
+                          href={href}
+                          className={cn(
+                            'flex items-start gap-4 px-5 py-4 hover:bg-surface-200 transition-colors',
+                            wasUnread && 'bg-for-500/[0.04]'
+                          )}
+                        >
+                          <div
+                            className={cn(
+                              'flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-full border',
+                              wasUnread
+                                ? 'bg-surface-200 border-for-500/40'
+                                : 'bg-surface-200 border-surface-300'
+                            )}
+                          >
+                            <Icon
+                              className={cn('h-5 w-5', config.color)}
+                              aria-hidden="true"
+                            />
+                          </div>
+
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="font-semibold text-sm text-white truncate">
+                                {notification.title}
+                              </div>
+                              <span className="text-[10px] font-mono text-surface-500 whitespace-nowrap flex-shrink-0">
+                                {formatTime(notification.created_at)}
+                              </span>
+                            </div>
+                            {notification.body && (
+                              <p className="text-xs text-surface-600 mt-1 line-clamp-2">
+                                {notification.body}
+                              </p>
+                            )}
+                          </div>
+
+                          {wasUnread && (
+                            <span
+                              className="flex-shrink-0 h-2 w-2 rounded-full bg-for-500 mt-3"
+                              aria-label="Unread"
+                            />
+                          )}
+                        </Link>
+                      </motion.div>
+                    )
+                  })}
+                </div>
+              </section>
+            ))
+          )}
+        </motion.div>
+      </AnimatePresence>
     </div>
   )
 }

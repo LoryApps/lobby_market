@@ -170,6 +170,11 @@ const TYPE_CONFIG: Record<NotificationType, TypeConfig> = {
     emoji: '🔖',
     duration: 5000,
   },
+  new_follower: {
+    prefKey: null,
+    emoji: '👤',
+    duration: 5000,
+  },
 }
 
 // ─── Achievement body parser (reused logic from AchievementWatcher) ───────────
