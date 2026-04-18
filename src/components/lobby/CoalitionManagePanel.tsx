@@ -5,9 +5,10 @@
  *
  * Client component rendered on the coalition detail page.
  * Shows:
- *  - Leaders/officers: invite form + pending invites + member list with kick
+ *  - Leaders/officers: invite form + pending invites + join request queue + member list with kick
  *  - Members: leave button
- *  - Non-members: join button (public coalition) or message
+ *  - Non-members (public): join button
+ *  - Non-members (private): request to join / pending request state
  *  - Pending invitees: accept / decline buttons
  */
 
@@ -27,11 +28,15 @@ import {
   ChevronUp,
   Mail,
   Users,
+  Lock,
+  Send,
+  Inbox,
 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
 import type { CoalitionInvite, Profile } from '@/lib/supabase/types'
+import type { JoinRequestWithProfile } from '@/app/api/coalitions/[id]/join-requests/route'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -49,17 +54,26 @@ interface PendingInviteWithProfile extends CoalitionInvite {
   invitee?: Pick<Profile, 'id' | 'username' | 'display_name' | 'avatar_url'> | null
 }
 
+interface OwnJoinRequest {
+  id: string
+  status: 'pending' | 'approved' | 'rejected'
+  created_at: string
+}
+
 interface CoalitionManagePanelProps {
   coalitionId: string
   isPublic: boolean
-  /** Current user's relation to this coalition */
   currentUserId: string | null
-  currentUserRole: MemberRole | null     // null = not a member
-  pendingInviteId: string | null          // invite sent to current user
-  pendingInvites: PendingInviteWithProfile[]   // pending invites (for leaders)
+  currentUserRole: MemberRole | null
+  pendingInviteId: string | null
+  pendingInvites: PendingInviteWithProfile[]
   members: MemberWithProfile[]
   memberCount: number
   maxMembers: number
+  /** The current user's own join request, if any (private coalitions only) */
+  ownJoinRequest: OwnJoinRequest | null
+  /** Pending join requests from other users (leaders/officers only) */
+  incomingJoinRequests: JoinRequestWithProfile[]
 }
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
@@ -70,6 +84,17 @@ function RoleBadge({ role }: { role: MemberRole }) {
   if (role === 'officer')
     return <Shield className="h-3.5 w-3.5 text-for-400" aria-label="Officer" />
   return null
+}
+
+function relativeTime(iso: string): string {
+  const diff = Date.now() - new Date(iso).getTime()
+  const m = Math.floor(diff / 60_000)
+  const h = Math.floor(m / 60)
+  const d = Math.floor(h / 24)
+  if (m < 1) return 'just now'
+  if (m < 60) return `${m}m ago`
+  if (h < 24) return `${h}h ago`
+  return `${d}d ago`
 }
 
 // ─── Main Component ───────────────────────────────────────────────────────────
@@ -84,6 +109,8 @@ export function CoalitionManagePanel({
   members: initialMembers,
   memberCount,
   maxMembers,
+  ownJoinRequest: initialOwnJoinRequest,
+  incomingJoinRequests: initialIncomingJoinRequests,
 }: CoalitionManagePanelProps) {
   const router = useRouter()
   const [, startTransition] = useTransition()
@@ -110,6 +137,17 @@ export function CoalitionManagePanel({
   // Join / leave
   const [isJoining, setIsJoining] = useState(false)
   const [isLeaving, setIsLeaving] = useState(false)
+
+  // Join requests (for non-members of private coalitions)
+  const [ownJoinRequest, setOwnJoinRequest] = useState<OwnJoinRequest | null>(initialOwnJoinRequest)
+  const [isRequestingJoin, setIsRequestingJoin] = useState(false)
+  const [isCancellingRequest, setIsCancellingRequest] = useState(false)
+  const [joinRequestError, setJoinRequestError] = useState<string | null>(null)
+
+  // Incoming join requests (for leaders/officers)
+  const [incomingRequests, setIncomingRequests] = useState(initialIncomingJoinRequests)
+  const [showJoinRequests, setShowJoinRequests] = useState(false)
+  const [respondingRequestId, setRespondingRequestId] = useState<string | null>(null)
 
   const isLeaderOrOfficer =
     currentUserRole === 'leader' || currentUserRole === 'officer'
@@ -141,7 +179,6 @@ export function CoalitionManagePanel({
         setInviteSuccess(`Invite sent to @${inviteUsername.trim().replace(/^@/, '')}`)
         setInviteUsername('')
         setInviteMessage('')
-        // Refresh pending invites
         const invRes = await fetch(`/api/coalitions/${coalitionId}/invite`)
         if (invRes.ok) {
           const invData = await invRes.json()
@@ -158,10 +195,7 @@ export function CoalitionManagePanel({
   // ─── Cancel / revoke pending invite ─────────────────────────────────────────
 
   async function cancelInvite(inviteId: string) {
-    // Optimistic remove
     setPendingInvites((prev) => prev.filter((i) => i.id !== inviteId))
-    // Note: No dedicated cancel endpoint — just update status via a simple DELETE
-    // For simplicity we re-invite with "declined" by patching (handled server-side on next invite)
   }
 
   // ─── Respond to own pending invite ──────────────────────────────────────────
@@ -215,6 +249,72 @@ export function CoalitionManagePanel({
     }
   }
 
+  // ─── Request to join (private coalition) ─────────────────────────────────────
+
+  async function handleRequestJoin() {
+    setIsRequestingJoin(true)
+    setJoinRequestError(null)
+    try {
+      const res = await fetch(`/api/coalitions/${coalitionId}/join-request`, {
+        method: 'POST',
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        setJoinRequestError(data.error ?? 'Failed to submit request')
+      } else {
+        setOwnJoinRequest(data.request)
+      }
+    } catch {
+      setJoinRequestError('Network error — please try again')
+    } finally {
+      setIsRequestingJoin(false)
+    }
+  }
+
+  // ─── Cancel own join request ──────────────────────────────────────────────────
+
+  async function handleCancelRequest() {
+    setIsCancellingRequest(true)
+    try {
+      await fetch(`/api/coalitions/${coalitionId}/join-request`, { method: 'DELETE' })
+      setOwnJoinRequest(null)
+      setJoinRequestError(null)
+    } catch {
+      // silent
+    } finally {
+      setIsCancellingRequest(false)
+    }
+  }
+
+  // ─── Respond to incoming join request ────────────────────────────────────────
+
+  async function respondToJoinRequest(requestId: string, action: 'approve' | 'reject') {
+    setRespondingRequestId(requestId)
+    try {
+      const res = await fetch(
+        `/api/coalitions/${coalitionId}/join-requests/${requestId}`,
+        {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action }),
+        }
+      )
+      const data = await res.json()
+      if (res.ok) {
+        setIncomingRequests((prev) => prev.filter((r) => r.id !== requestId))
+        if (action === 'approve') {
+          startTransition(() => router.refresh())
+        }
+      } else {
+        alert(data.error ?? 'Failed to respond to request')
+      }
+    } catch {
+      alert('Network error — please try again')
+    } finally {
+      setRespondingRequestId(null)
+    }
+  }
+
   // ─── Leave ───────────────────────────────────────────────────────────────────
 
   async function handleLeave() {
@@ -254,7 +354,6 @@ export function CoalitionManagePanel({
       if (!res.ok) {
         alert(data.error ?? 'Failed to remove member')
       } else {
-        // Optimistic update
         setMembers((prev) => prev.filter((m) => m.user_id !== userId))
       }
     } catch {
@@ -306,7 +405,7 @@ export function CoalitionManagePanel({
         </motion.div>
       )}
 
-      {/* ── Non-member: Join button ─────────────────────────────────── */}
+      {/* ── Non-member: Public coalition join ─────────────────────────── */}
       {currentUserId && currentUserRole === null && !pendingInviteId && isPublic && (
         <div className="rounded-xl border border-surface-300 bg-surface-100 p-4">
           <p className="font-mono text-xs text-surface-500 mb-3">
@@ -330,6 +429,80 @@ export function CoalitionManagePanel({
         </div>
       )}
 
+      {/* ── Non-member: Private coalition — request to join ────────────── */}
+      {currentUserId && currentUserRole === null && !pendingInviteId && !isPublic && (
+        <div className="rounded-xl border border-surface-300 bg-surface-100 p-4">
+          <div className="flex items-center gap-2 mb-1">
+            <Lock className="h-3.5 w-3.5 text-surface-500" aria-hidden="true" />
+            <span className="font-mono text-xs font-semibold text-surface-400">
+              Private Coalition
+            </span>
+          </div>
+
+          {!ownJoinRequest && (
+            <>
+              <p className="font-mono text-xs text-surface-500 mb-3">
+                Membership is invite-only or by approval. Send a join request to the coalition leadership.
+              </p>
+              {joinRequestError && (
+                <p className="font-mono text-[11px] text-against-400 mb-2">
+                  {joinRequestError}
+                </p>
+              )}
+              <Button
+                variant="gold"
+                size="sm"
+                disabled={isRequestingJoin || memberCount >= maxMembers}
+                onClick={handleRequestJoin}
+                className="w-full"
+              >
+                <Send className="h-3.5 w-3.5" />
+                {isRequestingJoin
+                  ? 'Sending…'
+                  : memberCount >= maxMembers
+                  ? 'Coalition full'
+                  : 'Request to Join'}
+              </Button>
+            </>
+          )}
+
+          {ownJoinRequest?.status === 'pending' && (
+            <AnimatePresence>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="flex items-center justify-between gap-3"
+              >
+                <div className="flex items-center gap-2">
+                  <Clock className="h-3.5 w-3.5 text-gold shrink-0" aria-hidden="true" />
+                  <div>
+                    <p className="font-mono text-xs font-semibold text-gold">
+                      Request pending
+                    </p>
+                    <p className="font-mono text-[10px] text-surface-500">
+                      Sent {relativeTime(ownJoinRequest.created_at)} · awaiting leader approval
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={handleCancelRequest}
+                  disabled={isCancellingRequest}
+                  className="font-mono text-[11px] text-surface-500 hover:text-against-400 transition-colors disabled:opacity-50 shrink-0"
+                >
+                  {isCancellingRequest ? 'Cancelling…' : 'Cancel'}
+                </button>
+              </motion.div>
+            </AnimatePresence>
+          )}
+
+          {ownJoinRequest?.status === 'rejected' && (
+            <p className="font-mono text-[11px] text-against-400">
+              Your request was declined. You may contact the coalition leadership directly.
+            </p>
+          )}
+        </div>
+      )}
+
       {/* ── Member: leave button ────────────────────────────────────── */}
       {currentUserRole === 'member' && (
         <div className="flex justify-end">
@@ -343,6 +516,101 @@ export function CoalitionManagePanel({
             <LogOut className="h-3.5 w-3.5" />
             {isLeaving ? 'Leaving…' : 'Leave Coalition'}
           </Button>
+        </div>
+      )}
+
+      {/* ── Leader / Officer: join request queue ───────────────────────── */}
+      {isLeaderOrOfficer && incomingRequests.length > 0 && (
+        <div className="rounded-xl border border-gold/30 bg-gold/5 overflow-hidden">
+          <button
+            className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-gold/10 transition-colors"
+            onClick={() => setShowJoinRequests((v) => !v)}
+          >
+            <span className="flex items-center gap-2 font-mono text-xs font-semibold text-gold">
+              <Inbox className="h-3.5 w-3.5" />
+              Join Requests
+              <span className="rounded-full bg-gold/20 px-1.5 py-0.5 text-[10px] text-gold">
+                {incomingRequests.length}
+              </span>
+            </span>
+            {showJoinRequests ? (
+              <ChevronUp className="h-3.5 w-3.5 text-gold/60" />
+            ) : (
+              <ChevronDown className="h-3.5 w-3.5 text-gold/60" />
+            )}
+          </button>
+
+          <AnimatePresence>
+            {showJoinRequests && (
+              <motion.div
+                key="join-requests-panel"
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="overflow-hidden border-t border-gold/20"
+              >
+                <div className="divide-y divide-surface-300/60">
+                  {incomingRequests.map((req) => {
+                    const p = req.requester
+                    const isResponding = respondingRequestId === req.id
+                    return (
+                      <div
+                        key={req.id}
+                        className="flex items-center gap-3 px-4 py-3"
+                      >
+                        <Avatar
+                          src={p?.avatar_url}
+                          fallback={p?.display_name ?? p?.username ?? '?'}
+                          size="sm"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <p className="font-mono text-xs font-medium text-white truncate">
+                            {p?.display_name ?? p?.username ?? 'Unknown'}
+                          </p>
+                          <p className="font-mono text-[10px] text-surface-500">
+                            @{p?.username ?? '…'} · {relativeTime(req.created_at)}
+                          </p>
+                        </div>
+                        <div className="flex gap-1.5 shrink-0">
+                          <button
+                            onClick={() => respondToJoinRequest(req.id, 'approve')}
+                            disabled={isResponding}
+                            aria-label={`Approve request from ${p?.username}`}
+                            className={cn(
+                              'flex items-center gap-1 px-2.5 py-1 rounded-lg',
+                              'font-mono text-[11px] font-semibold',
+                              'bg-for-500/15 text-for-400 border border-for-500/30',
+                              'hover:bg-for-500/25 transition-colors',
+                              'disabled:opacity-50 disabled:cursor-not-allowed'
+                            )}
+                          >
+                            <Check className="h-3 w-3" />
+                            Approve
+                          </button>
+                          <button
+                            onClick={() => respondToJoinRequest(req.id, 'reject')}
+                            disabled={isResponding}
+                            aria-label={`Reject request from ${p?.username}`}
+                            className={cn(
+                              'flex items-center gap-1 px-2.5 py-1 rounded-lg',
+                              'font-mono text-[11px] font-semibold',
+                              'bg-against-500/10 text-against-400 border border-against-500/20',
+                              'hover:bg-against-500/20 transition-colors',
+                              'disabled:opacity-50 disabled:cursor-not-allowed'
+                            )}
+                          >
+                            <X className="h-3 w-3" />
+                            Decline
+                          </button>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       )}
 

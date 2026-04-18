@@ -13,6 +13,7 @@ import type {
   Lobby,
   Profile,
 } from '@/lib/supabase/types'
+import type { JoinRequestWithProfile } from '@/app/api/coalitions/[id]/join-requests/route'
 import { cn } from '@/lib/utils/cn'
 
 interface CoalitionPageProps {
@@ -101,6 +102,7 @@ export default async function CoalitionPage({ params }: CoalitionPageProps) {
     { data: creator },
     currentMemberRes,
     pendingInviteRes,
+    ownJoinRequestRes,
   ] = await Promise.all([
     supabase
       .from('coalition_members')
@@ -137,6 +139,17 @@ export default async function CoalitionPage({ params }: CoalitionPageProps) {
           .eq('status', 'pending')
           .maybeSingle()
       : Promise.resolve({ data: null }),
+    // Fetch current user's own join request (private coalition, non-member only)
+    authUser && !typedCoalition.is_public
+      ? supabase
+          .from('coalition_join_requests')
+          .select('id, status, created_at')
+          .eq('coalition_id', typedCoalition.id)
+          .eq('user_id', authUser.id)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle()
+      : Promise.resolve({ data: null }),
   ])
 
   const members = (memberRows as CoalitionMember[] | null) ?? []
@@ -146,11 +159,17 @@ export default async function CoalitionPage({ params }: CoalitionPageProps) {
     role: 'leader' | 'officer' | 'member'
   } | null
   const pendingInvite = pendingInviteRes.data as { id: string } | null
+  const ownJoinRequest = ownJoinRequestRes.data as {
+    id: string
+    status: 'pending' | 'approved' | 'rejected'
+    created_at: string
+  } | null
 
-  // Fetch pending invites if leader/officer
+  // Fetch pending invites and join requests if leader/officer
   let pendingInvitesForLeader: (CoalitionInvite & {
     invitee?: Pick<Profile, 'id' | 'username' | 'display_name' | 'avatar_url'> | null
   })[] = []
+  let incomingJoinRequests: JoinRequestWithProfile[] = []
 
   if (
     currentMember &&
@@ -182,6 +201,37 @@ export default async function CoalitionPage({ params }: CoalitionPageProps) {
         invitee: inviteeMap.get(inv.invitee_id) ?? null,
       })
     )
+
+    // Fetch pending join requests for private coalitions
+    if (!typedCoalition.is_public) {
+      const { data: joinReqRows } = await supabase
+        .from('coalition_join_requests')
+        .select('*')
+        .eq('coalition_id', typedCoalition.id)
+        .eq('status', 'pending')
+        .order('created_at', { ascending: true })
+        .limit(50)
+
+      const requesterIds = (joinReqRows ?? []).map(
+        (r: { user_id: string }) => r.user_id
+      )
+      const { data: requesterProfiles } = requesterIds.length
+        ? await supabase
+            .from('profiles')
+            .select('id, username, display_name, avatar_url, role, clout, reputation_score')
+            .in('id', requesterIds)
+        : { data: [] as Profile[] }
+
+      const requesterMap = new Map<string, Profile>()
+      for (const p of requesterProfiles ?? []) requesterMap.set(p.id, p as Profile)
+
+      incomingJoinRequests = (joinReqRows ?? []).map(
+        (r: { id: string; coalition_id: string; user_id: string; status: 'pending' | 'approved' | 'rejected'; created_at: string; responded_at: string | null }) => ({
+          ...r,
+          requester: (requesterMap.get(r.user_id) as JoinRequestWithProfile['requester']) ?? null,
+        })
+      )
+    }
   }
 
   // Build member list with profiles
@@ -405,6 +455,8 @@ export default async function CoalitionPage({ params }: CoalitionPageProps) {
             members={membersWithProfiles}
             memberCount={typedCoalition.member_count}
             maxMembers={typedCoalition.max_members}
+            ownJoinRequest={ownJoinRequest}
+            incomingJoinRequests={incomingJoinRequests}
           />
         </section>
       </div>
