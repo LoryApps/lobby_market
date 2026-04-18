@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Share2, Eye, ThumbsUp, ThumbsDown, MapPin } from 'lucide-react'
+import { Share2, Eye, ThumbsUp, ThumbsDown, MapPin, Flame, Clock, Gavel, Swords, TrendingUp, Zap } from 'lucide-react'
 import { motion, useMotionValue, useTransform, animate } from 'framer-motion'
 import { cn } from '@/lib/utils/cn'
 import type { Topic, VoteSide } from '@/lib/supabase/types'
@@ -17,6 +17,18 @@ import { useVoteStore } from '@/lib/stores/vote-store'
 import { useFeedStore } from '@/lib/stores/feed-store'
 import { BookmarkButton } from '@/components/ui/BookmarkButton'
 import { StanceShareButton } from '@/components/voting/StanceShareButton'
+import { getTopicSignal, SIGNAL_PILL_CLASSES } from '@/lib/utils/topic-signal'
+
+// ── Signal icon map ───────────────────────────────────────────────────────────
+
+const SIGNAL_ICONS: Record<string, typeof Flame> = {
+  ending_soon:    Clock,
+  brink_of_law:   Gavel,
+  deadlock:       Swords,
+  trending:       TrendingUp,
+  gaining_support: Zap,
+  strong_majority: Flame,
+}
 
 interface TopicCardProps {
   topic: Topic
@@ -59,6 +71,7 @@ export function TopicCard({ topic, authorName, authorAvatar }: TopicCardProps) {
   const isVotable = topic.status === 'active' || topic.status === 'voting'
   const isProposed = topic.status === 'proposed'
   const isLaw = topic.status === 'law'
+  const signal = getTopicSignal(topic)
 
   // Swipe gesture is only available on active/voting topics the user hasn't voted on yet
   const canSwipeVote = isVotable && !hasVoted(topic.id)
@@ -230,24 +243,45 @@ export function TopicCard({ topic, authorName, authorAvatar }: TopicCardProps) {
             )}
           >
             {/* Top row: category + scope (left) / status (right) */}
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-1.5 flex-wrap">
-                {topic.category && (
-                  <Badge variant="proposed" className="text-surface-500">
-                    {topic.category}
-                  </Badge>
-                )}
-                {topic.scope && topic.scope !== 'Global' && (
-                  <span className={cn(
-                    'inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium border',
-                    topic.scope === 'National' && 'bg-emerald/10 text-emerald border-emerald/30',
-                    topic.scope === 'Regional' && 'bg-gold/10 text-gold border-gold/30',
-                    topic.scope === 'Local' && 'bg-against-500/10 text-against-300 border-against-500/30',
-                  )}>
-                    <MapPin className="h-2.5 w-2.5" aria-hidden="true" />
-                    {topic.scope}
-                  </span>
-                )}
+            <div className="flex items-start justify-between mb-6">
+              <div className="flex flex-col gap-1.5">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  {topic.category && (
+                    <Badge variant="proposed" className="text-surface-500">
+                      {topic.category}
+                    </Badge>
+                  )}
+                  {topic.scope && topic.scope !== 'Global' && (
+                    <span className={cn(
+                      'inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium border',
+                      topic.scope === 'National' && 'bg-emerald/10 text-emerald border-emerald/30',
+                      topic.scope === 'Regional' && 'bg-gold/10 text-gold border-gold/30',
+                      topic.scope === 'Local' && 'bg-against-500/10 text-against-300 border-against-500/30',
+                    )}>
+                      <MapPin className="h-2.5 w-2.5" aria-hidden="true" />
+                      {topic.scope}
+                    </span>
+                  )}
+                </div>
+                {/* Relevance signal pill */}
+                {signal && (() => {
+                  const classes = SIGNAL_PILL_CLASSES[signal.color]
+                  const Icon = SIGNAL_ICONS[signal.id] ?? Flame
+                  return (
+                    <span
+                      className={cn(
+                        'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold border w-fit',
+                        classes.pill,
+                      )}
+                      title={signal.description}
+                      aria-label={signal.description}
+                    >
+                      <span className={cn('h-1.5 w-1.5 rounded-full animate-pulse', classes.dot)} aria-hidden="true" />
+                      <Icon className="h-2.5 w-2.5" aria-hidden="true" />
+                      {signal.label}
+                    </span>
+                  )
+                })()}
               </div>
               <Badge variant={statusBadgeVariant[topic.status] ?? 'proposed'}>
                 {statusLabel[topic.status] ?? topic.status}

@@ -46,6 +46,17 @@ import { ArgumentSpotlight } from '@/components/topic/ArgumentSpotlight'
 import { cn } from '@/lib/utils/cn'
 import { useVoteStore } from '@/lib/stores/vote-store'
 import { useFeedStore } from '@/lib/stores/feed-store'
+import { getTopicSignal, SIGNAL_PILL_CLASSES } from '@/lib/utils/topic-signal'
+import { Flame, Clock, Gavel, Swords, TrendingUp, Zap } from 'lucide-react'
+
+const SIGNAL_ICONS_DETAIL: Record<string, typeof Flame> = {
+  ending_soon:     Clock,
+  brink_of_law:    Gavel,
+  deadlock:        Swords,
+  trending:        TrendingUp,
+  gaining_support: Zap,
+  strong_majority: Flame,
+}
 
 interface TopicDetailProps {
   initialTopic: Topic
@@ -216,7 +227,7 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
       {/* Content */}
       <div className="max-w-2xl mx-auto px-4 py-8">
         {/* Statement */}
-        <div className="flex items-start justify-between gap-3 mb-6">
+        <div className="flex items-start justify-between gap-3 mb-2">
           <h1 className="text-3xl md:text-4xl font-bold text-white leading-tight flex-1">
             {topic.statement}
           </h1>
@@ -227,6 +238,28 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
             compact
           />
         </div>
+
+        {/* Relevance signal pill — shown when the topic has a notable status */}
+        {(() => {
+          const signal = getTopicSignal(topic)
+          if (!signal) return null
+          const classes = SIGNAL_PILL_CLASSES[signal.color]
+          const Icon = SIGNAL_ICONS_DETAIL[signal.id] ?? Flame
+          return (
+            <span
+              className={cn(
+                'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-mono font-semibold border mb-6',
+                classes.pill,
+              )}
+              title={signal.description}
+            >
+              <span className={cn('h-1.5 w-1.5 rounded-full animate-pulse', classes.dot)} aria-hidden="true" />
+              <Icon className="h-3 w-3" aria-hidden="true" />
+              {signal.label}
+              <span className="text-[10px] opacity-60 ml-0.5">· {signal.description}</span>
+            </span>
+          )
+        })()}
 
         {/* Tabs — Details / Arguments / Lobbies */}
         <div className="flex items-center gap-1 mb-8 border-b border-surface-300">

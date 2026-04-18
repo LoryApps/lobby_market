@@ -25,6 +25,16 @@ import { Avatar } from '@/components/ui/Avatar'
 import { Badge } from '@/components/ui/Badge'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { cn } from '@/lib/utils/cn'
+import { getTopicSignal, SIGNAL_PILL_CLASSES } from '@/lib/utils/topic-signal'
+
+const SEARCH_SIGNAL_ICONS: Record<string, typeof TrendingUp> = {
+  ending_soon:     Clock,
+  brink_of_law:    Gavel,
+  deadlock:        Scale,
+  trending:        TrendingUp,
+  gaining_support: Zap,
+  strong_majority: TrendingUp,
+}
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -154,6 +164,7 @@ function removeRecent(query: string) {
 // ─── Result rows ──────────────────────────────────────────────────────────────
 
 function TopicRow({ item }: { item: TopicResult }) {
+  const signal = getTopicSignal(item)
   return (
     <Link
       href={`/topic/${item.id}`}
@@ -177,6 +188,23 @@ function TopicRow({ item }: { item: TopicResult }) {
           <Badge variant={statusBadge[item.status] ?? 'proposed'}>
             {statusLabel[item.status] ?? item.status}
           </Badge>
+          {signal && (() => {
+            const classes = SIGNAL_PILL_CLASSES[signal.color]
+            const Icon = SEARCH_SIGNAL_ICONS[signal.id] ?? TrendingUp
+            return (
+              <span
+                className={cn(
+                  'inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-mono font-semibold border',
+                  classes.pill,
+                )}
+                title={signal.description}
+              >
+                <span className={cn('h-1.5 w-1.5 rounded-full', classes.dot)} aria-hidden="true" />
+                <Icon className="h-2.5 w-2.5" aria-hidden="true" />
+                {signal.label}
+              </span>
+            )
+          })()}
           <span className="text-xs text-surface-500">
             {item.total_votes.toLocaleString()} votes
           </span>
