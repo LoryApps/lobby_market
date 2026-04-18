@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Plus, Users, Mail } from 'lucide-react'
+import { Plus, Trophy, Users, Mail } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -100,7 +100,19 @@ export default async function CoalitionsIndexPage() {
                 {enriched.length} persistent alliances
               </p>
             </div>
-            <div className="ml-auto">
+            <div className="ml-auto flex items-center gap-2">
+              <Link
+                href="/coalitions/standings"
+                className={cn(
+                  'inline-flex items-center gap-2 px-3 py-2 rounded-lg',
+                  'bg-gold/10 border border-gold/30 text-gold',
+                  'hover:bg-gold/20 hover:border-gold/50',
+                  'text-xs font-mono font-medium transition-colors'
+                )}
+              >
+                <Trophy className="h-4 w-4" />
+                <span className="hidden sm:inline">Standings</span>
+              </Link>
               <Link
                 href="/coalitions/create"
                 className={cn(
