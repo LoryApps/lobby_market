@@ -2,11 +2,12 @@
 
 import { useEffect, useRef, useCallback, useState } from 'react'
 import Link from 'next/link'
-import { Users, Search, Keyboard, X, RefreshCw, ChevronUp, Sparkles, UserPlus, Check, Loader2 } from 'lucide-react'
+import { Users, Search, Keyboard, RefreshCw, ChevronUp, Sparkles, UserPlus, Check, Loader2 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useFeedStore } from '@/lib/stores/feed-store'
 import { useVoteStore } from '@/lib/stores/vote-store'
 import { subscribeToFeed } from '@/lib/supabase/realtime'
+import { openKeyboardShortcuts } from '@/lib/hooks/useKeyboardShortcuts'
 import { TopicCard } from '@/components/feed/TopicCard'
 import { FeedTutorial } from '@/components/feed/FeedTutorial'
 import { DailyQuorumNudge } from '@/components/feed/DailyQuorumNudge'
@@ -259,84 +260,6 @@ function ForYouEmptyState({ hasPreferences }: { hasPreferences: boolean }) {
 
 // ─── Keyboard shortcuts help overlay ─────────────────────────────────────────
 
-const SHORTCUTS = [
-  { keys: ['j', '↓'], action: 'Next topic' },
-  { keys: ['k', '↑'], action: 'Previous topic' },
-  { keys: ['f', '→'], action: 'Vote FOR' },
-  { keys: ['a', '←'], action: 'Vote AGAINST' },
-  { keys: ['Enter'], action: 'Open topic detail' },
-  { keys: ['?'], action: 'Toggle this help' },
-]
-
-function KeyboardHelpOverlay({ onClose }: { onClose: () => void }) {
-  useEffect(() => {
-    const handle = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' || e.key === '?') onClose()
-    }
-    document.addEventListener('keydown', handle)
-    return () => document.removeEventListener('keydown', handle)
-  }, [onClose])
-
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.15 }}
-      className="fixed inset-0 z-[9990] flex items-end sm:items-center justify-center p-4"
-      onClick={onClose}
-    >
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" aria-hidden="true" />
-      <motion.div
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        exit={{ y: 20, opacity: 0 }}
-        transition={{ type: 'spring', stiffness: 340, damping: 30 }}
-        onClick={(e) => e.stopPropagation()}
-        className="relative z-10 w-full max-w-xs rounded-2xl bg-surface-100 border border-surface-300 overflow-hidden"
-        role="dialog"
-        aria-modal="true"
-        aria-label="Keyboard shortcuts"
-      >
-        <div className="flex items-center justify-between px-5 py-4 border-b border-surface-300">
-          <div className="flex items-center gap-2">
-            <Keyboard className="h-4 w-4 text-for-400" aria-hidden="true" />
-            <span className="text-sm font-mono font-semibold text-white">Keyboard Shortcuts</span>
-          </div>
-          <button
-            onClick={onClose}
-            className="flex items-center justify-center h-6 w-6 rounded-md text-surface-500 hover:text-white hover:bg-surface-300 transition-colors"
-            aria-label="Close"
-          >
-            <X className="h-3.5 w-3.5" />
-          </button>
-        </div>
-        <ul className="py-3 px-5 space-y-2.5">
-          {SHORTCUTS.map(({ keys, action }) => (
-            <li key={action} className="flex items-center justify-between gap-4">
-              <span className="text-sm text-surface-500">{action}</span>
-              <div className="flex items-center gap-1 flex-shrink-0">
-                {keys.map((k, i) => (
-                  <span key={k} className="flex items-center gap-1">
-                    {i > 0 && <span className="text-surface-600 text-xs">/</span>}
-                    <kbd className="inline-flex items-center justify-center min-w-[1.75rem] h-6 px-1.5 rounded-md bg-surface-200 border border-surface-400 text-[11px] font-mono text-surface-300">
-                      {k}
-                    </kbd>
-                  </span>
-                ))}
-              </div>
-            </li>
-          ))}
-        </ul>
-        <div className="px-5 pb-4 pt-1">
-          <p className="text-[11px] text-surface-600 font-mono">
-            Shortcuts are disabled when a text field is focused.
-          </p>
-        </div>
-      </motion.div>
-    </motion.div>
-  )
-}
 
 // ─── End-of-feed rich state ───────────────────────────────────────────────────
 
@@ -453,7 +376,6 @@ function EndOfFeed({
 export function FeedContainer() {
   const { topics, isLoading, hasMore, feedMode, followingCount, hasPreferences, fetchNextPage, updateTopic, prependTopic } = useFeedStore()
   const { castVote } = useVoteStore()
-  const [showHelp, setShowHelp] = useState(false)
   const [pendingNew, setPendingNew] = useState<TopicWithAuthor[]>([])
   const [isLive, setIsLive] = useState(false)
   const sentinelRef = useRef<HTMLDivElement>(null)
@@ -557,13 +479,6 @@ export function FeedContainer() {
 
       const tag = (document.activeElement?.tagName ?? '').toLowerCase()
       const inInput = ['input', 'textarea', 'select'].includes(tag)
-
-      // ? toggles help regardless of most focus states
-      if (e.key === '?' && !inInput) {
-        e.preventDefault()
-        setShowHelp((v) => !v)
-        return
-      }
 
       if (inInput || ['button', 'a'].includes(tag)) return
 
@@ -683,7 +598,7 @@ export function FeedContainer() {
 
       {/* Keyboard shortcut hint — desktop only */}
       <button
-        onClick={() => setShowHelp(true)}
+        onClick={openKeyboardShortcuts}
         title="Keyboard shortcuts (?)"
         aria-label="Show keyboard shortcuts"
         className={cn(
@@ -759,12 +674,6 @@ export function FeedContainer() {
         )}
       </div>
 
-      {/* Keyboard shortcuts help overlay */}
-      <AnimatePresence>
-        {showHelp && (
-          <KeyboardHelpOverlay onClose={() => setShowHelp(false)} />
-        )}
-      </AnimatePresence>
     </div>
   )
 }
