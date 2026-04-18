@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useCallback, useState } from 'react'
 import Link from 'next/link'
-import { Users, Search, Keyboard, RefreshCw, ChevronUp, Sparkles, UserPlus, Check, Loader2 } from 'lucide-react'
+import { Users, Search, Keyboard, RefreshCw, ChevronUp, Sparkles, UserPlus, Check, Loader2, History, Vote } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useFeedStore } from '@/lib/stores/feed-store'
 import { useVoteStore } from '@/lib/stores/vote-store'
@@ -196,40 +196,70 @@ function FollowingEmptyState({ followingCount }: { followingCount: number }) {
 
 // ─── For You empty states ─────────────────────────────────────────────────────
 
-function ForYouEmptyState({ hasPreferences }: { hasPreferences: boolean }) {
+function ForYouEmptyState({
+  hasPreferences,
+  preferenceSource,
+}: {
+  hasPreferences: boolean
+  preferenceSource: 'quiz' | 'history' | 'none'
+}) {
   if (!hasPreferences) {
-    // User hasn't completed the calibration quiz
+    // Brand new user — no votes yet, no quiz taken
+    const isBlankSlate = preferenceSource === 'none'
     return (
       <div className="feed-card flex items-center justify-center">
         <div className="text-center px-8 max-w-xs">
-          <div className="flex items-center justify-center h-14 w-14 rounded-2xl bg-gold/10 border border-gold/30 mx-auto mb-5">
-            <Sparkles className="h-7 w-7 text-gold" />
+          <div className={cn(
+            'flex items-center justify-center h-14 w-14 rounded-2xl mx-auto mb-5',
+            isBlankSlate
+              ? 'bg-for-500/10 border border-for-500/30'
+              : 'bg-gold/10 border border-gold/30'
+          )}>
+            {isBlankSlate
+              ? <Vote className="h-7 w-7 text-for-400" />
+              : <Sparkles className="h-7 w-7 text-gold" />
+            }
           </div>
           <h2 className="text-xl font-bold text-white font-mono mb-2">
-            Calibrate your feed
+            {isBlankSlate ? 'Start voting to unlock' : 'Calibrate your feed'}
           </h2>
           <p className="text-sm text-surface-500 leading-relaxed mb-6">
-            Take the 5-question calibration quiz to unlock a feed tuned to your
-            political and intellectual interests.
+            {isBlankSlate
+              ? 'Vote on a few topics in the Discover feed and your personalised feed will automatically calibrate to your interests.'
+              : 'Take the 5-question calibration quiz to unlock a feed tuned to your political and intellectual interests.'
+            }
           </p>
-          <Link
-            href="/onboarding"
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gold/80 hover:bg-gold text-surface-50 text-sm font-mono font-medium transition-colors"
-          >
-            <Sparkles className="h-4 w-4" />
-            Start calibration
-          </Link>
+          <div className="flex flex-col gap-2">
+            <Link
+              href="/"
+              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-for-600 hover:bg-for-500 text-white text-sm font-mono font-medium transition-colors"
+            >
+              Browse topics
+            </Link>
+            {!isBlankSlate && (
+              <Link
+                href="/onboarding"
+                className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gold/80 hover:bg-gold text-surface-50 text-sm font-mono font-medium transition-colors"
+              >
+                <Sparkles className="h-4 w-4" />
+                Start calibration quiz
+              </Link>
+            )}
+          </div>
         </div>
       </div>
     )
   }
 
-  // User has preferences but no topics matched (rare — categories might not have topics yet)
+  // User has preferences but no topics matched
   return (
     <div className="feed-card flex items-center justify-center">
       <div className="text-center px-8 max-w-xs">
         <div className="flex items-center justify-center h-14 w-14 rounded-2xl bg-surface-200 border border-surface-300 mx-auto mb-5">
-          <Sparkles className="h-7 w-7 text-surface-500" />
+          {preferenceSource === 'history'
+            ? <History className="h-7 w-7 text-emerald" />
+            : <Sparkles className="h-7 w-7 text-surface-500" />
+          }
         </div>
         <h2 className="text-xl font-bold text-white font-mono mb-2">
           All caught up
@@ -241,7 +271,6 @@ function ForYouEmptyState({ hasPreferences }: { hasPreferences: boolean }) {
         <div className="flex flex-col gap-2">
           <Link
             href="/"
-            onClick={() => {}}
             className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-for-600 hover:bg-for-500 text-white text-sm font-mono font-medium transition-colors"
           >
             Explore all topics
@@ -374,7 +403,7 @@ function EndOfFeed({
 // ─── Main feed container ──────────────────────────────────────────────────────
 
 export function FeedContainer() {
-  const { topics, isLoading, hasMore, feedMode, followingCount, hasPreferences, fetchNextPage, updateTopic, prependTopic } = useFeedStore()
+  const { topics, isLoading, hasMore, feedMode, followingCount, hasPreferences, preferenceSource, fetchNextPage, updateTopic, prependTopic } = useFeedStore()
   const { castVote } = useVoteStore()
   const [pendingNew, setPendingNew] = useState<TopicWithAuthor[]>([])
   const [isLive, setIsLive] = useState(false)
@@ -657,7 +686,7 @@ export function FeedContainer() {
 
         {/* Empty state: for you feed */}
         {!isLoading && topics.length === 0 && feedMode === 'foryou' && (
-          <ForYouEmptyState hasPreferences={hasPreferences} />
+          <ForYouEmptyState hasPreferences={hasPreferences} preferenceSource={preferenceSource} />
         )}
 
         {/* Sentinel for infinite scroll */}

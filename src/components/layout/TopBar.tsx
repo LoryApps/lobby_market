@@ -24,13 +24,10 @@ interface MiniProfile {
 // ─── Role label helper ────────────────────────────────────────────────────────
 
 const ROLE_LABELS: Record<string, { label: string; color: string }> = {
-  citizen: { label: 'Citizen', color: 'text-surface-500' },
-  senator: { label: 'Senator', color: 'text-for-400' },
-  magistrate: { label: 'Magistrate', color: 'text-gold' },
-  oracle: { label: 'Oracle', color: 'text-purple' },
+  person: { label: 'Citizen', color: 'text-surface-500' },
+  debator: { label: 'Debator', color: 'text-for-400' },
   troll_catcher: { label: 'Troll Catcher', color: 'text-emerald' },
-  moderator: { label: 'Moderator', color: 'text-against-400' },
-  admin: { label: 'Admin', color: 'text-gold' },
+  elder: { label: 'Elder', color: 'text-gold' },
 }
 
 export function TopBar() {
@@ -82,7 +79,7 @@ export function TopBar() {
     router.push('/login')
   }
 
-  const roleInfo = profile ? (ROLE_LABELS[profile.role] ?? ROLE_LABELS.citizen) : null
+  const roleInfo = profile ? (ROLE_LABELS[profile.role] ?? ROLE_LABELS.person) : null
 
   return (
     <header className="sticky top-0 z-50 h-14 bg-surface-100 border-b border-surface-300 flex items-center px-4 gap-4">

@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { TrendingUp, Clock, Flame, Scale, FileText, Zap, Gavel, Tag, LayoutGrid, Globe, Users, MapPin, Sparkles } from 'lucide-react'
+import { TrendingUp, Clock, Flame, Scale, FileText, Zap, Gavel, Tag, LayoutGrid, Globe, Users, MapPin, Sparkles, History } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { useFeedStore } from '@/lib/stores/feed-store'
 import type { FeedSort, FeedStatus, FeedMode, FeedScope } from '@/lib/stores/feed-store'
@@ -89,6 +89,8 @@ export function FeedFilters() {
     scopeFilter,
     feedMode,
     preferredCategories,
+    preferenceSource,
+    inferredFromVotes,
     setSort,
     setStatusFilter,
     setCategoryFilter,
@@ -317,7 +319,7 @@ export function FeedFilters() {
             </div>
           </div>
 
-          {/* Preferred category pills — read-only, shows calibration */}
+          {/* Preferred category pills — read-only, shows calibration source */}
           {preferredCategories.length > 0 && (
             <div
               className={cn(
@@ -327,15 +329,29 @@ export function FeedFilters() {
               )}
               aria-label="Your preferred categories"
             >
-              <Sparkles className="h-3 w-3 text-gold/70 flex-shrink-0" aria-hidden />
+              {/* Source indicator icon */}
+              {preferenceSource === 'history' ? (
+                <History
+                  className="h-3 w-3 text-emerald/70 flex-shrink-0"
+                  aria-hidden="true"
+                />
+              ) : (
+                <Sparkles className="h-3 w-3 text-gold/70 flex-shrink-0" aria-hidden />
+              )}
               {preferredCategories.map((cat) => (
                 <span
                   key={cat}
-                  className="flex-shrink-0 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-gold/10 text-gold border border-gold/20"
+                  className={cn(
+                    'flex-shrink-0 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium',
+                    preferenceSource === 'history'
+                      ? 'bg-emerald/10 text-emerald border border-emerald/20'
+                      : 'bg-gold/10 text-gold border border-gold/20'
+                  )}
                 >
                   {cat}
                 </span>
               ))}
+              {/* Recalibrate / calibrate CTA */}
               <Link
                 href="/onboarding"
                 className={cn(
@@ -343,11 +359,21 @@ export function FeedFilters() {
                   'border border-surface-500/40 text-surface-500',
                   'hover:text-surface-300 hover:border-surface-400 transition-all duration-150 ml-1'
                 )}
-                aria-label="Recalibrate your feed preferences"
+                aria-label={
+                  preferenceSource === 'history'
+                    ? 'Take the quiz to personalise your feed further'
+                    : 'Recalibrate your feed preferences'
+                }
               >
-                Recalibrate
+                {preferenceSource === 'history' ? 'Take quiz' : 'Recalibrate'}
               </Link>
             </div>
+          )}
+          {/* History inference notice */}
+          {preferenceSource === 'history' && inferredFromVotes > 0 && (
+            <p className="px-3 pb-1 text-[10px] font-mono text-surface-500">
+              Personalised from {inferredFromVotes} vote{inferredFromVotes !== 1 ? 's' : ''} — take the quiz for better accuracy
+            </p>
           )}
         </div>
       )}

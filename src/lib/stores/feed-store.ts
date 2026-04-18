@@ -19,10 +19,14 @@ interface FeedState {
   feedMode: FeedMode;
   /** How many users the current user follows (set from the API response) */
   followingCount: number;
-  /** Categories from onboarding quiz (set when foryou mode is active) */
+  /** Categories from onboarding quiz or inferred from vote history */
   preferredCategories: string[];
-  /** Whether the user has completed the onboarding calibration quiz */
+  /** Whether there are any usable category preferences */
   hasPreferences: boolean;
+  /** Source: quiz preferences, inferred from vote history, or none */
+  preferenceSource: 'quiz' | 'history' | 'none';
+  /** Number of votes analyzed when inferring from history */
+  inferredFromVotes: number;
   _generation: number;
 
   fetchNextPage: () => Promise<void>;
@@ -49,6 +53,8 @@ export const useFeedStore = create<FeedState>((set, get) => ({
   followingCount: 0,
   preferredCategories: [],
   hasPreferences: true,
+  preferenceSource: 'quiz',
+  inferredFromVotes: 0,
   _generation: 0,
 
   fetchNextPage: async () => {
@@ -136,6 +142,8 @@ export const useFeedStore = create<FeedState>((set, get) => ({
           topics: TopicWithAuthor[];
           preferredCategories: string[];
           hasPreferences: boolean;
+          preferenceSource: 'quiz' | 'history' | 'none';
+          inferredFromVotes: number;
         } = await res.json();
 
         if (get()._generation !== capturedGen) return;
@@ -143,6 +151,8 @@ export const useFeedStore = create<FeedState>((set, get) => ({
         set({
           preferredCategories: json.preferredCategories,
           hasPreferences: json.hasPreferences,
+          preferenceSource: json.preferenceSource ?? 'quiz',
+          inferredFromVotes: json.inferredFromVotes ?? 0,
         });
 
         if (!json.hasPreferences || json.topics.length === 0) {
