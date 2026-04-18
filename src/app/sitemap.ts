@@ -7,15 +7,22 @@ const BASE_URL = 'https://lobby.market'
 const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/`, changeFrequency: 'always', priority: 1.0 },
   { url: `${BASE_URL}/trending`, changeFrequency: 'hourly', priority: 0.9 },
+  { url: `${BASE_URL}/surge`, changeFrequency: 'hourly', priority: 0.85 },
   { url: `${BASE_URL}/split`, changeFrequency: 'hourly', priority: 0.85 },
   { url: `${BASE_URL}/law`, changeFrequency: 'daily', priority: 0.85 },
   { url: `${BASE_URL}/law/graph`, changeFrequency: 'daily', priority: 0.7 },
+  { url: `${BASE_URL}/law/timeline`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/debate`, changeFrequency: 'hourly', priority: 0.8 },
   { url: `${BASE_URL}/floor`, changeFrequency: 'always', priority: 0.75 },
   { url: `${BASE_URL}/leaderboard`, changeFrequency: 'daily', priority: 0.7 },
   { url: `${BASE_URL}/achievements`, changeFrequency: 'weekly', priority: 0.65 },
   { url: `${BASE_URL}/stats`, changeFrequency: 'hourly', priority: 0.65 },
+  { url: `${BASE_URL}/pulse`, changeFrequency: 'always', priority: 0.75 },
+  { url: `${BASE_URL}/arguments`, changeFrequency: 'daily', priority: 0.65 },
+  { url: `${BASE_URL}/predictions`, changeFrequency: 'hourly', priority: 0.7 },
+  { url: `${BASE_URL}/digest`, changeFrequency: 'weekly', priority: 0.65 },
   { url: `${BASE_URL}/topic/categories`, changeFrequency: 'weekly', priority: 0.7 },
+  { url: `${BASE_URL}/topic/graph`, changeFrequency: 'daily', priority: 0.65 },
   // Individual category pages
   ...([
     'economics', 'politics', 'technology', 'science',
@@ -32,6 +39,8 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/guidelines`, changeFrequency: 'monthly', priority: 0.5 },
   { url: `${BASE_URL}/activity`, changeFrequency: 'daily', priority: 0.6 },
   { url: `${BASE_URL}/city`, changeFrequency: 'daily', priority: 0.6 },
+  { url: `${BASE_URL}/coalitions`, changeFrequency: 'daily', priority: 0.6 },
+  { url: `${BASE_URL}/lobby`, changeFrequency: 'daily', priority: 0.6 },
 ]
 
 export const dynamic = 'force-dynamic'

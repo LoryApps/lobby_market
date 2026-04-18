@@ -15,6 +15,12 @@ export const dynamic = 'force-dynamic'
 export const metadata: Metadata = {
   title: 'Saved Topics · Lobby Market',
   description: 'Topics you have bookmarked for later.',
+  openGraph: {
+    title: 'Saved Topics · Lobby Market',
+    description: 'Your bookmarked debates and laws in the Lobby.',
+    type: 'website',
+    siteName: 'Lobby Market',
+  },
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────

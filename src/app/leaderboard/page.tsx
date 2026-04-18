@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Shield, Trophy } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
@@ -7,6 +8,23 @@ import { LeaderboardTabs } from '@/components/leaderboard/LeaderboardTabs'
 import { CoalitionLeaderboard } from '@/components/leaderboard/CoalitionLeaderboard'
 import type { Coalition, Profile, Topic, Vote } from '@/lib/supabase/types'
 import type { LeaderboardCategory, PredictorStats } from '@/components/leaderboard/LeaderboardTabs'
+
+export const metadata: Metadata = {
+  title: 'Leaderboard · Lobby Market',
+  description:
+    'The top voices in the Lobby — ranked by reputation, votes cast, clout earned, and predictive accuracy.',
+  openGraph: {
+    title: 'Leaderboard · Lobby Market',
+    description: 'Who\'s shaping the consensus? See the top voters, lawmakers, and predictors.',
+    type: 'website',
+    siteName: 'Lobby Market',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Leaderboard · Lobby Market',
+    description: 'Top voices in the Lobby ranked by reputation and impact.',
+  },
+}
 
 export const dynamic = 'force-dynamic'
 

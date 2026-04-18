@@ -1,7 +1,25 @@
+import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import { CityViewClient } from '@/components/city/CityViewClient'
 import type { Profile } from '@/lib/supabase/types'
 import { SAMPLE_CITY_USERS } from '@/lib/city/sample-data'
+
+export const metadata: Metadata = {
+  title: 'The City · Lobby Market',
+  description:
+    'Explore the Lobby as a living city — each user is a building on the landscape, sized by reputation and lit by recent activity.',
+  openGraph: {
+    title: 'The City · Lobby Market',
+    description: 'A living 3D city where every building is a voice in the Lobby.',
+    type: 'website',
+    siteName: 'Lobby Market',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'The City · Lobby Market',
+    description: 'A living 3D city where every building is a voice in the Lobby.',
+  },
+}
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
