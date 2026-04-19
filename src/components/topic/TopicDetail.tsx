@@ -6,6 +6,7 @@ import Link from 'next/link'
 import {
   ArrowLeft,
   Calendar,
+  GitCompare,
   Globe,
   Info,
   Megaphone,
@@ -214,6 +215,18 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
           <div className="ml-auto flex items-center gap-2">
             <TopicSubscribeButton topicId={topic.id} />
             <BookmarkButton topicId={topic.id} />
+            <Link
+              href={`/compare?a=${topic.id}`}
+              className={cn(
+                'flex items-center justify-center h-8 w-8 rounded-lg',
+                'bg-surface-200 border border-surface-300 text-surface-500',
+                'hover:bg-surface-300 hover:text-purple transition-colors',
+              )}
+              title="Compare with another topic"
+              aria-label="Compare with another topic"
+            >
+              <GitCompare className="h-3.5 w-3.5" />
+            </Link>
             <SharePanel
               url={typeof window !== 'undefined' ? window.location.href : `/topic/${topic.id}`}
               text={`${topic.statement} — ${Math.round(topic.blue_pct)}% For on Lobby Market`}

@@ -32,6 +32,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
     changeFrequency: 'daily' as const,
     priority: 0.65,
   }))),
+  { url: `${BASE_URL}/compare`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/topic/wiki/recent`, changeFrequency: 'hourly', priority: 0.65 },
   { url: `${BASE_URL}/about`, changeFrequency: 'monthly', priority: 0.6 },
   { url: `${BASE_URL}/developers`, changeFrequency: 'monthly', priority: 0.55 },

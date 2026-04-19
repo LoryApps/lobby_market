@@ -728,6 +728,7 @@ export default async function TrendingPage() {
                 </p>
                 <div className="space-y-0.5">
                   {[
+                    { href: '/compare', label: 'Compare Topics', icon: GitFork },
                     { href: '/surge', label: 'Surge', icon: Flame },
                     { href: '/digest', label: 'Weekly Digest', icon: Calendar },
                     { href: '/split', label: 'The Split', icon: GitFork },
