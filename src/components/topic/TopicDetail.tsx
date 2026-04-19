@@ -39,6 +39,7 @@ import { CoalitionStancePanel } from '@/components/topic/CoalitionStancePanel'
 import { TopicDebatePanel } from '@/components/topic/TopicDebatePanel'
 import { TopicWikiSection } from '@/components/topic/TopicWikiSection'
 import { TopicBacklinks } from '@/components/topic/TopicBacklinks'
+import { TopicSources } from '@/components/topic/TopicSources'
 import { ReportButton } from '@/components/moderation/ReportButton'
 import { SharePanel } from '@/components/ui/SharePanel'
 import { BookmarkButton } from '@/components/ui/BookmarkButton'
@@ -497,6 +498,11 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
 
             {/* Wiki link graph — backlinks & outgoing topic wikilinks */}
             <TopicBacklinks topicId={topic.id} className="mt-4" />
+
+            {/* Pinned sources — factual citations added by topic author/moderators */}
+            <div className="mt-4">
+              <TopicSources topicId={topic.id} topicAuthorId={topic.author_id} />
+            </div>
 
             {/* Topic journey — lifecycle progress stepper */}
             <TopicStatusJourney

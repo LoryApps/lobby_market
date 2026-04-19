@@ -1439,6 +1439,55 @@ export type Database = {
           }
         ];
       };
+      topic_sources: {
+        Row: {
+          id: string;
+          topic_id: string;
+          added_by: string;
+          url: string;
+          title: string;
+          description: string | null;
+          domain: string | null;
+          display_order: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          topic_id: string;
+          added_by: string;
+          url: string;
+          title: string;
+          description?: string | null;
+          display_order?: number;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          topic_id?: string;
+          added_by?: string;
+          url?: string;
+          title?: string;
+          description?: string | null;
+          display_order?: number;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "topic_sources_topic_id_fkey";
+            columns: ["topic_id"];
+            isOneToOne: false;
+            referencedRelation: "topics";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "topic_sources_added_by_fkey";
+            columns: ["added_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
     };
     Views: {
       [_ in never]: never;
