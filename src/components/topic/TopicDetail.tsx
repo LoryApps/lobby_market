@@ -49,7 +49,7 @@ import { cn } from '@/lib/utils/cn'
 import { useVoteStore } from '@/lib/stores/vote-store'
 import { useFeedStore } from '@/lib/stores/feed-store'
 import { getTopicSignal, SIGNAL_PILL_CLASSES } from '@/lib/utils/topic-signal'
-import { Flame, Clock, Gavel, Swords, TrendingUp, Zap } from 'lucide-react'
+import { Clock, Flame, Gavel, Swords, TrendingUp, Zap } from 'lucide-react'
 
 const SIGNAL_ICONS_DETAIL: Record<string, typeof Flame> = {
   ending_soon:     Clock,
@@ -355,13 +355,20 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
                   showLabels
                 />
                 {topic.total_votes > 0 && (
-                  <div className="flex justify-center">
+                  <div className="flex justify-center gap-4">
                     <Link
                       href={`/topic/${topic.id}/voters`}
                       className="inline-flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-white transition-colors"
                     >
                       <Users className="h-3.5 w-3.5" />
                       See who voted
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/timeline`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-white transition-colors"
+                    >
+                      <Clock className="h-3.5 w-3.5" />
+                      View timeline
                     </Link>
                   </div>
                 )}
