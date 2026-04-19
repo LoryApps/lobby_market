@@ -14,6 +14,8 @@ import {
   Lightbulb,
   Loader2,
   Scale,
+  Save,
+  X,
   Zap,
   FileText,
 } from 'lucide-react'
@@ -39,6 +41,7 @@ const CATEGORIES = [
 const SCOPES = ['Global', 'National', 'Regional', 'Local']
 
 const MAX_CHARS = 280
+const DRAFT_KEY = 'lm_topic_draft_v1'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -297,6 +300,8 @@ export default function CreateTopicPage() {
   const [dismissedSimilar, setDismissedSimilar] = useState(false)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const lastQueryRef = useRef('')
+  const [draftRestored, setDraftRestored] = useState(false)
+  const draftSaveRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const charCount = statement.length
   const isOverLimit = charCount > MAX_CHARS
@@ -358,6 +363,51 @@ export default function CreateTopicPage() {
 
   // ── Form handling ────────────────────────────────────────────────────────
 
+  // ── Draft restore on mount ───────────────────────────────────────────────
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY)
+      if (!raw) return
+      const draft = JSON.parse(raw) as {
+        statement?: string; description?: string; category?: string; scope?: string
+      }
+      if (draft.statement?.trim()) {
+        setStatement(draft.statement)
+        setDescription(draft.description ?? '')
+        setCategory(draft.category ?? '')
+        setScope(draft.scope ?? 'Global')
+        setDraftRestored(true)
+      }
+    } catch {
+      // Ignore malformed draft
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ── Auto-save draft ──────────────────────────────────────────────────────
+  useEffect(() => {
+    if (draftSaveRef.current) clearTimeout(draftSaveRef.current)
+    if (!statement.trim() && !description.trim()) return
+    draftSaveRef.current = setTimeout(() => {
+      try {
+        localStorage.setItem(DRAFT_KEY, JSON.stringify({ statement, description, category, scope }))
+      } catch {
+        // localStorage quota exceeded — silently skip
+      }
+    }, 800)
+    return () => {
+      if (draftSaveRef.current) clearTimeout(draftSaveRef.current)
+    }
+  }, [statement, description, category, scope])
+
+  function clearDraft() {
+    try { localStorage.removeItem(DRAFT_KEY) } catch { /* noop */ }
+    setStatement('')
+    setDescription('')
+    setCategory('')
+    setScope('Global')
+    setDraftRestored(false)
+  }
+
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {}
     if (!statement.trim()) {
@@ -402,6 +452,7 @@ export default function CreateTopicPage() {
       }
 
       const topic = await res.json()
+      try { localStorage.removeItem(DRAFT_KEY) } catch { /* noop */ }
       router.push(`/topic/${topic.id}`)
     } catch {
       setErrors({ form: 'Something went wrong. Please try again.' })
@@ -441,6 +492,36 @@ export default function CreateTopicPage() {
               Propose a binary statement for the community to debate and vote on.
             </p>
           </div>
+
+          {/* Draft restored banner */}
+          <AnimatePresence>
+            {draftRestored && (
+              <motion.div
+                key="draft-banner"
+                initial={{ opacity: 0, y: -6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.2 }}
+                className="flex items-center justify-between gap-3 rounded-xl border border-gold/30 bg-gold/5 px-4 py-3"
+              >
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <Save className="h-4 w-4 text-gold flex-shrink-0" aria-hidden="true" />
+                  <p className="text-sm font-mono text-surface-300 truncate">
+                    Draft restored from your last session.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={clearDraft}
+                  aria-label="Clear draft"
+                  className="flex items-center gap-1 text-xs font-mono text-surface-500 hover:text-against-400 transition-colors flex-shrink-0"
+                >
+                  <X className="h-3.5 w-3.5" />
+                  Clear
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Form-level error */}
           {errors.form && (
