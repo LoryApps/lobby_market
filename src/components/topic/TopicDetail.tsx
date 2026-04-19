@@ -152,6 +152,16 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
     }
   }, [topic.id, updateTopic])
 
+  // Record a view once per topic per browser session (best-effort, non-blocking)
+  useEffect(() => {
+    const key = `lm_viewed_${topic.id}`
+    if (typeof sessionStorage !== 'undefined' && !sessionStorage.getItem(key)) {
+      sessionStorage.setItem(key, '1')
+      fetch(`/api/topics/${topic.id}/view`, { method: 'POST' }).catch(() => {})
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [topic.id])
+
   const handleVote = async (side: VoteSide) => {
     // Optimistic update
     const isBlue = side === 'blue'

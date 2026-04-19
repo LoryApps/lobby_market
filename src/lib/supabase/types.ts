@@ -1444,6 +1444,10 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      increment_topic_view: {
+        Args: { topic_uuid: string };
+        Returns: undefined;
+      };
       refresh_topic_prediction_stats: {
         Args: { p_topic_id: string };
         Returns: undefined;
