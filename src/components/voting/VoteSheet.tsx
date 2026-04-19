@@ -10,16 +10,28 @@
  *   - Live FOR / AGAINST percentage bar
  *   - Vote count + optional deadline countdown
  *   - Large thumb-friendly FOR / AGAINST buttons
- *   - Post-vote confirmation state before the sheet closes
+ *   - Post-vote confirmation state with related-topic nudges
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react'
+import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
-import { CheckCircle2, ThumbsDown, ThumbsUp, Timer } from 'lucide-react'
+import { ArrowRight, CheckCircle2, Compass, ThumbsDown, ThumbsUp, Timer } from 'lucide-react'
 import { BottomSheet } from '@/components/ui/BottomSheet'
 import { StanceShareButton } from '@/components/voting/StanceShareButton'
 import { cn } from '@/lib/utils/cn'
 import type { Topic, VoteSide } from '@/lib/supabase/types'
+
+// ─── Related topic type (matches /api/topics/[id]/related response) ──────────
+
+interface RelatedTopic {
+  id: string
+  statement: string
+  category: string | null
+  status: string
+  blue_pct: number
+  total_votes: number
+}
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
@@ -91,6 +103,44 @@ function VoteCountdown({ endsAt }: { endsAt: string }) {
   )
 }
 
+// ─── Compact related-topic chip ───────────────────────────────────────────────
+
+function RelatedChip({ topic, onClose }: { topic: RelatedTopic; onClose: () => void }) {
+  const forPct = Math.round(topic.blue_pct ?? 50)
+  const isVoting = topic.status === 'voting'
+  const isLaw = topic.status === 'law'
+
+  return (
+    <Link
+      href={`/topic/${topic.id}`}
+      onClick={onClose}
+      className={cn(
+        'flex items-center gap-3 rounded-xl border px-3 py-2.5 transition-colors',
+        'bg-surface-200/60 border-surface-300 hover:border-surface-400 hover:bg-surface-200',
+        'group'
+      )}
+    >
+      {/* Mini vote bar */}
+      <div className="flex-shrink-0 w-1 h-8 rounded-full overflow-hidden bg-surface-300">
+        <div
+          className={cn(
+            'w-full rounded-full transition-all',
+            isLaw ? 'bg-gold' : isVoting ? 'bg-purple' : 'bg-for-500'
+          )}
+          style={{ height: `${forPct}%` }}
+        />
+      </div>
+
+      {/* Statement */}
+      <p className="flex-1 text-[11px] font-mono text-surface-400 group-hover:text-surface-200 line-clamp-2 leading-relaxed transition-colors">
+        {topic.statement}
+      </p>
+
+      <ArrowRight className="flex-shrink-0 h-3 w-3 text-surface-600 group-hover:text-surface-400 transition-colors" aria-hidden="true" />
+    </Link>
+  )
+}
+
 // ─── Confirmed state ──────────────────────────────────────────────────────────
 
 function VoteConfirmed({
@@ -102,21 +152,47 @@ function VoteConfirmed({
   topic: Topic
   onClose: () => void
 }) {
-  // Auto-close after 3.5 s — slightly longer so users have time to share
-  useEffect(() => {
-    const t = setTimeout(onClose, 3500)
-    return () => clearTimeout(t)
-  }, [onClose])
+  const [related, setRelated] = useState<RelatedTopic[]>([])
+  const [loadingRelated, setLoadingRelated] = useState(true)
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const isFor = side === 'blue'
+
+  // Fetch related topics in the background
+  useEffect(() => {
+    let cancelled = false
+    fetch(`/api/topics/${topic.id}/related`)
+      .then((res) => (res.ok ? res.json() : { topics: [] }))
+      .then((data) => {
+        if (!cancelled) {
+          setRelated((data.topics ?? []).slice(0, 3))
+        }
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (!cancelled) setLoadingRelated(false)
+      })
+    return () => { cancelled = true }
+  }, [topic.id])
+
+  // Auto-close: 5 s normally; if related topics arrive, extend to 10 s
+  useEffect(() => {
+    if (timerRef.current) clearTimeout(timerRef.current)
+    const delay = !loadingRelated && related.length > 0 ? 10_000 : 5_000
+    timerRef.current = setTimeout(onClose, delay)
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current)
+    }
+  }, [onClose, loadingRelated, related.length])
 
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ type: 'spring', stiffness: 300, damping: 24 }}
-      className="flex flex-col items-center justify-center py-8 gap-5"
+      className="flex flex-col items-center py-6 gap-5 w-full"
     >
+      {/* Confirmation icon */}
       <div
         className={cn(
           'flex items-center justify-center h-16 w-16 rounded-full',
@@ -127,8 +203,10 @@ function VoteConfirmed({
       >
         <CheckCircle2
           className={cn('h-8 w-8', isFor ? 'text-for-400' : 'text-against-400')}
+          aria-hidden="true"
         />
       </div>
+
       <div className="text-center">
         <p className="text-white font-bold font-mono text-lg">
           Voted {isFor ? 'FOR' : 'AGAINST'}
@@ -137,6 +215,7 @@ function VoteConfirmed({
           Your vote is on the record.
         </p>
       </div>
+
       {/* Share stance CTA */}
       <StanceShareButton
         topicId={topic.id}
@@ -146,6 +225,30 @@ function VoteConfirmed({
         totalVotes={topic.total_votes}
         category={topic.category}
       />
+
+      {/* ── Related topics nudge ─────────────────────────────────────────── */}
+      <AnimatePresence>
+        {!loadingRelated && related.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
+            className="w-full space-y-2"
+          >
+            <div className="flex items-center gap-2 px-0.5">
+              <Compass className="h-3 w-3 text-surface-500 flex-shrink-0" aria-hidden="true" />
+              <span className="text-[10px] font-mono uppercase tracking-widest text-surface-500">
+                Keep exploring
+              </span>
+            </div>
+            <div className="space-y-1.5">
+              {related.map((t) => (
+                <RelatedChip key={t.id} topic={t} onClose={onClose} />
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   )
 }
