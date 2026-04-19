@@ -15,7 +15,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { Activity, ArrowRight, Gavel, Mic, Scale, Zap } from 'lucide-react'
+import { Activity, ArrowRight, Gavel, Mic, Scale, Vote, Zap } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber'
 
@@ -23,6 +23,7 @@ import { AnimatedNumber } from '@/components/ui/AnimatedNumber'
 
 interface InsightData {
   activeTopics: number
+  votingTopics: number
   lawsEstablished: number
   liveDebates: number
   totalVotes: number
@@ -52,6 +53,7 @@ async function fetchInsights(): Promise<InsightData | null> {
 
     _cached = {
       activeTopics: stats.activeTopics ?? 0,
+      votingTopics: stats.votingTopics ?? 0,
       lawsEstablished: stats.lawsEstablished ?? 0,
       liveDebates,
       totalVotes: stats.totalVotes ?? 0,
@@ -179,6 +181,17 @@ export function FeedInsightStrip({ groupIndex }: FeedInsightStripProps) {
               color="bg-gold/10 border-gold/25 text-gold hover:bg-gold/15 hover:border-gold/40"
             />
           </div>
+          {data.votingTopics > 0 && (
+            <div role="listitem">
+              <StatPill
+                icon={Vote}
+                value={data.votingTopics}
+                label="in senate"
+                href="/senate"
+                color="bg-purple/10 border-purple/25 text-purple hover:bg-purple/15 hover:border-purple/40"
+              />
+            </div>
+          )}
           {data.liveDebates > 0 && (
             <div role="listitem">
               <StatPill

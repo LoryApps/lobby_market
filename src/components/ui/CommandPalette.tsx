@@ -58,6 +58,7 @@ import {
   Coins,
   Megaphone,
   Clock,
+  Vote,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -166,6 +167,16 @@ const QUICK_LINKS: QuickLink[] = [
     icon: Flame,
     iconColor: 'text-for-300',
     iconBg: 'bg-for-600/15',
+  },
+  {
+    type: 'link',
+    id: 'senate',
+    label: 'The Senate',
+    sublabel: 'Topics in final vote — deadlines approaching',
+    href: '/senate',
+    icon: Vote,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
   },
   {
     type: 'link',
