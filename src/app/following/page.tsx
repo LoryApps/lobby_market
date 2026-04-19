@@ -1,29 +1,29 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { Bell, Bookmark, BookmarkX, Compass, TrendingUp } from 'lucide-react'
+import { Bell, BellOff, Compass, TrendingUp } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { Badge } from '@/components/ui/Badge'
-import { BookmarkButton } from '@/components/ui/BookmarkButton'
 import { EmptyState } from '@/components/ui/EmptyState'
+import { TopicSubscribeButton } from '@/components/topic/TopicSubscribeButton'
 import type { Topic } from '@/lib/supabase/types'
 
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'Saved Topics · Lobby Market',
-  description: 'Topics you have bookmarked for later.',
+  title: 'Following · Lobby Market',
+  description: 'Debates you are following — get notified when they activate, enter voting, or become law.',
   openGraph: {
-    title: 'Saved Topics · Lobby Market',
-    description: 'Your bookmarked debates and laws in the Lobby.',
+    title: 'Following · Lobby Market',
+    description: 'Track the debates you care about most.',
     type: 'website',
     siteName: 'Lobby Market',
   },
 }
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function relativeTime(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime()
@@ -57,14 +57,14 @@ const STATUS_BADGE: Record<string, 'proposed' | 'active' | 'law' | 'failed'> = {
   archived: 'proposed',
 }
 
-// ─── Saved topic row ──────────────────────────────────────────────────────────
+// ─── Following topic row ──────────────────────────────────────────────────────
 
-function SavedTopicRow({
+function FollowingTopicRow({
   topic,
-  savedAt,
+  followedAt,
 }: {
   topic: Topic
-  savedAt: string
+  followedAt: string
 }) {
   const forPct = Math.round(topic.blue_pct ?? 50)
   const againstPct = 100 - forPct
@@ -76,14 +76,8 @@ function SavedTopicRow({
         className="absolute left-0 top-4 bottom-4 w-1 rounded-full overflow-hidden"
         aria-hidden="true"
       >
-        <div
-          className="absolute inset-0 bg-for-500"
-          style={{ height: `${forPct}%` }}
-        />
-        <div
-          className="absolute bottom-0 inset-x-0 bg-against-500"
-          style={{ height: `${againstPct}%` }}
-        />
+        <div className="absolute inset-0 bg-for-500" style={{ height: `${forPct}%` }} />
+        <div className="absolute bottom-0 inset-x-0 bg-against-500" style={{ height: `${againstPct}%` }} />
       </div>
 
       {/* Content */}
@@ -107,7 +101,6 @@ function SavedTopicRow({
         </Link>
 
         <div className="mt-3 flex items-center gap-4 text-xs text-surface-500 font-mono flex-wrap">
-          {/* Vote split */}
           <span className="flex items-center gap-1.5">
             <span className="text-for-400 font-semibold">{forPct}%</span>
             <span className="text-surface-600">FOR</span>
@@ -115,15 +108,13 @@ function SavedTopicRow({
             <span className="text-against-400 font-semibold">{againstPct}%</span>
             <span className="text-surface-600">AGAINST</span>
           </span>
-
           {topic.total_votes > 0 && (
             <span className="flex items-center gap-1">
               <TrendingUp className="h-3 w-3" />
               {topic.total_votes.toLocaleString()} votes
             </span>
           )}
-
-          <span>Saved {relativeTime(savedAt)}</span>
+          <span>Following since {relativeTime(followedAt)}</span>
         </div>
 
         {/* Inline vote bar */}
@@ -139,9 +130,9 @@ function SavedTopicRow({
         </div>
       </div>
 
-      {/* Bookmark toggle — remove from saved */}
+      {/* Unsubscribe toggle */}
       <div className="flex-shrink-0">
-        <BookmarkButton topicId={topic.id} size="sm" />
+        <TopicSubscribeButton topicId={topic.id} size="sm" />
       </div>
     </div>
   )
@@ -149,15 +140,15 @@ function SavedTopicRow({
 
 // ─── Empty state ──────────────────────────────────────────────────────────────
 
-function SavedEmptyState() {
+function FollowingEmptyState() {
   return (
     <EmptyState
-      icon={BookmarkX}
-      iconColor="text-gold/60"
-      iconBg="bg-gold/10"
-      iconBorder="border-gold/20"
-      title="No saved topics yet"
-      description="Tap the bookmark icon on any topic to save it here. Come back to track how it progresses toward becoming law."
+      icon={BellOff}
+      iconColor="text-for-400/60"
+      iconBg="bg-for-600/10"
+      iconBorder="border-for-500/20"
+      title="Not following any debates yet"
+      description="Tap the bell icon on any topic to follow it. You'll get notified when it activates, enters voting, or becomes law."
       actions={[
         { label: 'Browse the Feed', href: '/', icon: Compass },
         { label: 'Trending Now', href: '/trending', icon: TrendingUp, variant: 'secondary' },
@@ -169,7 +160,7 @@ function SavedEmptyState() {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
-export default async function SavedTopicsPage() {
+export default async function FollowingPage() {
   const supabase = await createClient()
 
   const {
@@ -180,18 +171,18 @@ export default async function SavedTopicsPage() {
     redirect('/login')
   }
 
-  // Step 1: fetch bookmark rows (ordered by save time)
-  const { data: bookmarkRows } = await supabase
-    .from('topic_bookmarks')
+  // Fetch subscription rows
+  const { data: subRows } = await supabase
+    .from('topic_subscriptions')
     .select('topic_id, created_at')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
     .limit(100)
 
-  const savedRows = bookmarkRows ?? []
-  const topicIds = savedRows.map((r) => r.topic_id)
+  const rows = subRows ?? []
+  const topicIds = rows.map((r) => r.topic_id)
 
-  // Step 2: fetch topics by IDs (only if there are any bookmarks)
+  // Fetch topic details
   const topicMap: Record<string, Topic> = {}
   if (topicIds.length > 0) {
     const { data: topicRows } = await supabase
@@ -203,10 +194,13 @@ export default async function SavedTopicsPage() {
     }
   }
 
-  // Build ordered list preserving bookmark creation order
-  const items: Array<{ topic: Topic; savedAt: string }> = savedRows
+  const items: Array<{ topic: Topic; followedAt: string }> = rows
     .filter((r) => topicMap[r.topic_id] !== undefined)
-    .map((r) => ({ topic: topicMap[r.topic_id], savedAt: r.created_at }))
+    .map((r) => ({ topic: topicMap[r.topic_id], followedAt: r.created_at }))
+
+  // Separate active/voting topics from completed ones for better UX
+  const active = items.filter((i) => ['proposed', 'active', 'voting'].includes(i.topic.status))
+  const completed = items.filter((i) => ['law', 'failed', 'continued', 'archived'].includes(i.topic.status))
 
   return (
     <div className="min-h-screen bg-surface-50">
@@ -215,36 +209,62 @@ export default async function SavedTopicsPage() {
         {/* Header */}
         <div className="mb-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center h-11 w-11 rounded-xl bg-gold/10 border border-gold/20">
-              <Bookmark className="h-5 w-5 text-gold" aria-hidden="true" />
+            <div className="flex items-center justify-center h-11 w-11 rounded-xl bg-for-600/10 border border-for-500/20">
+              <Bell className="h-5 w-5 text-for-400" aria-hidden="true" />
             </div>
             <div>
               <h1 className="font-mono text-2xl font-bold text-white">
-                Saved Topics
+                Following
               </h1>
               <p className="text-sm font-mono text-surface-500 mt-0.5">
                 {items.length > 0
-                  ? `${items.length} topic${items.length === 1 ? '' : 's'} saved`
-                  : 'Bookmark topics to track them here'}
+                  ? `${items.length} debate${items.length === 1 ? '' : 's'} followed`
+                  : 'Follow debates to track them here'}
               </p>
             </div>
           </div>
+
           <Link
-            href="/following"
-            className="flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-for-300 transition-colors"
+            href="/saved"
+            className="text-xs font-mono text-surface-500 hover:text-white transition-colors"
           >
-            <Bell className="h-3.5 w-3.5" aria-hidden="true" />
-            Following
+            Saved →
           </Link>
         </div>
 
         {items.length === 0 ? (
-          <SavedEmptyState />
+          <FollowingEmptyState />
         ) : (
-          <div className="space-y-3">
-            {items.map(({ topic, savedAt }) => (
-              <SavedTopicRow key={topic.id} topic={topic} savedAt={savedAt} />
-            ))}
+          <div className="space-y-6">
+            {/* Active debates */}
+            {active.length > 0 && (
+              <section>
+                {completed.length > 0 && (
+                  <h2 className="text-xs font-mono uppercase tracking-widest text-surface-500 mb-3 pl-1">
+                    Active debates
+                  </h2>
+                )}
+                <div className="space-y-3">
+                  {active.map(({ topic, followedAt }) => (
+                    <FollowingTopicRow key={topic.id} topic={topic} followedAt={followedAt} />
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Completed debates */}
+            {completed.length > 0 && (
+              <section>
+                <h2 className="text-xs font-mono uppercase tracking-widest text-surface-500 mb-3 pl-1">
+                  Resolved
+                </h2>
+                <div className="space-y-3">
+                  {completed.map(({ topic, followedAt }) => (
+                    <FollowingTopicRow key={topic.id} topic={topic} followedAt={followedAt} />
+                  ))}
+                </div>
+              </section>
+            )}
           </div>
         )}
       </main>

@@ -1282,6 +1282,27 @@ export type Database = {
         };
         Relationships: [];
       };
+      topic_subscriptions: {
+        Row: {
+          id: string;
+          user_id: string;
+          topic_id: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          topic_id: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          topic_id?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       topic_predictions: {
         Row: {
           id: string;

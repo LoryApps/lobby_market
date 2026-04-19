@@ -43,6 +43,7 @@ import { SharePanel } from '@/components/ui/SharePanel'
 import { BookmarkButton } from '@/components/ui/BookmarkButton'
 import { TopicViewers } from '@/components/topic/TopicViewers'
 import { ArgumentSpotlight } from '@/components/topic/ArgumentSpotlight'
+import { TopicSubscribeButton } from '@/components/topic/TopicSubscribeButton'
 import { cn } from '@/lib/utils/cn'
 import { useVoteStore } from '@/lib/stores/vote-store'
 import { useFeedStore } from '@/lib/stores/feed-store'
@@ -211,6 +212,7 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
           {/* Live viewer presence — only shows when >1 person is viewing */}
           <TopicViewers topicId={topic.id} className="ml-3" />
           <div className="ml-auto flex items-center gap-2">
+            <TopicSubscribeButton topicId={topic.id} />
             <BookmarkButton topicId={topic.id} />
             <SharePanel
               url={typeof window !== 'undefined' ? window.location.href : `/topic/${topic.id}`}
