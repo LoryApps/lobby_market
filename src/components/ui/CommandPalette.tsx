@@ -59,6 +59,7 @@ import {
   Megaphone,
   Clock,
   Vote,
+  ArrowUpRight,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -335,6 +336,16 @@ const QUICK_LINKS: QuickLink[] = [
     sublabel: 'Topics gaining critical momentum right now',
     href: '/surge',
     icon: TrendingUp,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-500/10',
+  },
+  {
+    type: 'link',
+    id: 'momentum',
+    label: 'Momentum',
+    sublabel: 'Live vote velocity — which topics are accelerating?',
+    href: '/momentum',
+    icon: ArrowUpRight,
     iconColor: 'text-against-400',
     iconBg: 'bg-against-500/10',
   },
