@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Activity, BarChart2, BookOpen, Coins, Compass, FileText, Flame, HelpCircle, LayoutGrid, LogOut, Scale, Search, Plus, Settings, Sparkles, Target, TrendingUp, User, Zap, ArrowUpRight } from 'lucide-react'
+import { Activity, BarChart2, BookOpen, Coins, Compass, FileText, Flame, HelpCircle, LayoutGrid, LogOut, Network, Scale, Search, Plus, Settings, Sparkles, Target, TrendingUp, User, Zap, ArrowUpRight } from 'lucide-react'
 import { NotificationBell } from '@/components/profile/NotificationBell'
 import { Avatar } from '@/components/ui/Avatar'
 import { openCommandPalette } from '@/lib/hooks/useCommandPalette'
@@ -384,6 +384,15 @@ export function TopBar() {
               >
                 <FileText className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
                 Developer API
+              </Link>
+              <Link
+                href="/widget"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <Network className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
+                Widget Builder
               </Link>
               <div className="border-t border-surface-300" role="separator" />
               <button
