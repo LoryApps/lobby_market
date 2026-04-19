@@ -779,14 +779,39 @@ function ComparePageInner() {
 
 export default function ComparePage() {
   return (
-    <Suspense
-      fallback={
-        <div className="min-h-screen bg-surface-50 flex items-center justify-center">
-          <Loader2 className="h-6 w-6 animate-spin text-surface-500" />
-        </div>
-      }
-    >
+    <Suspense fallback={<CompareSkeleton />}>
       <ComparePageInner />
     </Suspense>
+  )
+}
+
+function CompareSkeleton() {
+  return (
+    <div className="min-h-screen bg-surface-50">
+      <TopBar />
+      <main className="max-w-5xl mx-auto px-4 py-8 pb-24 md:pb-12">
+        <div className="mb-8 flex items-center gap-3">
+          <div className="h-11 w-11 rounded-xl bg-surface-300 animate-pulse flex-shrink-0" />
+          <div className="space-y-2">
+            <div className="h-7 w-48 rounded bg-surface-300 animate-pulse" />
+            <div className="h-4 w-72 rounded bg-surface-300 animate-pulse" />
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          {[0, 1].map((i) => (
+            <div key={i} className="rounded-2xl border border-surface-300 bg-surface-100 p-4 space-y-3">
+              <div className="h-5 w-20 rounded bg-surface-300 animate-pulse" />
+              <div className="h-10 w-full rounded-xl bg-surface-300 animate-pulse" />
+              <div className="space-y-2">
+                {[0, 1, 2].map((j) => (
+                  <div key={j} className="h-14 w-full rounded-xl bg-surface-300 animate-pulse" />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </main>
+      <BottomNav />
+    </div>
   )
 }
