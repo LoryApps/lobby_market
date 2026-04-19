@@ -264,25 +264,71 @@ export default async function ProfileUsernamePage({
     }
   })
 
+  const BASE_URL = 'https://lobby.market'
+  const displayName = profile.display_name || profile.username
+
+  const profileStructuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: displayName,
+    alternateName: `@${profile.username}`,
+    url: `${BASE_URL}/profile/${profile.username}`,
+    image: profile.avatar_url ?? undefined,
+    ...(profile.bio ? { description: profile.bio } : {}),
+    ...(profile.social_links && typeof profile.social_links === 'object' ? {
+      sameAs: [
+        (profile.social_links as Record<string, string>).twitter
+          ? `https://twitter.com/${(profile.social_links as Record<string, string>).twitter}`
+          : null,
+        (profile.social_links as Record<string, string>).github
+          ? `https://github.com/${(profile.social_links as Record<string, string>).github}`
+          : null,
+        (profile.social_links as Record<string, string>).website ?? null,
+      ].filter(Boolean),
+    } : {}),
+    memberOf: { '@type': 'Organization', name: 'Lobby Market', url: BASE_URL },
+    interactionStatistic: [
+      {
+        '@type': 'InteractionCounter',
+        interactionType: { '@type': 'VoteAction' },
+        userInteractionCount: profile.total_votes ?? 0,
+      },
+    ],
+    breadcrumb: {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Lobby Market', item: BASE_URL },
+        { '@type': 'ListItem', position: 2, name: 'Citizens', item: `${BASE_URL}/leaderboard` },
+        { '@type': 'ListItem', position: 3, name: displayName, item: `${BASE_URL}/profile/${profile.username}` },
+      ],
+    },
+  }
+
   return (
-    <div className="min-h-screen bg-surface-50">
-      <TopBar />
-      <main className="px-4 py-6 pb-24 md:pb-12">
-        <ProfilePage
-          profile={profile}
-          isOwner={isOwner}
-          voteHistory={voteHistory}
-          topics={topics}
-          laws={laws}
-          allAchievements={allAchievements}
-          earnedAchievementIds={earnedAchievementIds}
-          profileArguments={profileArguments}
-          initialFollowing={initialFollowing}
-          viewerId={user?.id ?? null}
-          voteCategoryBreakdown={voteCategoryBreakdown}
-        />
-      </main>
-      <BottomNav />
-    </div>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(profileStructuredData) }}
+      />
+      <div className="min-h-screen bg-surface-50">
+        <TopBar />
+        <main className="px-4 py-6 pb-24 md:pb-12">
+          <ProfilePage
+            profile={profile}
+            isOwner={isOwner}
+            voteHistory={voteHistory}
+            topics={topics}
+            laws={laws}
+            allAchievements={allAchievements}
+            earnedAchievementIds={earnedAchievementIds}
+            profileArguments={profileArguments}
+            initialFollowing={initialFollowing}
+            viewerId={user?.id ?? null}
+            voteCategoryBreakdown={voteCategoryBreakdown}
+          />
+        </main>
+        <BottomNav />
+      </div>
+    </>
   )
 }

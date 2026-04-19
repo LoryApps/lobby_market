@@ -193,12 +193,63 @@ export default async function DebatePage({ params }: DebatePageProps) {
     creator,
   }
 
+  const BASE_URL = 'https://lobby.market'
+
+  const EVENT_STATUS_MAP: Record<string, string> = {
+    scheduled: 'https://schema.org/EventScheduled',
+    live: 'https://schema.org/EventLive',
+    ended: 'https://schema.org/EventCompleted',
+    cancelled: 'https://schema.org/EventCancelled',
+  }
+
+  const typedDebate = debate as Debate
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'Event',
+    name: typedDebate.title ?? 'Lobby Market Debate',
+    ...(typedDebate.description ? { description: typedDebate.description } : {}),
+    ...(typedDebate.scheduled_at ? { startDate: typedDebate.scheduled_at } : {}),
+    eventStatus: EVENT_STATUS_MAP[typedDebate.status] ?? 'https://schema.org/EventScheduled',
+    eventAttendanceMode: 'https://schema.org/OnlineEventAttendanceMode',
+    url: `${BASE_URL}/debate/${params.id}`,
+    organizer: {
+      '@type': 'Organization',
+      name: 'Lobby Market',
+      url: BASE_URL,
+    },
+    ...(topic ? {
+      about: { '@type': 'Thing', name: topic.statement },
+      keywords: [topic.category, 'debate', 'civic discussion'].filter(Boolean).join(', '),
+    } : {}),
+    ...(participants.length > 0 ? {
+      performer: participants.slice(0, 4).map((p) => ({
+        '@type': 'Person',
+        name: p.profile?.display_name ?? p.profile?.username ?? 'Participant',
+        url: p.profile?.username ? `${BASE_URL}/profile/${p.profile.username}` : undefined,
+      })),
+    } : {}),
+    breadcrumb: {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Lobby Market', item: BASE_URL },
+        { '@type': 'ListItem', position: 2, name: 'Debates', item: `${BASE_URL}/debate` },
+        { '@type': 'ListItem', position: 3, name: typedDebate.title ?? 'Debate', item: `${BASE_URL}/debate/${params.id}` },
+      ],
+    },
+  }
+
   return (
-    <DebateArena
-      initialDebate={debateWithTopic}
-      initialParticipants={participants}
-      initialMessages={messages}
-      currentUserId={currentUserRes.data.user?.id ?? null}
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      <DebateArena
+        initialDebate={debateWithTopic}
+        initialParticipants={participants}
+        initialMessages={messages}
+        currentUserId={currentUserRes.data.user?.id ?? null}
+      />
+    </>
   )
 }

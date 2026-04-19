@@ -63,6 +63,32 @@ export const viewport: Viewport = {
   colorScheme: 'dark',
 }
 
+const WEBSITE_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Lobby Market',
+  url: 'https://lobby.market',
+  description: 'Write the law. Build the consensus. A platform where ideas compete, votes decide, and the best arguments become law.',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: {
+      '@type': 'EntryPoint',
+      urlTemplate: 'https://lobby.market/search?q={search_term_string}',
+    },
+    'query-input': 'required name=search_term_string',
+  },
+}
+
+const ORGANIZATION_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Lobby Market',
+  url: 'https://lobby.market',
+  logo: 'https://lobby.market/assets/logo-mark.png',
+  sameAs: [],
+  description: 'A consensus-building platform where ideas compete, votes decide, and the best arguments become law.',
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -75,6 +101,11 @@ export default function RootLayout({
             round-trip overhead when the first authenticated request fires. */}
         <link rel="preconnect" href="https://jysabvbfruvyhbqdhnmh.supabase.co" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://jysabvbfruvyhbqdhnmh.supabase.co" />
+        {/* Sitewide structured data — WebSite + Organization */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify([WEBSITE_SCHEMA, ORGANIZATION_SCHEMA]) }}
+        />
       </head>
       <body
         className="font-sans bg-surface-50 text-surface-700 min-h-screen antialiased"
