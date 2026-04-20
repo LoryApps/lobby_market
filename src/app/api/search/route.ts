@@ -2,17 +2,18 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
 /**
- * GET /api/search?q=<query>&tab=topics|laws|people&category=<cat>&status=<status>
+ * GET /api/search?q=<query>&tab=topics|laws|people|arguments&category=<cat>&status=<status>&side=for|against
  *
  * Uses PostgreSQL full-text search (websearch_to_tsquery) via the `fts`
- * generated tsvector columns added in migration 00014_fts_indexes.sql.
+ * generated tsvector columns added in migrations 00014 and 00035.
  *
  * Falls back to ILIKE if full-text search returns zero results or the fts
  * column is not yet available (migration hasn't run).
  *
- * Optional filters (topics & laws tabs):
- *   category — exact match on topics.category / laws.category
- *   status   — exact match on topics.status (topics tab only)
+ * Optional filters:
+ *   category — topics & laws: exact match on category
+ *   status   — topics tab only: exact match on status
+ *   side     — arguments tab: 'for' (blue) or 'against' (red)
  */
 
 const VALID_STATUSES = ['proposed', 'active', 'voting', 'law', 'failed'] as const
@@ -20,6 +21,7 @@ const VALID_CATEGORIES = [
   'Economics', 'Politics', 'Technology', 'Science', 'Ethics',
   'Philosophy', 'Culture', 'Health', 'Environment', 'Education',
 ] as const
+const VALID_SIDES = ['for', 'against'] as const
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
@@ -27,6 +29,7 @@ export async function GET(request: NextRequest) {
   const tab = searchParams.get('tab') ?? 'topics'
   const rawCategory = searchParams.get('category')?.trim() ?? ''
   const rawStatus   = searchParams.get('status')?.trim() ?? ''
+  const rawSide     = searchParams.get('side')?.trim() ?? ''
 
   type TopicStatus = 'proposed' | 'active' | 'voting' | 'continued' | 'law' | 'failed' | 'archived'
 
@@ -35,6 +38,7 @@ export async function GET(request: NextRequest) {
   const status: TopicStatus | null = (VALID_STATUSES as readonly string[]).includes(rawStatus)
     ? (rawStatus as TopicStatus)
     : null
+  const side = (VALID_SIDES as readonly string[]).includes(rawSide) ? rawSide : null
 
   if (!q || q.length < 2) {
     return NextResponse.json({ results: [] })
@@ -139,6 +143,67 @@ export async function GET(request: NextRequest) {
       .or(`username.ilike.${pattern},display_name.ilike.${pattern}`)
       .order('reputation_score', { ascending: false })
       .limit(20)
+
+    if (error) {
+      return NextResponse.json({ error: 'Search failed' }, { status: 500 })
+    }
+    return NextResponse.json({ results: data ?? [], engine: 'ilike' })
+  }
+
+  // ── Arguments ────────────────────────────────────────────────────────────────
+  // Searches topic_arguments.content joined with topics (for context) and
+  // profiles (for author info).  Supports optional side filter (blue/red).
+
+  if (tab === 'arguments') {
+    const dbSide = side === 'for' ? 'blue' : side === 'against' ? 'red' : null
+
+    // Try FTS first (requires migration 00035 to have run).
+    try {
+      let ftsQ = supabase
+        .from('topic_arguments')
+        .select(`
+          id,
+          content,
+          side,
+          upvotes,
+          created_at,
+          topic:topics!topic_id(id, statement, category, status),
+          author:profiles!user_id(id, username, display_name, avatar_url, role)
+        `)
+        .textSearch('fts', q, { type: 'websearch', config: 'english' })
+        .order('upvotes', { ascending: false })
+        .limit(20)
+
+      if (dbSide) ftsQ = ftsQ.eq('side', dbSide)
+
+      const { data: ftsData, error: ftsError } = await ftsQ
+
+      if (!ftsError && ftsData && ftsData.length > 0) {
+        return NextResponse.json({ results: ftsData, engine: 'fts' })
+      }
+    } catch {
+      // FTS column not yet available — fall through to ILIKE
+    }
+
+    // ILIKE fallback
+    let ilikeQ = supabase
+      .from('topic_arguments')
+      .select(`
+        id,
+        content,
+        side,
+        upvotes,
+        created_at,
+        topic:topics!topic_id(id, statement, category, status),
+        author:profiles!user_id(id, username, display_name, avatar_url, role)
+      `)
+      .ilike('content', pattern)
+      .order('upvotes', { ascending: false })
+      .limit(20)
+
+    if (dbSide) ilikeQ = ilikeQ.eq('side', dbSide)
+
+    const { data, error } = await ilikeQ
 
     if (error) {
       return NextResponse.json({ error: 'Search failed' }, { status: 500 })

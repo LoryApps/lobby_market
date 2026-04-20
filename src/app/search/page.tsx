@@ -20,6 +20,9 @@ import {
   Check,
   SlidersHorizontal,
   ChevronDown,
+  MessageSquare,
+  ThumbsUp,
+  ThumbsDown,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -40,7 +43,7 @@ const SEARCH_SIGNAL_ICONS: Record<string, typeof TrendingUp> = {
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type Tab = 'topics' | 'laws' | 'people'
+type Tab = 'topics' | 'laws' | 'people' | 'arguments'
 
 interface TopicResult {
   id: string
@@ -73,6 +76,27 @@ interface PersonResult {
   reputation_score: number
 }
 
+interface ArgumentResult {
+  id: string
+  content: string
+  side: 'blue' | 'red'
+  upvotes: number
+  created_at: string
+  topic: {
+    id: string
+    statement: string
+    category: string | null
+    status: string
+  } | null
+  author: {
+    id: string
+    username: string
+    display_name: string | null
+    avatar_url: string | null
+    role: string
+  } | null
+}
+
 interface SuggestedUser {
   id: string
   username: string
@@ -91,7 +115,7 @@ interface TrendingData {
   recentLaws: { id: string; statement: string; category: string | null; established_at: string }[]
 }
 
-type SearchResult = TopicResult | LawResult | PersonResult
+type SearchResult = TopicResult | LawResult | PersonResult | ArgumentResult
 
 // ─── Config ───────────────────────────────────────────────────────────────────
 
@@ -99,9 +123,10 @@ const RECENT_KEY = 'lm_recent_searches'
 const MAX_RECENT = 8
 
 const tabs: { id: Tab; label: string; icon: typeof FileText }[] = [
-  { id: 'topics', label: 'Topics', icon: FileText },
-  { id: 'laws', label: 'Laws', icon: Scale },
-  { id: 'people', label: 'People', icon: Users },
+  { id: 'topics',    label: 'Topics',    icon: FileText },
+  { id: 'laws',      label: 'Laws',      icon: Scale },
+  { id: 'people',    label: 'People',    icon: Users },
+  { id: 'arguments', label: 'Arguments', icon: MessageSquare },
 ]
 
 const statusBadge: Record<string, 'proposed' | 'active' | 'law' | 'failed'> = {
@@ -169,21 +194,27 @@ const STATUS_FILTER_COLORS: Record<StatusFilterValue, { active: string; inactive
 
 // ─── Search filter bar ────────────────────────────────────────────────────────
 
+type SideFilterValue = 'for' | 'against'
+
 function SearchFilters({
   tab,
   categoryFilter,
   statusFilter,
+  sideFilter,
   onCategory,
   onStatus,
+  onSide,
 }: {
   tab: Tab
   categoryFilter: string | null
   statusFilter: StatusFilterValue | null
+  sideFilter: SideFilterValue | null
   onCategory: (c: string | null) => void
   onStatus: (s: StatusFilterValue | null) => void
+  onSide: (s: SideFilterValue | null) => void
 }) {
   const [categoryOpen, setCategoryOpen] = useState(false)
-  const hasFilters = categoryFilter !== null || statusFilter !== null
+  const hasFilters = categoryFilter !== null || statusFilter !== null || sideFilter !== null
 
   if (tab === 'people') return null
 
@@ -194,76 +225,77 @@ function SearchFilters({
         <span>Filter</span>
       </div>
 
-      {/* Category picker */}
-      <div className="relative">
-        <button
-          onClick={() => setCategoryOpen((o) => !o)}
-          aria-expanded={categoryOpen}
-          aria-haspopup="listbox"
-          className={cn(
-            'flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs font-mono transition-colors',
-            categoryFilter
-              ? (() => {
-                  const s = getCategoryStyle(categoryFilter)
-                  return `${s.bg} ${s.border} ${s.text}`
-                })()
-              : 'bg-surface-200 border-surface-300 text-surface-500 hover:border-surface-400 hover:text-surface-300'
-          )}
-        >
-          <Tag className="h-3 w-3" aria-hidden="true" />
-          {categoryFilter ?? 'Category'}
-          <ChevronDown className={cn('h-3 w-3 transition-transform', categoryOpen && 'rotate-180')} aria-hidden="true" />
-        </button>
-        {categoryOpen && (
-          <>
-            {/* Dismiss backdrop */}
-            <div
-              className="fixed inset-0 z-10"
-              onClick={() => setCategoryOpen(false)}
-              aria-hidden="true"
-            />
-            <div
-              role="listbox"
-              aria-label="Filter by category"
-              className={cn(
-                'absolute top-full left-0 mt-1 z-20 w-44',
-                'bg-surface-100 border border-surface-300 rounded-xl shadow-xl',
-                'py-1 max-h-64 overflow-y-auto'
-              )}
-            >
-              <button
-                role="option"
-                aria-selected={categoryFilter === null}
-                onClick={() => { onCategory(null); setCategoryOpen(false) }}
+      {/* Category picker — not shown for arguments (filter by topic side instead) */}
+      {tab !== 'arguments' && (
+        <div className="relative">
+          <button
+            onClick={() => setCategoryOpen((o) => !o)}
+            aria-expanded={categoryOpen}
+            aria-haspopup="listbox"
+            className={cn(
+              'flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs font-mono transition-colors',
+              categoryFilter
+                ? (() => {
+                    const s = getCategoryStyle(categoryFilter)
+                    return `${s.bg} ${s.border} ${s.text}`
+                  })()
+                : 'bg-surface-200 border-surface-300 text-surface-500 hover:border-surface-400 hover:text-surface-300'
+            )}
+          >
+            <Tag className="h-3 w-3" aria-hidden="true" />
+            {categoryFilter ?? 'Category'}
+            <ChevronDown className={cn('h-3 w-3 transition-transform', categoryOpen && 'rotate-180')} aria-hidden="true" />
+          </button>
+          {categoryOpen && (
+            <>
+              <div
+                className="fixed inset-0 z-10"
+                onClick={() => setCategoryOpen(false)}
+                aria-hidden="true"
+              />
+              <div
+                role="listbox"
+                aria-label="Filter by category"
                 className={cn(
-                  'w-full text-left px-3 py-2 text-xs font-mono transition-colors',
-                  categoryFilter === null ? 'text-white bg-surface-200' : 'text-surface-500 hover:text-white hover:bg-surface-200'
+                  'absolute top-full left-0 mt-1 z-20 w-44',
+                  'bg-surface-100 border border-surface-300 rounded-xl shadow-xl',
+                  'py-1 max-h-64 overflow-y-auto'
                 )}
               >
-                All categories
-              </button>
-              {CATEGORIES.map((cat) => {
-                const s = getCategoryStyle(cat)
-                return (
-                  <button
-                    key={cat}
-                    role="option"
-                    aria-selected={categoryFilter === cat}
-                    onClick={() => { onCategory(categoryFilter === cat ? null : cat); setCategoryOpen(false) }}
-                    className={cn(
-                      'w-full text-left px-3 py-2 text-xs font-mono transition-colors flex items-center justify-between',
-                      categoryFilter === cat ? `${s.text} bg-surface-200` : `text-surface-500 hover:${s.text} hover:bg-surface-200`
-                    )}
-                  >
-                    {cat}
-                    {categoryFilter === cat && <X className="h-3 w-3" aria-hidden="true" />}
-                  </button>
-                )
-              })}
-            </div>
-          </>
-        )}
-      </div>
+                <button
+                  role="option"
+                  aria-selected={categoryFilter === null}
+                  onClick={() => { onCategory(null); setCategoryOpen(false) }}
+                  className={cn(
+                    'w-full text-left px-3 py-2 text-xs font-mono transition-colors',
+                    categoryFilter === null ? 'text-white bg-surface-200' : 'text-surface-500 hover:text-white hover:bg-surface-200'
+                  )}
+                >
+                  All categories
+                </button>
+                {CATEGORIES.map((cat) => {
+                  const s = getCategoryStyle(cat)
+                  return (
+                    <button
+                      key={cat}
+                      role="option"
+                      aria-selected={categoryFilter === cat}
+                      onClick={() => { onCategory(categoryFilter === cat ? null : cat); setCategoryOpen(false) }}
+                      className={cn(
+                        'w-full text-left px-3 py-2 text-xs font-mono transition-colors flex items-center justify-between',
+                        categoryFilter === cat ? `${s.text} bg-surface-200` : `text-surface-500 hover:${s.text} hover:bg-surface-200`
+                      )}
+                    >
+                      {cat}
+                      {categoryFilter === cat && <X className="h-3 w-3" aria-hidden="true" />}
+                    </button>
+                  )
+                })}
+              </div>
+            </>
+          )}
+        </div>
+      )}
 
       {/* Status filter pills — topics tab only */}
       {tab === 'topics' && (
@@ -289,10 +321,44 @@ function SearchFilters({
         </div>
       )}
 
+      {/* Side filter pills — arguments tab only */}
+      {tab === 'arguments' && (
+        <div className="flex items-center gap-1.5" role="group" aria-label="Filter by side">
+          <button
+            onClick={() => onSide(sideFilter === 'for' ? null : 'for')}
+            aria-pressed={sideFilter === 'for'}
+            className={cn(
+              'flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs font-mono transition-colors',
+              sideFilter === 'for'
+                ? 'bg-for-500/20 border-for-500/60 text-for-300'
+                : 'bg-surface-200 border-surface-300 text-surface-500 hover:border-for-500/40 hover:text-for-400'
+            )}
+          >
+            <ThumbsUp className="h-3 w-3" aria-hidden="true" />
+            FOR
+            {sideFilter === 'for' && <X className="h-2.5 w-2.5" aria-hidden="true" />}
+          </button>
+          <button
+            onClick={() => onSide(sideFilter === 'against' ? null : 'against')}
+            aria-pressed={sideFilter === 'against'}
+            className={cn(
+              'flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs font-mono transition-colors',
+              sideFilter === 'against'
+                ? 'bg-against-500/20 border-against-500/60 text-against-300'
+                : 'bg-surface-200 border-surface-300 text-surface-500 hover:border-against-500/40 hover:text-against-400'
+            )}
+          >
+            <ThumbsDown className="h-3 w-3" aria-hidden="true" />
+            AGAINST
+            {sideFilter === 'against' && <X className="h-2.5 w-2.5" aria-hidden="true" />}
+          </button>
+        </div>
+      )}
+
       {/* Clear all */}
       {hasFilters && (
         <button
-          onClick={() => { onCategory(null); onStatus(null) }}
+          onClick={() => { onCategory(null); onStatus(null); onSide(null) }}
           className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-mono text-surface-500 hover:text-white transition-colors"
           aria-label="Clear all filters"
         >
@@ -449,6 +515,107 @@ function PersonRow({ item }: { item: PersonResult }) {
           <span>{item.clout.toLocaleString()}</span>
         </div>
       </div>
+    </Link>
+  )
+}
+
+// ─── Argument result row ─────────────────────────────────────────────────────
+
+function relativeTime(iso: string): string {
+  const diff = Date.now() - new Date(iso).getTime()
+  const m = Math.floor(diff / 60_000)
+  const h = Math.floor(m / 60)
+  const d = Math.floor(h / 24)
+  if (m < 1) return 'just now'
+  if (m < 60) return `${m}m ago`
+  if (h < 24) return `${h}h ago`
+  if (d < 7) return `${d}d ago`
+  return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+}
+
+function ArgumentRow({ item }: { item: ArgumentResult }) {
+  const isFor = item.side === 'blue'
+  return (
+    <Link
+      href={item.topic ? `/topic/${item.topic.id}` : '#'}
+      className={cn(
+        'block p-4 rounded-xl',
+        'bg-surface-100 border transition-colors group',
+        isFor
+          ? 'border-for-500/20 hover:border-for-500/40'
+          : 'border-against-500/20 hover:border-against-500/40'
+      )}
+    >
+      {/* Side indicator + author */}
+      <div className="flex items-center gap-2 mb-2.5">
+        <span
+          className={cn(
+            'inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-mono font-bold border flex-shrink-0',
+            isFor
+              ? 'bg-for-500/10 border-for-500/30 text-for-400'
+              : 'bg-against-500/10 border-against-500/30 text-against-400'
+          )}
+        >
+          {isFor
+            ? <ThumbsUp className="h-2.5 w-2.5" aria-hidden="true" />
+            : <ThumbsDown className="h-2.5 w-2.5" aria-hidden="true" />
+          }
+          {isFor ? 'FOR' : 'AGAINST'}
+        </span>
+
+        {item.author && (
+          <div className="flex items-center gap-1.5 min-w-0">
+            <Avatar
+              src={item.author.avatar_url}
+              fallback={item.author.display_name || item.author.username}
+              size="xs"
+            />
+            <span className="text-xs text-surface-500 truncate">
+              {item.author.display_name || item.author.username}
+            </span>
+          </div>
+        )}
+
+        <div className="ml-auto flex items-center gap-2 flex-shrink-0">
+          {item.upvotes > 0 && (
+            <div className="flex items-center gap-1 text-xs text-gold">
+              <TrendingUp className="h-3 w-3" aria-hidden="true" />
+              <span>{item.upvotes}</span>
+            </div>
+          )}
+          <span className="text-[10px] font-mono text-surface-600">
+            {relativeTime(item.created_at)}
+          </span>
+        </div>
+      </div>
+
+      {/* Argument content */}
+      <p className={cn(
+        'text-sm leading-relaxed line-clamp-3 mb-2.5',
+        isFor ? 'text-for-200' : 'text-against-200'
+      )}>
+        {item.content}
+      </p>
+
+      {/* Topic context */}
+      {item.topic && (
+        <div className={cn(
+          'flex items-start gap-1.5 rounded-lg px-2.5 py-1.5 border',
+          isFor
+            ? 'bg-for-500/5 border-for-500/15'
+            : 'bg-against-500/5 border-against-500/15'
+        )}>
+          <FileText className="h-3 w-3 text-surface-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
+          <span className="text-[11px] text-surface-500 line-clamp-1 leading-tight">
+            {item.topic.statement}
+          </span>
+          {item.topic.category && (
+            <span className="flex-shrink-0 text-[10px] font-mono text-surface-600 ml-auto pl-2">
+              {item.topic.category}
+            </span>
+          )}
+        </div>
+      )}
     </Link>
   )
 }
@@ -799,7 +966,7 @@ function DiscoveryPanel({
           <div className="h-12 w-12 rounded-xl bg-surface-200 flex items-center justify-center mb-4">
             <Search className="h-5 w-5 text-surface-500" />
           </div>
-          <p className="text-surface-500 text-sm">Start typing to search topics, laws, and people.</p>
+          <p className="text-surface-500 text-sm">Start typing to search topics, laws, people, and arguments.</p>
         </div>
       )}
     </div>
@@ -810,9 +977,10 @@ function DiscoveryPanel({
 
 function EmptyState({ query, tab }: { query: string; tab: Tab }) {
   const messages: Record<Tab, string> = {
-    topics: 'No topics match your search.',
-    laws: 'No laws match your search.',
-    people: 'No people match your search.',
+    topics:    'No topics match your search.',
+    laws:      'No laws match your search.',
+    people:    'No people match your search.',
+    arguments: 'No arguments match your search.',
   }
   return (
     <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
@@ -843,6 +1011,7 @@ function SearchContent() {
   const [activeTab, setActiveTab] = useState<Tab>(initialTab)
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null)
   const [statusFilter, setStatusFilter] = useState<StatusFilterValue | null>(null)
+  const [sideFilter, setSideFilter] = useState<SideFilterValue | null>(null)
   const [results, setResults] = useState<SearchResult[]>([])
   const [loading, setLoading] = useState(false)
   const [discoveryData, setDiscoveryData] = useState<TrendingData | null>(null)
@@ -871,6 +1040,7 @@ function SearchContent() {
     tab: Tab,
     category: string | null,
     status: StatusFilterValue | null,
+    side: SideFilterValue | null,
   ) => {
     if (q.trim().length < 2) {
       setResults([])
@@ -884,6 +1054,7 @@ function SearchContent() {
       })
       if (category) params.set('category', category)
       if (status)   params.set('status', status)
+      if (side)     params.set('side', side)
       const res = await fetch(`/api/search?${params.toString()}`)
       if (res.ok) {
         const { results: data } = await res.json()
@@ -900,7 +1071,7 @@ function SearchContent() {
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current)
     debounceRef.current = setTimeout(() => {
-      fetchResults(query, activeTab, categoryFilter, statusFilter)
+      fetchResults(query, activeTab, categoryFilter, statusFilter, sideFilter)
       const params = new URLSearchParams()
       if (query.trim()) params.set('q', query.trim())
       params.set('tab', activeTab)
@@ -909,13 +1080,14 @@ function SearchContent() {
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current)
     }
-  }, [query, activeTab, categoryFilter, statusFilter, fetchResults, router])
+  }, [query, activeTab, categoryFilter, statusFilter, sideFilter, fetchResults, router])
 
   const handleTabChange = (tab: Tab) => {
     setActiveTab(tab)
     setResults([])
     setCategoryFilter(null)
     setStatusFilter(null)
+    setSideFilter(null)
   }
 
   // Save to recent when query is committed (blur or Enter)
@@ -966,7 +1138,7 @@ function SearchContent() {
               onChange={(e) => setQuery(e.target.value)}
               onBlur={commitQuery}
               onKeyDown={(e) => { if (e.key === 'Enter') { commitQuery(); inputRef.current?.blur() } }}
-              placeholder="Search topics, laws, people..."
+              placeholder="Search topics, laws, people, arguments..."
               aria-label="Search"
               className={cn(
                 'w-full h-10 pl-9 pr-4 rounded-xl',
@@ -1023,8 +1195,10 @@ function SearchContent() {
             tab={activeTab}
             categoryFilter={categoryFilter}
             statusFilter={statusFilter}
+            sideFilter={sideFilter}
             onCategory={setCategoryFilter}
             onStatus={setStatusFilter}
+            onSide={setSideFilter}
           />
         )}
 
@@ -1048,6 +1222,9 @@ function SearchContent() {
                 }
                 if (activeTab === 'laws') {
                   return <LawRow key={item.id} item={item as LawResult} />
+                }
+                if (activeTab === 'arguments') {
+                  return <ArgumentRow key={item.id} item={item as ArgumentResult} />
                 }
                 return <PersonRow key={item.id} item={item as PersonResult} />
               })
