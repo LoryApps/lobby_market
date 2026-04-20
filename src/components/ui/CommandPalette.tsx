@@ -62,6 +62,7 @@ import {
   Vote,
   ArrowUpRight,
   Radio,
+  Globe,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -460,6 +461,16 @@ const QUICK_LINKS: QuickLink[] = [
     icon: Activity,
     iconColor: 'text-for-400',
     iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
+    id: 'discover',
+    label: 'Discover',
+    sublabel: 'Suggested people, hot topics, debates, and new laws',
+    href: '/discover',
+    icon: Globe,
+    iconColor: 'text-for-300',
+    iconBg: 'bg-for-400/10',
   },
 ]
 
