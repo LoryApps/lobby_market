@@ -358,6 +358,15 @@ export function TopBar() {
                 Activity
               </Link>
               <Link
+                href="/network"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <Network className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
+                Your Network
+              </Link>
+              <Link
                 href="/settings"
                 role="menuitem"
                 onClick={() => setMenuOpen(false)}

@@ -451,6 +451,16 @@ const QUICK_LINKS: QuickLink[] = [
     iconColor: 'text-surface-400',
     iconBg: 'bg-surface-300/20',
   },
+  {
+    type: 'link',
+    id: 'network',
+    label: 'Your Network',
+    sublabel: 'Topics and arguments from people you follow',
+    href: '/network',
+    icon: Activity,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
 ]
 
 // Status label / color helpers for topic results
