@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Activity, BarChart2, BookOpen, Coins, Compass, FileText, Flame, HelpCircle, LayoutGrid, LogOut, Network, Scale, Search, Plus, Settings, Sparkles, Target, TrendingUp, User, Zap, ArrowUpRight } from 'lucide-react'
+import { Activity, BarChart2, BookOpen, Coins, Compass, FileText, Flame, Gavel, HelpCircle, LayoutGrid, LogOut, Network, Scale, Search, Plus, Settings, Sparkles, Target, TrendingUp, User, Zap, ArrowUpRight } from 'lucide-react'
 import { NotificationBell } from '@/components/profile/NotificationBell'
 import { Avatar } from '@/components/ui/Avatar'
 import { openCommandPalette } from '@/lib/hooks/useCommandPalette'
@@ -275,6 +275,15 @@ export function TopBar() {
               >
                 <Target className="h-3.5 w-3.5 flex-shrink-0 text-purple" aria-hidden="true" />
                 Predictions
+              </Link>
+              <Link
+                href="/verdicts"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <Gavel className="h-3.5 w-3.5 flex-shrink-0 text-emerald" aria-hidden="true" />
+                The Verdicts
               </Link>
               <Link
                 href="/analytics"
