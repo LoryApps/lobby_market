@@ -7,6 +7,7 @@ import {
   BarChart2,
   Calendar,
   Code2,
+  GitCompare,
   Globe,
   Loader2,
   Settings,
@@ -433,6 +434,14 @@ export function ProfileHeader({
                 recipientName={profile.display_name || profile.username}
               />
             )}
+
+            {/* Compare stances */}
+            <Link href={`/compare-users?b=${encodeURIComponent(profile.username)}`}>
+              <Button variant="default" size="md" title="Compare your stances">
+                <GitCompare className="h-4 w-4" />
+                Compare
+              </Button>
+            </Link>
           </div>
         )}
       </div>
