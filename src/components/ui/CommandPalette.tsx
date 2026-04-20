@@ -435,6 +435,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'heatmap',
+    label: 'Lobby Heatmap',
+    sublabel: 'Topic density across categories and lifecycle stages',
+    href: '/heatmap',
+    icon: BarChart2,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
     id: 'clout',
     label: 'Clout',
     sublabel: 'Earn, spend, and send Clout to other users',
