@@ -18,6 +18,8 @@ import {
   X,
   UserPlus,
   Check,
+  SlidersHorizontal,
+  ChevronDown,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -138,6 +140,168 @@ const CATEGORY_COLORS: Record<string, { text: string; bg: string; border: string
 
 function getCategoryStyle(cat: string) {
   return CATEGORY_COLORS[cat] ?? { text: 'text-surface-500', bg: 'bg-surface-300/40', border: 'border-surface-400/40' }
+}
+
+// ─── Filter config ────────────────────────────────────────────────────────────
+
+const CATEGORIES = [
+  'Economics', 'Politics', 'Technology', 'Science', 'Ethics',
+  'Philosophy', 'Culture', 'Health', 'Environment', 'Education',
+] as const
+
+type StatusFilterValue = 'proposed' | 'active' | 'voting' | 'law' | 'failed'
+
+const STATUS_FILTERS: { id: StatusFilterValue; label: string }[] = [
+  { id: 'proposed', label: 'Proposed' },
+  { id: 'active',   label: 'Active' },
+  { id: 'voting',   label: 'Voting' },
+  { id: 'law',      label: 'Law' },
+  { id: 'failed',   label: 'Failed' },
+]
+
+const STATUS_FILTER_COLORS: Record<StatusFilterValue, { active: string; inactive: string }> = {
+  proposed: { active: 'bg-surface-500/20 border-surface-500/60 text-surface-200',   inactive: 'bg-surface-200 border-surface-300 text-surface-500 hover:border-surface-400 hover:text-surface-300' },
+  active:   { active: 'bg-emerald/15 border-emerald/60 text-emerald',               inactive: 'bg-surface-200 border-surface-300 text-surface-500 hover:border-emerald/40 hover:text-emerald' },
+  voting:   { active: 'bg-purple/15 border-purple/60 text-purple',                  inactive: 'bg-surface-200 border-surface-300 text-surface-500 hover:border-purple/40 hover:text-purple' },
+  law:      { active: 'bg-gold/15 border-gold/60 text-gold',                        inactive: 'bg-surface-200 border-surface-300 text-surface-500 hover:border-gold/40 hover:text-gold' },
+  failed:   { active: 'bg-against-600/15 border-against-600/60 text-against-400',   inactive: 'bg-surface-200 border-surface-300 text-surface-500 hover:border-against-500/40 hover:text-against-400' },
+}
+
+// ─── Search filter bar ────────────────────────────────────────────────────────
+
+function SearchFilters({
+  tab,
+  categoryFilter,
+  statusFilter,
+  onCategory,
+  onStatus,
+}: {
+  tab: Tab
+  categoryFilter: string | null
+  statusFilter: StatusFilterValue | null
+  onCategory: (c: string | null) => void
+  onStatus: (s: StatusFilterValue | null) => void
+}) {
+  const [categoryOpen, setCategoryOpen] = useState(false)
+  const hasFilters = categoryFilter !== null || statusFilter !== null
+
+  if (tab === 'people') return null
+
+  return (
+    <div className="flex items-center gap-2 flex-wrap mb-4">
+      <div className="flex items-center gap-1 text-xs font-mono text-surface-500">
+        <SlidersHorizontal className="h-3 w-3" aria-hidden="true" />
+        <span>Filter</span>
+      </div>
+
+      {/* Category picker */}
+      <div className="relative">
+        <button
+          onClick={() => setCategoryOpen((o) => !o)}
+          aria-expanded={categoryOpen}
+          aria-haspopup="listbox"
+          className={cn(
+            'flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs font-mono transition-colors',
+            categoryFilter
+              ? (() => {
+                  const s = getCategoryStyle(categoryFilter)
+                  return `${s.bg} ${s.border} ${s.text}`
+                })()
+              : 'bg-surface-200 border-surface-300 text-surface-500 hover:border-surface-400 hover:text-surface-300'
+          )}
+        >
+          <Tag className="h-3 w-3" aria-hidden="true" />
+          {categoryFilter ?? 'Category'}
+          <ChevronDown className={cn('h-3 w-3 transition-transform', categoryOpen && 'rotate-180')} aria-hidden="true" />
+        </button>
+        {categoryOpen && (
+          <>
+            {/* Dismiss backdrop */}
+            <div
+              className="fixed inset-0 z-10"
+              onClick={() => setCategoryOpen(false)}
+              aria-hidden="true"
+            />
+            <div
+              role="listbox"
+              aria-label="Filter by category"
+              className={cn(
+                'absolute top-full left-0 mt-1 z-20 w-44',
+                'bg-surface-100 border border-surface-300 rounded-xl shadow-xl',
+                'py-1 max-h-64 overflow-y-auto'
+              )}
+            >
+              <button
+                role="option"
+                aria-selected={categoryFilter === null}
+                onClick={() => { onCategory(null); setCategoryOpen(false) }}
+                className={cn(
+                  'w-full text-left px-3 py-2 text-xs font-mono transition-colors',
+                  categoryFilter === null ? 'text-white bg-surface-200' : 'text-surface-500 hover:text-white hover:bg-surface-200'
+                )}
+              >
+                All categories
+              </button>
+              {CATEGORIES.map((cat) => {
+                const s = getCategoryStyle(cat)
+                return (
+                  <button
+                    key={cat}
+                    role="option"
+                    aria-selected={categoryFilter === cat}
+                    onClick={() => { onCategory(categoryFilter === cat ? null : cat); setCategoryOpen(false) }}
+                    className={cn(
+                      'w-full text-left px-3 py-2 text-xs font-mono transition-colors flex items-center justify-between',
+                      categoryFilter === cat ? `${s.text} bg-surface-200` : `text-surface-500 hover:${s.text} hover:bg-surface-200`
+                    )}
+                  >
+                    {cat}
+                    {categoryFilter === cat && <X className="h-3 w-3" aria-hidden="true" />}
+                  </button>
+                )
+              })}
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* Status filter pills — topics tab only */}
+      {tab === 'topics' && (
+        <div className="flex items-center gap-1.5 flex-wrap" role="group" aria-label="Filter by status">
+          {STATUS_FILTERS.map(({ id, label }) => {
+            const colors = STATUS_FILTER_COLORS[id]
+            const isActive = statusFilter === id
+            return (
+              <button
+                key={id}
+                onClick={() => onStatus(isActive ? null : id)}
+                aria-pressed={isActive}
+                className={cn(
+                  'flex items-center gap-1 px-2.5 py-1 rounded-lg border text-xs font-mono transition-colors',
+                  isActive ? colors.active : colors.inactive
+                )}
+              >
+                {label}
+                {isActive && <X className="h-2.5 w-2.5" aria-hidden="true" />}
+              </button>
+            )
+          })}
+        </div>
+      )}
+
+      {/* Clear all */}
+      {hasFilters && (
+        <button
+          onClick={() => { onCategory(null); onStatus(null) }}
+          className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-mono text-surface-500 hover:text-white transition-colors"
+          aria-label="Clear all filters"
+        >
+          <X className="h-3 w-3" />
+          Clear
+        </button>
+      )}
+    </div>
+  )
 }
 
 // ─── localStorage helpers ─────────────────────────────────────────────────────
@@ -677,6 +841,8 @@ function SearchContent() {
 
   const [query, setQuery] = useState(initialQ)
   const [activeTab, setActiveTab] = useState<Tab>(initialTab)
+  const [categoryFilter, setCategoryFilter] = useState<string | null>(null)
+  const [statusFilter, setStatusFilter] = useState<StatusFilterValue | null>(null)
   const [results, setResults] = useState<SearchResult[]>([])
   const [loading, setLoading] = useState(false)
   const [discoveryData, setDiscoveryData] = useState<TrendingData | null>(null)
@@ -700,16 +866,25 @@ function SearchContent() {
       .catch(() => {})
   }, [])
 
-  const fetchResults = useCallback(async (q: string, tab: Tab) => {
+  const fetchResults = useCallback(async (
+    q: string,
+    tab: Tab,
+    category: string | null,
+    status: StatusFilterValue | null,
+  ) => {
     if (q.trim().length < 2) {
       setResults([])
       return
     }
     setLoading(true)
     try {
-      const res = await fetch(
-        `/api/search?q=${encodeURIComponent(q.trim())}&tab=${tab}`
-      )
+      const params = new URLSearchParams({
+        q: q.trim(),
+        tab,
+      })
+      if (category) params.set('category', category)
+      if (status)   params.set('status', status)
+      const res = await fetch(`/api/search?${params.toString()}`)
       if (res.ok) {
         const { results: data } = await res.json()
         setResults(data ?? [])
@@ -725,7 +900,7 @@ function SearchContent() {
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current)
     debounceRef.current = setTimeout(() => {
-      fetchResults(query, activeTab)
+      fetchResults(query, activeTab, categoryFilter, statusFilter)
       const params = new URLSearchParams()
       if (query.trim()) params.set('q', query.trim())
       params.set('tab', activeTab)
@@ -734,11 +909,13 @@ function SearchContent() {
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current)
     }
-  }, [query, activeTab, fetchResults, router])
+  }, [query, activeTab, categoryFilter, statusFilter, fetchResults, router])
 
   const handleTabChange = (tab: Tab) => {
     setActiveTab(tab)
     setResults([])
+    setCategoryFilter(null)
+    setStatusFilter(null)
   }
 
   // Save to recent when query is committed (blur or Enter)
@@ -838,6 +1015,17 @@ function SearchContent() {
               )
             })}
           </div>
+        )}
+
+        {/* Filters — visible after tabs appear */}
+        {!showDiscovery && (
+          <SearchFilters
+            tab={activeTab}
+            categoryFilter={categoryFilter}
+            statusFilter={statusFilter}
+            onCategory={setCategoryFilter}
+            onStatus={setStatusFilter}
+          />
         )}
 
         {/* Content */}

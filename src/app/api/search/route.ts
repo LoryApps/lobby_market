@@ -2,19 +2,39 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
 /**
- * GET /api/search?q=<query>&tab=topics|laws|people
+ * GET /api/search?q=<query>&tab=topics|laws|people&category=<cat>&status=<status>
  *
  * Uses PostgreSQL full-text search (websearch_to_tsquery) via the `fts`
  * generated tsvector columns added in migration 00014_fts_indexes.sql.
  *
  * Falls back to ILIKE if full-text search returns zero results or the fts
  * column is not yet available (migration hasn't run).
+ *
+ * Optional filters (topics & laws tabs):
+ *   category — exact match on topics.category / laws.category
+ *   status   — exact match on topics.status (topics tab only)
  */
+
+const VALID_STATUSES = ['proposed', 'active', 'voting', 'law', 'failed'] as const
+const VALID_CATEGORIES = [
+  'Economics', 'Politics', 'Technology', 'Science', 'Ethics',
+  'Philosophy', 'Culture', 'Health', 'Environment', 'Education',
+] as const
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const q = searchParams.get('q')?.trim() ?? ''
   const tab = searchParams.get('tab') ?? 'topics'
+  const rawCategory = searchParams.get('category')?.trim() ?? ''
+  const rawStatus   = searchParams.get('status')?.trim() ?? ''
+
+  type TopicStatus = 'proposed' | 'active' | 'voting' | 'continued' | 'law' | 'failed' | 'archived'
+
+  // Validate filter values to prevent unexpected queries
+  const category = (VALID_CATEGORIES as readonly string[]).includes(rawCategory) ? rawCategory : null
+  const status: TopicStatus | null = (VALID_STATUSES as readonly string[]).includes(rawStatus)
+    ? (rawStatus as TopicStatus)
+    : null
 
   if (!q || q.length < 2) {
     return NextResponse.json({ results: [] })
@@ -26,27 +46,40 @@ export async function GET(request: NextRequest) {
   // ── Topics ──────────────────────────────────────────────────────────────────
 
   if (tab === 'topics') {
-    // Try FTS first; fall back to ILIKE if `fts` column missing or no results.
-    const { data: ftsData, error: ftsError } = await supabase
+    // Build base FTS query — apply single-status filter via .eq() to avoid
+    // needing a string[] cast against the generated Supabase union type.
+    let ftsQ = supabase
       .from('topics')
       .select('id, statement, category, status, blue_pct, total_votes, view_count, created_at')
       .textSearch('fts', q, { type: 'websearch', config: 'english' })
-      .in('status', ['proposed', 'active', 'voting', 'law', 'failed'])
       .order('feed_score', { ascending: false })
       .limit(20)
+    if (status) {
+      ftsQ = ftsQ.eq('status', status)
+    } else {
+      ftsQ = ftsQ.in('status', ['proposed', 'active', 'voting', 'law', 'failed'])
+    }
+    if (category) ftsQ = ftsQ.eq('category', category)
+    const { data: ftsData, error: ftsError } = await ftsQ
 
     if (!ftsError && ftsData && ftsData.length > 0) {
       return NextResponse.json({ results: ftsData, engine: 'fts' })
     }
 
     // Fallback — covers stop-word-only queries and pre-migration environments.
-    const { data, error } = await supabase
+    let ilikeQ = supabase
       .from('topics')
       .select('id, statement, category, status, blue_pct, total_votes, view_count, created_at')
       .ilike('statement', pattern)
-      .in('status', ['proposed', 'active', 'voting', 'law', 'failed'])
       .order('feed_score', { ascending: false })
       .limit(20)
+    if (status) {
+      ilikeQ = ilikeQ.eq('status', status)
+    } else {
+      ilikeQ = ilikeQ.in('status', ['proposed', 'active', 'voting', 'law', 'failed'])
+    }
+    if (category) ilikeQ = ilikeQ.eq('category', category)
+    const { data, error } = await ilikeQ
 
     if (error) {
       return NextResponse.json({ error: 'Search failed' }, { status: 500 })
@@ -57,23 +90,27 @@ export async function GET(request: NextRequest) {
   // ── Laws ────────────────────────────────────────────────────────────────────
 
   if (tab === 'laws') {
-    const { data: ftsData, error: ftsError } = await supabase
+    let ftsQ = supabase
       .from('laws')
       .select('id, statement, full_statement, category, blue_pct, total_votes, established_at')
       .textSearch('fts', q, { type: 'websearch', config: 'english' })
       .order('established_at', { ascending: false })
       .limit(20)
+    if (category) ftsQ = ftsQ.eq('category', category)
+    const { data: ftsData, error: ftsError } = await ftsQ
 
     if (!ftsError && ftsData && ftsData.length > 0) {
       return NextResponse.json({ results: ftsData, engine: 'fts' })
     }
 
-    const { data, error } = await supabase
+    let ilikeQ = supabase
       .from('laws')
       .select('id, statement, full_statement, category, blue_pct, total_votes, established_at')
       .or(`statement.ilike.${pattern},full_statement.ilike.${pattern}`)
       .order('established_at', { ascending: false })
       .limit(20)
+    if (category) ilikeQ = ilikeQ.eq('category', category)
+    const { data, error } = await ilikeQ
 
     if (error) {
       return NextResponse.json({ error: 'Search failed' }, { status: 500 })
