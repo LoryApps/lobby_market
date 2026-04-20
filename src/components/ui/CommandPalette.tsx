@@ -61,6 +61,7 @@ import {
   Clock,
   Vote,
   ArrowUpRight,
+  Radio,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -209,6 +210,16 @@ const QUICK_LINKS: QuickLink[] = [
     icon: Activity,
     iconColor: 'text-purple',
     iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
+    id: 'live',
+    label: 'Live Arguments',
+    sublabel: 'Real-time stream of arguments being posted right now',
+    href: '/live',
+    icon: Radio,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-900/50',
   },
   {
     type: 'link',
