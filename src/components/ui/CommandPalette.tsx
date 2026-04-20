@@ -63,6 +63,7 @@ import {
   ArrowUpRight,
   Radio,
   Globe,
+  Sparkles,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -321,6 +322,16 @@ const QUICK_LINKS: QuickLink[] = [
     icon: Settings,
     iconColor: 'text-surface-400',
     iconBg: 'bg-surface-300/20',
+  },
+  {
+    type: 'link',
+    id: 'brief',
+    label: 'Daily Brief',
+    sublabel: 'Personalized morning summary — hot topics, debates, laws',
+    href: '/brief',
+    icon: Sparkles,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
   },
   {
     type: 'link',
