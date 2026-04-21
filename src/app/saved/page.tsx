@@ -229,13 +229,21 @@ export default async function SavedTopicsPage() {
               </p>
             </div>
           </div>
-          <Link
-            href="/following"
-            className="flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-for-300 transition-colors"
-          >
-            <Bell className="h-3.5 w-3.5" aria-hidden="true" />
-            Following
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/watchlist"
+              className="flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-for-300 transition-colors"
+            >
+              <Bell className="h-3.5 w-3.5" aria-hidden="true" />
+              Watchlist
+            </Link>
+            <Link
+              href="/following"
+              className="flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-for-300 transition-colors"
+            >
+              Following
+            </Link>
+          </div>
         </div>
 
         {items.length === 0 ? (

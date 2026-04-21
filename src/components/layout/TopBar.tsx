@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Activity, BarChart2, BookOpen, Coins, Compass, FileText, Flame, Gavel, HelpCircle, LayoutGrid, LogOut, Network, Scale, Search, Plus, Settings, Sparkles, Swords, Target, TrendingUp, User, Zap, ArrowUpRight, Globe } from 'lucide-react'
+import { Activity, BarChart2, Bell, BookOpen, Coins, Compass, FileText, Flame, Gavel, HelpCircle, LayoutGrid, LogOut, Network, Scale, Search, Plus, Settings, Sparkles, Swords, Target, TrendingUp, User, Zap, ArrowUpRight, Globe } from 'lucide-react'
 import { NotificationBell } from '@/components/profile/NotificationBell'
 import { Avatar } from '@/components/ui/Avatar'
 import { openCommandPalette } from '@/lib/hooks/useCommandPalette'
@@ -257,6 +257,15 @@ export function TopBar() {
               >
                 <Scale className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
                 My Positions
+              </Link>
+              <Link
+                href="/watchlist"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <Bell className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
+                My Watchlist
               </Link>
               <Link
                 href="/challenge"
