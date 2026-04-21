@@ -1090,6 +1090,27 @@ export type Database = {
         };
         Relationships: [];
       };
+      argument_bookmarks: {
+        Row: {
+          id: string;
+          user_id: string;
+          argument_id: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          argument_id: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          argument_id?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       topic_reactions: {
         Row: {
           id: string;
@@ -1889,6 +1910,14 @@ export type ArgumentReplyWithAuthor = ArgumentReply & {
     "id" | "username" | "display_name" | "avatar_url" | "role"
   > | null;
 };
+
+// Argument bookmark
+export interface ArgumentBookmark {
+  id: string;
+  user_id: string;
+  argument_id: string;
+  created_at: string;
+}
 
 // Prediction market
 export interface TopicPrediction {

@@ -20,6 +20,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
   ArrowUpDown,
+  Bookmark,
   ChevronUp,
   Loader2,
   MessageSquare,
@@ -411,8 +412,19 @@ function ArgumentCard({
 }) {
   const [upvoting, setUpvoting] = useState(false)
   const [showReplies, setShowReplies] = useState(false)
+  const [bookmarked, setBookmarked] = useState(false)
+  const [bookmarking, setBookmarking] = useState(false)
   const isOwn = arg.user_id === currentUserId
   const canUpvote = currentUserId !== null && !isOwn
+
+  // Fetch initial bookmark state
+  useEffect(() => {
+    if (!currentUserId) return
+    fetch(`/api/arguments/${arg.id}/bookmark`)
+      .then((r) => r.json())
+      .then((data) => { if (typeof data.bookmarked === 'boolean') setBookmarked(data.bookmarked) })
+      .catch(() => {})
+  }, [arg.id, currentUserId])
 
   const handleUpvote = async () => {
     if (!canUpvote || upvoting) return
@@ -421,6 +433,22 @@ function ArgumentCard({
       await onUpvote(arg.id, arg.has_upvoted)
     } finally {
       setUpvoting(false)
+    }
+  }
+
+  const handleBookmark = async () => {
+    if (!currentUserId || bookmarking) return
+    setBookmarking(true)
+    const prev = bookmarked
+    setBookmarked(!prev)
+    try {
+      const res = await fetch(`/api/arguments/${arg.id}/bookmark`, { method: 'POST' })
+      const data = await res.json()
+      if (typeof data.bookmarked === 'boolean') setBookmarked(data.bookmarked)
+    } catch {
+      setBookmarked(prev)
+    } finally {
+      setBookmarking(false)
     }
   }
 
@@ -537,6 +565,29 @@ function ArgumentCard({
             recipientName={arg.author.display_name || arg.author.username || 'this user'}
             size="sm"
           />
+        )}
+
+        {/* Bookmark — available to any authenticated user */}
+        {currentUserId && (
+          <button
+            type="button"
+            onClick={handleBookmark}
+            disabled={bookmarking}
+            aria-label={bookmarked ? 'Remove bookmark' : 'Bookmark this argument'}
+            aria-pressed={bookmarked}
+            title={bookmarked ? 'Remove from saved arguments' : 'Save this argument'}
+            className={cn(
+              'flex items-center justify-center p-1.5 rounded-lg transition-all',
+              bookmarked
+                ? 'text-gold bg-gold/10 hover:bg-gold/20'
+                : 'text-surface-600 hover:text-surface-400 hover:bg-surface-300'
+            )}
+          >
+            <Bookmark
+              className="h-3 w-3"
+              fill={bookmarked ? 'currentColor' : 'none'}
+            />
+          </button>
         )}
       </div>
     </div>

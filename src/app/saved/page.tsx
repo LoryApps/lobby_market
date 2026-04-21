@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { Bell, Bookmark, BookmarkX, Compass, TrendingUp } from 'lucide-react'
+import { Bell, Bookmark, BookmarkX, Compass, MessageSquare, TrendingUp } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -230,6 +230,13 @@ export default async function SavedTopicsPage() {
             </div>
           </div>
           <div className="flex items-center gap-3">
+            <Link
+              href="/saved/arguments"
+              className="flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-gold transition-colors"
+            >
+              <MessageSquare className="h-3.5 w-3.5" aria-hidden="true" />
+              Arguments
+            </Link>
             <Link
               href="/watchlist"
               className="flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-for-300 transition-colors"
