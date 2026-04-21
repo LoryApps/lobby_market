@@ -362,6 +362,11 @@ export default function SettingsPage() {
                   </div>
                 )}
                 <LinkRow
+                  label="My Week"
+                  description="This week's votes, laws you helped pass, and achievements"
+                  href="/my-week"
+                />
+                <LinkRow
                   label="View my analytics"
                   description="Voting stats, accuracy, and activity trends"
                   href="/analytics"
