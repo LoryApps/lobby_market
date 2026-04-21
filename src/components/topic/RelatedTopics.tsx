@@ -6,6 +6,8 @@ import { motion } from 'framer-motion'
 import { Compass, TrendingUp } from 'lucide-react'
 import { Badge } from '@/components/ui/Badge'
 import { Skeleton } from '@/components/ui/Skeleton'
+import { TopicHoverCard } from '@/components/ui/TopicHoverCard'
+import type { TopicPreview } from '@/app/api/topics/[id]/preview/route'
 import { cn } from '@/lib/utils/cn'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -72,12 +74,30 @@ function RelatedCard({ topic }: { topic: RelatedTopic }) {
   const forPct = Math.round(topic.blue_pct ?? 50)
   const againstPct = 100 - forPct
 
+  // Build a TopicPreview-compatible object from the already-fetched data
+  const preloaded: TopicPreview = {
+    id: topic.id,
+    statement: topic.statement,
+    status: topic.status,
+    category: topic.category,
+    scope: 'Global',
+    blue_pct: topic.blue_pct,
+    total_votes: topic.total_votes,
+    description: null,
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.2 }}
     >
+      <TopicHoverCard
+        topicId={topic.id}
+        href={`/topic/${topic.id}`}
+        preloaded={preloaded}
+        className="block"
+      >
       <Link
         href={`/topic/${topic.id}`}
         className={cn(
@@ -144,6 +164,7 @@ function RelatedCard({ topic }: { topic: RelatedTopic }) {
           </div>
         </div>
       </Link>
+      </TopicHoverCard>
     </motion.div>
   )
 }

@@ -4,6 +4,7 @@ import { Fragment, type ReactNode, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Network } from 'lucide-react'
 import { parseBlocks } from '@/components/law/LawDocument'
+import { TopicHoverCard } from '@/components/ui/TopicHoverCard'
 import { cn } from '@/lib/utils/cn'
 
 // ─── Inline token types ───────────────────────────────────────────────────────
@@ -75,22 +76,51 @@ function renderTokens(tokens: Token[], keyPrefix: string): ReactNode {
           </code>
         )
       case 'link': {
-        const isInternal = token.href.startsWith('/topic/') || token.href.startsWith('/law/')
-        return isInternal ? (
-          <Link
-            key={key}
-            href={token.href}
-            className={cn(
-              'inline-flex items-center gap-0.5 font-mono text-[0.85em]',
-              'text-for-300 bg-for-600/15 border border-for-500/30',
-              'rounded px-1 py-0.5 hover:bg-for-600/25 hover:text-for-200',
-              'transition-colors no-underline'
-            )}
-          >
-            <Network className="h-2.5 w-2.5 flex-shrink-0 opacity-70" aria-hidden />
-            {token.value}
-          </Link>
-        ) : (
+        const isTopicLink = token.href.startsWith('/topic/')
+        const isLawLink = token.href.startsWith('/law/')
+        if (isTopicLink) {
+          // Extract UUID: /topic/<id> or /topic/<id>/...
+          const topicId = token.href.split('/')[2] ?? ''
+          const linkEl = (
+            <Link
+              href={token.href}
+              className={cn(
+                'inline-flex items-center gap-0.5 font-mono text-[0.85em]',
+                'text-for-300 bg-for-600/15 border border-for-500/30',
+                'rounded px-1 py-0.5 hover:bg-for-600/25 hover:text-for-200',
+                'transition-colors no-underline'
+              )}
+            >
+              <Network className="h-2.5 w-2.5 flex-shrink-0 opacity-70" aria-hidden />
+              {token.value}
+            </Link>
+          )
+          return topicId ? (
+            <TopicHoverCard key={key} topicId={topicId} href={token.href}>
+              {linkEl}
+            </TopicHoverCard>
+          ) : (
+            <Fragment key={key}>{linkEl}</Fragment>
+          )
+        }
+        if (isLawLink) {
+          return (
+            <Link
+              key={key}
+              href={token.href}
+              className={cn(
+                'inline-flex items-center gap-0.5 font-mono text-[0.85em]',
+                'text-for-300 bg-for-600/15 border border-for-500/30',
+                'rounded px-1 py-0.5 hover:bg-for-600/25 hover:text-for-200',
+                'transition-colors no-underline'
+              )}
+            >
+              <Network className="h-2.5 w-2.5 flex-shrink-0 opacity-70" aria-hidden />
+              {token.value}
+            </Link>
+          )
+        }
+        return (
           <a
             key={key}
             href={token.href}
