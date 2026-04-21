@@ -286,6 +286,15 @@ export function TopBar() {
                 Rapid Fire
               </Link>
               <Link
+                href="/quiz"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <Scale className="h-3.5 w-3.5 flex-shrink-0 text-emerald" aria-hidden="true" />
+                Civic Quiz
+              </Link>
+              <Link
                 href="/predictions"
                 role="menuitem"
                 onClick={() => setMenuOpen(false)}

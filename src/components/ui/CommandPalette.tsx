@@ -175,6 +175,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'quiz',
+    label: 'Civic Quiz',
+    sublabel: 'Find your civic alignment — no login required',
+    href: '/quiz',
+    icon: Scale,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+  },
+  {
+    type: 'link',
     id: 'senate',
     label: 'The Senate',
     sublabel: 'Topics in final vote — deadlines approaching',
