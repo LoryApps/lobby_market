@@ -26,6 +26,7 @@ import {
   type FloatingReaction,
 } from './DebateReactions'
 import { DebateRSVPButton } from './DebateRSVPButton'
+import { ErrorBoundary } from '@/components/ui/ErrorBoundary'
 
 interface DebateArenaProps {
   initialDebate: DebateWithTopic
@@ -304,14 +305,16 @@ export function DebateArena({
       </div>
 
       {/* Chat panel */}
-      <DebateChat
-        debateId={debate.id}
-        messages={messages}
-        currentUserId={currentUserId}
-        isOpen={chatOpen}
-        onToggle={() => setChatOpen((v) => !v)}
-        onSend={handleSendMessage}
-      />
+      <ErrorBoundary size="sm" label="Chat unavailable">
+        <DebateChat
+          debateId={debate.id}
+          messages={messages}
+          currentUserId={currentUserId}
+          isOpen={chatOpen}
+          onToggle={() => setChatOpen((v) => !v)}
+          onSend={handleSendMessage}
+        />
+      </ErrorBoundary>
 
       {/* Not live overlay */}
       {!isLive && debate.status !== 'ended' && (

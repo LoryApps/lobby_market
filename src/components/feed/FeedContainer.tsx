@@ -15,6 +15,7 @@ import { FeedInsightStrip } from '@/components/feed/FeedInsightStrip'
 import { FeedFilters } from '@/components/feed/FeedFilters'
 import { PulseDot } from '@/components/simulation/PulseDot'
 import { Avatar } from '@/components/ui/Avatar'
+import { ErrorBoundary } from '@/components/ui/ErrorBoundary'
 import { cn } from '@/lib/utils/cn'
 import type { TopicWithAuthor } from '@/lib/supabase/types'
 
@@ -647,14 +648,22 @@ export function FeedContainer() {
         <DailyQuorumNudge />
         {topics.map((topic, index) => (
           <div key={topic.id}>
-            <TopicCard
-              topic={topic}
-              authorName={topic.author?.display_name ?? topic.author?.username ?? undefined}
-              authorAvatar={topic.author?.avatar_url ?? undefined}
-            />
+            <ErrorBoundary
+              size="sm"
+              label="Couldn't load this topic"
+              className="feed-card"
+            >
+              <TopicCard
+                topic={topic}
+                authorName={topic.author?.display_name ?? topic.author?.username ?? undefined}
+                authorAvatar={topic.author?.avatar_url ?? undefined}
+              />
+            </ErrorBoundary>
             {/* Inject a live-stats strip after every 8th topic */}
             {(index + 1) % 8 === 0 && (
-              <FeedInsightStrip groupIndex={Math.floor(index / 8) + 1} />
+              <ErrorBoundary size="xs" className="mx-4 my-2">
+                <FeedInsightStrip groupIndex={Math.floor(index / 8) + 1} />
+              </ErrorBoundary>
             )}
           </div>
         ))}

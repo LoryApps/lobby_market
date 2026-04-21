@@ -52,6 +52,7 @@ import { useFeedStore } from '@/lib/stores/feed-store'
 import { getTopicSignal, SIGNAL_PILL_CLASSES } from '@/lib/utils/topic-signal'
 import { Clock, Flame, Gavel, Swords, TrendingUp, Zap } from 'lucide-react'
 import { TopicReactions } from '@/components/topic/TopicReactions'
+import { ErrorBoundary } from '@/components/ui/ErrorBoundary'
 
 const SIGNAL_ICONS_DETAIL: Record<string, typeof Flame> = {
   ending_soon:     Clock,
@@ -332,13 +333,17 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
         </div>
 
         {activeTab === 'lobbies' ? (
-          <LobbyBoard topicId={topic.id} />
+          <ErrorBoundary size="md" label="Couldn't load lobby board">
+            <LobbyBoard topicId={topic.id} />
+          </ErrorBoundary>
         ) : activeTab === 'arguments' ? (
-          <>
-            {/* Spotlight: top FOR + AGAINST argument preview */}
-            <ArgumentSpotlight topicId={topic.id} className="mb-6" />
-            <ArgumentThread topicId={topic.id} />
-          </>
+          <ErrorBoundary size="md" label="Couldn't load arguments">
+            <>
+              {/* Spotlight: top FOR + AGAINST argument preview */}
+              <ArgumentSpotlight topicId={topic.id} className="mb-6" />
+              <ArgumentThread topicId={topic.id} />
+            </>
+          </ErrorBoundary>
         ) : (
           <>
             {/* Chain banner — shown during the continuation lifecycle */}
@@ -496,62 +501,80 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
             </div>
 
             {/* Topic context / wiki description — editable by author */}
-            <TopicWikiSection
-              topicId={topic.id}
-              authorId={topic.author_id}
-              description={topic.description}
-              onUpdate={(desc) => setTopic((prev) => ({ ...prev, description: desc }))}
-              updatedAt={(topic as { description_updated_at?: string | null }).description_updated_at ?? null}
-              updatedByUsername={editorUsername}
-            />
+            <ErrorBoundary size="sm" label="Couldn't load wiki section">
+              <TopicWikiSection
+                topicId={topic.id}
+                authorId={topic.author_id}
+                description={topic.description}
+                onUpdate={(desc) => setTopic((prev) => ({ ...prev, description: desc }))}
+                updatedAt={(topic as { description_updated_at?: string | null }).description_updated_at ?? null}
+                updatedByUsername={editorUsername}
+              />
+            </ErrorBoundary>
 
             {/* Wiki link graph — backlinks & outgoing topic wikilinks */}
-            <TopicBacklinks topicId={topic.id} className="mt-4" />
+            <ErrorBoundary size="xs" className="mt-4">
+              <TopicBacklinks topicId={topic.id} className="mt-4" />
+            </ErrorBoundary>
 
             {/* Pinned sources — factual citations added by topic author/moderators */}
-            <div className="mt-4">
-              <TopicSources topicId={topic.id} topicAuthorId={topic.author_id} />
-            </div>
+            <ErrorBoundary size="xs" className="mt-4">
+              <div className="mt-4">
+                <TopicSources topicId={topic.id} topicAuthorId={topic.author_id} />
+              </div>
+            </ErrorBoundary>
 
             {/* Topic journey — lifecycle progress stepper */}
-            <TopicStatusJourney
-              status={topic.status}
-              supportCount={topic.support_count}
-              activationThreshold={topic.activation_threshold}
-              totalVotes={topic.total_votes}
-              bluePct={topic.blue_pct}
-              votingEndsAt={topic.voting_ends_at}
-              createdAt={topic.created_at}
-              className="mt-6"
-            />
+            <ErrorBoundary size="sm" className="mt-6">
+              <TopicStatusJourney
+                status={topic.status}
+                supportCount={topic.support_count}
+                activationThreshold={topic.activation_threshold}
+                totalVotes={topic.total_votes}
+                bluePct={topic.blue_pct}
+                votingEndsAt={topic.voting_ends_at}
+                createdAt={topic.created_at}
+                className="mt-6"
+              />
+            </ErrorBoundary>
 
             {/* Coalition stances — which factions are FOR / AGAINST */}
             {topic.status !== 'proposed' && (
-              <CoalitionStancePanel
-                topicId={topic.id}
-                className="mt-6"
-              />
+              <ErrorBoundary size="sm" label="Couldn't load coalition stances" className="mt-6">
+                <CoalitionStancePanel
+                  topicId={topic.id}
+                  className="mt-6"
+                />
+              </ErrorBoundary>
             )}
 
             {/* Debates — upcoming, live, and recently ended for this topic */}
-            <TopicDebatePanel
-              topicId={topic.id}
-              className="mt-6"
-            />
-
-            {/* Vote trend — sparkline momentum chart */}
-            {topic.total_votes >= 2 && topic.status !== 'proposed' && (
-              <VoteTrend
+            <ErrorBoundary size="sm" label="Couldn't load debates" className="mt-6">
+              <TopicDebatePanel
                 topicId={topic.id}
                 className="mt-6"
               />
+            </ErrorBoundary>
+
+            {/* Vote trend — sparkline momentum chart */}
+            {topic.total_votes >= 2 && topic.status !== 'proposed' && (
+              <ErrorBoundary size="sm" label="Couldn't load vote trend" className="mt-6">
+                <VoteTrend
+                  topicId={topic.id}
+                  className="mt-6"
+                />
+              </ErrorBoundary>
             )}
 
             {/* Prediction market — Polymarket-style crowd predictions */}
-            <PredictionPanel topicId={topic.id} topicStatus={topic.status} />
+            <ErrorBoundary size="sm" label="Couldn't load prediction market">
+              <PredictionPanel topicId={topic.id} topicStatus={topic.status} />
+            </ErrorBoundary>
 
             {/* Related topics — discovery section */}
-            <RelatedTopics topicId={topic.id} className="mt-8" />
+            <ErrorBoundary size="sm" label="Couldn't load related topics" className="mt-8">
+              <RelatedTopics topicId={topic.id} className="mt-8" />
+            </ErrorBoundary>
 
             {/* Extra bottom padding on mobile so the sticky CTA doesn't overlap content */}
             {isVotable && !hasVoted(topic.id) && (
