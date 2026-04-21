@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { Clock, Gavel, Globe, Network, Rss } from 'lucide-react'
+import { Clock, FileWarning, Gavel, Globe, Network, Rss } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -105,6 +105,18 @@ export default async function LawIndexPage() {
               >
                 <Network className="h-4 w-4" />
                 <span className="hidden sm:inline">Law Graph</span>
+              </Link>
+
+              <Link
+                href="/petitions"
+                className={cn(
+                  'inline-flex items-center gap-2 px-3 py-2 rounded-lg',
+                  'bg-against-600/10 border border-against-500/30 text-against-300 text-xs font-mono font-medium',
+                  'hover:bg-against-600/20 hover:border-against-500/50 transition-colors'
+                )}
+              >
+                <FileWarning className="h-4 w-4" />
+                <span className="hidden sm:inline">Petitions</span>
               </Link>
             </div>
           </div>
