@@ -44,7 +44,15 @@ import {
 } from '@/components/ui/MentionAutocomplete'
 import { cn } from '@/lib/utils/cn'
 import { renderWithMentions } from '@/lib/utils/mentions'
+import { LinkPreviewCard } from '@/components/ui/LinkPreviewCard'
 import type { TopicArgumentWithAuthor, ArgumentReplyWithAuthor } from '@/lib/supabase/types'
+
+// Extract the first https URL from argument content (for link preview)
+const URL_RE = /https?:\/\/[^\s<>"'`]+[^\s<>"'`.,;:!?)']/
+function extractFirstUrl(text: string): string | null {
+  const m = text.match(URL_RE)
+  return m ? m[0] : null
+}
 
 const MAX_REPLY_CHARS = 300
 
@@ -473,6 +481,12 @@ function ArgumentCard({
 
         {/* Content */}
         <p className="text-sm text-surface-300 leading-relaxed">{renderWithMentions(arg.content)}</p>
+
+        {/* Link preview for the first URL in the argument (if any) */}
+        {(() => {
+          const url = extractFirstUrl(arg.content)
+          return url ? <LinkPreviewCard url={url} /> : null
+        })()}
 
         {/* Reply toggle */}
         <button
