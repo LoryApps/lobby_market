@@ -1090,6 +1090,30 @@ export type Database = {
         };
         Relationships: [];
       };
+      topic_reactions: {
+        Row: {
+          id: string;
+          topic_id: string;
+          user_id: string;
+          reaction: "insightful" | "controversial" | "complex" | "surprising";
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          topic_id: string;
+          user_id: string;
+          reaction: "insightful" | "controversial" | "complex" | "surprising";
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          topic_id?: string;
+          user_id?: string;
+          reaction?: "insightful" | "controversial" | "complex" | "surprising";
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       debate_reactions: {
         Row: {
           id: string;
@@ -1900,3 +1924,10 @@ export type CoalitionPostWithAuthor = CoalitionPost & {
     "id" | "username" | "display_name" | "avatar_url" | "role"
   > | null;
 };
+
+// Topic reactions
+export type TopicReaction =
+  Database["public"]["Tables"]["topic_reactions"]["Row"];
+export type TopicReactionInsert =
+  Database["public"]["Tables"]["topic_reactions"]["Insert"];
+export type TopicReactionType = TopicReaction["reaction"];

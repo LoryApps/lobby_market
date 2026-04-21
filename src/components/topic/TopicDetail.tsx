@@ -51,6 +51,7 @@ import { useVoteStore } from '@/lib/stores/vote-store'
 import { useFeedStore } from '@/lib/stores/feed-store'
 import { getTopicSignal, SIGNAL_PILL_CLASSES } from '@/lib/utils/topic-signal'
 import { Clock, Flame, Gavel, Swords, TrendingUp, Zap } from 'lucide-react'
+import { TopicReactions } from '@/components/topic/TopicReactions'
 
 const SIGNAL_ICONS_DETAIL: Record<string, typeof Flame> = {
   ending_soon:     Clock,
@@ -400,6 +401,14 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
                 )}
               </div>
             )}
+
+            {/* Community reactions */}
+            <div className="mb-6">
+              <p className="text-xs font-mono text-surface-500 mb-2 uppercase tracking-wide">
+                Community reads this as
+              </p>
+              <TopicReactions topicId={topic.id} size="md" />
+            </div>
 
             {/* Continuation lifecycle — authoring, list, or plurality vote */}
             {showChainBanner && (

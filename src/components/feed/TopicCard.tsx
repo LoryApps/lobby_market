@@ -18,6 +18,7 @@ import { useFeedStore } from '@/lib/stores/feed-store'
 import { BookmarkButton } from '@/components/ui/BookmarkButton'
 import { StanceShareButton } from '@/components/voting/StanceShareButton'
 import { getTopicSignal, SIGNAL_PILL_CLASSES } from '@/lib/utils/topic-signal'
+import { TopicReactions } from '@/components/topic/TopicReactions'
 
 // ── Signal icon map ───────────────────────────────────────────────────────────
 
@@ -363,6 +364,14 @@ export function TopicCard({ topic, authorName, authorAvatar }: TopicCardProps) {
                   </Badge>
                 </div>
               )}
+
+              {/* Reactions row */}
+              <div
+                className="pt-1"
+                onClick={(e) => e.preventDefault()}
+              >
+                <TopicReactions topicId={topic.id} size="sm" />
+              </div>
 
               {/* Author + view count row */}
               <div className="flex items-center justify-between pt-2 border-t border-surface-300">
