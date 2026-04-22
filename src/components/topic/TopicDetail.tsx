@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
   ArrowLeft,
+  BookOpen,
   Calendar,
   GitCompare,
   Globe,
@@ -364,7 +365,7 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
                   showLabels
                 />
                 {topic.total_votes > 0 && (
-                  <div className="flex justify-center gap-4">
+                  <div className="flex justify-center gap-4 flex-wrap">
                     <Link
                       href={`/topic/${topic.id}/voters`}
                       className="inline-flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-white transition-colors"
@@ -378,6 +379,13 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
                     >
                       <Clock className="h-3.5 w-3.5" />
                       View timeline
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/brief`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-for-400 hover:text-for-300 transition-colors"
+                    >
+                      <BookOpen className="h-3.5 w-3.5" />
+                      Read brief
                     </Link>
                   </div>
                 )}
