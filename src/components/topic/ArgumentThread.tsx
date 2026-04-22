@@ -662,6 +662,44 @@ function ArgumentCard({
 
 // ─── Post form ────────────────────────────────────────────────────────────────
 
+// ─── Draft persistence helpers ────────────────────────────────────────────────
+
+function draftKey(topicId: string) {
+  return `lm_arg_draft_${topicId}`
+}
+
+function loadDraft(topicId: string): { side: 'blue' | 'red' | null; content: string } | null {
+  try {
+    const raw = localStorage.getItem(draftKey(topicId))
+    if (!raw) return null
+    const parsed = JSON.parse(raw) as { side: 'blue' | 'red' | null; content: string }
+    if (typeof parsed.content === 'string' && parsed.content.length > 0) return parsed
+    return null
+  } catch {
+    return null
+  }
+}
+
+function saveDraft(topicId: string, side: 'blue' | 'red' | null, content: string) {
+  try {
+    if (!content.trim()) {
+      localStorage.removeItem(draftKey(topicId))
+    } else {
+      localStorage.setItem(draftKey(topicId), JSON.stringify({ side, content }))
+    }
+  } catch {
+    // best-effort
+  }
+}
+
+function clearDraft(topicId: string) {
+  try {
+    localStorage.removeItem(draftKey(topicId))
+  } catch {
+    // best-effort
+  }
+}
+
 function PostArgumentForm({
   topicId,
   onPosted,
@@ -673,6 +711,7 @@ function PostArgumentForm({
   const [content, setContent] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [draftRestored, setDraftRestored] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   // @mention autocomplete state
@@ -680,6 +719,18 @@ function PostArgumentForm({
   const [mentionSelectedIndex, setMentionSelectedIndex] = useState(0)
   const [mentionResultCount, setMentionResultCount] = useState(0)
   const mentionResultsRef = useRef<MentionSuggestion[]>([])
+
+  // Restore draft from localStorage on first mount
+  useEffect(() => {
+    const draft = loadDraft(topicId)
+    if (draft) {
+      setContent(draft.content)
+      setSide(draft.side)
+      setDraftRestored(true)
+      setTimeout(() => setDraftRestored(false), 3000)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const remaining = MAX_CHARS - content.length
   const isValid = side !== null && content.trim().length >= MIN_CHARS && content.trim().length <= MAX_CHARS
@@ -704,6 +755,7 @@ function PostArgumentForm({
         return
       }
 
+      clearDraft(topicId)
       onPosted(json.argument as TopicArgumentWithAuthor)
       setContent('')
       setSide(null)
@@ -718,6 +770,7 @@ function PostArgumentForm({
   function handleArgContentChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
     const val = e.target.value
     setContent(val)
+    saveDraft(topicId, side, val)
     const cursor = e.target.selectionStart ?? val.length
     const ctx = getMentionContext(val, cursor)
     if (ctx) {
@@ -781,7 +834,7 @@ function PostArgumentForm({
       <div className="flex gap-2">
         <button
           type="button"
-          onClick={() => setSide('blue')}
+          onClick={() => { setSide('blue'); saveDraft(topicId, 'blue', content) }}
           aria-pressed={side === 'blue'}
           className={cn(
             'flex-1 flex items-center justify-center gap-2 h-10 rounded-xl text-sm font-mono font-semibold border transition-all',
@@ -795,7 +848,7 @@ function PostArgumentForm({
         </button>
         <button
           type="button"
-          onClick={() => setSide('red')}
+          onClick={() => { setSide('red'); saveDraft(topicId, 'red', content) }}
           aria-pressed={side === 'red'}
           className={cn(
             'flex-1 flex items-center justify-center gap-2 h-10 rounded-xl text-sm font-mono font-semibold border transition-all',
@@ -808,6 +861,22 @@ function PostArgumentForm({
           Against
         </button>
       </div>
+
+      {/* Draft restored indicator */}
+      <AnimatePresence>
+        {draftRestored && (
+          <motion.p
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="text-[11px] font-mono text-emerald/80"
+            role="status"
+          >
+            Draft restored
+          </motion.p>
+        )}
+      </AnimatePresence>
 
       {/* Text area */}
       <div className="relative">

@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { LawPage } from '@/components/law/LawPage'
+import { LawVictoryBanner } from '@/components/law/LawVictoryBanner'
 import type {
   Law,
   LawLink,
@@ -219,6 +220,12 @@ export default async function LawDetailPage({ params }: LawDetailPageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      <LawVictoryBanner
+        lawId={typedLaw.id}
+        topicId={typedLaw.topic_id}
+        lawStatement={typedLaw.statement}
+        totalVoters={totalOriginalVoters ?? 0}
       />
       <LawPage
         law={typedLaw}
