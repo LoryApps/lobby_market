@@ -121,7 +121,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.5,
     }))
 
-    return [...STATIC_ROUTES, ...topicUrls, ...wikiUrls, ...lawUrls, ...profileUrls]
+    // Fetch top arguments (most upvoted) for permalink pages
+    const { data: topArguments } = await supabase
+      .from('topic_arguments')
+      .select('id, created_at')
+      .order('upvotes', { ascending: false })
+      .limit(500)
+
+    const argumentUrls: MetadataRoute.Sitemap = (topArguments ?? []).map((a) => ({
+      url: `${BASE_URL}/arguments/${a.id}`,
+      lastModified: new Date(a.created_at),
+      changeFrequency: 'weekly' as const,
+      priority: 0.45,
+    }))
+
+    return [...STATIC_ROUTES, ...topicUrls, ...wikiUrls, ...lawUrls, ...profileUrls, ...argumentUrls]
   } catch {
     // If DB is unavailable (e.g. during build), return only static routes
     return STATIC_ROUTES

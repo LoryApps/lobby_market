@@ -22,6 +22,8 @@ import {
   ArrowUpDown,
   Bookmark,
   ChevronUp,
+  Check,
+  Copy,
   Loader2,
   MessageSquare,
   MessageSquarePlus,
@@ -414,6 +416,7 @@ function ArgumentCard({
   const [showReplies, setShowReplies] = useState(false)
   const [bookmarked, setBookmarked] = useState(false)
   const [bookmarking, setBookmarking] = useState(false)
+  const [linkCopied, setLinkCopied] = useState(false)
   const isOwn = arg.user_id === currentUserId
   const canUpvote = currentUserId !== null && !isOwn
 
@@ -449,6 +452,18 @@ function ArgumentCard({
       setBookmarked(prev)
     } finally {
       setBookmarking(false)
+    }
+  }
+
+  const handleCopyLink = async () => {
+    const url = `https://lobby.market/arguments/${arg.id}`
+    try {
+      await navigator.clipboard.writeText(url)
+      setLinkCopied(true)
+      setTimeout(() => setLinkCopied(false), 1800)
+    } catch {
+      // Fallback: open the page
+      window.open(url, '_blank', 'noopener')
     }
   }
 
@@ -589,6 +604,26 @@ function ArgumentCard({
             />
           </button>
         )}
+
+        {/* Share / copy permalink */}
+        <button
+          type="button"
+          onClick={handleCopyLink}
+          aria-label="Copy argument link"
+          title="Copy link to this argument"
+          className={cn(
+            'flex items-center justify-center p-1.5 rounded-lg transition-all',
+            linkCopied
+              ? 'text-emerald bg-emerald/10'
+              : 'text-surface-600 hover:text-surface-400 hover:bg-surface-300'
+          )}
+        >
+          {linkCopied ? (
+            <Check className="h-3 w-3" />
+          ) : (
+            <Copy className="h-3 w-3" />
+          )}
+        </button>
       </div>
     </div>
 
