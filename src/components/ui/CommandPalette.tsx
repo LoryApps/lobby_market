@@ -64,6 +64,7 @@ import {
   Radio,
   Globe,
   Sparkles,
+  Timer,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -162,6 +163,16 @@ const QUICK_LINKS: QuickLink[] = [
     icon: Trophy,
     iconColor: 'text-gold',
     iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'blitz',
+    label: 'Blitz Mode',
+    sublabel: '60-second speed voting challenge',
+    href: '/blitz',
+    icon: Timer,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-500/10',
   },
   {
     type: 'link',
