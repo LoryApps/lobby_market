@@ -198,6 +198,38 @@ export default async function LeaderboardPage() {
     }
   }
 
+  // ── Top Debaters: by total argument upvotes ──────────────────────────────
+  interface ArgRow { user_id: string; upvotes: number }
+  const { data: argRows } = (await supabase
+    .from('topic_arguments')
+    .select('user_id, upvotes')
+    .gt('upvotes', 0)
+    .limit(5000)) as { data: ArgRow[] | null }
+
+  const debaterUpvotesAgg: Record<string, number> = {}
+  for (const row of argRows ?? []) {
+    debaterUpvotesAgg[row.user_id] = (debaterUpvotesAgg[row.user_id] ?? 0) + row.upvotes
+  }
+  const debaterUpvotesMap: Record<string, number> = debaterUpvotesAgg
+
+  const debatersSortedIds = Object.entries(debaterUpvotesAgg)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, LIMIT)
+    .map(([id]) => id)
+
+  const debatersSorted: Profile[] = []
+  if (debatersSortedIds.length > 0) {
+    const { data: debaterProfiles } = (await supabase
+      .from('profiles')
+      .select('*')
+      .in('id', debatersSortedIds)) as { data: Profile[] | null }
+    const profileMap = new Map((debaterProfiles ?? []).map((p) => [p.id, p]))
+    for (const id of debatersSortedIds) {
+      const profile = profileMap.get(id)
+      if (profile) debatersSorted.push(profile)
+    }
+  }
+
   // ── Streaks: by current vote_streak descending ───────────────────────────
   const { data: streaksRaw } = (await supabase
     .from('profiles')
@@ -225,6 +257,7 @@ export default async function LeaderboardPage() {
     troll_catchers: trollCatchers,
     predictors: predictorsSorted,
     streaks,
+    debaters: debatersSorted,
   }
 
   return (
@@ -252,6 +285,7 @@ export default async function LeaderboardPage() {
           lawsAuthoredMap={lawsAuthoredMap}
           recentVotesMap={recentVotesMap}
           predictorsStatsMap={predictorsStatsMap}
+          debaterUpvotesMap={debaterUpvotesMap}
         />
 
         {/* Coalition rankings */}

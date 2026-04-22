@@ -40,6 +40,7 @@ import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { GiftCloutButton } from '@/components/clout/GiftCloutButton'
+import { ReportButton } from '@/components/moderation/ReportButton'
 import {
   MentionAutocomplete,
   getMentionContext,
@@ -624,6 +625,16 @@ function ArgumentCard({
             <Copy className="h-3 w-3" />
           )}
         </button>
+
+        {/* Report — only for other users' arguments */}
+        {currentUserId && !isOwn && (
+          <ReportButton
+            contentType="argument"
+            contentId={arg.id}
+            reportedUserId={arg.user_id}
+            compact
+          />
+        )}
       </div>
     </div>
 

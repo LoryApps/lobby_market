@@ -9,6 +9,7 @@ const VALID_CATEGORIES = [
   'active',
   'rising',
   'troll_catchers',
+  'debaters',
 ] as const
 type Category = (typeof VALID_CATEGORIES)[number]
 
@@ -163,6 +164,36 @@ export async function GET(request: NextRequest) {
           'id',
           sortedIds.map(([id]) => id)
         )) as { data: Profile[] | null }
+      const profileMap = new Map((profiles ?? []).map((p) => [p.id, p]))
+      const rows = sortedIds
+        .map(([id, metric], idx) => {
+          const profile = profileMap.get(id)
+          if (!profile) return null
+          return { rank: idx + 1, profile, metric }
+        })
+        .filter(Boolean)
+      return NextResponse.json({ category, rows })
+    }
+    case 'debaters': {
+      const { data: argRows } = (await supabase
+        .from('topic_arguments')
+        .select('user_id, upvotes')
+        .gt('upvotes', 0)
+        .limit(5000)) as { data: { user_id: string; upvotes: number }[] | null }
+      const upvoteAgg: Record<string, number> = {}
+      for (const row of argRows ?? []) {
+        upvoteAgg[row.user_id] = (upvoteAgg[row.user_id] ?? 0) + row.upvotes
+      }
+      const sortedIds = Object.entries(upvoteAgg)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, limit)
+      if (sortedIds.length === 0) {
+        return NextResponse.json({ category, rows: [] })
+      }
+      const { data: profiles } = (await supabase
+        .from('profiles')
+        .select('*')
+        .in('id', sortedIds.map(([id]) => id))) as { data: Profile[] | null }
       const profileMap = new Map((profiles ?? []).map((p) => [p.id, p]))
       const rows = sortedIds
         .map(([id, metric], idx) => {

@@ -10,6 +10,7 @@ import {
   Shield,
   Target,
   Zap,
+  MessageSquare,
 } from 'lucide-react'
 import { LeaderboardHero } from './LeaderboardHero'
 import { LeaderboardTable, type LeaderboardRow, type TrendDirection } from './LeaderboardTable'
@@ -25,6 +26,7 @@ export type LeaderboardCategory =
   | 'troll_catchers'
   | 'predictors'
   | 'streaks'
+  | 'debaters'
 
 /** Per-user prediction stats passed from the server. */
 export interface PredictorStats {
@@ -42,6 +44,8 @@ interface LeaderboardTabsProps {
   recentVotesMap: Record<string, number>
   /** userId → prediction stats (provided for the 'predictors' tab). */
   predictorsStatsMap: Record<string, PredictorStats>
+  /** userId → total argument upvotes (for the 'debaters' tab). */
+  debaterUpvotesMap: Record<string, number>
 }
 
 const tabs: {
@@ -78,6 +82,12 @@ const tabs: {
     icon: Zap,
     metricLabel: 'Days',
   },
+  {
+    id: 'debaters',
+    label: 'Top Debaters',
+    icon: MessageSquare,
+    metricLabel: 'Upvotes',
+  },
 ]
 
 function daysSince(iso: string): number {
@@ -92,6 +102,7 @@ export function LeaderboardTabs({
   lawsAuthoredMap,
   recentVotesMap,
   predictorsStatsMap,
+  debaterUpvotesMap,
 }: LeaderboardTabsProps) {
   const [activeTab, setActiveTab] = useState<LeaderboardCategory>('overall')
   const activeConfig = tabs.find((t) => t.id === activeTab)!
@@ -141,6 +152,10 @@ export function LeaderboardTabs({
           value = profile.vote_streak ?? 0
           trend = value >= 30 ? 'up' : value >= 7 ? 'flat' : 'flat'
           break
+        case 'debaters':
+          value = debaterUpvotesMap[profile.id] ?? 0
+          trend = value >= 50 ? 'up' : value >= 10 ? 'flat' : 'flat'
+          break
       }
 
       // Build optional sub-metric string for predictors and streaks
@@ -175,7 +190,7 @@ export function LeaderboardTabs({
         subMetric,
       }
     })
-  }, [activeTab, initial, lawsAuthoredMap, recentVotesMap, predictorsStatsMap])
+  }, [activeTab, initial, lawsAuthoredMap, recentVotesMap, predictorsStatsMap, debaterUpvotesMap])
 
   const topThree = rows.slice(0, 3).map((r) => r.profile)
 
@@ -229,7 +244,9 @@ export function LeaderboardTabs({
             ? 'No resolved predictions yet. Be the first to predict a topic outcome!'
             : activeTab === 'streaks'
               ? 'No active streaks yet. Vote every day to start one!'
-              : 'No data in this category yet.'}
+              : activeTab === 'debaters'
+                ? 'No argument upvotes yet. Post a compelling argument and earn upvotes!'
+                : 'No data in this category yet.'}
         </div>
       )}
 
@@ -244,6 +261,20 @@ export function LeaderboardTabs({
               <span className="text-white font-semibold">Streaks reset</span> at midnight UTC if you miss a day
             </span>
             <span>Vote daily in the <span className="text-gold">Challenge</span> to keep your streak alive</span>
+          </div>
+        </div>
+      )}
+
+      {/* Debaters footnote */}
+      {activeTab === 'debaters' && rows.length > 0 && (
+        <div className="mt-4 rounded-xl border border-surface-300 bg-surface-100 px-4 py-3">
+          <div className="flex flex-wrap items-start gap-x-6 gap-y-2 text-[11px] font-mono text-surface-500">
+            <span>
+              <span className="text-white font-semibold">Upvotes</span> — total upvotes earned across all posted arguments
+            </span>
+            <span>
+              Write compelling <span className="text-for-400">FOR</span> or <span className="text-against-400">AGAINST</span> arguments on any topic to climb this board
+            </span>
           </div>
         </div>
       )}
