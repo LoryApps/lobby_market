@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useMotionValue, useTransform, type PanInfo } from 'framer-motion'
 import {
   ArrowLeft,
   Check,
@@ -19,6 +19,9 @@ import { BottomNav } from '@/components/layout/BottomNav'
 import { Badge } from '@/components/ui/Badge'
 import { cn } from '@/lib/utils/cn'
 import type { RapidTopic, RapidResponse } from '@/app/api/rapid/route'
+
+// Pixels of horizontal drag required to commit a swipe vote
+const SWIPE_THRESHOLD = 80
 
 // ─── Category colour map ──────────────────────────────────────────────────────
 
@@ -69,8 +72,15 @@ function TopicCard({ topic, onVote, onNext, isAuthenticated }: TopicCardProps) {
   const [resultVotes, setResultVotes] = useState<number>(topic.total_votes)
   const autoAdvanceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
+  // Drag state for swipe-to-vote
+  const dragX = useMotionValue(0)
+  const cardRotate = useTransform(dragX, [-120, 0, 120], [-8, 0, 8])
+  const forOverlayOpacity = useTransform(dragX, [0, SWIPE_THRESHOLD], [0, 1])
+  const againstOverlayOpacity = useTransform(dragX, [-SWIPE_THRESHOLD, 0], [1, 0])
+
   const colors = categoryColor(topic.category)
   const statusBadge = STATUS_BADGE[topic.status] ?? 'proposed'
+  const canSwipe = voteState === 'idle' && isAuthenticated
 
   async function handleVote(side: 'blue' | 'red') {
     if (voteState !== 'idle' || !isAuthenticated) return
@@ -91,6 +101,17 @@ function TopicCard({ topic, onVote, onNext, isAuthenticated }: TopicCardProps) {
     autoAdvanceRef.current = setTimeout(onNext, 2000)
   }
 
+  function handleDragEnd(_e: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) {
+    const offset = info.offset.x
+    if (offset > SWIPE_THRESHOLD) {
+      handleVote('blue')
+    } else if (offset < -SWIPE_THRESHOLD) {
+      handleVote('red')
+    }
+    // Spring back if threshold not met — Framer handles this via dragConstraints
+    dragX.set(0)
+  }
+
   useEffect(() => {
     return () => {
       if (autoAdvanceRef.current) clearTimeout(autoAdvanceRef.current)
@@ -103,12 +124,20 @@ function TopicCard({ topic, onVote, onNext, isAuthenticated }: TopicCardProps) {
 
   return (
     <div className="relative w-full max-w-md mx-auto flex flex-col h-full min-h-0">
-      {/* Card body */}
+      {/* Card body — draggable when idle and authenticated */}
       <motion.div
         layout
+        style={{ rotate: cardRotate, x: dragX }}
+        drag={canSwipe ? 'x' : false}
+        dragDirectionLock
+        dragElastic={{ left: 0.18, right: 0.18 }}
+        dragConstraints={{ left: 0, right: 0 }}
+        dragMomentum={false}
+        onDragEnd={handleDragEnd}
         className={cn(
-          'flex-1 flex flex-col rounded-3xl border overflow-hidden',
+          'flex-1 flex flex-col rounded-3xl border overflow-hidden relative',
           'bg-surface-100 shadow-2xl shadow-black/60',
+          canSwipe && 'cursor-grab active:cursor-grabbing touch-none',
           voted
             ? chosenSide === 'blue'
               ? 'border-for-500/50'
@@ -116,6 +145,32 @@ function TopicCard({ topic, onVote, onNext, isAuthenticated }: TopicCardProps) {
             : 'border-surface-300'
         )}
       >
+        {/* FOR swipe overlay (drag right) */}
+        {canSwipe && (
+          <motion.div
+            style={{ opacity: forOverlayOpacity }}
+            className="absolute inset-0 rounded-3xl bg-for-500/20 border-2 border-for-500/60 z-10 pointer-events-none flex items-center justify-end pr-8"
+          >
+            <div className="flex flex-col items-center gap-1">
+              <ThumbsUp className="h-10 w-10 text-for-400 drop-shadow-lg" aria-hidden="true" />
+              <span className="text-xs font-mono font-bold text-for-300 uppercase tracking-widest">FOR</span>
+            </div>
+          </motion.div>
+        )}
+
+        {/* AGAINST swipe overlay (drag left) */}
+        {canSwipe && (
+          <motion.div
+            style={{ opacity: againstOverlayOpacity }}
+            className="absolute inset-0 rounded-3xl bg-against-500/20 border-2 border-against-500/60 z-10 pointer-events-none flex items-center justify-start pl-8"
+          >
+            <div className="flex flex-col items-center gap-1">
+              <ThumbsDown className="h-10 w-10 text-against-400 drop-shadow-lg" aria-hidden="true" />
+              <span className="text-xs font-mono font-bold text-against-300 uppercase tracking-widest">AGAINST</span>
+            </div>
+          </motion.div>
+        )}
+
         {/* Header strip */}
         <div className={cn('px-5 pt-5 pb-3 flex items-start justify-between gap-3', colors.bg)}>
           <div className="flex items-center gap-2 flex-wrap">
@@ -132,6 +187,7 @@ function TopicCard({ topic, onVote, onNext, isAuthenticated }: TopicCardProps) {
             href={`/topic/${topic.id}`}
             className="flex-shrink-0 flex items-center gap-1 text-[11px] font-mono text-surface-500 hover:text-white transition-colors"
             aria-label="View full topic"
+            draggable={false}
           >
             Full debate
             <ChevronRight className="h-3 w-3" />
@@ -140,10 +196,25 @@ function TopicCard({ topic, onVote, onNext, isAuthenticated }: TopicCardProps) {
 
         {/* Topic statement */}
         <div className="flex-1 flex items-center px-5 py-6">
-          <p className="text-xl sm:text-2xl font-semibold text-white leading-snug">
+          <p className="text-xl sm:text-2xl font-semibold text-white leading-snug select-none">
             {topic.statement}
           </p>
         </div>
+
+        {/* Swipe hint — only shown before first interaction */}
+        {canSwipe && (
+          <div className="px-5 pb-2 flex items-center justify-center gap-3 text-[10px] font-mono text-surface-600 select-none">
+            <span className="flex items-center gap-1">
+              <ThumbsDown className="h-2.5 w-2.5 text-against-600" aria-hidden="true" />
+              swipe left
+            </span>
+            <span className="h-3 w-px bg-surface-600" />
+            <span className="flex items-center gap-1">
+              swipe right
+              <ThumbsUp className="h-2.5 w-2.5 text-for-600" aria-hidden="true" />
+            </span>
+          </div>
+        )}
 
         {/* Result bar — shown after voting */}
         <AnimatePresence>
