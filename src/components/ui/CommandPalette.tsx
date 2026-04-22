@@ -215,6 +215,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'signals',
+    label: 'Signals',
+    sublabel: 'Platform-wide consensus signals — breaking, contested, momentum',
+    href: '/signals',
+    icon: Activity,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+  },
+  {
+    type: 'link',
     id: 'activity',
     label: 'Activity',
     sublabel: 'What\'s happening in the Lobby',
