@@ -28,6 +28,7 @@ import {
   Flame,
   FileWarning,
   Layers,
+  BarChart2,
 } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { createClient } from '@/lib/supabase/client'
@@ -46,6 +47,7 @@ const navItems: NavItem[] = [
   { href: '/predictions', label: 'Predictions', icon: Target },
   { href: '/trending', label: 'Trending', icon: TrendingUp },
   { href: '/surge', label: 'Surge', icon: Flame },
+  { href: '/shifts', label: 'Opinion Shifts', icon: BarChart2 },
   { href: '/split', label: 'The Split', icon: GitFork },
   { href: '/floor', label: 'The Floor', icon: Landmark },
   { href: '/law', label: 'Codex', icon: Scale },
