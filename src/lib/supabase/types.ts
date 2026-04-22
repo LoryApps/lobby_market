@@ -1533,6 +1533,60 @@ export type Database = {
           }
         ];
       };
+      topic_collections: {
+        Row: {
+          id: string;
+          user_id: string;
+          name: string;
+          description: string | null;
+          is_public: boolean;
+          item_count: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          name: string;
+          description?: string | null;
+          is_public?: boolean;
+          item_count?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          name?: string;
+          description?: string | null;
+          is_public?: boolean;
+          item_count?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      collection_items: {
+        Row: {
+          collection_id: string;
+          topic_id: string;
+          note: string | null;
+          added_at: string;
+        };
+        Insert: {
+          collection_id: string;
+          topic_id: string;
+          note?: string | null;
+          added_at?: string;
+        };
+        Update: {
+          collection_id?: string;
+          topic_id?: string;
+          note?: string | null;
+          added_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;

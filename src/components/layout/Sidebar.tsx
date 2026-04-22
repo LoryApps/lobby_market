@@ -27,6 +27,7 @@ import {
   ThumbsUp,
   Flame,
   FileWarning,
+  Layers,
 } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { createClient } from '@/lib/supabase/client'
@@ -61,6 +62,7 @@ const navItems: NavItem[] = [
     moderatorOnly: true,
   },
   { href: '/arguments', label: 'Top Arguments', icon: ThumbsUp },
+  { href: '/collections', label: 'Collections', icon: Layers },
   { href: '/saved', label: 'Saved', icon: Bookmark },
   { href: '/leaderboard', label: 'Leaderboard', icon: Trophy },
   { href: '/profile/me', label: 'My Profile', icon: UserCircle },

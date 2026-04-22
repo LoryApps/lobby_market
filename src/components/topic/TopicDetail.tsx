@@ -43,6 +43,7 @@ import { TopicSources } from '@/components/topic/TopicSources'
 import { ReportButton } from '@/components/moderation/ReportButton'
 import { SharePanel } from '@/components/ui/SharePanel'
 import { BookmarkButton } from '@/components/ui/BookmarkButton'
+import { AddToCollectionButton } from '@/components/ui/AddToCollectionButton'
 import { TopicViewers } from '@/components/topic/TopicViewers'
 import { ArgumentSpotlight } from '@/components/topic/ArgumentSpotlight'
 import { TopicSubscribeButton } from '@/components/topic/TopicSubscribeButton'
@@ -228,6 +229,7 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
           <div className="ml-auto flex items-center gap-2">
             <TopicSubscribeButton topicId={topic.id} />
             <BookmarkButton topicId={topic.id} />
+            <AddToCollectionButton topicId={topic.id} />
             <Link
               href={`/compare?a=${topic.id}`}
               className={cn(
