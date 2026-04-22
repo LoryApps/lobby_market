@@ -265,6 +265,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'chains',
+    label: 'Topic Chains',
+    sublabel: 'Browse topic lineages and continuation trees',
+    href: '/chains',
+    icon: GitFork,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
     id: 'categories',
     label: 'Categories',
     sublabel: 'Browse topics by category',
