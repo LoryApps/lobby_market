@@ -54,6 +54,7 @@ import { useFeedStore } from '@/lib/stores/feed-store'
 import { getTopicSignal, SIGNAL_PILL_CLASSES } from '@/lib/utils/topic-signal'
 import { Clock, Flame, Gavel, Swords, TrendingUp, Zap } from 'lucide-react'
 import { TopicReactions } from '@/components/topic/TopicReactions'
+import { ArgumentContributors } from '@/components/topic/ArgumentContributors'
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary'
 
 const SIGNAL_ICONS_DETAIL: Record<string, typeof Flame> = {
@@ -584,6 +585,11 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
             {/* Related topics — discovery section */}
             <ErrorBoundary size="sm" label="Couldn't load related topics" className="mt-8">
               <RelatedTopics topicId={topic.id} className="mt-8" />
+            </ErrorBoundary>
+
+            {/* Top argument contributors — ranked by upvotes received */}
+            <ErrorBoundary size="sm" label="Couldn't load contributors" className="mt-6">
+              <ArgumentContributors topicId={topic.id} className="mt-6" />
             </ErrorBoundary>
 
             {/* Extra bottom padding on mobile so the sticky CTA doesn't overlap content */}
