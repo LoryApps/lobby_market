@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import {
   ArrowLeft,
   MessageSquare,
+  ScrollText,
   ThumbsUp,
   ThumbsDown,
   Users,
@@ -331,13 +332,22 @@ export default async function VotersPage({ params }: VotersPageProps) {
       <main className="max-w-3xl mx-auto px-4 py-8 pb-24 md:pb-12">
 
         {/* ── Back link ── */}
-        <Link
-          href={`/topic/${params.id}`}
-          className="inline-flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-white transition-colors mb-6"
-        >
-          <ArrowLeft className="h-3.5 w-3.5" />
-          Back to topic
-        </Link>
+        <div className="flex items-center justify-between mb-6">
+          <Link
+            href={`/topic/${params.id}`}
+            className="inline-flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-white transition-colors"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" />
+            Back to topic
+          </Link>
+          <Link
+            href={`/topic/${params.id}/transcript`}
+            className="inline-flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-white transition-colors"
+          >
+            <ScrollText className="h-3.5 w-3.5" />
+            View transcript
+          </Link>
+        </div>
 
         {/* ── Topic statement header ── */}
         <div className="bg-surface-100 border border-surface-300 rounded-2xl p-5 mb-6">

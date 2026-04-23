@@ -13,6 +13,7 @@ import {
   Megaphone,
   MessageSquare,
   Newspaper,
+  ScrollText,
   Tag,
   ThumbsUp,
   Users,
@@ -400,6 +401,13 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
                     >
                       <BookOpen className="h-3.5 w-3.5" />
                       Read brief
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/transcript`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-white transition-colors"
+                    >
+                      <ScrollText className="h-3.5 w-3.5" />
+                      Transcript
                     </Link>
                   </div>
                 )}
