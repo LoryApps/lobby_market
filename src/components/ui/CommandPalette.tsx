@@ -65,6 +65,7 @@ import {
   Globe,
   Sparkles,
   Timer,
+  MessageSquare,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -251,6 +252,16 @@ const QUICK_LINKS: QuickLink[] = [
     sublabel: 'Real-time stream of arguments being posted right now',
     href: '/live',
     icon: Radio,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-900/50',
+  },
+  {
+    type: 'link',
+    id: 'hot-takes',
+    label: 'Hot Takes',
+    sublabel: "Citizens' unfiltered vote reasons — what people actually think",
+    href: '/hot-takes',
+    icon: MessageSquare,
     iconColor: 'text-against-400',
     iconBg: 'bg-against-900/50',
   },
