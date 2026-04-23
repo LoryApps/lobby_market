@@ -1587,6 +1587,38 @@ export type Database = {
         };
         Relationships: [];
       };
+      lobby_snapshots: {
+        Row: {
+          id: string;
+          lobby_id: string;
+          member_count: number;
+          influence_score: number;
+          recorded_at: string;
+        };
+        Insert: {
+          id?: string;
+          lobby_id: string;
+          member_count?: number;
+          influence_score?: number;
+          recorded_at?: string;
+        };
+        Update: {
+          id?: string;
+          lobby_id?: string;
+          member_count?: number;
+          influence_score?: number;
+          recorded_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "lobby_snapshots_lobby_id_fkey";
+            columns: ["lobby_id"];
+            isOneToOne: false;
+            referencedRelation: "lobbies";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
     };
     Views: {
       [_ in never]: never;
