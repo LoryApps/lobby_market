@@ -11,6 +11,7 @@ import {
   Globe,
   Loader2,
   Settings,
+  Share2,
   UserCheck,
   UserMinus,
   UserPlus,
@@ -391,7 +392,7 @@ export function ProfileHeader({
       {/* Actions row */}
       <div className="relative mt-6 flex items-center gap-3">
         {isOwner ? (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <Link href="/profile/settings">
               <Button variant="default" size="md">
                 <Settings className="h-4 w-4" />
@@ -402,6 +403,12 @@ export function ProfileHeader({
               <Button variant="default" size="md">
                 <BarChart2 className="h-4 w-4" />
                 Analytics
+              </Button>
+            </Link>
+            <Link href={`/share/profile/${encodeURIComponent(profile.username)}`}>
+              <Button variant="default" size="md" title="Share your civic card">
+                <Share2 className="h-4 w-4" />
+                Share card
               </Button>
             </Link>
           </div>
@@ -440,6 +447,13 @@ export function ProfileHeader({
               <Button variant="default" size="md" title="Compare your stances">
                 <GitCompare className="h-4 w-4" />
                 Compare
+              </Button>
+            </Link>
+
+            {/* Share civic card */}
+            <Link href={`/share/profile/${encodeURIComponent(profile.username)}`}>
+              <Button variant="default" size="md" title="Share their civic card">
+                <Share2 className="h-4 w-4" />
               </Button>
             </Link>
           </div>
