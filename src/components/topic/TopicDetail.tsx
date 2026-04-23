@@ -169,7 +169,7 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [topic.id])
 
-  const handleVote = async (side: VoteSide) => {
+  const handleVote = async (side: VoteSide, reason?: string) => {
     // Optimistic update
     const isBlue = side === 'blue'
     const newTotal = topic.total_votes + 1
@@ -186,7 +186,7 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
       blue_votes: newBlue,
       blue_pct: (newBlue / newTotal) * 100,
     })
-    await castVote(topic.id, side)
+    await castVote(topic.id, side, reason)
   }
 
   const handleSupport = async () => {

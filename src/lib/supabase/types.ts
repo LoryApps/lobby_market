@@ -283,6 +283,7 @@ export type Database = {
           user_id: string;
           topic_id: string;
           side: Database["public"]["Enums"]["vote_side"];
+          reason: string | null;
           created_at: string;
         };
         Insert: {
@@ -290,6 +291,7 @@ export type Database = {
           user_id: string;
           topic_id: string;
           side: Database["public"]["Enums"]["vote_side"];
+          reason?: string | null;
           created_at?: string;
         };
         Update: {
@@ -297,6 +299,7 @@ export type Database = {
           user_id?: string;
           topic_id?: string;
           side?: Database["public"]["Enums"]["vote_side"];
+          reason?: string | null;
           created_at?: string;
         };
         Relationships: [];

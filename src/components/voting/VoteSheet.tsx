@@ -10,13 +10,14 @@
  *   - Live FOR / AGAINST percentage bar
  *   - Vote count + optional deadline countdown
  *   - Large thumb-friendly FOR / AGAINST buttons
+ *   - Optional "hot take" reason input (≤140 chars) before confirming
  *   - Post-vote confirmation state with related-topic nudges
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowRight, CheckCircle2, Compass, ThumbsDown, ThumbsUp, Timer } from 'lucide-react'
+import { ArrowLeft, ArrowRight, CheckCircle2, Compass, MessageSquare, ThumbsDown, ThumbsUp, Timer } from 'lucide-react'
 import { BottomSheet } from '@/components/ui/BottomSheet'
 import { StanceShareButton } from '@/components/voting/StanceShareButton'
 import { cn } from '@/lib/utils/cn'
@@ -145,10 +146,12 @@ function RelatedChip({ topic, onClose }: { topic: RelatedTopic; onClose: () => v
 
 function VoteConfirmed({
   side,
+  reason,
   topic,
   onClose,
 }: {
   side: VoteSide
+  reason: string | null
   topic: Topic
   onClose: () => void
 }) {
@@ -216,6 +219,27 @@ function VoteConfirmed({
         </p>
       </div>
 
+      {/* Show the reason if provided */}
+      {reason && (
+        <motion.div
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.1 }}
+          className={cn(
+            'w-full rounded-xl border px-4 py-3',
+            isFor
+              ? 'bg-for-600/10 border-for-500/30'
+              : 'bg-against-600/10 border-against-500/30'
+          )}
+        >
+          <div className="flex items-center gap-1.5 mb-1.5">
+            <MessageSquare className="h-3 w-3 text-surface-500" aria-hidden="true" />
+            <span className="text-[10px] font-mono uppercase tracking-widest text-surface-500">Your hot take</span>
+          </div>
+          <p className="text-sm font-mono text-surface-300 leading-relaxed">&ldquo;{reason}&rdquo;</p>
+        </motion.div>
+      )}
+
       {/* Share stance CTA */}
       <StanceShareButton
         topicId={topic.id}
@@ -253,13 +277,151 @@ function VoteConfirmed({
   )
 }
 
+// ─── Reason step ──────────────────────────────────────────────────────────────
+
+const MAX_REASON = 140
+
+function ReasonStep({
+  side,
+  onSubmit,
+  onBack,
+  disabled,
+}: {
+  side: VoteSide
+  onSubmit: (reason: string | null) => void
+  onBack: () => void
+  disabled: boolean
+}) {
+  const [text, setText] = useState('')
+  const isFor = side === 'blue'
+  const remaining = MAX_REASON - text.length
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  // Auto-focus the textarea when this step mounts
+  useEffect(() => {
+    const t = setTimeout(() => textareaRef.current?.focus(), 50)
+    return () => clearTimeout(t)
+  }, [])
+
+  return (
+    <motion.div
+      key="reason"
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: 20 }}
+      transition={{ duration: 0.2 }}
+      className="space-y-4"
+    >
+      {/* Side badge */}
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={onBack}
+          aria-label="Go back to vote selection"
+          className="flex items-center justify-center h-8 w-8 rounded-lg bg-surface-200 text-surface-500 hover:bg-surface-300 hover:text-white transition-colors flex-shrink-0"
+        >
+          <ArrowLeft className="h-3.5 w-3.5" />
+        </button>
+        <div
+          className={cn(
+            'flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-mono font-bold',
+            isFor
+              ? 'bg-for-600/20 border border-for-600/40 text-for-400'
+              : 'bg-against-600/20 border border-against-600/40 text-against-400'
+          )}
+        >
+          {isFor ? <ThumbsUp className="h-3.5 w-3.5" aria-hidden="true" /> : <ThumbsDown className="h-3.5 w-3.5" aria-hidden="true" />}
+          Voting {isFor ? 'FOR' : 'AGAINST'}
+        </div>
+      </div>
+
+      {/* Prompt */}
+      <div>
+        <label htmlFor="vote-reason" className="block text-sm font-semibold text-white mb-1">
+          Add your hot take <span className="text-surface-500 font-normal">(optional)</span>
+        </label>
+        <p className="text-xs font-mono text-surface-500">
+          Why do you vote this way? Up to 140 characters.
+        </p>
+      </div>
+
+      {/* Textarea */}
+      <div className="relative">
+        <textarea
+          id="vote-reason"
+          ref={textareaRef}
+          value={text}
+          onChange={(e) => setText(e.target.value.slice(0, MAX_REASON))}
+          placeholder={isFor
+            ? 'e.g. "This benefits the most people by…"'
+            : 'e.g. "The evidence doesn\'t support this because…"'}
+          rows={3}
+          disabled={disabled}
+          aria-describedby="reason-char-count"
+          className={cn(
+            'w-full resize-none rounded-xl border px-4 py-3',
+            'bg-surface-200 text-white text-sm font-mono leading-relaxed',
+            'placeholder:text-surface-600',
+            'focus:outline-none focus:ring-2',
+            isFor
+              ? 'border-surface-300 focus:border-for-500/50 focus:ring-for-500/20'
+              : 'border-surface-300 focus:border-against-500/50 focus:ring-against-500/20',
+            'transition-colors disabled:opacity-50'
+          )}
+        />
+        <span
+          id="reason-char-count"
+          aria-live="polite"
+          className={cn(
+            'absolute bottom-2.5 right-3 text-[10px] font-mono tabular-nums',
+            remaining <= 20 ? 'text-against-400' : 'text-surface-600'
+          )}
+        >
+          {remaining}
+        </span>
+      </div>
+
+      {/* Actions */}
+      <div className="flex gap-2 pt-1">
+        <button
+          type="button"
+          disabled={disabled}
+          onClick={() => onSubmit(null)}
+          className={cn(
+            'flex-1 py-3 rounded-xl font-mono font-semibold text-sm',
+            'border border-surface-400 text-surface-400',
+            'hover:border-surface-300 hover:text-surface-300',
+            'transition-colors disabled:opacity-40'
+          )}
+        >
+          Skip
+        </button>
+        <button
+          type="button"
+          disabled={disabled}
+          onClick={() => onSubmit(text.trim() || null)}
+          className={cn(
+            'flex-[2] py-3 rounded-xl font-mono font-bold text-sm',
+            'transition-colors disabled:opacity-40',
+            isFor
+              ? 'bg-for-600 text-white hover:bg-for-500'
+              : 'bg-against-600 text-white hover:bg-against-500'
+          )}
+        >
+          {disabled ? 'Casting vote…' : 'Cast Vote'}
+        </button>
+      </div>
+    </motion.div>
+  )
+}
+
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
 interface VoteSheetProps {
   open: boolean
   onClose: () => void
   topic: Topic
-  onVote: (side: VoteSide) => Promise<void> | void
+  onVote: (side: VoteSide, reason?: string) => Promise<void> | void
   hasVoted: boolean
   votedSide: VoteSide | null | undefined
 }
@@ -272,16 +434,25 @@ export function VoteSheet({
   hasVoted,
   votedSide,
 }: VoteSheetProps) {
-  const [pending, setPending] = useState<VoteSide | null>(null)
-  const [confirmed, setConfirmed] = useState<VoteSide | null>(null)
+  // 'select' → user picks FOR/AGAINST
+  // 'reason' → optional hot take input
+  // 'confirmed' → submitted, showing post-vote state
+  const [step, setStep] = useState<'select' | 'reason' | 'confirmed'>('select')
+  const [selectedSide, setSelectedSide] = useState<VoteSide | null>(null)
+  const [confirmedSide, setConfirmedSide] = useState<VoteSide | null>(null)
+  const [confirmedReason, setConfirmedReason] = useState<string | null>(null)
+  const [submitting, setSubmitting] = useState(false)
   const mountedRef = useRef(true)
 
   // Reset local state when sheet closes
   useEffect(() => {
     if (!open) {
       const t = setTimeout(() => {
-        setPending(null)
-        setConfirmed(null)
+        setStep('select')
+        setSelectedSide(null)
+        setConfirmedSide(null)
+        setConfirmedReason(null)
+        setSubmitting(false)
       }, 350) // after exit animation
       return () => clearTimeout(t)
     }
@@ -292,24 +463,40 @@ export function VoteSheet({
     return () => { mountedRef.current = false }
   }, [])
 
-  const handleVote = useCallback(
-    async (side: VoteSide) => {
-      if (pending || hasVoted) return
-      setPending(side)
+  const handleSideSelect = useCallback(
+    (side: VoteSide) => {
+      if (submitting || hasVoted) return
+      setSelectedSide(side)
+      setStep('reason')
+    },
+    [submitting, hasVoted]
+  )
+
+  const handleReasonSubmit = useCallback(
+    async (reason: string | null) => {
+      if (!selectedSide || submitting) return
+      setSubmitting(true)
       try {
-        await onVote(side)
+        await onVote(selectedSide, reason ?? undefined)
         if (mountedRef.current) {
-          setConfirmed(side)
-          setPending(null)
+          setConfirmedSide(selectedSide)
+          setConfirmedReason(reason)
+          setStep('confirmed')
+          setSubmitting(false)
         }
       } catch {
         if (mountedRef.current) {
-          setPending(null)
+          setSubmitting(false)
         }
       }
     },
-    [pending, hasVoted, onVote]
+    [selectedSide, submitting, onVote]
   )
+
+  const handleBack = useCallback(() => {
+    setStep('select')
+    setSelectedSide(null)
+  }, [])
 
   const forPct = Math.round(topic.blue_pct ?? 50)
   const againstPct = 100 - forPct
@@ -320,8 +507,22 @@ export function VoteSheet({
     <BottomSheet open={open} onClose={onClose} title="Cast your vote" maxHeight="90dvh">
       <div className="px-5 py-5 space-y-5">
         <AnimatePresence mode="wait" initial={false}>
-          {confirmed ? (
-            <VoteConfirmed key="confirmed" side={confirmed} topic={topic} onClose={onClose} />
+          {step === 'confirmed' && confirmedSide ? (
+            <VoteConfirmed
+              key="confirmed"
+              side={confirmedSide}
+              reason={confirmedReason}
+              topic={topic}
+              onClose={onClose}
+            />
+          ) : step === 'reason' && selectedSide ? (
+            <ReasonStep
+              key="reason"
+              side={selectedSide}
+              onSubmit={handleReasonSubmit}
+              onBack={handleBack}
+              disabled={submitting}
+            />
           ) : (
             <motion.div
               key="voting"
@@ -376,61 +577,39 @@ export function VoteSheet({
                   {/* FOR */}
                   <button
                     type="button"
-                    disabled={!!pending}
-                    onClick={() => handleVote('blue')}
+                    disabled={submitting}
+                    onClick={() => handleSideSelect('blue')}
                     aria-label={`Vote FOR — ${forPct}% currently agree`}
                     className={cn(
                       'relative flex flex-col items-center justify-center gap-2',
                       'rounded-2xl py-5 px-3 font-mono font-bold text-sm transition-all',
                       'border-2',
-                      pending === 'blue'
-                        ? 'bg-for-600 border-for-500 text-white scale-95'
-                        : 'bg-for-600/20 border-for-600/50 text-for-300 hover:bg-for-600/30 hover:border-for-500 active:scale-95',
-                      !!pending && pending !== 'blue' && 'opacity-40 pointer-events-none'
+                      'bg-for-600/20 border-for-600/50 text-for-300 hover:bg-for-600/30 hover:border-for-500 active:scale-95',
+                      submitting && 'opacity-40 pointer-events-none'
                     )}
                   >
                     <ThumbsUp className="h-6 w-6" aria-hidden="true" />
                     <span className="tracking-widest uppercase text-xs">For</span>
                     <span className="text-xl font-bold text-white">{forPct}%</span>
-                    {pending === 'blue' && (
-                      <motion.span
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="absolute inset-0 rounded-2xl bg-for-500/20 flex items-center justify-center"
-                      >
-                        <span className="sr-only">Submitting…</span>
-                      </motion.span>
-                    )}
                   </button>
 
                   {/* AGAINST */}
                   <button
                     type="button"
-                    disabled={!!pending}
-                    onClick={() => handleVote('red')}
+                    disabled={submitting}
+                    onClick={() => handleSideSelect('red')}
                     aria-label={`Vote AGAINST — ${againstPct}% currently disagree`}
                     className={cn(
                       'relative flex flex-col items-center justify-center gap-2',
                       'rounded-2xl py-5 px-3 font-mono font-bold text-sm transition-all',
                       'border-2',
-                      pending === 'red'
-                        ? 'bg-against-600 border-against-500 text-white scale-95'
-                        : 'bg-against-600/20 border-against-600/50 text-against-300 hover:bg-against-600/30 hover:border-against-500 active:scale-95',
-                      !!pending && pending !== 'red' && 'opacity-40 pointer-events-none'
+                      'bg-against-600/20 border-against-600/50 text-against-300 hover:bg-against-600/30 hover:border-against-500 active:scale-95',
+                      submitting && 'opacity-40 pointer-events-none'
                     )}
                   >
                     <ThumbsDown className="h-6 w-6" aria-hidden="true" />
                     <span className="tracking-widest uppercase text-xs">Against</span>
                     <span className="text-xl font-bold text-white">{againstPct}%</span>
-                    {pending === 'red' && (
-                      <motion.span
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="absolute inset-0 rounded-2xl bg-against-500/20 flex items-center justify-center"
-                      >
-                        <span className="sr-only">Submitting…</span>
-                      </motion.span>
-                    )}
                   </button>
                 </div>
               )}
