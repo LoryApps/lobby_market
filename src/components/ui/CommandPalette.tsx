@@ -386,6 +386,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'civic-calendar',
+    label: 'Civic Calendar',
+    sublabel: 'Upcoming debates, voting deadlines, and new laws',
+    href: '/calendar',
+    icon: Calendar,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
     id: 'compass',
     label: 'Political Compass',
     sublabel: 'See where your votes place you on the spectrum',
