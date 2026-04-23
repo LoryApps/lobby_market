@@ -30,6 +30,7 @@ import {
   MessageSquare,
   MessageSquarePlus,
   Send,
+  Share2,
   ThumbsDown,
   ThumbsUp,
   Trash2,
@@ -652,6 +653,18 @@ function ArgumentCard({
             <Copy className="h-3 w-3" />
           )}
         </button>
+
+        {/* Share as quote card */}
+        <a
+          href={`/share/argument/${arg.id}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Share as quote card"
+          title="Share as quote card"
+          className="flex items-center justify-center p-1.5 rounded-lg transition-all text-surface-600 hover:text-purple hover:bg-purple/10"
+        >
+          <Share2 className="h-3 w-3" />
+        </a>
 
         {/* Report — only for other users' arguments */}
         {currentUserId && !isOwn && (
