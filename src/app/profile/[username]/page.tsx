@@ -127,7 +127,7 @@ export default async function ProfileUsernamePage({
   // Fetch recent votes (50) along with topic statement for display
   const { data: votesRaw } = (await supabase
     .from('votes')
-    .select('id, topic_id, side, created_at')
+    .select('id, topic_id, side, created_at, reason')
     .eq('user_id', profile.id)
     .order('created_at', { ascending: false })
     .limit(50)) as { data: Vote[] | null }
@@ -171,6 +171,7 @@ export default async function ProfileUsernamePage({
       created_at: v.created_at,
       topic_statement: topic?.statement ?? null,
       win_margin: winMargin,
+      reason: v.reason ?? null,
     }
   })
 

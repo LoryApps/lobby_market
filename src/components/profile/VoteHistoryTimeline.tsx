@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import Link from 'next/link'
+import { MessageSquare } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import type { VoteSide } from '@/lib/supabase/types'
 
@@ -12,6 +13,7 @@ export interface VoteHistoryEntry {
   created_at: string
   topic_statement?: string | null
   win_margin?: number | null
+  reason?: string | null
 }
 
 interface VoteHistoryTimelineProps {
@@ -75,8 +77,10 @@ export function VoteHistoryTimeline({
             <span className="h-2.5 w-2.5 rounded-full bg-for-500" /> For
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-against-500" />{' '}
-            Against
+            <span className="h-2.5 w-2.5 rounded-full bg-against-500" /> Against
+          </span>
+          <span className="flex items-center gap-1.5">
+            <MessageSquare className="h-2.5 w-2.5 text-gold" aria-hidden="true" /> Hot take
           </span>
         </div>
       </div>
@@ -108,14 +112,19 @@ export function VoteHistoryTimeline({
                     href={`/topic/${vote.topic_id}`}
                     aria-label={`Voted ${vote.side === 'blue' ? 'for' : 'against'} on ${vote.topic_statement ?? 'topic'}`}
                     className={cn(
-                      'block rounded-full ring-2 ring-transparent transition',
+                      'block rounded-full ring-2 ring-transparent transition relative',
                       color,
                       hover,
                       size
                     )}
-                  />
+                  >
+                    {vote.reason && (
+                      <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-gold border border-surface-100" aria-hidden="true" />
+                    )}
+                  </Link>
                   <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition pointer-events-none z-10 whitespace-nowrap rounded-md bg-surface-200 border border-surface-300 px-2 py-1 text-[10px] font-mono text-surface-700">
                     {formatDate(vote.created_at)}
+                    {vote.reason && <span className="ml-1.5 text-gold">· hot take</span>}
                   </div>
                 </motion.div>
               )

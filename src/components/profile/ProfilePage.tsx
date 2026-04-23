@@ -9,6 +9,7 @@ import {
   Scale,
   Trophy,
   LayoutGrid,
+  ThumbsDown,
   ThumbsUp,
 } from 'lucide-react'
 import { ProfileHeader } from './ProfileHeader'
@@ -80,6 +81,74 @@ function StatCard({
       >
         {typeof value === 'number' ? value.toLocaleString() : value}
       </div>
+    </div>
+  )
+}
+
+// ─── Hot Takes panel ──────────────────────────────────────────────────────────
+
+function HotTakesPanel({ votes }: { votes: VoteHistoryEntry[] }) {
+  const hotTakes = votes.filter((v) => v.reason)
+  if (hotTakes.length === 0) return null
+
+  return (
+    <div className="rounded-2xl border border-gold/20 bg-gold/5 p-5 space-y-3">
+      <div className="flex items-center gap-2">
+        <MessageSquare className="h-3.5 w-3.5 text-gold" aria-hidden="true" />
+        <span className="text-[11px] font-mono uppercase tracking-widest text-gold">
+          Hot Takes · {hotTakes.length} {hotTakes.length === 1 ? 'reason' : 'reasons'} given
+        </span>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {hotTakes.slice(0, 6).map((vote) => {
+          const isFor = vote.side === 'blue'
+          return (
+            <Link
+              key={vote.id}
+              href={`/topic/${vote.topic_id}`}
+              className={cn(
+                'group rounded-xl border px-4 py-3 transition-colors space-y-2',
+                isFor
+                  ? 'bg-for-600/10 border-for-600/30 hover:border-for-500/50'
+                  : 'bg-against-600/10 border-against-600/30 hover:border-against-500/50'
+              )}
+            >
+              {/* Stance badge */}
+              <div className="flex items-center gap-1.5">
+                {isFor
+                  ? <ThumbsUp className="h-3 w-3 text-for-400" aria-hidden="true" />
+                  : <ThumbsDown className="h-3 w-3 text-against-400" aria-hidden="true" />}
+                <span className={cn(
+                  'text-[10px] font-mono font-bold uppercase tracking-wider',
+                  isFor ? 'text-for-400' : 'text-against-400'
+                )}>
+                  {isFor ? 'FOR' : 'AGAINST'}
+                </span>
+              </div>
+              {/* Topic */}
+              <p className="text-[11px] font-mono text-surface-500 leading-snug line-clamp-2 group-hover:text-surface-400 transition-colors">
+                {vote.topic_statement ?? 'Topic'}
+              </p>
+              {/* Reason */}
+              <p className={cn(
+                'text-xs font-mono italic leading-snug',
+                isFor ? 'text-for-300' : 'text-against-300'
+              )}>
+                &ldquo;{vote.reason}&rdquo;
+              </p>
+              {/* Date */}
+              <p className="text-[10px] font-mono text-surface-600">
+                {new Date(vote.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+              </p>
+            </Link>
+          )
+        })}
+      </div>
+      {hotTakes.length > 6 && (
+        <p className="text-[11px] font-mono text-surface-500 text-center pt-1">
+          +{hotTakes.length - 6} more hot takes in vote history above
+        </p>
+      )}
     </div>
   )
 }
@@ -376,23 +445,39 @@ export function ProfilePage({
                   <Link
                     key={vote.id}
                     href={`/topic/${vote.topic_id}`}
-                    className="flex items-center gap-3 px-5 py-3 hover:bg-surface-200 transition-colors"
+                    className="flex items-start gap-3 px-5 py-3 hover:bg-surface-200 transition-colors"
                   >
                     <span
                       className={cn(
-                        'h-2.5 w-2.5 rounded-full flex-shrink-0',
+                        'mt-1 h-2.5 w-2.5 rounded-full flex-shrink-0',
                         vote.side === 'blue' ? 'bg-for-500' : 'bg-against-500'
                       )}
                     />
-                    <span className="flex-1 min-w-0 text-sm text-surface-700 truncate">
-                      {vote.topic_statement ?? 'Topic'}
+                    <span className="flex-1 min-w-0">
+                      <span className="block text-sm text-surface-700 truncate">
+                        {vote.topic_statement ?? 'Topic'}
+                      </span>
+                      {vote.reason && (
+                        <span className={cn(
+                          'mt-0.5 flex items-start gap-1.5',
+                          vote.side === 'blue' ? 'text-for-400' : 'text-against-400'
+                        )}>
+                          <MessageSquare className="mt-0.5 h-3 w-3 flex-shrink-0" aria-hidden="true" />
+                          <span className="text-[11px] font-mono italic leading-snug line-clamp-2">
+                            &ldquo;{vote.reason}&rdquo;
+                          </span>
+                        </span>
+                      )}
                     </span>
-                    <span className="text-[10px] font-mono text-surface-500 flex-shrink-0">
+                    <span className="text-[10px] font-mono text-surface-500 flex-shrink-0 mt-0.5">
                       {new Date(vote.created_at).toLocaleDateString()}
                     </span>
                   </Link>
                 ))}
               </div>
+
+              {/* ── My Hot Takes panel ─────────────────────────────────────── */}
+              <HotTakesPanel votes={voteHistory} />
             </motion.div>
           )}
 
