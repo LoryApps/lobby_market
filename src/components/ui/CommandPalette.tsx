@@ -387,6 +387,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'newspaper',
+    label: 'The Lobby Dispatch',
+    sublabel: 'Daily civic front page — debates, laws, voices, numbers',
+    href: '/newspaper',
+    icon: FileText,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'digest',
     label: 'Weekly Digest',
     sublabel: 'Laws, debates, and top voices this week',
