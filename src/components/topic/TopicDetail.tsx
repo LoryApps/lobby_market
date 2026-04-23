@@ -12,6 +12,7 @@ import {
   Info,
   Megaphone,
   MessageSquare,
+  Newspaper,
   Tag,
   ThumbsUp,
   Users,
@@ -232,6 +233,18 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
             <TopicSubscribeButton topicId={topic.id} />
             <BookmarkButton topicId={topic.id} />
             <AddToCollectionButton topicId={topic.id} />
+            <Link
+              href={`/share/debate/${topic.id}`}
+              className={cn(
+                'flex items-center justify-center h-8 w-8 rounded-lg',
+                'bg-surface-200 border border-surface-300 text-surface-500',
+                'hover:bg-surface-300 hover:text-for-400 transition-colors',
+              )}
+              title="Debate Snapshot — share the best arguments"
+              aria-label="View debate snapshot"
+            >
+              <Newspaper className="h-3.5 w-3.5" />
+            </Link>
             <Link
               href={`/compare?a=${topic.id}`}
               className={cn(
