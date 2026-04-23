@@ -8,7 +8,9 @@ import {
   Bookmark,
   BookmarkX,
   ChevronRight,
+  ExternalLink,
   Gavel,
+  Link2,
   Loader2,
   MessageSquare,
   RefreshCw,
@@ -142,9 +144,32 @@ function SavedArgumentCard({
       </div>
 
       {/* Argument content */}
-      <p className="text-sm text-surface-300 leading-relaxed mb-3 line-clamp-4">
+      <p className="text-sm text-surface-300 leading-relaxed mb-2 line-clamp-4">
         {renderWithMentions(arg.content)}
       </p>
+
+      {/* Source citation */}
+      {arg.source_url && (
+        <a
+          href={arg.source_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={cn(
+            'inline-flex items-center gap-1 mb-3 text-[11px] font-mono transition-colors max-w-full',
+            arg.side === 'blue' ? 'text-for-500/80 hover:text-for-400' : 'text-against-500/80 hover:text-against-400'
+          )}
+          aria-label={`Source: ${arg.source_url}`}
+        >
+          <Link2 className="h-3 w-3 flex-shrink-0" aria-hidden />
+          <span className="truncate">
+            {(() => {
+              try { return new URL(arg.source_url).hostname.replace(/^www\./, '') }
+              catch { return arg.source_url }
+            })()}
+          </span>
+          <ExternalLink className="h-2.5 w-2.5 flex-shrink-0 opacity-60" aria-hidden />
+        </a>
+      )}
 
       {/* Footer: topic link + actions */}
       <div className="flex items-end justify-between gap-2 pt-2 border-t border-surface-300/50">

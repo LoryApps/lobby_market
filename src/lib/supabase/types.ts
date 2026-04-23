@@ -1239,6 +1239,7 @@ export type Database = {
           side: "blue" | "red";
           content: string;
           upvotes: number;
+          source_url: string | null;
           created_at: string;
         };
         Insert: {
@@ -1248,6 +1249,7 @@ export type Database = {
           side: "blue" | "red";
           content: string;
           upvotes?: number;
+          source_url?: string | null;
           created_at?: string;
         };
         Update: {
@@ -1257,6 +1259,7 @@ export type Database = {
           side?: "blue" | "red";
           content?: string;
           upvotes?: number;
+          source_url?: string | null;
           created_at?: string;
         };
         Relationships: [];
@@ -1969,6 +1972,7 @@ export interface TopicArgument {
   side: "blue" | "red";
   content: string;
   upvotes: number;
+  source_url: string | null;
   created_at: string;
 }
 

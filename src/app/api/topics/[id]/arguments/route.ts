@@ -92,14 +92,14 @@ export async function POST(
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  let body: { side?: string; content?: string }
+  let body: { side?: string; content?: string; source_url?: string }
   try {
     body = await req.json()
   } catch {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
   }
 
-  const { side, content } = body
+  const { side, content, source_url } = body
 
   if (!side || !['blue', 'red'].includes(side)) {
     return NextResponse.json({ error: 'side must be "blue" or "red"' }, { status: 400 })
@@ -117,6 +117,25 @@ export async function POST(
     )
   }
 
+  let normalizedUrl: string | null = null
+  if (source_url && typeof source_url === 'string') {
+    const u = source_url.trim()
+    if (u) {
+      try {
+        const parsed = new URL(u)
+        if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+          return NextResponse.json({ error: 'Source URL must use http or https' }, { status: 400 })
+        }
+        if (u.length > 2000) {
+          return NextResponse.json({ error: 'Source URL is too long' }, { status: 400 })
+        }
+        normalizedUrl = u
+      } catch {
+        return NextResponse.json({ error: 'Invalid source URL' }, { status: 400 })
+      }
+    }
+  }
+
   const { data: inserted, error } = await supabase
     .from('topic_arguments')
     .insert({
@@ -124,6 +143,7 @@ export async function POST(
       user_id: user.id,
       side: side as 'blue' | 'red',
       content: trimmed,
+      source_url: normalizedUrl,
     })
     .select('*')
     .single()

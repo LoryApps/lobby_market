@@ -221,7 +221,7 @@ export default async function ProfileUsernamePage({
   // Fetch arguments posted by this user, sorted by upvotes desc
   const { data: argsRaw } = await supabase
     .from('topic_arguments')
-    .select('id, side, content, upvotes, created_at, topic_id')
+    .select('id, side, content, upvotes, source_url, created_at, topic_id')
     .eq('user_id', profile.id)
     .order('upvotes', { ascending: false })
     .order('created_at', { ascending: false })
@@ -256,6 +256,7 @@ export default async function ProfileUsernamePage({
       side: a.side as 'blue' | 'red',
       content: a.content,
       upvotes: a.upvotes,
+      source_url: (a as { source_url?: string | null }).source_url ?? null,
       created_at: a.created_at,
       topic_id: a.topic_id,
       topic_statement: topic?.statement ?? null,

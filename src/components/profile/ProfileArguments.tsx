@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import {
   ChevronUp,
+  ExternalLink,
+  Link2,
   MessageSquare,
   ThumbsDown,
   ThumbsUp,
@@ -18,6 +20,7 @@ export interface ProfileArgumentEntry {
   side: 'blue' | 'red'
   content: string
   upvotes: number
+  source_url?: string | null
   created_at: string
   topic_id: string
   topic_statement: string | null
@@ -148,9 +151,32 @@ function ArgumentRow({
       </div>
 
       {/* Argument content */}
-      <p className="text-sm text-surface-700 leading-relaxed mb-4">
+      <p className="text-sm text-surface-700 leading-relaxed mb-2">
         {arg.content}
       </p>
+
+      {/* Citation source URL */}
+      {arg.source_url && (
+        <a
+          href={arg.source_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={cn(
+            'inline-flex items-center gap-1 mb-3 text-[11px] font-mono transition-colors max-w-full',
+            arg.side === 'blue' ? 'text-for-500/80 hover:text-for-400' : 'text-against-500/80 hover:text-against-400'
+          )}
+          aria-label={`Source: ${arg.source_url}`}
+        >
+          <Link2 className="h-3 w-3 flex-shrink-0" aria-hidden />
+          <span className="truncate">
+            {(() => {
+              try { return new URL(arg.source_url).hostname.replace(/^www\./, '') }
+              catch { return arg.source_url }
+            })()}
+          </span>
+          <ExternalLink className="h-2.5 w-2.5 flex-shrink-0 opacity-60" aria-hidden />
+        </a>
+      )}
 
       {/* Topic link */}
       {arg.topic_statement && (

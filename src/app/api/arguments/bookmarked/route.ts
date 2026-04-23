@@ -10,6 +10,7 @@ export interface BookmarkedArgument {
   side: 'blue' | 'red'
   content: string
   upvotes: number
+  source_url: string | null
   created_at: string
   bookmarked_at: string
   author: {
@@ -65,7 +66,7 @@ export async function GET() {
   // Fetch arguments with author join
   const { data: argRows } = await supabase
     .from('topic_arguments')
-    .select('id, topic_id, user_id, side, content, upvotes, created_at')
+    .select('id, topic_id, user_id, side, content, upvotes, source_url, created_at')
     .in('id', argumentIds)
 
   const argMap = new Map<string, typeof argRows extends (infer T)[] | null ? T : never>()
@@ -116,6 +117,7 @@ export async function GET() {
         side: arg.side as 'blue' | 'red',
         content: arg.content,
         upvotes: arg.upvotes,
+        source_url: (arg as { source_url?: string | null }).source_url ?? null,
         created_at: arg.created_at,
         bookmarked_at: bm.created_at,
         author: profileMap.get(arg.user_id) ?? null,

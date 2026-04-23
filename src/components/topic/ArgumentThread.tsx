@@ -24,6 +24,8 @@ import {
   ChevronUp,
   Check,
   Copy,
+  ExternalLink,
+  Link2,
   Loader2,
   MessageSquare,
   MessageSquarePlus,
@@ -526,6 +528,31 @@ function ArgumentCard({
         {/* Content */}
         <p className="text-sm text-surface-300 leading-relaxed">{renderWithMentions(arg.content)}</p>
 
+        {/* Citation source URL */}
+        {arg.source_url && (
+          <a
+            href={arg.source_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={cn(
+              'inline-flex items-center gap-1 mt-1.5 text-[11px] font-mono transition-colors max-w-full',
+              isFor
+                ? 'text-for-500/80 hover:text-for-400'
+                : 'text-against-500/80 hover:text-against-400'
+            )}
+            aria-label={`Source: ${arg.source_url}`}
+          >
+            <Link2 className="h-3 w-3 flex-shrink-0" aria-hidden />
+            <span className="truncate">
+              {(() => {
+                try { return new URL(arg.source_url).hostname.replace(/^www\./, '') }
+                catch { return arg.source_url }
+              })()}
+            </span>
+            <ExternalLink className="h-2.5 w-2.5 flex-shrink-0 opacity-60" aria-hidden />
+          </a>
+        )}
+
         {/* Link preview for the first URL in the argument (if any) */}
         {(() => {
           const url = extractFirstUrl(arg.content)
@@ -709,6 +736,8 @@ function PostArgumentForm({
 }) {
   const [side, setSide] = useState<'blue' | 'red' | null>(null)
   const [content, setContent] = useState('')
+  const [sourceUrl, setSourceUrl] = useState('')
+  const [sourceUrlError, setSourceUrlError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [draftRestored, setDraftRestored] = useState(false)
@@ -733,7 +762,26 @@ function PostArgumentForm({
   }, [])
 
   const remaining = MAX_CHARS - content.length
-  const isValid = side !== null && content.trim().length >= MIN_CHARS && content.trim().length <= MAX_CHARS
+  const isValid = side !== null && content.trim().length >= MIN_CHARS && content.trim().length <= MAX_CHARS && !sourceUrlError
+
+  const handleSourceUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value
+    setSourceUrl(val)
+    if (!val.trim()) {
+      setSourceUrlError(null)
+      return
+    }
+    try {
+      const parsed = new URL(val.trim())
+      if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+        setSourceUrlError('Must be an http or https URL')
+      } else {
+        setSourceUrlError(null)
+      }
+    } catch {
+      setSourceUrlError('Enter a valid URL (e.g. https://example.com)')
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -741,11 +789,13 @@ function PostArgumentForm({
     setSubmitting(true)
     setError(null)
 
+    const urlToSend = sourceUrl.trim() || undefined
+
     try {
       const res = await fetch(`/api/topics/${topicId}/arguments`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ side, content: content.trim() }),
+        body: JSON.stringify({ side, content: content.trim(), source_url: urlToSend }),
       })
 
       const json = await res.json()
@@ -759,6 +809,8 @@ function PostArgumentForm({
       onPosted(json.argument as TopicArgumentWithAuthor)
       setContent('')
       setSide(null)
+      setSourceUrl('')
+      setSourceUrlError(null)
       setMentionQuery(null)
     } catch {
       setError('Network error — please try again')
@@ -925,6 +977,34 @@ function PostArgumentForm({
         >
           {remaining}
         </span>
+      </div>
+
+      {/* Optional source URL */}
+      <div className="space-y-1">
+        <div className="relative flex items-center">
+          <Link2 className="absolute left-3 h-3.5 w-3.5 text-surface-500 pointer-events-none" aria-hidden />
+          <input
+            type="url"
+            value={sourceUrl}
+            onChange={handleSourceUrlChange}
+            placeholder="Source URL (optional — cite your claim)"
+            aria-label="Source URL citation"
+            className={cn(
+              'w-full pl-9 pr-3 py-2.5 rounded-xl text-sm',
+              'bg-surface-200 border transition-colors',
+              'text-white placeholder:text-surface-600',
+              'focus:outline-none focus:ring-1 focus:ring-for-500/20',
+              sourceUrlError
+                ? 'border-against-500/60 focus:border-against-500/60'
+                : 'border-surface-300 focus:border-for-500/60'
+            )}
+          />
+        </div>
+        {sourceUrlError && (
+          <p role="alert" className="text-[11px] text-against-400 font-mono pl-1">
+            {sourceUrlError}
+          </p>
+        )}
       </div>
 
       {error && (
