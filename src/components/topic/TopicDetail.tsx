@@ -56,6 +56,7 @@ import { useFeedStore } from '@/lib/stores/feed-store'
 import { getTopicSignal, SIGNAL_PILL_CLASSES } from '@/lib/utils/topic-signal'
 import { Clock, Flame, Gavel, Swords, TrendingUp, Zap } from 'lucide-react'
 import { TopicReactions } from '@/components/topic/TopicReactions'
+import { TopicHotTakes } from '@/components/topic/TopicHotTakes'
 import { ArgumentContributors } from '@/components/topic/ArgumentContributors'
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary'
 
@@ -595,6 +596,13 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
                   topicId={topic.id}
                   className="mt-6"
                 />
+              </ErrorBoundary>
+            )}
+
+            {/* Community hot takes — vote reasons for this topic */}
+            {topic.total_votes >= 1 && (
+              <ErrorBoundary size="sm" label="Couldn't load hot takes" className="mt-6">
+                <TopicHotTakes topicId={topic.id} />
               </ErrorBoundary>
             )}
 
