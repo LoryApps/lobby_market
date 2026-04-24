@@ -13,6 +13,7 @@
  */
 
 import { useEffect, useState } from 'react'
+import NextLink from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { BookMarked, ChevronDown, ChevronUp, ExternalLink, ThumbsDown, ThumbsUp } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
@@ -247,10 +248,16 @@ export function ArgumentCitationsPanel({ topicId, className }: ArgumentCitations
             </div>
 
             {/* Footer note */}
-            <div className="px-4 pb-3 -mt-1">
-              <p className="text-[10px] font-mono text-surface-600 text-center">
+            <div className="px-4 pb-3 -mt-1 flex items-center justify-between gap-2">
+              <p className="text-[10px] font-mono text-surface-600">
                 Sources linked by participants in their arguments
               </p>
+              <NextLink
+                href="/sources"
+                className="text-[10px] font-mono text-emerald hover:text-emerald/80 transition-colors whitespace-nowrap"
+              >
+                Evidence Index →
+              </NextLink>
             </div>
           </motion.div>
         )}

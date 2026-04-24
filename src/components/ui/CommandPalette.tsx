@@ -66,6 +66,7 @@ import {
   Sparkles,
   Timer,
   MessageSquare,
+  BookOpen,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -564,6 +565,16 @@ const QUICK_LINKS: QuickLink[] = [
     icon: Activity,
     iconColor: 'text-for-400',
     iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
+    id: 'sources',
+    label: 'Evidence Index',
+    sublabel: 'Top external sources cited across all Lobby Market arguments',
+    href: '/sources',
+    icon: BookOpen,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
   },
   {
     type: 'link',
