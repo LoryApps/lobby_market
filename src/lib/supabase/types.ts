@@ -1625,6 +1625,41 @@ export type Database = {
           }
         ];
       };
+      topic_ai_briefs: {
+        Row: {
+          id: string;
+          topic_id: string;
+          brief_text: string;
+          argument_hash: string;
+          model: string;
+          generated_at: string;
+        };
+        Insert: {
+          id?: string;
+          topic_id: string;
+          brief_text: string;
+          argument_hash: string;
+          model?: string;
+          generated_at?: string;
+        };
+        Update: {
+          id?: string;
+          topic_id?: string;
+          brief_text?: string;
+          argument_hash?: string;
+          model?: string;
+          generated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "topic_ai_briefs_topic_id_fkey";
+            columns: ["topic_id"];
+            isOneToOne: true;
+            referencedRelation: "topics";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
     };
     Views: {
       [_ in never]: never;

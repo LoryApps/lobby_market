@@ -59,6 +59,7 @@ import { TopicReactions } from '@/components/topic/TopicReactions'
 import { TopicHotTakes } from '@/components/topic/TopicHotTakes'
 import { ArgumentContributors } from '@/components/topic/ArgumentContributors'
 import { ArgumentCitationsPanel } from '@/components/topic/ArgumentCitationsPanel'
+import { TopicAIBrief } from '@/components/topic/TopicAIBrief'
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary'
 
 const SIGNAL_ICONS_DETAIL: Record<string, typeof Flame> = {
@@ -359,6 +360,8 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
         ) : activeTab === 'arguments' ? (
           <ErrorBoundary size="md" label="Couldn't load arguments">
             <>
+              {/* AI brief — neutral Claude-generated debate summary */}
+              <TopicAIBrief topicId={topic.id} className="mb-6" />
               {/* Spotlight: top FOR + AGAINST argument preview */}
               <ArgumentSpotlight topicId={topic.id} className="mb-6" />
               <ArgumentThread topicId={topic.id} />

@@ -16,6 +16,7 @@ import { BottomNav } from '@/components/layout/BottomNav'
 import { Badge } from '@/components/ui/Badge'
 import { Avatar } from '@/components/ui/Avatar'
 import { BriefVotePanel } from './BriefVotePanel'
+import { TopicAIBrief } from '@/components/topic/TopicAIBrief'
 import type { Topic, Profile } from '@/lib/supabase/types'
 import { cn } from '@/lib/utils/cn'
 
@@ -382,6 +383,9 @@ export default async function TopicBriefPage({ params }: BriefPageProps) {
 
         {/* ── Vote split bar ───────────────────────────────────────────────── */}
         <VoteBar forPct={forPct} totalVotes={totalVotes} />
+
+        {/* ── AI Debate Brief ─────────────────────────────────────────────── */}
+        <TopicAIBrief topicId={params.id} className="mt-6 mb-8" />
 
         {/* ── Context / Wiki ───────────────────────────────────────────────── */}
         {hasContext ? (
