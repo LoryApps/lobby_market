@@ -53,6 +53,7 @@ import {
   Zap,
   GitFork,
   Calendar,
+  Sparkles,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -291,6 +292,16 @@ const QUICK_LINKS: QuickLink[] = [
     icon: Settings,
     iconColor: 'text-surface-400',
     iconBg: 'bg-surface-300/20',
+  },
+  {
+    type: 'link',
+    id: 'coach',
+    label: 'Argument Coach',
+    sublabel: 'AI critique of your arguments — scores on clarity, evidence, logic, persuasion',
+    href: '/coach',
+    icon: Sparkles,
+    iconColor: 'text-for-300',
+    iconBg: 'bg-for-500/10',
   },
   {
     type: 'link',
