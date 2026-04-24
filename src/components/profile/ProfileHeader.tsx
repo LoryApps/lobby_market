@@ -22,6 +22,7 @@ import { Button } from '@/components/ui/Button'
 import { GiftCloutButton } from '@/components/clout/GiftCloutButton'
 import { RoleBadge, getRoleRingClass } from './RoleBadge'
 import { FollowersModal, type FollowTab } from './FollowersModal'
+import { AlignmentBadge } from './AlignmentBadge'
 
 // ── Inline bio markdown renderer ──────────────────────────────────────────────
 // Supports: **bold**, *italic*, `code`, [text](url)
@@ -333,6 +334,11 @@ export function ProfileHeader({
               onClick={() => setModalTab('following')}
             />
           </div>
+
+          {/* Civic alignment badge — shown to logged-in viewers of other profiles */}
+          {viewerId && !isOwner && (
+            <AlignmentBadge targetId={profile.id} className="mb-2" />
+          )}
 
           <div className="flex items-center gap-2 text-xs font-mono text-surface-500 mb-2">
             <Calendar className="h-3.5 w-3.5" />
