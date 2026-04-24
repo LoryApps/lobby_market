@@ -1,8 +1,9 @@
 'use client'
 
 import Link from 'next/link'
-import { Share2, Eye, ThumbsUp, ThumbsDown, MapPin, Flame, Clock, Gavel, Swords, TrendingUp, Zap } from 'lucide-react'
-import { motion, useMotionValue, useTransform, animate } from 'framer-motion'
+import { Share2, Eye, ThumbsUp, ThumbsDown, MapPin, Flame, Clock, Gavel, Swords, TrendingUp, Zap, X } from 'lucide-react'
+import { motion, AnimatePresence, useMotionValue, useTransform, animate } from 'framer-motion'
+import { useRef, useState } from 'react'
 import { cn } from '@/lib/utils/cn'
 import type { Topic, VoteSide } from '@/lib/supabase/types'
 import { Badge } from '@/components/ui/Badge'
@@ -74,8 +75,15 @@ export function TopicCard({ topic, authorName, authorAvatar }: TopicCardProps) {
   const isLaw = topic.status === 'law'
   const signal = getTopicSignal(topic)
 
+  // Hot-take (vote reason) inline prompt state
+  const [pendingVoteSide, setPendingVoteSide] = useState<VoteSide | null>(null)
+  const [hotTakeText, setHotTakeText] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submittedHotTake, setSubmittedHotTake] = useState<string | null>(null)
+  const hotTakeRef = useRef<HTMLTextAreaElement>(null)
+
   // Swipe gesture is only available on active/voting topics the user hasn't voted on yet
-  const canSwipeVote = isVotable && !hasVoted(topic.id)
+  const canSwipeVote = isVotable && !hasVoted(topic.id) && !pendingVoteSide
 
   // ── Motion values ──────────────────────────────────────────────────────────
   const x = useMotionValue(0)
@@ -94,12 +102,12 @@ export function TopicCard({ topic, authorName, authorAvatar }: TopicCardProps) {
 
   // ── Handlers ───────────────────────────────────────────────────────────────
 
-  const handleVote = async (side: VoteSide) => {
+  const handleVote = async (side: VoteSide, reason?: string) => {
     // Best-effort haptic feedback on devices that support it (Android / some PWA)
     if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
       navigator.vibrate(40)
     }
-    await castVote(topic.id, side)
+    await castVote(topic.id, side, reason)
     const isBlue = side === 'blue'
     updateTopic(topic.id, {
       total_votes: topic.total_votes + 1,
@@ -108,6 +116,29 @@ export function TopicCard({ topic, authorName, authorAvatar }: TopicCardProps) {
       blue_pct:
         ((topic.blue_votes + (isBlue ? 1 : 0)) / (topic.total_votes + 1)) * 100,
     })
+  }
+
+  // Button tap: show hot-take form before committing the vote
+  const handleVoteIntent = (side: VoteSide) => {
+    if (hasVoted(topic.id)) return
+    setPendingVoteSide(side)
+    setHotTakeText('')
+    setTimeout(() => hotTakeRef.current?.focus(), 60)
+  }
+
+  // Confirm vote after the hot-take form (reason is optional)
+  const handleConfirmVote = async (reason?: string) => {
+    if (!pendingVoteSide || isSubmitting) return
+    setIsSubmitting(true)
+    const side = pendingVoteSide
+    setPendingVoteSide(null)
+    setHotTakeText('')
+    if (reason) setSubmittedHotTake(reason)
+    try {
+      await handleVote(side, reason)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleSupport = async () => {
@@ -309,29 +340,149 @@ export function TopicCard({ topic, authorName, authorAvatar }: TopicCardProps) {
                     bluePct={topic.blue_pct}
                     totalVotes={topic.total_votes}
                   />
-                  <div onClick={(e) => e.preventDefault()}>
-                    <VoteButton
-                      topicId={topic.id}
-                      bluePct={topic.blue_pct}
-                      onVote={handleVote}
-                      disabled={hasVoted(topic.id)}
-                      votedSide={votedSide}
-                    />
-                  </div>
-                  {/* Share stance — appears after voting */}
+
+                  {/* Hot-take inline form — shown when a vote side is pending */}
+                  <AnimatePresence mode="wait">
+                    {pendingVoteSide ? (
+                      <motion.div
+                        key="hot-take-form"
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -4 }}
+                        transition={{ duration: 0.18 }}
+                        className="space-y-2.5"
+                        onClick={(e) => e.preventDefault()}
+                      >
+                        {/* Header row */}
+                        <div className="flex items-center justify-between">
+                          <span className={cn(
+                            'text-[11px] font-bold font-mono uppercase tracking-widest',
+                            pendingVoteSide === 'blue' ? 'text-for-400' : 'text-against-400',
+                          )}>
+                            {pendingVoteSide === 'blue' ? 'Voting FOR' : 'Voting AGAINST'}
+                          </span>
+                          <button
+                            onClick={() => { setPendingVoteSide(null); setHotTakeText('') }}
+                            aria-label="Cancel vote"
+                            className="text-surface-600 hover:text-surface-400 transition-colors"
+                          >
+                            <X className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
+
+                        {/* Textarea */}
+                        <div className="relative">
+                          <textarea
+                            ref={hotTakeRef}
+                            value={hotTakeText}
+                            onChange={(e) => setHotTakeText(e.target.value.slice(0, 140))}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Escape') { setPendingVoteSide(null); setHotTakeText('') }
+                              if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+                                e.preventDefault()
+                                handleConfirmVote(hotTakeText.trim() || undefined)
+                              }
+                            }}
+                            placeholder="What's your take? (optional)"
+                            rows={2}
+                            aria-label="Add your hot take"
+                            className={cn(
+                              'w-full bg-surface-100/80 border rounded-xl px-3 py-2.5',
+                              'text-sm text-white placeholder-surface-600 resize-none',
+                              'focus:outline-none transition-colors font-mono',
+                              pendingVoteSide === 'blue'
+                                ? 'border-for-600/40 focus:border-for-500/60'
+                                : 'border-against-600/40 focus:border-against-500/60',
+                            )}
+                          />
+                          <span
+                            id="hot-take-char-count"
+                            aria-live="polite"
+                            className={cn(
+                              'absolute bottom-2 right-2.5 text-[10px] font-mono tabular-nums pointer-events-none',
+                              hotTakeText.length > 120 ? 'text-against-400' : 'text-surface-600',
+                            )}
+                          >
+                            {hotTakeText.length}/140
+                          </span>
+                        </div>
+
+                        {/* Actions */}
+                        <div className="flex items-center justify-end gap-2">
+                          <button
+                            onClick={() => handleConfirmVote()}
+                            disabled={isSubmitting}
+                            className="px-3 py-1.5 text-xs font-mono text-surface-500 hover:text-white transition-colors disabled:opacity-50"
+                          >
+                            Skip
+                          </button>
+                          <button
+                            onClick={() => handleConfirmVote(hotTakeText.trim() || undefined)}
+                            disabled={isSubmitting}
+                            aria-label={hotTakeText.trim() ? 'Submit hot take and vote' : 'Cast vote'}
+                            className={cn(
+                              'px-4 py-1.5 rounded-lg text-xs font-mono font-semibold border transition-colors disabled:opacity-50',
+                              pendingVoteSide === 'blue'
+                                ? 'bg-for-600/80 border-for-600/50 text-white hover:bg-for-600'
+                                : 'bg-against-600/80 border-against-600/50 text-white hover:bg-against-600',
+                            )}
+                          >
+                            {isSubmitting ? '…' : hotTakeText.trim() ? 'Submit & Vote' : 'Vote'}
+                          </button>
+                        </div>
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="vote-button"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.12 }}
+                        onClick={(e) => e.preventDefault()}
+                      >
+                        <VoteButton
+                          topicId={topic.id}
+                          bluePct={topic.blue_pct}
+                          onVote={handleVoteIntent}
+                          disabled={hasVoted(topic.id)}
+                          votedSide={votedSide}
+                        />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  {/* Share stance + submitted hot take — appears after voting */}
                   {hasVoted(topic.id) && votedSide && (
                     <div
-                      className="flex justify-center"
+                      className="space-y-2"
                       onClick={(e) => e.preventDefault()}
                     >
-                      <StanceShareButton
-                        topicId={topic.id}
-                        statement={topic.statement}
-                        votedSide={votedSide}
-                        forPct={topic.blue_pct}
-                        totalVotes={topic.total_votes}
-                        category={topic.category}
-                      />
+                      <div className="flex justify-center">
+                        <StanceShareButton
+                          topicId={topic.id}
+                          statement={topic.statement}
+                          votedSide={votedSide}
+                          forPct={topic.blue_pct}
+                          totalVotes={topic.total_votes}
+                          category={topic.category}
+                        />
+                      </div>
+                      {/* Show submitted hot take as feedback */}
+                      {submittedHotTake && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 4 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className={cn(
+                            'flex items-start gap-2 px-3 py-2 rounded-xl border text-[11px] font-mono',
+                            votedSide === 'blue'
+                              ? 'bg-for-600/10 border-for-600/30 text-for-300'
+                              : 'bg-against-600/10 border-against-600/30 text-against-300',
+                          )}
+                        >
+                          <span className="opacity-60 shrink-0 mt-0.5">Your take:</span>
+                          <span className="leading-relaxed">&ldquo;{submittedHotTake}&rdquo;</span>
+                        </motion.div>
+                      )}
                     </div>
                   )}
                   {topic.voting_ends_at && (
@@ -394,8 +545,8 @@ export function TopicCard({ topic, authorName, authorAvatar }: TopicCardProps) {
                 </div>
               </div>
 
-              {/* Swipe affordance hint — only on unvoted active cards */}
-              {canSwipeVote && (
+              {/* Swipe affordance hint — only on unvoted active cards with no pending vote */}
+              {canSwipeVote && !pendingVoteSide && (
                 <div
                   className="flex items-center justify-center gap-2 pb-0.5 select-none pointer-events-none"
                   aria-hidden="true"
