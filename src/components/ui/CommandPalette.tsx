@@ -479,6 +479,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'constitution',
+    label: 'Civic Constitution',
+    sublabel: 'Living constitutional document of all established laws',
+    href: '/constitution',
+    icon: BookOpen,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'law-graph',
     label: 'Law Graph',
     sublabel: 'Interactive knowledge graph of all established laws',
