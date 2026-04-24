@@ -414,6 +414,13 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
                       <ScrollText className="h-3.5 w-3.5" />
                       Transcript
                     </Link>
+                    <Link
+                      href={`/spar/${topic.id}`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-purple hover:text-purple/80 transition-colors"
+                    >
+                      <Swords className="h-3.5 w-3.5" />
+                      Spar with AI
+                    </Link>
                   </div>
                 )}
                 <VoteButton
