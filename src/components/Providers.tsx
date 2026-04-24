@@ -1,12 +1,23 @@
 'use client'
 
 import { ReactNode, useEffect } from 'react'
+import dynamic from 'next/dynamic'
 import { ToastProvider } from '@/components/ui/Toaster'
 import { NotificationWatcher } from '@/components/ui/NotificationWatcher'
-import { CommandPalette } from '@/components/ui/CommandPalette'
 import { useCommandPalette, toggleCommandPalette } from '@/lib/hooks/useCommandPalette'
-import { KeyboardShortcutsProvider } from '@/components/ui/KeyboardShortcutsModal'
 import { InstallPrompt } from '@/components/layout/InstallPrompt'
+
+// Lazy-load heavy modal components — they're only needed when the user
+// triggers them, so they should not bloat the initial JS bundle.
+const CommandPalette = dynamic(
+  () => import('@/components/ui/CommandPalette').then((m) => m.CommandPalette),
+  { ssr: false }
+)
+
+const KeyboardShortcutsProvider = dynamic(
+  () => import('@/components/ui/KeyboardShortcutsModal').then((m) => m.KeyboardShortcutsProvider),
+  { ssr: false }
+)
 
 interface ProvidersProps {
   children: ReactNode

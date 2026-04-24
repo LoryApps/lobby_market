@@ -517,6 +517,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'consensus',
+    label: 'Consensus Engine',
+    sublabel: 'Force-directed bubble map of all active debates sized by votes',
+    href: '/consensus',
+    icon: Globe,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+  },
+  {
+    type: 'link',
     id: 'clout',
     label: 'Clout',
     sublabel: 'Earn, spend, and send Clout to other users',
