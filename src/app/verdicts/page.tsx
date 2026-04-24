@@ -11,6 +11,7 @@ import {
   Loader2,
   RefreshCw,
   Scale,
+  Skull,
   ThumbsDown,
   ThumbsUp,
   Trophy,
@@ -293,15 +294,25 @@ export default function VerdictsPage() {
             </div>
           </div>
 
-          <button
-            onClick={() => fetchVerdicts(filter, null, false)}
-            disabled={loading}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-surface-200 border border-surface-300 text-surface-500 hover:text-white hover:bg-surface-300 transition-colors text-xs font-mono disabled:opacity-40"
-            aria-label="Refresh verdicts"
-          >
-            <RefreshCw className={cn('h-3.5 w-3.5', loading && 'animate-spin')} />
-            Refresh
-          </button>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/graveyard"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-surface-200 border border-surface-300 text-surface-500 hover:text-white hover:bg-surface-300 transition-colors text-xs font-mono"
+              aria-label="View the Graveyard"
+            >
+              <Skull className="h-3.5 w-3.5" />
+              Graveyard
+            </Link>
+            <button
+              onClick={() => fetchVerdicts(filter, null, false)}
+              disabled={loading}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-surface-200 border border-surface-300 text-surface-500 hover:text-white hover:bg-surface-300 transition-colors text-xs font-mono disabled:opacity-40"
+              aria-label="Refresh verdicts"
+            >
+              <RefreshCw className={cn('h-3.5 w-3.5', loading && 'animate-spin')} />
+              Refresh
+            </button>
+          </div>
         </div>
 
         {/* ── Filter tabs ───────────────────────────────────────────────────── */}

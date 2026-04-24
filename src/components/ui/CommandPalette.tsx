@@ -68,6 +68,8 @@ import {
   Timer,
   MessageSquare,
   BookOpen,
+  Skull,
+  Swords,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -426,6 +428,26 @@ const QUICK_LINKS: QuickLink[] = [
     icon: History,
     iconColor: 'text-surface-500',
     iconBg: 'bg-surface-300/20',
+  },
+  {
+    type: 'link',
+    id: 'graveyard',
+    label: 'The Graveyard',
+    sublabel: 'Topics that failed to become law — and the stories of why',
+    href: '/graveyard',
+    icon: Skull,
+    iconColor: 'text-surface-500',
+    iconBg: 'bg-surface-300/20',
+  },
+  {
+    type: 'link',
+    id: 'spar',
+    label: 'Sparring Arena',
+    sublabel: 'Practice debating civic topics against Claude AI in 5-round bouts',
+    href: '/spar',
+    icon: Swords,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
   },
   {
     type: 'link',
