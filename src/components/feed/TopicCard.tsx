@@ -20,6 +20,7 @@ import { BookmarkButton } from '@/components/ui/BookmarkButton'
 import { StanceShareButton } from '@/components/voting/StanceShareButton'
 import { getTopicSignal, SIGNAL_PILL_CLASSES } from '@/lib/utils/topic-signal'
 import { TopicReactions } from '@/components/topic/TopicReactions'
+import { TrendMini } from '@/components/topic/TrendMini'
 
 // ── Signal icon map ───────────────────────────────────────────────────────────
 
@@ -340,6 +341,14 @@ export function TopicCard({ topic, authorName, authorAvatar }: TopicCardProps) {
                     bluePct={topic.blue_pct}
                     totalVotes={topic.total_votes}
                   />
+
+                  {/* Compact sparkline — lazy-loads vote trend, only shown when data exists */}
+                  {topic.total_votes >= 10 && (
+                    <TrendMini
+                      topicId={topic.id}
+                      className="justify-end"
+                    />
+                  )}
 
                   {/* Hot-take inline form — shown when a vote side is pending */}
                   <AnimatePresence mode="wait">
