@@ -863,13 +863,21 @@ export default function StatsPage() {
               </motion.section>
             )}
 
-            {/* ── Digest link ── */}
+            {/* ── Quick links ── */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.75 }}
-              className="flex justify-center pb-2"
+              className="flex flex-wrap justify-center gap-2 pb-2"
             >
+              <Link
+                href="/heatmap"
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-for-600/15 border border-for-500/30 hover:border-for-500/60 hover:bg-for-600/25 transition-colors text-sm font-mono text-for-400 hover:text-for-300"
+              >
+                <BarChart2 className="h-4 w-4" />
+                Lobby Heatmap
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
               <Link
                 href="/digest"
                 className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-surface-200 border border-surface-300 hover:border-surface-400 hover:bg-surface-300 transition-colors text-sm font-mono text-surface-500 hover:text-white"

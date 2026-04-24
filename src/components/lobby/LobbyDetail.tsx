@@ -21,6 +21,7 @@ import type {
 } from '@/lib/supabase/types'
 import { Avatar } from '@/components/ui/Avatar'
 import { Button } from '@/components/ui/Button'
+import { CampaignProgress } from '@/components/lobby/CampaignProgress'
 import { cn } from '@/lib/utils/cn'
 
 type LobbyMemberWithProfile = {
@@ -242,6 +243,9 @@ export function LobbyDetail({
             </div>
           </div>
         </div>
+
+        {/* Campaign momentum sparkline */}
+        <CampaignProgress lobby={lobby} />
 
         <div className="flex items-center gap-3">
           {isMember ? (

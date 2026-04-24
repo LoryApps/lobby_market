@@ -362,6 +362,11 @@ export default function SettingsPage() {
                   </div>
                 )}
                 <LinkRow
+                  label="My Week"
+                  description="This week's votes, laws you helped pass, and achievements"
+                  href="/my-week"
+                />
+                <LinkRow
                   label="View my analytics"
                   description="Voting stats, accuracy, and activity trends"
                   href="/analytics"
@@ -517,6 +522,11 @@ export default function SettingsPage() {
                   label="Coalition memberships"
                   description="Browse and manage coalitions you're in"
                   href="/coalitions"
+                />
+                <LinkRow
+                  label="My Positions"
+                  description="Every topic you've voted on with outcome tracking"
+                  href="/positions"
                 />
                 <LinkRow
                   label="Voting history"

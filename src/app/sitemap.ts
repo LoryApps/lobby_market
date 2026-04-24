@@ -6,16 +6,32 @@ const BASE_URL = 'https://lobby.market'
 // Static routes with their change frequency and priority
 const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/`, changeFrequency: 'always', priority: 1.0 },
+  { url: `${BASE_URL}/quiz`, changeFrequency: 'daily', priority: 0.88 },
+  { url: `${BASE_URL}/duel`, changeFrequency: 'always', priority: 0.82 },
   { url: `${BASE_URL}/trending`, changeFrequency: 'hourly', priority: 0.9 },
+  { url: `${BASE_URL}/surge`, changeFrequency: 'hourly', priority: 0.85 },
   { url: `${BASE_URL}/split`, changeFrequency: 'hourly', priority: 0.85 },
+  { url: `${BASE_URL}/momentum`, changeFrequency: 'always', priority: 0.85 },
   { url: `${BASE_URL}/law`, changeFrequency: 'daily', priority: 0.85 },
   { url: `${BASE_URL}/law/graph`, changeFrequency: 'daily', priority: 0.7 },
+  { url: `${BASE_URL}/law/atlas`, changeFrequency: 'daily', priority: 0.7 },
+  { url: `${BASE_URL}/law/timeline`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/debate`, changeFrequency: 'hourly', priority: 0.8 },
   { url: `${BASE_URL}/floor`, changeFrequency: 'always', priority: 0.75 },
   { url: `${BASE_URL}/leaderboard`, changeFrequency: 'daily', priority: 0.7 },
   { url: `${BASE_URL}/achievements`, changeFrequency: 'weekly', priority: 0.65 },
   { url: `${BASE_URL}/stats`, changeFrequency: 'hourly', priority: 0.65 },
+  { url: `${BASE_URL}/live`, changeFrequency: 'always', priority: 0.8 },
+  { url: `${BASE_URL}/pulse`, changeFrequency: 'always', priority: 0.75 },
+  { url: `${BASE_URL}/arguments`, changeFrequency: 'daily', priority: 0.65 },
+  { url: `${BASE_URL}/arguments/trending`, changeFrequency: 'hourly', priority: 0.75 },
+  { url: `${BASE_URL}/predictions`, changeFrequency: 'hourly', priority: 0.7 },
+  { url: `${BASE_URL}/verdicts`, changeFrequency: 'hourly', priority: 0.8 },
+  { url: `${BASE_URL}/brief`, changeFrequency: 'daily', priority: 0.75 },
+  { url: `${BASE_URL}/newspaper`, changeFrequency: 'daily', priority: 0.85 },
+  { url: `${BASE_URL}/digest`, changeFrequency: 'weekly', priority: 0.65 },
   { url: `${BASE_URL}/topic/categories`, changeFrequency: 'weekly', priority: 0.7 },
+  { url: `${BASE_URL}/topic/graph`, changeFrequency: 'daily', priority: 0.65 },
   // Individual category pages
   ...([
     'economics', 'politics', 'technology', 'science',
@@ -25,13 +41,24 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
     changeFrequency: 'daily' as const,
     priority: 0.65,
   }))),
+  { url: `${BASE_URL}/consensus`, changeFrequency: 'always', priority: 0.8 },
+  { url: `${BASE_URL}/compare`, changeFrequency: 'daily', priority: 0.65 },
+  { url: `${BASE_URL}/compare-users`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/topic/wiki/recent`, changeFrequency: 'hourly', priority: 0.65 },
   { url: `${BASE_URL}/about`, changeFrequency: 'monthly', priority: 0.6 },
+  { url: `${BASE_URL}/widget`, changeFrequency: 'monthly', priority: 0.6 },
   { url: `${BASE_URL}/developers`, changeFrequency: 'monthly', priority: 0.55 },
   { url: `${BASE_URL}/help`, changeFrequency: 'monthly', priority: 0.55 },
   { url: `${BASE_URL}/guidelines`, changeFrequency: 'monthly', priority: 0.5 },
+  { url: `${BASE_URL}/senate`, changeFrequency: 'always', priority: 0.85 },
+  { url: `${BASE_URL}/signals`, changeFrequency: 'always', priority: 0.85 },
+  { url: `${BASE_URL}/timeline`, changeFrequency: 'hourly', priority: 0.75 },
   { url: `${BASE_URL}/activity`, changeFrequency: 'daily', priority: 0.6 },
   { url: `${BASE_URL}/city`, changeFrequency: 'daily', priority: 0.6 },
+  { url: `${BASE_URL}/coalitions`, changeFrequency: 'daily', priority: 0.6 },
+  { url: `${BASE_URL}/lobby`, changeFrequency: 'daily', priority: 0.6 },
+  { url: `${BASE_URL}/reactions`, changeFrequency: 'hourly', priority: 0.75 },
+  { url: `${BASE_URL}/collections`, changeFrequency: 'daily', priority: 0.6 },
 ]
 
 export const dynamic = 'force-dynamic'
@@ -100,7 +127,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.5,
     }))
 
-    return [...STATIC_ROUTES, ...topicUrls, ...wikiUrls, ...lawUrls, ...profileUrls]
+    // Fetch top arguments (most upvoted) for permalink pages
+    const { data: topArguments } = await supabase
+      .from('topic_arguments')
+      .select('id, created_at')
+      .order('upvotes', { ascending: false })
+      .limit(500)
+
+    const argumentUrls: MetadataRoute.Sitemap = (topArguments ?? []).map((a) => ({
+      url: `${BASE_URL}/arguments/${a.id}`,
+      lastModified: new Date(a.created_at),
+      changeFrequency: 'weekly' as const,
+      priority: 0.45,
+    }))
+
+    return [...STATIC_ROUTES, ...topicUrls, ...wikiUrls, ...lawUrls, ...profileUrls, ...argumentUrls]
   } catch {
     // If DB is unavailable (e.g. during build), return only static routes
     return STATIC_ROUTES

@@ -12,6 +12,12 @@ export const dynamic = 'force-dynamic'
 export const metadata: Metadata = {
   title: 'Notifications · Lobby Market',
   description: 'Your latest updates from the Lobby — votes, debates, laws, and achievements.',
+  openGraph: {
+    title: 'Notifications · Lobby Market',
+    description: 'Stay up to date with activity across your Lobby debates and topics.',
+    type: 'website',
+    siteName: 'Lobby Market',
+  },
 }
 
 export default async function NotificationsPage() {

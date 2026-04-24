@@ -3,6 +3,8 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import {
   ArrowLeft,
+  MessageSquare,
+  ScrollText,
   ThumbsUp,
   ThumbsDown,
   Users,
@@ -33,6 +35,7 @@ interface VoterProfile {
   reputation_score: number
   clout: number
   voted_at: string
+  reason: string | null
 }
 
 // ─── generateMetadata ─────────────────────────────────────────────────────────
@@ -94,49 +97,70 @@ function VoterCard({
   const accentBg = isFor ? 'hover:border-for-500/40' : 'hover:border-against-500/40'
 
   return (
-    <Link
-      href={`/profile/${voter.username}`}
+    <div
       className={cn(
-        'flex items-center gap-3 rounded-xl px-3.5 py-3',
+        'flex flex-col rounded-xl',
         'border border-surface-300 bg-surface-100',
         'transition-colors duration-150',
-        accentBg,
-        'group'
+        accentBg
       )}
     >
-      {/* Rank */}
-      <span
-        className={cn(
-          'flex-shrink-0 w-5 text-xs font-mono text-center',
-          rank <= 3 ? accentText : 'text-surface-600'
-        )}
+      <Link
+        href={`/profile/${voter.username}`}
+        className="flex items-center gap-3 px-3.5 py-3 group"
       >
-        {rank <= 3 ? ['①', '②', '③'][rank - 1] : rank}
-      </span>
+        {/* Rank */}
+        <span
+          className={cn(
+            'flex-shrink-0 w-5 text-xs font-mono text-center',
+            rank <= 3 ? accentText : 'text-surface-600'
+          )}
+        >
+          {rank <= 3 ? ['①', '②', '③'][rank - 1] : rank}
+        </span>
 
-      {/* Avatar */}
-      <Avatar
-        src={voter.avatar_url}
-        fallback={voter.display_name ?? voter.username}
-        size="sm"
-      />
+        {/* Avatar */}
+        <Avatar
+          src={voter.avatar_url}
+          fallback={voter.display_name ?? voter.username}
+          size="sm"
+        />
 
-      {/* Name + role */}
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 min-w-0">
-          <span className="text-sm font-medium text-white group-hover:text-surface-700 transition-colors truncate">
-            {voter.display_name ?? voter.username}
-          </span>
-          <Badge variant={roleVariant(voter.role)} className="flex-shrink-0 text-[10px]">
-            {ROLE_LABEL[voter.role] ?? voter.role}
-          </Badge>
+        {/* Name + role */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="text-sm font-medium text-white group-hover:text-surface-700 transition-colors truncate">
+              {voter.display_name ?? voter.username}
+            </span>
+            <Badge variant={roleVariant(voter.role)} className="flex-shrink-0 text-[10px]">
+              {ROLE_LABEL[voter.role] ?? voter.role}
+            </Badge>
+          </div>
+          <div className="flex items-center gap-3 mt-0.5 text-[11px] font-mono text-surface-500">
+            <span className="text-gold">{voter.reputation_score.toLocaleString()} rep</span>
+            <span>{voter.clout.toLocaleString()} clout</span>
+          </div>
         </div>
-        <div className="flex items-center gap-3 mt-0.5 text-[11px] font-mono text-surface-500">
-          <span className="text-gold">{voter.reputation_score.toLocaleString()} rep</span>
-          <span>{voter.clout.toLocaleString()} clout</span>
+      </Link>
+
+      {/* Hot take / reason */}
+      {voter.reason && (
+        <div
+          className={cn(
+            'mx-3.5 mb-3 flex items-start gap-2 rounded-lg px-3 py-2',
+            isFor ? 'bg-for-600/10' : 'bg-against-600/10'
+          )}
+        >
+          <MessageSquare
+            className={cn('h-3 w-3 mt-0.5 flex-shrink-0', isFor ? 'text-for-500' : 'text-against-500')}
+            aria-hidden="true"
+          />
+          <p className="text-[11px] font-mono text-surface-400 leading-relaxed">
+            &ldquo;{voter.reason}&rdquo;
+          </p>
         </div>
-      </div>
-    </Link>
+      )}
+    </div>
   )
 }
 
@@ -237,7 +261,7 @@ export default async function VotersPage({ params }: VotersPageProps) {
   // ── Fetch FOR votes (blue) ────────────────────────────────────────────────
   const { data: forVoteRows } = await supabase
     .from('votes')
-    .select('user_id, created_at')
+    .select('user_id, created_at, reason')
     .eq('topic_id', params.id)
     .eq('side', 'blue')
     .order('created_at', { ascending: false })
@@ -246,7 +270,7 @@ export default async function VotersPage({ params }: VotersPageProps) {
   // ── Fetch AGAINST votes (red) ─────────────────────────────────────────────
   const { data: againstVoteRows } = await supabase
     .from('votes')
-    .select('user_id, created_at')
+    .select('user_id, created_at, reason')
     .eq('topic_id', params.id)
     .eq('side', 'red')
     .order('created_at', { ascending: false })
@@ -276,12 +300,12 @@ export default async function VotersPage({ params }: VotersPageProps) {
     profileMap.set(p.id, p)
   }
 
-  function buildVoters(voteRows: Array<{ user_id: string; created_at: string }>): VoterProfile[] {
+  function buildVoters(voteRows: Array<{ user_id: string; created_at: string; reason?: string | null }>): VoterProfile[] {
     return voteRows
       .map((v) => {
         const p = profileMap.get(v.user_id)
         if (!p) return null
-        return { ...p, voted_at: v.created_at }
+        return { ...p, voted_at: v.created_at, reason: v.reason ?? null }
       })
       .filter((v): v is VoterProfile => v !== null)
       .sort((a, b) => b.reputation_score - a.reputation_score)
@@ -308,13 +332,22 @@ export default async function VotersPage({ params }: VotersPageProps) {
       <main className="max-w-3xl mx-auto px-4 py-8 pb-24 md:pb-12">
 
         {/* ── Back link ── */}
-        <Link
-          href={`/topic/${params.id}`}
-          className="inline-flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-white transition-colors mb-6"
-        >
-          <ArrowLeft className="h-3.5 w-3.5" />
-          Back to topic
-        </Link>
+        <div className="flex items-center justify-between mb-6">
+          <Link
+            href={`/topic/${params.id}`}
+            className="inline-flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-white transition-colors"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" />
+            Back to topic
+          </Link>
+          <Link
+            href={`/topic/${params.id}/transcript`}
+            className="inline-flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-white transition-colors"
+          >
+            <ScrollText className="h-3.5 w-3.5" />
+            View transcript
+          </Link>
+        </div>
 
         {/* ── Topic statement header ── */}
         <div className="bg-surface-100 border border-surface-300 rounded-2xl p-5 mb-6">

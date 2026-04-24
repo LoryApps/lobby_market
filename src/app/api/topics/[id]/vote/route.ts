@@ -17,18 +17,27 @@ export async function POST(
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  let body: { side?: VoteSide }
+  let body: { side?: VoteSide; reason?: string }
   try {
     body = await request.json()
   } catch {
     return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 })
   }
 
-  const { side } = body
+  const { side, reason } = body
 
   if (!side || (side !== 'blue' && side !== 'red')) {
     return NextResponse.json(
       { error: 'Side must be "blue" or "red"' },
+      { status: 400 }
+    )
+  }
+
+  // Validate optional reason
+  const trimmedReason = reason?.trim() || null
+  if (trimmedReason && trimmedReason.length > 140) {
+    return NextResponse.json(
+      { error: 'Reason must be 140 characters or fewer' },
       { status: 400 }
     )
   }
@@ -71,6 +80,7 @@ export async function POST(
     user_id: user.id,
     topic_id: params.id,
     side,
+    ...(trimmedReason ? { reason: trimmedReason } : {}),
   })
 
   if (voteError) {

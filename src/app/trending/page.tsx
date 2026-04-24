@@ -20,6 +20,7 @@ import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { cn } from '@/lib/utils/cn'
 import type { Topic, Law, Profile } from '@/lib/supabase/types'
+import { getTopicSignal, SIGNAL_PILL_CLASSES } from '@/lib/utils/topic-signal'
 
 export const dynamic = 'force-dynamic'
 
@@ -94,6 +95,7 @@ function TrendingTopicCard({
   const cfg = STATUS_CONFIG[topic.status] ?? STATUS_CONFIG.proposed
   const forPct = Math.round(topic.blue_pct ?? 50)
   const againstPct = 100 - forPct
+  const signal = getTopicSignal(topic)
 
   return (
     <Link
@@ -181,6 +183,23 @@ function TrendingTopicCard({
               {topic.category}
             </span>
           )}
+
+          {/* Relevance signal */}
+          {signal && (() => {
+            const classes = SIGNAL_PILL_CLASSES[signal.color]
+            return (
+              <span
+                className={cn(
+                  'inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-mono font-semibold border',
+                  classes.pill,
+                )}
+                title={signal.description}
+              >
+                <span className={cn('h-1 w-1 rounded-full', classes.dot)} aria-hidden="true" />
+                {signal.label}
+              </span>
+            )
+          })()}
 
           {/* For/against */}
           <span className="ml-auto text-[11px] font-mono">
@@ -709,6 +728,7 @@ export default async function TrendingPage() {
                 </p>
                 <div className="space-y-0.5">
                   {[
+                    { href: '/compare', label: 'Compare Topics', icon: GitFork },
                     { href: '/surge', label: 'Surge', icon: Flame },
                     { href: '/digest', label: 'Weekly Digest', icon: Calendar },
                     { href: '/split', label: 'The Split', icon: GitFork },

@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { BookOpen, Calendar, Mic, Plus, Trophy } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
@@ -15,9 +16,21 @@ import type {
 } from '@/lib/supabase/types'
 import { cn } from '@/lib/utils/cn'
 
-export const metadata = {
-  title: 'Debates · Lobby',
-  description: 'Live and scheduled debates in the Lobby arena.',
+export const metadata: Metadata = {
+  title: 'Debates · Lobby Market',
+  description:
+    'Live and scheduled debates in the Lobby arena — watch two sides argue, vote in real-time, and shape the outcome.',
+  openGraph: {
+    title: 'Debates · Lobby Market',
+    description: 'Live debates where two sides clash and the audience decides.',
+    type: 'website',
+    siteName: 'Lobby Market',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Debates · Lobby Market',
+    description: 'Live debates where two sides clash and the audience decides.',
+  },
 }
 
 export const dynamic = 'force-dynamic'

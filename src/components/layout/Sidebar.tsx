@@ -26,6 +26,9 @@ import {
   Target,
   ThumbsUp,
   Flame,
+  FileWarning,
+  Layers,
+  BarChart2,
 } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { createClient } from '@/lib/supabase/client'
@@ -44,9 +47,11 @@ const navItems: NavItem[] = [
   { href: '/predictions', label: 'Predictions', icon: Target },
   { href: '/trending', label: 'Trending', icon: TrendingUp },
   { href: '/surge', label: 'Surge', icon: Flame },
+  { href: '/shifts', label: 'Opinion Shifts', icon: BarChart2 },
   { href: '/split', label: 'The Split', icon: GitFork },
   { href: '/floor', label: 'The Floor', icon: Landmark },
   { href: '/law', label: 'Codex', icon: Scale },
+  { href: '/petitions', label: 'Petitions', icon: FileWarning },
   { href: '/debate', label: 'Debates', icon: Mic },
   { href: '/lobby', label: 'Lobbies', icon: Megaphone },
   { href: '/coalitions', label: 'Coalitions', icon: Users },
@@ -59,6 +64,7 @@ const navItems: NavItem[] = [
     moderatorOnly: true,
   },
   { href: '/arguments', label: 'Top Arguments', icon: ThumbsUp },
+  { href: '/collections', label: 'Collections', icon: Layers },
   { href: '/saved', label: 'Saved', icon: Bookmark },
   { href: '/leaderboard', label: 'Leaderboard', icon: Trophy },
   { href: '/profile/me', label: 'My Profile', icon: UserCircle },

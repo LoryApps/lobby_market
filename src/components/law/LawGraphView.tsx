@@ -15,10 +15,24 @@
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import dynamic from 'next/dynamic'
 import { Check, Copy, RotateCcw, Search, X } from 'lucide-react'
-import { LawGraph, CATEGORY_COLORS, colorForCategory } from '@/components/law/LawGraph'
 import type { Law, LawLink } from '@/lib/supabase/types'
+import { GRAPH_CATEGORY_COLORS as CATEGORY_COLORS, graphColorForCategory as colorForCategory } from '@/lib/utils/graph-colors'
 import { cn } from '@/lib/utils/cn'
+
+// Lazy-load the D3-powered canvas — d3-force only loads when the law graph is visited.
+const LawGraph = dynamic(
+  () => import('@/components/law/LawGraph').then((m) => m.LawGraph),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex-1 flex items-center justify-center">
+        <div className="text-surface-500 text-sm">Loading graph…</div>
+      </div>
+    ),
+  }
+)
 
 interface LawGraphViewProps {
   laws: Law[]

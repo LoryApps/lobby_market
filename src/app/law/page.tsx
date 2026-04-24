@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { Clock, Gavel, Network, Rss } from 'lucide-react'
+import { BookOpen, Clock, FileWarning, Gavel, Globe, Network, Rss } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -84,6 +84,18 @@ export default async function LawIndexPage() {
               </Link>
 
               <Link
+                href="/law/atlas"
+                className={cn(
+                  'inline-flex items-center gap-2 px-3 py-2 rounded-lg',
+                  'bg-for-600/10 border border-for-500/30 text-for-400 text-xs font-mono font-medium',
+                  'hover:bg-for-600/20 hover:border-for-500/50 transition-colors'
+                )}
+              >
+                <Globe className="h-4 w-4" />
+                <span className="hidden sm:inline">Atlas</span>
+              </Link>
+
+              <Link
                 href="/law/graph"
                 className={cn(
                   'inline-flex items-center gap-2 px-3 py-2 rounded-lg',
@@ -93,6 +105,30 @@ export default async function LawIndexPage() {
               >
                 <Network className="h-4 w-4" />
                 <span className="hidden sm:inline">Law Graph</span>
+              </Link>
+
+              <Link
+                href="/constitution"
+                className={cn(
+                  'inline-flex items-center gap-2 px-3 py-2 rounded-lg',
+                  'bg-gold/10 border border-gold/30 text-gold text-xs font-mono font-medium',
+                  'hover:bg-gold/20 hover:border-gold/50 transition-colors'
+                )}
+              >
+                <BookOpen className="h-4 w-4" />
+                <span className="hidden sm:inline">Constitution</span>
+              </Link>
+
+              <Link
+                href="/petitions"
+                className={cn(
+                  'inline-flex items-center gap-2 px-3 py-2 rounded-lg',
+                  'bg-against-600/10 border border-against-500/30 text-against-300 text-xs font-mono font-medium',
+                  'hover:bg-against-600/20 hover:border-against-500/50 transition-colors'
+                )}
+              >
+                <FileWarning className="h-4 w-4" />
+                <span className="hidden sm:inline">Petitions</span>
               </Link>
             </div>
           </div>

@@ -244,6 +244,26 @@ export default function DevelopersPage() {
             action. No JavaScript required on the host page.
           </p>
 
+          {/* Widget Builder CTA */}
+          <div className="mb-6 flex items-start gap-4 p-4 rounded-xl border border-for-500/30 bg-for-500/5">
+            <Layers className="h-5 w-5 text-for-400 flex-shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <p className="text-sm font-mono font-semibold text-white mb-1">
+                Try the Widget Builder
+              </p>
+              <p className="text-xs font-mono text-surface-500 leading-relaxed">
+                No need to find topic IDs manually. Use the interactive builder to search, preview, and copy your embed code.
+              </p>
+            </div>
+            <Link
+              href="/widget"
+              className="flex-shrink-0 flex items-center gap-1.5 text-xs font-mono font-semibold text-for-300 hover:text-white bg-for-500/15 hover:bg-for-500/25 border border-for-500/30 px-3 py-1.5 rounded-lg transition-all whitespace-nowrap"
+            >
+              Open Builder
+              <ArrowRight className="h-3 w-3" />
+            </Link>
+          </div>
+
           <EndpointPill method="GET" path="/api/embed/topic/{id}" />
 
           <ParamTable

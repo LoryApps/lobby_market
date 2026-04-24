@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { Bookmark, BookmarkX, Compass, TrendingUp } from 'lucide-react'
+import { Bell, Bookmark, BookmarkX, Compass, MessageSquare, TrendingUp } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -15,6 +15,12 @@ export const dynamic = 'force-dynamic'
 export const metadata: Metadata = {
   title: 'Saved Topics · Lobby Market',
   description: 'Topics you have bookmarked for later.',
+  openGraph: {
+    title: 'Saved Topics · Lobby Market',
+    description: 'Your bookmarked debates and laws in the Lobby.',
+    type: 'website',
+    siteName: 'Lobby Market',
+  },
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -207,19 +213,43 @@ export default async function SavedTopicsPage() {
       <TopBar />
       <main className="max-w-3xl mx-auto px-4 py-8 pb-24 md:pb-12">
         {/* Header */}
-        <div className="mb-6 flex items-center gap-3">
-          <div className="flex items-center justify-center h-11 w-11 rounded-xl bg-gold/10 border border-gold/20">
-            <Bookmark className="h-5 w-5 text-gold" aria-hidden="true" />
+        <div className="mb-6 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center h-11 w-11 rounded-xl bg-gold/10 border border-gold/20">
+              <Bookmark className="h-5 w-5 text-gold" aria-hidden="true" />
+            </div>
+            <div>
+              <h1 className="font-mono text-2xl font-bold text-white">
+                Saved Topics
+              </h1>
+              <p className="text-sm font-mono text-surface-500 mt-0.5">
+                {items.length > 0
+                  ? `${items.length} topic${items.length === 1 ? '' : 's'} saved`
+                  : 'Bookmark topics to track them here'}
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="font-mono text-2xl font-bold text-white">
-              Saved Topics
-            </h1>
-            <p className="text-sm font-mono text-surface-500 mt-0.5">
-              {items.length > 0
-                ? `${items.length} topic${items.length === 1 ? '' : 's'} saved`
-                : 'Bookmark topics to track them here'}
-            </p>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/saved/arguments"
+              className="flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-gold transition-colors"
+            >
+              <MessageSquare className="h-3.5 w-3.5" aria-hidden="true" />
+              Arguments
+            </Link>
+            <Link
+              href="/watchlist"
+              className="flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-for-300 transition-colors"
+            >
+              <Bell className="h-3.5 w-3.5" aria-hidden="true" />
+              Watchlist
+            </Link>
+            <Link
+              href="/following"
+              className="flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-for-300 transition-colors"
+            >
+              Following
+            </Link>
           </div>
         </div>
 

@@ -4,7 +4,7 @@ import type { VoteSide } from "@/lib/supabase/types";
 interface VoteState {
   pendingVotes: Map<string, VoteSide>;
   confirmedVotes: Map<string, VoteSide>;
-  castVote: (topicId: string, side: VoteSide) => Promise<void>;
+  castVote: (topicId: string, side: VoteSide, reason?: string) => Promise<void>;
   hasVoted: (topicId: string) => boolean;
   getVoteSide: (topicId: string) => VoteSide | null;
 }
@@ -13,7 +13,7 @@ export const useVoteStore = create<VoteState>((set, get) => ({
   pendingVotes: new Map(),
   confirmedVotes: new Map(),
 
-  castVote: async (topicId, side) => {
+  castVote: async (topicId, side, reason?: string) => {
     const { pendingVotes, confirmedVotes } = get();
 
     // Already voted on this topic
@@ -28,7 +28,7 @@ export const useVoteStore = create<VoteState>((set, get) => ({
       const res = await fetch(`/api/topics/${topicId}/vote`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ side }),
+        body: JSON.stringify({ side, ...(reason ? { reason } : {}) }),
       });
 
       if (!res.ok) {

@@ -7,6 +7,7 @@ export const revalidate = 120
 
 export interface QuickStats {
   activeTopics: number
+  votingTopics: number
   totalVotes: number
   lawsEstablished: number
   totalUsers: number
@@ -47,6 +48,8 @@ export async function GET(): Promise<NextResponse> {
     (t) => t.status === 'active' || t.status === 'voting'
   ).length
 
+  const votingTopics = topics.filter((t) => t.status === 'voting').length
+
   const totalVotes = topics.reduce(
     (sum, t) => sum + (t.total_votes ?? 0),
     0
@@ -57,6 +60,7 @@ export async function GET(): Promise<NextResponse> {
 
   const stats: QuickStats = {
     activeTopics,
+    votingTopics,
     totalVotes,
     lawsEstablished,
     totalUsers,

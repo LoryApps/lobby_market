@@ -17,23 +17,87 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  // Fetch user's category preferences from their profile
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('category_preferences')
-    .eq('id', user.id)
-    .maybeSingle()
+  // Fetch profile prefs and vote count in parallel
+  const [profileRes, voteCountRes] = await Promise.all([
+    supabase
+      .from('profiles')
+      .select('category_preferences, total_votes')
+      .eq('id', user.id)
+      .maybeSingle(),
+    supabase
+      .from('votes')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', user.id),
+  ])
 
-  const preferredCategories: string[] =
-    (profile?.category_preferences as string[] | null) ?? []
+  const quizCategories: string[] =
+    (profileRes.data?.category_preferences as string[] | null) ?? []
+  const totalVotes = voteCountRes.count ?? 0
 
-  // If user hasn't completed onboarding quiz, signal that to the client
-  if (preferredCategories.length === 0) {
-    return NextResponse.json({
-      topics: [],
-      preferredCategories: [],
-      hasPreferences: false,
-    })
+  let preferredCategories: string[] = quizCategories
+  let preferenceSource: 'quiz' | 'history' | 'none' = 'quiz'
+  let inferredFromVotes = 0
+
+  // If the user hasn't taken the quiz, infer categories from their vote history
+  if (quizCategories.length === 0) {
+    if (totalVotes === 0) {
+      return NextResponse.json({
+        topics: [],
+        preferredCategories: [],
+        hasPreferences: false,
+        preferenceSource: 'none' as const,
+        inferredFromVotes: 0,
+      })
+    }
+
+    // Fetch recent vote topic IDs, then look up their categories
+    const { data: voteRows } = await supabase
+      .from('votes')
+      .select('topic_id')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
+      .limit(100)
+
+    const topicIds = (voteRows ?? []).map((r) => r.topic_id).filter(Boolean)
+
+    const counts: Record<string, number> = {}
+
+    if (topicIds.length > 0) {
+      const { data: topicRows } = await supabase
+        .from('topics')
+        .select('id, category')
+        .in('id', topicIds)
+
+      // Build a lookup map for O(1) access
+      const catById: Record<string, string | null> = {}
+      for (const t of topicRows ?? []) {
+        catById[t.id] = t.category
+      }
+
+      for (const { topic_id } of voteRows ?? []) {
+        const cat = catById[topic_id]
+        if (cat) counts[cat] = (counts[cat] ?? 0) + 1
+      }
+    }
+
+    const inferred = Object.entries(counts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 4)
+      .map(([cat]) => cat)
+
+    if (inferred.length === 0) {
+      return NextResponse.json({
+        topics: [],
+        preferredCategories: [],
+        hasPreferences: false,
+        preferenceSource: 'none' as const,
+        inferredFromVotes: totalVotes,
+      })
+    }
+
+    preferredCategories = inferred
+    preferenceSource = 'history'
+    inferredFromVotes = Math.min(totalVotes, 100)
   }
 
   // Build query filtered to the user's preferred categories
@@ -70,5 +134,7 @@ export async function GET(request: NextRequest) {
     topics: data ?? [],
     preferredCategories,
     hasPreferences: true,
+    preferenceSource,
+    inferredFromVotes,
   })
 }

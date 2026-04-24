@@ -14,10 +14,25 @@
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import dynamic from 'next/dynamic'
 import { Check, Copy, RotateCcw, Search, X } from 'lucide-react'
-import { TopicGraph, CATEGORY_COLORS, colorForCategory } from '@/components/topic/TopicGraph'
 import type { TopicNode, TopicEdge } from '@/components/topic/TopicGraph'
+import { GRAPH_CATEGORY_COLORS as CATEGORY_COLORS, graphColorForCategory as colorForCategory } from '@/lib/utils/graph-colors'
 import { cn } from '@/lib/utils/cn'
+
+// Lazy-load the D3-powered canvas — d3-force is only bundled when the graph
+// page is actually visited, keeping the main JS payload lighter.
+const TopicGraph = dynamic(
+  () => import('@/components/topic/TopicGraph').then((m) => m.TopicGraph),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex-1 flex items-center justify-center min-h-0">
+        <div className="text-surface-500 text-sm">Loading graph…</div>
+      </div>
+    ),
+  }
+)
 
 interface TopicGraphViewProps {
   topics: TopicNode[]

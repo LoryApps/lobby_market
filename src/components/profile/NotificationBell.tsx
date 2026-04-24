@@ -15,6 +15,7 @@ import {
   Swords,
   TrendingUp,
   User,
+  UserPlus,
   Users,
   CheckCircle,
 } from 'lucide-react'
@@ -42,6 +43,7 @@ const TYPE_CONFIG: Record<
   coalition_invite:          { icon: Users,         color: 'text-purple',     bg: 'bg-purple/10' },
   coalition_invite_accepted: { icon: CheckCircle,   color: 'text-emerald',    bg: 'bg-emerald/10' },
   bookmark_update:           { icon: Bookmark,      color: 'text-gold',       bg: 'bg-gold/10' },
+  new_follower:              { icon: UserPlus,      color: 'text-purple',     bg: 'bg-purple/10' },
 }
 
 const FALLBACK_CONFIG = { icon: AlertCircle, color: 'text-surface-500', bg: 'bg-surface-200' }

@@ -386,18 +386,29 @@ export default function PulsePage() {
             </p>
           </div>
 
-          <button
-            onClick={() => fetchPulse(true)}
-            disabled={refreshing}
-            className={cn(
-              'flex items-center justify-center h-9 w-9 rounded-lg bg-surface-200 text-surface-500',
-              'hover:bg-surface-300 hover:text-white transition-colors flex-shrink-0',
-              refreshing && 'opacity-50 cursor-not-allowed'
-            )}
-            aria-label="Refresh pulse"
-          >
-            <RefreshCw className={cn('h-4 w-4', refreshing && 'animate-spin')} />
-          </button>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <Link
+              href="/pulse/reactions"
+              className="flex items-center gap-1.5 px-2.5 py-2 rounded-lg bg-surface-200 text-surface-500 hover:bg-surface-300 hover:text-white transition-colors text-[11px] font-mono font-medium"
+              aria-label="Community reactions leaderboard"
+              title="Community reactions"
+            >
+              <span aria-hidden="true">💡🔥</span>
+              <span className="hidden sm:inline">Reactions</span>
+            </Link>
+            <button
+              onClick={() => fetchPulse(true)}
+              disabled={refreshing}
+              className={cn(
+                'flex items-center justify-center h-9 w-9 rounded-lg bg-surface-200 text-surface-500',
+                'hover:bg-surface-300 hover:text-white transition-colors',
+                refreshing && 'opacity-50 cursor-not-allowed'
+              )}
+              aria-label="Refresh pulse"
+            >
+              <RefreshCw className={cn('h-4 w-4', refreshing && 'animate-spin')} />
+            </button>
+          </div>
         </div>
 
         {/* Last updated */}

@@ -1,6 +1,22 @@
 import type { Metadata, Viewport } from 'next'
+import { Inter, JetBrains_Mono } from 'next/font/google'
 import { Providers } from '@/components/Providers'
 import './globals.css'
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+  preload: true,
+})
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  variable: '--font-mono',
+  display: 'swap',
+  preload: false,
+  weight: ['400', '500', '600'],
+})
 
 export const metadata: Metadata = {
   title: {
@@ -63,18 +79,49 @@ export const viewport: Viewport = {
   colorScheme: 'dark',
 }
 
+const WEBSITE_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Lobby Market',
+  url: 'https://lobby.market',
+  description: 'Write the law. Build the consensus. A platform where ideas compete, votes decide, and the best arguments become law.',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: {
+      '@type': 'EntryPoint',
+      urlTemplate: 'https://lobby.market/search?q={search_term_string}',
+    },
+    'query-input': 'required name=search_term_string',
+  },
+}
+
+const ORGANIZATION_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Lobby Market',
+  url: 'https://lobby.market',
+  logo: 'https://lobby.market/assets/logo-mark.png',
+  sameAs: [],
+  description: 'A consensus-building platform where ideas compete, votes decide, and the best arguments become law.',
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
       <head>
         {/* Establish early connections to Supabase so API calls pay zero DNS + TLS
             round-trip overhead when the first authenticated request fires. */}
         <link rel="preconnect" href="https://jysabvbfruvyhbqdhnmh.supabase.co" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://jysabvbfruvyhbqdhnmh.supabase.co" />
+        {/* Sitewide structured data — WebSite + Organization */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify([WEBSITE_SCHEMA, ORGANIZATION_SCHEMA]) }}
+        />
       </head>
       <body
         className="font-sans bg-surface-50 text-surface-700 min-h-screen antialiased"

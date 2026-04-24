@@ -15,6 +15,7 @@ import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Keyboard } from 'lucide-react'
 import { closeKeyboardShortcuts, useKeyboardShortcuts } from '@/lib/hooks/useKeyboardShortcuts'
+import { openCommandPalette } from '@/lib/hooks/useCommandPalette'
 import { cn } from '@/lib/utils/cn'
 
 // ─── Shortcut data ────────────────────────────────────────────────────────────
@@ -37,6 +38,7 @@ const SECTIONS: ShortcutSection[] = [
     items: [
       { keys: ['?'], description: 'Show this shortcuts panel' },
       { keys: ['⌘K', 'Ctrl+K'], description: 'Open command palette' },
+      { keys: ['/'], description: 'Open command palette (search)' },
       { keys: ['Esc'], description: 'Close any open modal or palette' },
     ],
   },
@@ -52,34 +54,30 @@ const SECTIONS: ShortcutSection[] = [
       { keys: ['G', 'P'], description: 'Go to your Profile' },
       { keys: ['G', 'A'], description: 'Go to Analytics' },
       { keys: ['G', 'C'], description: 'Go to Civic Compass' },
+      { keys: ['G', 'N'], description: 'Go to Notifications' },
+      { keys: ['G', 'T'], description: 'Go to Trending' },
+      { keys: ['G', 'W'], description: 'Go to Activity feed' },
+      { keys: ['G', 'M'], description: 'Go to My Week' },
     ],
   },
   {
     title: 'Feed',
     color: 'text-purple',
     items: [
-      { keys: ['←', '→'], description: 'Swipe to vote For / Against (touch)' },
-      { keys: ['J'], description: 'Next topic in feed' },
-      { keys: ['K'], description: 'Previous topic in feed' },
-    ],
-  },
-  {
-    title: 'Topic / Debate',
-    color: 'text-emerald',
-    items: [
-      { keys: ['F'], description: 'Vote For on focused topic' },
-      { keys: ['A'], description: 'Vote Against on focused topic' },
-      { keys: ['B'], description: 'Toggle bookmark' },
-      { keys: ['S'], description: 'Share current page' },
+      { keys: ['J'], description: 'Next topic' },
+      { keys: ['K'], description: 'Previous topic' },
+      { keys: ['F'], description: 'Vote For on current topic' },
+      { keys: ['A'], description: 'Vote Against on current topic' },
+      { keys: ['↵'], description: 'Open current topic detail' },
     ],
   },
   {
     title: 'Search',
     color: 'text-against-400',
     items: [
-      { keys: ['/'], description: 'Focus search input' },
       { keys: ['↑', '↓'], description: 'Navigate results' },
       { keys: ['↵'], description: 'Open selected result' },
+      { keys: ['Esc'], description: 'Close palette' },
     ],
   },
 ]
@@ -292,6 +290,14 @@ export function KeyboardShortcutsProvider() {
         return
       }
 
+      // ── / — open command palette (same as ⌘K) ────────────────────────────
+      if (key === '/') {
+        e.preventDefault()
+        openCommandPalette()
+        clearChord()
+        return
+      }
+
       // ── Escape — close shortcuts panel (handled in modal, but also here) ──
       if (key === 'Escape') {
         close()
@@ -310,6 +316,11 @@ export function KeyboardShortcutsProvider() {
           d: '/debate',
           p: '/profile/me',
           a: '/analytics',
+          c: '/compass',
+          n: '/notifications',
+          t: '/trending',
+          w: '/activity',
+          m: '/my-week',
         }
         const dest = navMap[key.toLowerCase()]
         if (dest) {

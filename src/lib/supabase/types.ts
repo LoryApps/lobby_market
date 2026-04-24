@@ -283,6 +283,7 @@ export type Database = {
           user_id: string;
           topic_id: string;
           side: Database["public"]["Enums"]["vote_side"];
+          reason: string | null;
           created_at: string;
         };
         Insert: {
@@ -290,6 +291,7 @@ export type Database = {
           user_id: string;
           topic_id: string;
           side: Database["public"]["Enums"]["vote_side"];
+          reason?: string | null;
           created_at?: string;
         };
         Update: {
@@ -297,6 +299,7 @@ export type Database = {
           user_id?: string;
           topic_id?: string;
           side?: Database["public"]["Enums"]["vote_side"];
+          reason?: string | null;
           created_at?: string;
         };
         Relationships: [];
@@ -1090,6 +1093,51 @@ export type Database = {
         };
         Relationships: [];
       };
+      argument_bookmarks: {
+        Row: {
+          id: string;
+          user_id: string;
+          argument_id: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          argument_id: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          argument_id?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      topic_reactions: {
+        Row: {
+          id: string;
+          topic_id: string;
+          user_id: string;
+          reaction: "insightful" | "controversial" | "complex" | "surprising";
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          topic_id: string;
+          user_id: string;
+          reaction: "insightful" | "controversial" | "complex" | "surprising";
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          topic_id?: string;
+          user_id?: string;
+          reaction?: "insightful" | "controversial" | "complex" | "surprising";
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       debate_reactions: {
         Row: {
           id: string;
@@ -1194,6 +1242,7 @@ export type Database = {
           side: "blue" | "red";
           content: string;
           upvotes: number;
+          source_url: string | null;
           created_at: string;
         };
         Insert: {
@@ -1203,6 +1252,7 @@ export type Database = {
           side: "blue" | "red";
           content: string;
           upvotes?: number;
+          source_url?: string | null;
           created_at?: string;
         };
         Update: {
@@ -1212,6 +1262,7 @@ export type Database = {
           side?: "blue" | "red";
           content?: string;
           upvotes?: number;
+          source_url?: string | null;
           created_at?: string;
         };
         Relationships: [];
@@ -1262,6 +1313,27 @@ export type Database = {
         Relationships: [];
       };
       topic_bookmarks: {
+        Row: {
+          id: string;
+          user_id: string;
+          topic_id: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          topic_id: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          topic_id?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      topic_subscriptions: {
         Row: {
           id: string;
           user_id: string;
@@ -1418,11 +1490,185 @@ export type Database = {
           }
         ];
       };
+      topic_sources: {
+        Row: {
+          id: string;
+          topic_id: string;
+          added_by: string;
+          url: string;
+          title: string;
+          description: string | null;
+          domain: string | null;
+          display_order: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          topic_id: string;
+          added_by: string;
+          url: string;
+          title: string;
+          description?: string | null;
+          display_order?: number;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          topic_id?: string;
+          added_by?: string;
+          url?: string;
+          title?: string;
+          description?: string | null;
+          display_order?: number;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "topic_sources_topic_id_fkey";
+            columns: ["topic_id"];
+            isOneToOne: false;
+            referencedRelation: "topics";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "topic_sources_added_by_fkey";
+            columns: ["added_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      topic_collections: {
+        Row: {
+          id: string;
+          user_id: string;
+          name: string;
+          description: string | null;
+          is_public: boolean;
+          item_count: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          name: string;
+          description?: string | null;
+          is_public?: boolean;
+          item_count?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          name?: string;
+          description?: string | null;
+          is_public?: boolean;
+          item_count?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      collection_items: {
+        Row: {
+          collection_id: string;
+          topic_id: string;
+          note: string | null;
+          added_at: string;
+        };
+        Insert: {
+          collection_id: string;
+          topic_id: string;
+          note?: string | null;
+          added_at?: string;
+        };
+        Update: {
+          collection_id?: string;
+          topic_id?: string;
+          note?: string | null;
+          added_at?: string;
+        };
+        Relationships: [];
+      };
+      lobby_snapshots: {
+        Row: {
+          id: string;
+          lobby_id: string;
+          member_count: number;
+          influence_score: number;
+          recorded_at: string;
+        };
+        Insert: {
+          id?: string;
+          lobby_id: string;
+          member_count?: number;
+          influence_score?: number;
+          recorded_at?: string;
+        };
+        Update: {
+          id?: string;
+          lobby_id?: string;
+          member_count?: number;
+          influence_score?: number;
+          recorded_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "lobby_snapshots_lobby_id_fkey";
+            columns: ["lobby_id"];
+            isOneToOne: false;
+            referencedRelation: "lobbies";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      topic_ai_briefs: {
+        Row: {
+          id: string;
+          topic_id: string;
+          brief_text: string;
+          argument_hash: string;
+          model: string;
+          generated_at: string;
+        };
+        Insert: {
+          id?: string;
+          topic_id: string;
+          brief_text: string;
+          argument_hash: string;
+          model?: string;
+          generated_at?: string;
+        };
+        Update: {
+          id?: string;
+          topic_id?: string;
+          brief_text?: string;
+          argument_hash?: string;
+          model?: string;
+          generated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "topic_ai_briefs_topic_id_fkey";
+            columns: ["topic_id"];
+            isOneToOne: true;
+            referencedRelation: "topics";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
     };
     Views: {
       [_ in never]: never;
     };
     Functions: {
+      increment_topic_view: {
+        Args: { topic_uuid: string };
+        Returns: undefined;
+      };
       refresh_topic_prediction_stats: {
         Args: { p_topic_id: string };
         Returns: undefined;
@@ -1558,7 +1804,8 @@ export type NotificationType =
   | "role_promoted"
   | "coalition_invite"
   | "coalition_invite_accepted"
-  | "bookmark_update";
+  | "bookmark_update"
+  | "new_follower";
 
 export type AchievementTier = "common" | "rare" | "epic" | "legendary";
 
@@ -1763,6 +2010,7 @@ export interface TopicArgument {
   side: "blue" | "red";
   content: string;
   upvotes: number;
+  source_url: string | null;
   created_at: string;
 }
 
@@ -1790,6 +2038,14 @@ export type ArgumentReplyWithAuthor = ArgumentReply & {
     "id" | "username" | "display_name" | "avatar_url" | "role"
   > | null;
 };
+
+// Argument bookmark
+export interface ArgumentBookmark {
+  id: string;
+  user_id: string;
+  argument_id: string;
+  created_at: string;
+}
 
 // Prediction market
 export interface TopicPrediction {
@@ -1825,3 +2081,10 @@ export type CoalitionPostWithAuthor = CoalitionPost & {
     "id" | "username" | "display_name" | "avatar_url" | "role"
   > | null;
 };
+
+// Topic reactions
+export type TopicReaction =
+  Database["public"]["Tables"]["topic_reactions"]["Row"];
+export type TopicReactionInsert =
+  Database["public"]["Tables"]["topic_reactions"]["Insert"];
+export type TopicReactionType = TopicReaction["reaction"];

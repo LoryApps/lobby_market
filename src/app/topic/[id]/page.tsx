@@ -81,6 +81,8 @@ export async function generateMetadata({ params }: TopicPageProps): Promise<Meta
   }
 }
 
+const BASE_URL = 'https://lobby.market'
+
 export default async function TopicPage({ params }: TopicPageProps) {
   const supabase = await createClient()
 
@@ -100,10 +102,61 @@ export default async function TopicPage({ params }: TopicPageProps) {
     .eq('id', topic.author_id)
     .single()
 
+  const typedTopic = topic as Topic
+  const forPct = Math.round(typedTopic.blue_pct ?? 50)
+  const description = (typedTopic as { description?: string | null }).description
+
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'DiscussionForumPosting',
+    headline: typedTopic.statement,
+    ...(description ? { description } : {}),
+    datePublished: typedTopic.created_at,
+    url: `${BASE_URL}/topic/${params.id}`,
+    publisher: {
+      '@type': 'Organization',
+      name: 'Lobby Market',
+      url: BASE_URL,
+      logo: { '@type': 'ImageObject', url: `${BASE_URL}/assets/logo-mark.png` },
+    },
+    ...(typedTopic.category ? { keywords: typedTopic.category } : {}),
+    interactionStatistic: [
+      {
+        '@type': 'InteractionCounter',
+        interactionType: { '@type': 'VoteAction' },
+        userInteractionCount: typedTopic.total_votes ?? 0,
+      },
+      {
+        '@type': 'InteractionCounter',
+        interactionType: { '@type': 'WatchAction' },
+        userInteractionCount: (typedTopic as { view_count?: number }).view_count ?? 0,
+      },
+    ],
+    additionalProperty: [
+      { '@type': 'PropertyValue', name: 'forPercentage', value: forPct },
+      { '@type': 'PropertyValue', name: 'againstPercentage', value: 100 - forPct },
+      { '@type': 'PropertyValue', name: 'status', value: typedTopic.status },
+    ],
+    breadcrumb: {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Lobby Market', item: BASE_URL },
+        { '@type': 'ListItem', position: 2, name: 'Topics', item: `${BASE_URL}/trending` },
+        { '@type': 'ListItem', position: 3, name: typedTopic.statement.slice(0, 80), item: `${BASE_URL}/topic/${params.id}` },
+      ],
+    },
+  }
+
   return (
-    <TopicDetail
-      initialTopic={topic as Topic}
-      author={(author as Profile) ?? null}
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      <TopicDetail
+        initialTopic={typedTopic}
+        author={(author as Profile) ?? null}
+      />
+    </>
   )
 }

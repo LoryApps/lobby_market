@@ -7,9 +7,11 @@ import {
   BarChart2,
   Calendar,
   Code2,
+  GitCompare,
   Globe,
   Loader2,
   Settings,
+  Share2,
   UserCheck,
   UserMinus,
   UserPlus,
@@ -20,6 +22,7 @@ import { Button } from '@/components/ui/Button'
 import { GiftCloutButton } from '@/components/clout/GiftCloutButton'
 import { RoleBadge, getRoleRingClass } from './RoleBadge'
 import { FollowersModal, type FollowTab } from './FollowersModal'
+import { AlignmentBadge } from './AlignmentBadge'
 
 // ── Inline bio markdown renderer ──────────────────────────────────────────────
 // Supports: **bold**, *italic*, `code`, [text](url)
@@ -332,6 +335,11 @@ export function ProfileHeader({
             />
           </div>
 
+          {/* Civic alignment badge — shown to logged-in viewers of other profiles */}
+          {viewerId && !isOwner && (
+            <AlignmentBadge targetId={profile.id} className="mb-2" />
+          )}
+
           <div className="flex items-center gap-2 text-xs font-mono text-surface-500 mb-2">
             <Calendar className="h-3.5 w-3.5" />
             Joined {formatJoinDate(profile.created_at)}
@@ -390,7 +398,7 @@ export function ProfileHeader({
       {/* Actions row */}
       <div className="relative mt-6 flex items-center gap-3">
         {isOwner ? (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <Link href="/profile/settings">
               <Button variant="default" size="md">
                 <Settings className="h-4 w-4" />
@@ -401,6 +409,12 @@ export function ProfileHeader({
               <Button variant="default" size="md">
                 <BarChart2 className="h-4 w-4" />
                 Analytics
+              </Button>
+            </Link>
+            <Link href={`/share/profile/${encodeURIComponent(profile.username)}`}>
+              <Button variant="default" size="md" title="Share your civic card">
+                <Share2 className="h-4 w-4" />
+                Share card
               </Button>
             </Link>
           </div>
@@ -433,6 +447,21 @@ export function ProfileHeader({
                 recipientName={profile.display_name || profile.username}
               />
             )}
+
+            {/* Compare stances */}
+            <Link href={`/compare-users?b=${encodeURIComponent(profile.username)}`}>
+              <Button variant="default" size="md" title="Compare your stances">
+                <GitCompare className="h-4 w-4" />
+                Compare
+              </Button>
+            </Link>
+
+            {/* Share civic card */}
+            <Link href={`/share/profile/${encodeURIComponent(profile.username)}`}>
+              <Button variant="default" size="md" title="Share their civic card">
+                <Share2 className="h-4 w-4" />
+              </Button>
+            </Link>
           </div>
         )}
       </div>

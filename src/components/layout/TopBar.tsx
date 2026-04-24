@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Activity, BarChart2, BookOpen, Coins, Compass, FileText, Flame, HelpCircle, LayoutGrid, LogOut, Search, Plus, Settings, Sparkles, Target, TrendingUp, User, Zap } from 'lucide-react'
+import { Activity, BarChart2, Bell, BookOpen, Calendar, Coins, Compass, FileText, Flame, Gavel, HelpCircle, History, LayoutGrid, LogOut, MessageSquare, Network, Scale, Search, Plus, Settings, Sparkles, Star, Swords, Target, Timer, TrendingUp, User, Zap, ArrowUpRight, Globe, Users } from 'lucide-react'
 import { NotificationBell } from '@/components/profile/NotificationBell'
 import { Avatar } from '@/components/ui/Avatar'
 import { openCommandPalette } from '@/lib/hooks/useCommandPalette'
@@ -24,13 +24,10 @@ interface MiniProfile {
 // ─── Role label helper ────────────────────────────────────────────────────────
 
 const ROLE_LABELS: Record<string, { label: string; color: string }> = {
-  citizen: { label: 'Citizen', color: 'text-surface-500' },
-  senator: { label: 'Senator', color: 'text-for-400' },
-  magistrate: { label: 'Magistrate', color: 'text-gold' },
-  oracle: { label: 'Oracle', color: 'text-purple' },
+  person: { label: 'Citizen', color: 'text-surface-500' },
+  debator: { label: 'Debator', color: 'text-for-400' },
   troll_catcher: { label: 'Troll Catcher', color: 'text-emerald' },
-  moderator: { label: 'Moderator', color: 'text-against-400' },
-  admin: { label: 'Admin', color: 'text-gold' },
+  elder: { label: 'Elder', color: 'text-gold' },
 }
 
 export function TopBar() {
@@ -82,7 +79,7 @@ export function TopBar() {
     router.push('/login')
   }
 
-  const roleInfo = profile ? (ROLE_LABELS[profile.role] ?? ROLE_LABELS.citizen) : null
+  const roleInfo = profile ? (ROLE_LABELS[profile.role] ?? ROLE_LABELS.person) : null
 
   return (
     <header className="sticky top-0 z-50 h-14 bg-surface-100 border-b border-surface-300 flex items-center px-4 gap-4">
@@ -253,6 +250,24 @@ export function TopBar() {
                 My Profile
               </Link>
               <Link
+                href="/positions"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <Scale className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
+                My Positions
+              </Link>
+              <Link
+                href="/watchlist"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <Bell className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
+                My Watchlist
+              </Link>
+              <Link
                 href="/challenge"
                 role="menuitem"
                 onClick={() => setMenuOpen(false)}
@@ -262,13 +277,40 @@ export function TopBar() {
                 Daily Quorum
               </Link>
               <Link
-                href="/coach"
+                href="/duel"
                 role="menuitem"
                 onClick={() => setMenuOpen(false)}
                 className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
               >
-                <Sparkles className="h-3.5 w-3.5 flex-shrink-0 text-for-300" aria-hidden="true" />
-                Argument Coach
+                <Swords className="h-3.5 w-3.5 flex-shrink-0 text-against-400" aria-hidden="true" />
+                Argument Duel
+              </Link>
+              <Link
+                href="/rapid"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <Zap className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />
+                Rapid Fire
+              </Link>
+              <Link
+                href="/blitz"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <Timer className="h-3.5 w-3.5 flex-shrink-0 text-against-400" aria-hidden="true" />
+                Blitz Mode
+              </Link>
+              <Link
+                href="/quiz"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <Scale className="h-3.5 w-3.5 flex-shrink-0 text-emerald" aria-hidden="true" />
+                Civic Quiz
               </Link>
               <Link
                 href="/predictions"
@@ -280,6 +322,33 @@ export function TopBar() {
                 Predictions
               </Link>
               <Link
+                href="/constitution"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <BookOpen className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />
+                Civic Constitution
+              </Link>
+              <Link
+                href="/verdicts"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <Gavel className="h-3.5 w-3.5 flex-shrink-0 text-emerald" aria-hidden="true" />
+                The Verdicts
+              </Link>
+              <Link
+                href="/my-week"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <BarChart2 className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
+                My Week
+              </Link>
+              <Link
                 href="/analytics"
                 role="menuitem"
                 onClick={() => setMenuOpen(false)}
@@ -287,6 +356,15 @@ export function TopBar() {
               >
                 <BarChart2 className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
                 Analytics
+              </Link>
+              <Link
+                href="/impact"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <Star className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />
+                Your Impact
               </Link>
               <Link
                 href="/compass"
@@ -298,6 +376,42 @@ export function TopBar() {
                 Civic Compass
               </Link>
               <Link
+                href="/recommended"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <Sparkles className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
+                For You
+              </Link>
+              <Link
+                href="/newspaper"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <FileText className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />
+                The Dispatch
+              </Link>
+              <Link
+                href="/live"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <Activity className="h-3.5 w-3.5 flex-shrink-0 text-against-400" aria-hidden="true" />
+                Live Arguments
+              </Link>
+              <Link
+                href="/hot-takes"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <MessageSquare className="h-3.5 w-3.5 flex-shrink-0 text-against-400" aria-hidden="true" />
+                Hot Takes
+              </Link>
+              <Link
                 href="/pulse"
                 role="menuitem"
                 onClick={() => setMenuOpen(false)}
@@ -305,6 +419,24 @@ export function TopBar() {
               >
                 <Zap className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />
                 Community Pulse
+              </Link>
+              <Link
+                href="/reactions"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <TrendingUp className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
+                Community Signals
+              </Link>
+              <Link
+                href="/momentum"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <ArrowUpRight className="h-3.5 w-3.5 flex-shrink-0 text-against-400" aria-hidden="true" />
+                Momentum
               </Link>
               <Link
                 href="/categories"
@@ -325,6 +457,60 @@ export function TopBar() {
                 Activity
               </Link>
               <Link
+                href="/calendar"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <Calendar className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
+                Civic Calendar
+              </Link>
+              <Link
+                href="/timeline"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <History className="h-3.5 w-3.5 flex-shrink-0 text-surface-500" aria-hidden="true" />
+                Civic Timeline
+              </Link>
+              <Link
+                href="/network"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <Network className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
+                Your Network
+              </Link>
+              <Link
+                href="/twins"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <Users className="h-3.5 w-3.5 flex-shrink-0 text-emerald" aria-hidden="true" />
+                Vote Twins
+              </Link>
+              <Link
+                href="/arena"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <Swords className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />
+                Coalition Arena
+              </Link>
+              <Link
+                href="/discover"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <Globe className="h-3.5 w-3.5 flex-shrink-0 text-for-300" aria-hidden="true" />
+                Discover
+              </Link>
+              <Link
                 href="/settings"
                 role="menuitem"
                 onClick={() => setMenuOpen(false)}
@@ -341,6 +527,24 @@ export function TopBar() {
               >
                 <TrendingUp className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
                 State of the Lobby
+              </Link>
+              <Link
+                href="/heatmap"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <BarChart2 className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
+                Lobby Heatmap
+              </Link>
+              <Link
+                href="/consensus"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <Globe className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
+                Consensus Engine
               </Link>
               <div className="border-t border-surface-300" role="separator" />
               <Link
@@ -369,6 +573,15 @@ export function TopBar() {
               >
                 <FileText className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
                 Developer API
+              </Link>
+              <Link
+                href="/widget"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <Network className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
+                Widget Builder
               </Link>
               <div className="border-t border-surface-300" role="separator" />
               <button

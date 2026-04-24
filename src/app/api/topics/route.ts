@@ -10,6 +10,9 @@ const CATEGORIES = [
   'Economics',
   'Science',
   'Philosophy',
+  'Health',
+  'Environment',
+  'Education',
   'Other',
 ]
 

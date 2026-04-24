@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { LawPage } from '@/components/law/LawPage'
+import { LawVictoryBanner } from '@/components/law/LawVictoryBanner'
 import type {
   Law,
   LawLink,
@@ -175,17 +176,68 @@ export default async function LawDetailPage({ params }: LawDetailPageProps) {
     .select('id', { count: 'exact', head: true })
     .eq('topic_id', typedLaw.topic_id)
 
+  const BASE_URL = 'https://lobby.market'
+
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: typedLaw.statement,
+    articleSection: 'Established Consensus Law',
+    datePublished: typedLaw.established_at,
+    url: `${BASE_URL}/law/${params.id}`,
+    publisher: {
+      '@type': 'Organization',
+      name: 'Lobby Market',
+      url: BASE_URL,
+      logo: { '@type': 'ImageObject', url: `${BASE_URL}/assets/logo-mark.png` },
+    },
+    ...(typedLaw.category ? { keywords: typedLaw.category, about: { '@type': 'Thing', name: typedLaw.category } } : {}),
+    ...(typedLaw.total_votes ? {
+      interactionStatistic: {
+        '@type': 'InteractionCounter',
+        interactionType: { '@type': 'VoteAction' },
+        userInteractionCount: typedLaw.total_votes,
+      },
+    } : {}),
+    ...(typedLaw.blue_pct != null ? {
+      additionalProperty: [
+        { '@type': 'PropertyValue', name: 'forPercentage', value: Math.round(typedLaw.blue_pct) },
+        { '@type': 'PropertyValue', name: 'againstPercentage', value: 100 - Math.round(typedLaw.blue_pct) },
+      ],
+    } : {}),
+    breadcrumb: {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Lobby Market', item: BASE_URL },
+        { '@type': 'ListItem', position: 2, name: 'Law Codex', item: `${BASE_URL}/law` },
+        { '@type': 'ListItem', position: 3, name: typedLaw.statement.slice(0, 80), item: `${BASE_URL}/law/${params.id}` },
+      ],
+    },
+  }
+
   return (
-    <LawPage
-      law={typedLaw}
-      topic={typedTopic}
-      author={author}
-      revisions={revisions}
-      outgoingLinks={(outgoingLaws as Law[] | null) ?? []}
-      incomingLinks={(incomingLaws as Law[] | null) ?? []}
-      relatedLaws={relatedLaws.slice(0, 8)}
-      reopenRequest={reopenRequest}
-      totalOriginalVoters={totalOriginalVoters ?? 0}
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      <LawVictoryBanner
+        lawId={typedLaw.id}
+        topicId={typedLaw.topic_id}
+        lawStatement={typedLaw.statement}
+        totalVoters={totalOriginalVoters ?? 0}
+      />
+      <LawPage
+        law={typedLaw}
+        topic={typedTopic}
+        author={author}
+        revisions={revisions}
+        outgoingLinks={(outgoingLaws as Law[] | null) ?? []}
+        incomingLinks={(incomingLaws as Law[] | null) ?? []}
+        relatedLaws={relatedLaws.slice(0, 8)}
+        reopenRequest={reopenRequest}
+        totalOriginalVoters={totalOriginalVoters ?? 0}
+      />
+    </>
   )
 }

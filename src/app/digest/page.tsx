@@ -9,6 +9,7 @@ import {
   Gavel,
   Mic,
   Scale,
+  Sparkles,
   TrendingUp,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
@@ -622,6 +623,13 @@ export default async function DigestPage() {
           >
             <Crown className="h-4 w-4" />
             Leaderboard
+          </Link>
+          <Link
+            href="/brief"
+            className="flex items-center gap-2 text-sm text-surface-500 hover:text-white transition-colors"
+          >
+            <Sparkles className="h-4 w-4" />
+            Daily Brief
           </Link>
         </div>
 

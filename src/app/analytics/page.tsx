@@ -24,6 +24,7 @@ import {
   Compass,
   Users,
   Swords,
+  Star,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -969,6 +970,13 @@ export default function AnalyticsPage() {
             )}
           </div>
           <div className="ml-auto flex items-center gap-3">
+            <Link
+              href="/impact"
+              className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"
+            >
+              <Star className="h-3.5 w-3.5" />
+              Impact
+            </Link>
             <Link
               href="/compass"
               className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"

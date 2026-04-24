@@ -20,11 +20,17 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
   ArrowUpDown,
+  Bookmark,
   ChevronUp,
+  Check,
+  Copy,
+  ExternalLink,
+  Link2,
   Loader2,
   MessageSquare,
   MessageSquarePlus,
   Send,
+  Share2,
   ThumbsDown,
   ThumbsUp,
   Trash2,
@@ -37,6 +43,7 @@ import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { GiftCloutButton } from '@/components/clout/GiftCloutButton'
+import { ReportButton } from '@/components/moderation/ReportButton'
 import {
   MentionAutocomplete,
   getMentionContext,
@@ -44,7 +51,15 @@ import {
 } from '@/components/ui/MentionAutocomplete'
 import { cn } from '@/lib/utils/cn'
 import { renderWithMentions } from '@/lib/utils/mentions'
+import { LinkPreviewCard } from '@/components/ui/LinkPreviewCard'
 import type { TopicArgumentWithAuthor, ArgumentReplyWithAuthor } from '@/lib/supabase/types'
+
+// Extract the first https URL from argument content (for link preview)
+const URL_RE = /https?:\/\/[^\s<>"'`]+[^\s<>"'`.,;:!?)']/
+function extractFirstUrl(text: string): string | null {
+  const m = text.match(URL_RE)
+  return m ? m[0] : null
+}
 
 const MAX_REPLY_CHARS = 300
 
@@ -403,8 +418,20 @@ function ArgumentCard({
 }) {
   const [upvoting, setUpvoting] = useState(false)
   const [showReplies, setShowReplies] = useState(false)
+  const [bookmarked, setBookmarked] = useState(false)
+  const [bookmarking, setBookmarking] = useState(false)
+  const [linkCopied, setLinkCopied] = useState(false)
   const isOwn = arg.user_id === currentUserId
   const canUpvote = currentUserId !== null && !isOwn
+
+  // Fetch initial bookmark state
+  useEffect(() => {
+    if (!currentUserId) return
+    fetch(`/api/arguments/${arg.id}/bookmark`)
+      .then((r) => r.json())
+      .then((data) => { if (typeof data.bookmarked === 'boolean') setBookmarked(data.bookmarked) })
+      .catch(() => {})
+  }, [arg.id, currentUserId])
 
   const handleUpvote = async () => {
     if (!canUpvote || upvoting) return
@@ -413,6 +440,34 @@ function ArgumentCard({
       await onUpvote(arg.id, arg.has_upvoted)
     } finally {
       setUpvoting(false)
+    }
+  }
+
+  const handleBookmark = async () => {
+    if (!currentUserId || bookmarking) return
+    setBookmarking(true)
+    const prev = bookmarked
+    setBookmarked(!prev)
+    try {
+      const res = await fetch(`/api/arguments/${arg.id}/bookmark`, { method: 'POST' })
+      const data = await res.json()
+      if (typeof data.bookmarked === 'boolean') setBookmarked(data.bookmarked)
+    } catch {
+      setBookmarked(prev)
+    } finally {
+      setBookmarking(false)
+    }
+  }
+
+  const handleCopyLink = async () => {
+    const url = `https://lobby.market/arguments/${arg.id}`
+    try {
+      await navigator.clipboard.writeText(url)
+      setLinkCopied(true)
+      setTimeout(() => setLinkCopied(false), 1800)
+    } catch {
+      // Fallback: open the page
+      window.open(url, '_blank', 'noopener')
     }
   }
 
@@ -474,6 +529,37 @@ function ArgumentCard({
         {/* Content */}
         <p className="text-sm text-surface-300 leading-relaxed">{renderWithMentions(arg.content)}</p>
 
+        {/* Citation source URL */}
+        {arg.source_url && (
+          <a
+            href={arg.source_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={cn(
+              'inline-flex items-center gap-1 mt-1.5 text-[11px] font-mono transition-colors max-w-full',
+              isFor
+                ? 'text-for-500/80 hover:text-for-400'
+                : 'text-against-500/80 hover:text-against-400'
+            )}
+            aria-label={`Source: ${arg.source_url}`}
+          >
+            <Link2 className="h-3 w-3 flex-shrink-0" aria-hidden />
+            <span className="truncate">
+              {(() => {
+                try { return new URL(arg.source_url).hostname.replace(/^www\./, '') }
+                catch { return arg.source_url }
+              })()}
+            </span>
+            <ExternalLink className="h-2.5 w-2.5 flex-shrink-0 opacity-60" aria-hidden />
+          </a>
+        )}
+
+        {/* Link preview for the first URL in the argument (if any) */}
+        {(() => {
+          const url = extractFirstUrl(arg.content)
+          return url ? <LinkPreviewCard url={url} /> : null
+        })()}
+
         {/* Reply toggle */}
         <button
           type="button"
@@ -524,6 +610,71 @@ function ArgumentCard({
             size="sm"
           />
         )}
+
+        {/* Bookmark — available to any authenticated user */}
+        {currentUserId && (
+          <button
+            type="button"
+            onClick={handleBookmark}
+            disabled={bookmarking}
+            aria-label={bookmarked ? 'Remove bookmark' : 'Bookmark this argument'}
+            aria-pressed={bookmarked}
+            title={bookmarked ? 'Remove from saved arguments' : 'Save this argument'}
+            className={cn(
+              'flex items-center justify-center p-1.5 rounded-lg transition-all',
+              bookmarked
+                ? 'text-gold bg-gold/10 hover:bg-gold/20'
+                : 'text-surface-600 hover:text-surface-400 hover:bg-surface-300'
+            )}
+          >
+            <Bookmark
+              className="h-3 w-3"
+              fill={bookmarked ? 'currentColor' : 'none'}
+            />
+          </button>
+        )}
+
+        {/* Share / copy permalink */}
+        <button
+          type="button"
+          onClick={handleCopyLink}
+          aria-label="Copy argument link"
+          title="Copy link to this argument"
+          className={cn(
+            'flex items-center justify-center p-1.5 rounded-lg transition-all',
+            linkCopied
+              ? 'text-emerald bg-emerald/10'
+              : 'text-surface-600 hover:text-surface-400 hover:bg-surface-300'
+          )}
+        >
+          {linkCopied ? (
+            <Check className="h-3 w-3" />
+          ) : (
+            <Copy className="h-3 w-3" />
+          )}
+        </button>
+
+        {/* Share as quote card */}
+        <a
+          href={`/share/argument/${arg.id}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Share as quote card"
+          title="Share as quote card"
+          className="flex items-center justify-center p-1.5 rounded-lg transition-all text-surface-600 hover:text-purple hover:bg-purple/10"
+        >
+          <Share2 className="h-3 w-3" />
+        </a>
+
+        {/* Report — only for other users' arguments */}
+        {currentUserId && !isOwn && (
+          <ReportButton
+            contentType="argument"
+            contentId={arg.id}
+            reportedUserId={arg.user_id}
+            compact
+          />
+        )}
       </div>
     </div>
 
@@ -551,6 +702,44 @@ function ArgumentCard({
 
 // ─── Post form ────────────────────────────────────────────────────────────────
 
+// ─── Draft persistence helpers ────────────────────────────────────────────────
+
+function draftKey(topicId: string) {
+  return `lm_arg_draft_${topicId}`
+}
+
+function loadDraft(topicId: string): { side: 'blue' | 'red' | null; content: string } | null {
+  try {
+    const raw = localStorage.getItem(draftKey(topicId))
+    if (!raw) return null
+    const parsed = JSON.parse(raw) as { side: 'blue' | 'red' | null; content: string }
+    if (typeof parsed.content === 'string' && parsed.content.length > 0) return parsed
+    return null
+  } catch {
+    return null
+  }
+}
+
+function saveDraft(topicId: string, side: 'blue' | 'red' | null, content: string) {
+  try {
+    if (!content.trim()) {
+      localStorage.removeItem(draftKey(topicId))
+    } else {
+      localStorage.setItem(draftKey(topicId), JSON.stringify({ side, content }))
+    }
+  } catch {
+    // best-effort
+  }
+}
+
+function clearDraft(topicId: string) {
+  try {
+    localStorage.removeItem(draftKey(topicId))
+  } catch {
+    // best-effort
+  }
+}
+
 function PostArgumentForm({
   topicId,
   onPosted,
@@ -560,8 +749,11 @@ function PostArgumentForm({
 }) {
   const [side, setSide] = useState<'blue' | 'red' | null>(null)
   const [content, setContent] = useState('')
+  const [sourceUrl, setSourceUrl] = useState('')
+  const [sourceUrlError, setSourceUrlError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [draftRestored, setDraftRestored] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   // @mention autocomplete state
@@ -570,8 +762,39 @@ function PostArgumentForm({
   const [mentionResultCount, setMentionResultCount] = useState(0)
   const mentionResultsRef = useRef<MentionSuggestion[]>([])
 
+  // Restore draft from localStorage on first mount
+  useEffect(() => {
+    const draft = loadDraft(topicId)
+    if (draft) {
+      setContent(draft.content)
+      setSide(draft.side)
+      setDraftRestored(true)
+      setTimeout(() => setDraftRestored(false), 3000)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const remaining = MAX_CHARS - content.length
-  const isValid = side !== null && content.trim().length >= MIN_CHARS && content.trim().length <= MAX_CHARS
+  const isValid = side !== null && content.trim().length >= MIN_CHARS && content.trim().length <= MAX_CHARS && !sourceUrlError
+
+  const handleSourceUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value
+    setSourceUrl(val)
+    if (!val.trim()) {
+      setSourceUrlError(null)
+      return
+    }
+    try {
+      const parsed = new URL(val.trim())
+      if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+        setSourceUrlError('Must be an http or https URL')
+      } else {
+        setSourceUrlError(null)
+      }
+    } catch {
+      setSourceUrlError('Enter a valid URL (e.g. https://example.com)')
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -579,11 +802,13 @@ function PostArgumentForm({
     setSubmitting(true)
     setError(null)
 
+    const urlToSend = sourceUrl.trim() || undefined
+
     try {
       const res = await fetch(`/api/topics/${topicId}/arguments`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ side, content: content.trim() }),
+        body: JSON.stringify({ side, content: content.trim(), source_url: urlToSend }),
       })
 
       const json = await res.json()
@@ -593,9 +818,12 @@ function PostArgumentForm({
         return
       }
 
+      clearDraft(topicId)
       onPosted(json.argument as TopicArgumentWithAuthor)
       setContent('')
       setSide(null)
+      setSourceUrl('')
+      setSourceUrlError(null)
       setMentionQuery(null)
     } catch {
       setError('Network error — please try again')
@@ -607,6 +835,7 @@ function PostArgumentForm({
   function handleArgContentChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
     const val = e.target.value
     setContent(val)
+    saveDraft(topicId, side, val)
     const cursor = e.target.selectionStart ?? val.length
     const ctx = getMentionContext(val, cursor)
     if (ctx) {
@@ -670,7 +899,7 @@ function PostArgumentForm({
       <div className="flex gap-2">
         <button
           type="button"
-          onClick={() => setSide('blue')}
+          onClick={() => { setSide('blue'); saveDraft(topicId, 'blue', content) }}
           aria-pressed={side === 'blue'}
           className={cn(
             'flex-1 flex items-center justify-center gap-2 h-10 rounded-xl text-sm font-mono font-semibold border transition-all',
@@ -684,7 +913,7 @@ function PostArgumentForm({
         </button>
         <button
           type="button"
-          onClick={() => setSide('red')}
+          onClick={() => { setSide('red'); saveDraft(topicId, 'red', content) }}
           aria-pressed={side === 'red'}
           className={cn(
             'flex-1 flex items-center justify-center gap-2 h-10 rounded-xl text-sm font-mono font-semibold border transition-all',
@@ -697,6 +926,22 @@ function PostArgumentForm({
           Against
         </button>
       </div>
+
+      {/* Draft restored indicator */}
+      <AnimatePresence>
+        {draftRestored && (
+          <motion.p
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="text-[11px] font-mono text-emerald/80"
+            role="status"
+          >
+            Draft restored
+          </motion.p>
+        )}
+      </AnimatePresence>
 
       {/* Text area */}
       <div className="relative">
@@ -745,6 +990,34 @@ function PostArgumentForm({
         >
           {remaining}
         </span>
+      </div>
+
+      {/* Optional source URL */}
+      <div className="space-y-1">
+        <div className="relative flex items-center">
+          <Link2 className="absolute left-3 h-3.5 w-3.5 text-surface-500 pointer-events-none" aria-hidden />
+          <input
+            type="url"
+            value={sourceUrl}
+            onChange={handleSourceUrlChange}
+            placeholder="Source URL (optional — cite your claim)"
+            aria-label="Source URL citation"
+            className={cn(
+              'w-full pl-9 pr-3 py-2.5 rounded-xl text-sm',
+              'bg-surface-200 border transition-colors',
+              'text-white placeholder:text-surface-600',
+              'focus:outline-none focus:ring-1 focus:ring-for-500/20',
+              sourceUrlError
+                ? 'border-against-500/60 focus:border-against-500/60'
+                : 'border-surface-300 focus:border-for-500/60'
+            )}
+          />
+        </div>
+        {sourceUrlError && (
+          <p role="alert" className="text-[11px] text-against-400 font-mono pl-1">
+            {sourceUrlError}
+          </p>
+        )}
       </div>
 
       {error && (

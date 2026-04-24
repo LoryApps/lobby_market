@@ -5,11 +5,15 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
   ArrowLeft,
+  BookOpen,
   Calendar,
+  GitCompare,
   Globe,
   Info,
   Megaphone,
   MessageSquare,
+  Newspaper,
+  ScrollText,
   Tag,
   ThumbsUp,
   Users,
@@ -38,14 +42,34 @@ import { CoalitionStancePanel } from '@/components/topic/CoalitionStancePanel'
 import { TopicDebatePanel } from '@/components/topic/TopicDebatePanel'
 import { TopicWikiSection } from '@/components/topic/TopicWikiSection'
 import { TopicBacklinks } from '@/components/topic/TopicBacklinks'
+import { TopicSources } from '@/components/topic/TopicSources'
 import { ReportButton } from '@/components/moderation/ReportButton'
 import { SharePanel } from '@/components/ui/SharePanel'
 import { BookmarkButton } from '@/components/ui/BookmarkButton'
+import { AddToCollectionButton } from '@/components/ui/AddToCollectionButton'
 import { TopicViewers } from '@/components/topic/TopicViewers'
 import { ArgumentSpotlight } from '@/components/topic/ArgumentSpotlight'
+import { TopicSubscribeButton } from '@/components/topic/TopicSubscribeButton'
 import { cn } from '@/lib/utils/cn'
 import { useVoteStore } from '@/lib/stores/vote-store'
 import { useFeedStore } from '@/lib/stores/feed-store'
+import { getTopicSignal, SIGNAL_PILL_CLASSES } from '@/lib/utils/topic-signal'
+import { Clock, Flame, Gavel, Swords, TrendingUp, Zap } from 'lucide-react'
+import { TopicReactions } from '@/components/topic/TopicReactions'
+import { TopicHotTakes } from '@/components/topic/TopicHotTakes'
+import { ArgumentContributors } from '@/components/topic/ArgumentContributors'
+import { ArgumentCitationsPanel } from '@/components/topic/ArgumentCitationsPanel'
+import { TopicAIBrief } from '@/components/topic/TopicAIBrief'
+import { ErrorBoundary } from '@/components/ui/ErrorBoundary'
+
+const SIGNAL_ICONS_DETAIL: Record<string, typeof Flame> = {
+  ending_soon:     Clock,
+  brink_of_law:    Gavel,
+  deadlock:        Swords,
+  trending:        TrendingUp,
+  gaining_support: Zap,
+  strong_majority: Flame,
+}
 
 interface TopicDetailProps {
   initialTopic: Topic
@@ -139,7 +163,17 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
     }
   }, [topic.id, updateTopic])
 
-  const handleVote = async (side: VoteSide) => {
+  // Record a view once per topic per browser session (best-effort, non-blocking)
+  useEffect(() => {
+    const key = `lm_viewed_${topic.id}`
+    if (typeof sessionStorage !== 'undefined' && !sessionStorage.getItem(key)) {
+      sessionStorage.setItem(key, '1')
+      fetch(`/api/topics/${topic.id}/view`, { method: 'POST' }).catch(() => {})
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [topic.id])
+
+  const handleVote = async (side: VoteSide, reason?: string) => {
     // Optimistic update
     const isBlue = side === 'blue'
     const newTotal = topic.total_votes + 1
@@ -156,7 +190,7 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
       blue_votes: newBlue,
       blue_pct: (newBlue / newTotal) * 100,
     })
-    await castVote(topic.id, side)
+    await castVote(topic.id, side, reason)
   }
 
   const handleSupport = async () => {
@@ -200,7 +234,33 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
           {/* Live viewer presence — only shows when >1 person is viewing */}
           <TopicViewers topicId={topic.id} className="ml-3" />
           <div className="ml-auto flex items-center gap-2">
+            <TopicSubscribeButton topicId={topic.id} />
             <BookmarkButton topicId={topic.id} />
+            <AddToCollectionButton topicId={topic.id} />
+            <Link
+              href={`/share/debate/${topic.id}`}
+              className={cn(
+                'flex items-center justify-center h-8 w-8 rounded-lg',
+                'bg-surface-200 border border-surface-300 text-surface-500',
+                'hover:bg-surface-300 hover:text-for-400 transition-colors',
+              )}
+              title="Debate Snapshot — share the best arguments"
+              aria-label="View debate snapshot"
+            >
+              <Newspaper className="h-3.5 w-3.5" />
+            </Link>
+            <Link
+              href={`/compare?a=${topic.id}`}
+              className={cn(
+                'flex items-center justify-center h-8 w-8 rounded-lg',
+                'bg-surface-200 border border-surface-300 text-surface-500',
+                'hover:bg-surface-300 hover:text-purple transition-colors',
+              )}
+              title="Compare with another topic"
+              aria-label="Compare with another topic"
+            >
+              <GitCompare className="h-3.5 w-3.5" />
+            </Link>
             <SharePanel
               url={typeof window !== 'undefined' ? window.location.href : `/topic/${topic.id}`}
               text={`${topic.statement} — ${Math.round(topic.blue_pct)}% For on Lobby Market`}
@@ -216,7 +276,7 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
       {/* Content */}
       <div className="max-w-2xl mx-auto px-4 py-8">
         {/* Statement */}
-        <div className="flex items-start justify-between gap-3 mb-6">
+        <div className="flex items-start justify-between gap-3 mb-2">
           <h1 className="text-3xl md:text-4xl font-bold text-white leading-tight flex-1">
             {topic.statement}
           </h1>
@@ -227,6 +287,28 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
             compact
           />
         </div>
+
+        {/* Relevance signal pill — shown when the topic has a notable status */}
+        {(() => {
+          const signal = getTopicSignal(topic)
+          if (!signal) return null
+          const classes = SIGNAL_PILL_CLASSES[signal.color]
+          const Icon = SIGNAL_ICONS_DETAIL[signal.id] ?? Flame
+          return (
+            <span
+              className={cn(
+                'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-mono font-semibold border mb-6',
+                classes.pill,
+              )}
+              title={signal.description}
+            >
+              <span className={cn('h-1.5 w-1.5 rounded-full animate-pulse', classes.dot)} aria-hidden="true" />
+              <Icon className="h-3 w-3" aria-hidden="true" />
+              {signal.label}
+              <span className="text-[10px] opacity-60 ml-0.5">· {signal.description}</span>
+            </span>
+          )
+        })()}
 
         {/* Tabs — Details / Arguments / Lobbies */}
         <div className="flex items-center gap-1 mb-8 border-b border-surface-300">
@@ -272,13 +354,19 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
         </div>
 
         {activeTab === 'lobbies' ? (
-          <LobbyBoard topicId={topic.id} />
+          <ErrorBoundary size="md" label="Couldn't load lobby board">
+            <LobbyBoard topicId={topic.id} />
+          </ErrorBoundary>
         ) : activeTab === 'arguments' ? (
-          <>
-            {/* Spotlight: top FOR + AGAINST argument preview */}
-            <ArgumentSpotlight topicId={topic.id} className="mb-6" />
-            <ArgumentThread topicId={topic.id} />
-          </>
+          <ErrorBoundary size="md" label="Couldn't load arguments">
+            <>
+              {/* AI brief — neutral Claude-generated debate summary */}
+              <TopicAIBrief topicId={topic.id} className="mb-6" />
+              {/* Spotlight: top FOR + AGAINST argument preview */}
+              <ArgumentSpotlight topicId={topic.id} className="mb-6" />
+              <ArgumentThread topicId={topic.id} />
+            </>
+          </ErrorBoundary>
         ) : (
           <>
             {/* Chain banner — shown during the continuation lifecycle */}
@@ -297,13 +385,41 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
                   showLabels
                 />
                 {topic.total_votes > 0 && (
-                  <div className="flex justify-center">
+                  <div className="flex justify-center gap-4 flex-wrap">
                     <Link
                       href={`/topic/${topic.id}/voters`}
                       className="inline-flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-white transition-colors"
                     >
                       <Users className="h-3.5 w-3.5" />
                       See who voted
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/timeline`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-white transition-colors"
+                    >
+                      <Clock className="h-3.5 w-3.5" />
+                      View timeline
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/brief`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-for-400 hover:text-for-300 transition-colors"
+                    >
+                      <BookOpen className="h-3.5 w-3.5" />
+                      Read brief
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/transcript`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-white transition-colors"
+                    >
+                      <ScrollText className="h-3.5 w-3.5" />
+                      Transcript
+                    </Link>
+                    <Link
+                      href={`/spar/${topic.id}`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-purple hover:text-purple/80 transition-colors"
+                    >
+                      <Swords className="h-3.5 w-3.5" />
+                      Spar with AI
                     </Link>
                   </div>
                 )}
@@ -334,6 +450,14 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
                 )}
               </div>
             )}
+
+            {/* Community reactions */}
+            <div className="mb-6">
+              <p className="text-xs font-mono text-surface-500 mb-2 uppercase tracking-wide">
+                Community reads this as
+              </p>
+              <TopicReactions topicId={topic.id} size="md" />
+            </div>
 
             {/* Continuation lifecycle — authoring, list, or plurality vote */}
             {showChainBanner && (
@@ -421,57 +545,97 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
             </div>
 
             {/* Topic context / wiki description — editable by author */}
-            <TopicWikiSection
-              topicId={topic.id}
-              authorId={topic.author_id}
-              description={topic.description}
-              onUpdate={(desc) => setTopic((prev) => ({ ...prev, description: desc }))}
-              updatedAt={(topic as { description_updated_at?: string | null }).description_updated_at ?? null}
-              updatedByUsername={editorUsername}
-            />
+            <ErrorBoundary size="sm" label="Couldn't load wiki section">
+              <TopicWikiSection
+                topicId={topic.id}
+                authorId={topic.author_id}
+                description={topic.description}
+                onUpdate={(desc) => setTopic((prev) => ({ ...prev, description: desc }))}
+                updatedAt={(topic as { description_updated_at?: string | null }).description_updated_at ?? null}
+                updatedByUsername={editorUsername}
+              />
+            </ErrorBoundary>
 
             {/* Wiki link graph — backlinks & outgoing topic wikilinks */}
-            <TopicBacklinks topicId={topic.id} className="mt-4" />
+            <ErrorBoundary size="xs" className="mt-4">
+              <TopicBacklinks topicId={topic.id} className="mt-4" />
+            </ErrorBoundary>
+
+            {/* Pinned sources — factual citations added by topic author/moderators */}
+            <ErrorBoundary size="xs" className="mt-4">
+              <div className="mt-4">
+                <TopicSources topicId={topic.id} topicAuthorId={topic.author_id} />
+              </div>
+            </ErrorBoundary>
+
+            {/* Evidence cited in arguments — aggregate of all source_url links */}
+            <ErrorBoundary size="xs" className="mt-3">
+              <ArgumentCitationsPanel topicId={topic.id} className="mt-3" />
+            </ErrorBoundary>
 
             {/* Topic journey — lifecycle progress stepper */}
-            <TopicStatusJourney
-              status={topic.status}
-              supportCount={topic.support_count}
-              activationThreshold={topic.activation_threshold}
-              totalVotes={topic.total_votes}
-              bluePct={topic.blue_pct}
-              votingEndsAt={topic.voting_ends_at}
-              createdAt={topic.created_at}
-              className="mt-6"
-            />
+            <ErrorBoundary size="sm" className="mt-6">
+              <TopicStatusJourney
+                status={topic.status}
+                supportCount={topic.support_count}
+                activationThreshold={topic.activation_threshold}
+                totalVotes={topic.total_votes}
+                bluePct={topic.blue_pct}
+                votingEndsAt={topic.voting_ends_at}
+                createdAt={topic.created_at}
+                className="mt-6"
+              />
+            </ErrorBoundary>
 
             {/* Coalition stances — which factions are FOR / AGAINST */}
             {topic.status !== 'proposed' && (
-              <CoalitionStancePanel
-                topicId={topic.id}
-                className="mt-6"
-              />
+              <ErrorBoundary size="sm" label="Couldn't load coalition stances" className="mt-6">
+                <CoalitionStancePanel
+                  topicId={topic.id}
+                  className="mt-6"
+                />
+              </ErrorBoundary>
             )}
 
             {/* Debates — upcoming, live, and recently ended for this topic */}
-            <TopicDebatePanel
-              topicId={topic.id}
-              className="mt-6"
-            />
-
-            {/* Vote trend — sparkline momentum chart */}
-            {topic.total_votes >= 2 && topic.status !== 'proposed' && (
-              <VoteTrend
+            <ErrorBoundary size="sm" label="Couldn't load debates" className="mt-6">
+              <TopicDebatePanel
                 topicId={topic.id}
                 className="mt-6"
               />
+            </ErrorBoundary>
+
+            {/* Vote trend — sparkline momentum chart */}
+            {topic.total_votes >= 2 && topic.status !== 'proposed' && (
+              <ErrorBoundary size="sm" label="Couldn't load vote trend" className="mt-6">
+                <VoteTrend
+                  topicId={topic.id}
+                  className="mt-6"
+                />
+              </ErrorBoundary>
+            )}
+
+            {/* Community hot takes — vote reasons for this topic */}
+            {topic.total_votes >= 1 && (
+              <ErrorBoundary size="sm" label="Couldn't load hot takes" className="mt-6">
+                <TopicHotTakes topicId={topic.id} />
+              </ErrorBoundary>
             )}
 
             {/* Prediction market — Polymarket-style crowd predictions */}
-            <PredictionPanel topicId={topic.id} topicStatus={topic.status} />
+            <ErrorBoundary size="sm" label="Couldn't load prediction market">
+              <PredictionPanel topicId={topic.id} topicStatus={topic.status} />
+            </ErrorBoundary>
 
             {/* Related topics — discovery section */}
-            <RelatedTopics topicId={topic.id} className="mt-8" />
+            <ErrorBoundary size="sm" label="Couldn't load related topics" className="mt-8">
+              <RelatedTopics topicId={topic.id} className="mt-8" />
+            </ErrorBoundary>
+
+            {/* Top argument contributors — ranked by upvotes received */}
+            <ErrorBoundary size="sm" label="Couldn't load contributors" className="mt-6">
+              <ArgumentContributors topicId={topic.id} className="mt-6" />
+            </ErrorBoundary>
 
             {/* Extra bottom padding on mobile so the sticky CTA doesn't overlap content */}
             {isVotable && !hasVoted(topic.id) && (
