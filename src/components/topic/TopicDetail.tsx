@@ -58,6 +58,7 @@ import { Clock, Flame, Gavel, Swords, TrendingUp, Zap } from 'lucide-react'
 import { TopicReactions } from '@/components/topic/TopicReactions'
 import { TopicHotTakes } from '@/components/topic/TopicHotTakes'
 import { ArgumentContributors } from '@/components/topic/ArgumentContributors'
+import { ArgumentCitationsPanel } from '@/components/topic/ArgumentCitationsPanel'
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary'
 
 const SIGNAL_ICONS_DETAIL: Record<string, typeof Flame> = {
@@ -555,6 +556,11 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
               <div className="mt-4">
                 <TopicSources topicId={topic.id} topicAuthorId={topic.author_id} />
               </div>
+            </ErrorBoundary>
+
+            {/* Evidence cited in arguments — aggregate of all source_url links */}
+            <ErrorBoundary size="xs" className="mt-3">
+              <ArgumentCitationsPanel topicId={topic.id} className="mt-3" />
             </ErrorBoundary>
 
             {/* Topic journey — lifecycle progress stepper */}
