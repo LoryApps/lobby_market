@@ -67,6 +67,7 @@ const navItems: NavItem[] = [
   { href: '/collections', label: 'Collections', icon: Layers },
   { href: '/saved', label: 'Saved', icon: Bookmark },
   { href: '/leaderboard', label: 'Leaderboard', icon: Trophy },
+  { href: '/streaks', label: 'Streak Hall', icon: Flame },
   { href: '/profile/me', label: 'My Profile', icon: UserCircle },
 ]
 
