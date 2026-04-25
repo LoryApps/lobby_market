@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Activity, BarChart2, Bell, BookOpen, Calendar, Coins, Compass, FileText, Flame, Gavel, HelpCircle, History, LayoutGrid, LogOut, MessageSquare, Network, Scale, Search, Plus, Settings, Skull, Sparkles, Star, Swords, Target, Timer, TrendingUp, User, Zap, ArrowUpRight, Globe, Users } from 'lucide-react'
+import { Activity, BarChart2, Bell, BookOpen, Calendar, Coins, Compass, FileText, Flame, FlaskConical, Gavel, HelpCircle, History, LayoutGrid, LogOut, MessageSquare, Network, Scale, Search, Plus, Settings, Skull, Sparkles, Star, Swords, Target, Timer, TrendingUp, User, Zap, ArrowUpRight, Globe, Users } from 'lucide-react'
 import { NotificationBell } from '@/components/profile/NotificationBell'
 import { Avatar } from '@/components/ui/Avatar'
 import { openCommandPalette } from '@/lib/hooks/useCommandPalette'
@@ -518,6 +518,15 @@ export function TopBar() {
               >
                 <Swords className="h-3.5 w-3.5 flex-shrink-0 text-purple" aria-hidden="true" />
                 Sparring Arena
+              </Link>
+              <Link
+                href="/simulate"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <FlaskConical className="h-3.5 w-3.5 flex-shrink-0 text-purple" aria-hidden="true" />
+                Policy Simulator
               </Link>
               <Link
                 href="/discover"
