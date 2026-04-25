@@ -6,6 +6,7 @@ import {
   ArrowLeft,
   BarChart2,
   Calendar,
+  ExternalLink,
   Gavel,
   List,
   Menu,
@@ -118,6 +119,7 @@ export function LawPage({
             <SharePanel
               url={typeof window !== 'undefined' ? window.location.href : `/law/${law.id}`}
               text={`${law.statement} — Established Consensus Law on Lobby Market`}
+              lawId={law.id}
             />
             {/* Mobile: ToC toggle */}
             <button
@@ -165,6 +167,16 @@ export function LawPage({
               <span className="text-xs font-mono text-surface-500">
                 {(law.total_votes ?? 0).toLocaleString()} votes
               </span>
+              <Link
+                href={`/share/law/${law.id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-gold/30 bg-gold/10 text-gold text-[11px] font-mono hover:bg-gold/20 transition-colors"
+                aria-label="Share law proclamation card"
+              >
+                <ExternalLink className="h-3 w-3" aria-hidden="true" />
+                Proclamation
+              </Link>
             </div>
           </div>
         </div>

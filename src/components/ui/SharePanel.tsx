@@ -19,11 +19,16 @@ interface SharePanelProps {
    * as /api/embed/topic/<topicId>.
    */
   topicId?: string
+  /**
+   * When provided, a "Law Proclamation Card" link appears in the dropdown.
+   * Should be the law ID.
+   */
+  lawId?: string
   /** Optional additional className for the root wrapper */
   className?: string
 }
 
-export function SharePanel({ url, text, topicId, className }: SharePanelProps) {
+export function SharePanel({ url, text, topicId, lawId, className }: SharePanelProps) {
   const [open, setOpen] = useState(false)
   const [copied, setCopied] = useState(false)
   const [embedCopied, setEmbedCopied] = useState(false)
@@ -177,6 +182,24 @@ export function SharePanel({ url, text, topicId, className }: SharePanelProps) {
               </svg>
               Post on X
             </button>
+
+            {/* Law proclamation card — only rendered when lawId is provided */}
+            {lawId && (
+              <>
+                <div className="border-t border-surface-300" />
+                <Link
+                  href={`/share/law/${lawId}`}
+                  role="menuitem"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setOpen(false)}
+                  className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-white hover:bg-surface-200 transition-colors"
+                >
+                  <ExternalLink className="h-4 w-4 text-gold/70 flex-shrink-0" aria-hidden="true" />
+                  Proclamation card
+                </Link>
+              </>
+            )}
 
             {/* Share card + embed — only rendered when topicId is provided */}
             {topicId && (
