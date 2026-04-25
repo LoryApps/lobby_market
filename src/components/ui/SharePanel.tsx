@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { Share2, Link2, Check, Code2 } from 'lucide-react'
+import Link from 'next/link'
+import { Share2, Link2, Check, Code2, ExternalLink } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils/cn'
 
@@ -125,7 +126,7 @@ export function SharePanel({ url, text, topicId, className }: SharePanelProps) {
             transition={{ duration: 0.12 }}
             className={cn(
               'absolute right-0 top-full mt-2 z-50',
-              topicId ? 'w-52' : 'w-48',
+              topicId ? 'w-56' : 'w-48',
               'rounded-xl border border-surface-300 bg-surface-100 shadow-xl',
               'overflow-hidden'
             )}
@@ -177,10 +178,23 @@ export function SharePanel({ url, text, topicId, className }: SharePanelProps) {
               Post on X
             </button>
 
-            {/* Embed code — only rendered when topicId is provided */}
+            {/* Share card + embed — only rendered when topicId is provided */}
             {topicId && (
               <>
                 <div className="border-t border-surface-300" />
+                {/* Topic share card link */}
+                <Link
+                  href={`/share/topic/${topicId}`}
+                  role="menuitem"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setOpen(false)}
+                  className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-white hover:bg-surface-200 transition-colors"
+                >
+                  <ExternalLink className="h-4 w-4 text-surface-500 flex-shrink-0" aria-hidden="true" />
+                  Share card
+                </Link>
+                {/* Embed code */}
                 <button
                   type="button"
                   role="menuitem"
