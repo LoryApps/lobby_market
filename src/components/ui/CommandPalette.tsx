@@ -431,6 +431,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'civic-almanac',
+    label: 'Civic Almanac',
+    sublabel: 'On This Day — topics proposed, laws made, arguments celebrated',
+    href: '/almanac',
+    icon: BookOpen,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'timeline',
     label: 'Civic Timeline',
     sublabel: 'Chronological history of all platform events and laws',
