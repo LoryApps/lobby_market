@@ -16,6 +16,7 @@ import {
   MessageSquare,
   RefreshCw,
   Scale,
+  Share2,
   Target,
   ThumbsDown,
   ThumbsUp,
@@ -28,6 +29,7 @@ import { BottomNav } from '@/components/layout/BottomNav'
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { cn } from '@/lib/utils/cn'
+import { createClient } from '@/lib/supabase/client'
 import type { MyWeekData } from '@/app/api/my-week/route'
 
 // ─── Category colours ─────────────────────────────────────────────────────────
@@ -245,6 +247,23 @@ export default function MyWeekPage() {
   const [data, setData] = useState<MyWeekData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [username, setUsername] = useState<string | null>(null)
+
+  // Resolve username for share link
+  useEffect(() => {
+    const supabase = createClient()
+    supabase.auth.getUser().then(({ data: authData }) => {
+      if (!authData.user) return
+      supabase
+        .from('profiles')
+        .select('username')
+        .eq('id', authData.user.id)
+        .maybeSingle()
+        .then(({ data: p }) => {
+          if (p?.username) setUsername(p.username)
+        })
+    })
+  }, [])
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -287,6 +306,16 @@ export default function MyWeekPage() {
               </p>
             )}
           </div>
+          {username && (
+            <Link
+              href={`/share/week/${username}`}
+              className="flex items-center gap-1.5 h-9 px-3 rounded-lg bg-surface-200 text-surface-500 hover:bg-surface-300 hover:text-white transition-colors text-xs font-mono"
+              aria-label="Share my week"
+            >
+              <Share2 className="h-3.5 w-3.5" aria-hidden="true" />
+              <span className="hidden sm:inline">Share</span>
+            </Link>
+          )}
           <button
             onClick={load}
             disabled={loading}
