@@ -26,6 +26,7 @@ import {
   type FloatingReaction,
 } from './DebateReactions'
 import { DebateRSVPButton } from './DebateRSVPButton'
+import { CalendarExportButton } from './CalendarExportButton'
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary'
 
 interface DebateArenaProps {
@@ -335,11 +336,14 @@ export function DebateArena({
             </span>
           </div>
           {debate.status === 'scheduled' && (
-            <DebateRSVPButton
-              debateId={debate.id}
-              size="md"
-              className="backdrop-blur-md bg-surface-100/80"
-            />
+            <div className="flex items-center gap-2">
+              <CalendarExportButton debateId={debate.id} size="md" />
+              <DebateRSVPButton
+                debateId={debate.id}
+                size="md"
+                className="backdrop-blur-md bg-surface-100/80"
+              />
+            </div>
           )}
         </div>
       )}

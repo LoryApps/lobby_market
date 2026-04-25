@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import {
   ArrowRight,
+  CalendarDays,
   Code2,
   ExternalLink,
   FileCode2,
@@ -200,13 +201,14 @@ export default function DevelopersPage() {
         {/* ── Quick nav ────────────────────────────────────────────────── */}
         <nav
           aria-label="API sections"
-          className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-12"
+          className="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-12"
         >
           {[
             { href: '#embed', icon: Layers, label: 'Embed Widget', color: 'text-for-400' },
             { href: '#rss', icon: Rss, label: 'RSS Feed', color: 'text-gold' },
+            { href: '#ical', icon: CalendarDays, label: 'iCal Export', color: 'text-emerald' },
             { href: '#og', icon: Share2, label: 'OG Images', color: 'text-purple' },
-            { href: '#resize', icon: Zap, label: 'Iframe Resize', color: 'text-emerald' },
+            { href: '#resize', icon: Zap, label: 'Iframe Resize', color: 'text-surface-400' },
           ].map(({ href, icon: Icon, label, color }) => (
             <a
               key={href}
@@ -382,7 +384,67 @@ export default function DevelopersPage() {
         </section>
 
         {/* ═══════════════════════════════════════════════════════════════
-            SECTION 3: OG Images
+            SECTION 3: iCal Export
+        ═══════════════════════════════════════════════════════════════ */}
+        <section id="ical" className="mb-16 scroll-mt-20">
+          <SectionHeader
+            icon={CalendarDays}
+            iconColor="text-emerald"
+            iconBg="bg-emerald/10 border-emerald/30"
+            title="iCal Export"
+            description="Add upcoming debates to Google Calendar, Apple Calendar, or Outlook."
+          />
+
+          <p className="text-sm font-mono text-surface-500 mb-6 leading-relaxed">
+            Download a single debate as an <code className="text-emerald">.ics</code> file or subscribe
+            to the full upcoming debate feed. The feed is compatible with any calendar application
+            that supports the iCalendar (RFC 5545) standard.
+          </p>
+
+          <div className="space-y-4 mb-6">
+            <div>
+              <p className="text-xs font-mono text-surface-600 mb-2">Single debate</p>
+              <EndpointPill method="GET" path="/api/debates/{id}/ics" />
+            </div>
+            <div>
+              <p className="text-xs font-mono text-surface-600 mb-2">All upcoming debates (next 60 days)</p>
+              <EndpointPill method="GET" path="/api/debates/upcoming.ics" />
+            </div>
+          </div>
+
+          <CodeBlock
+            lang="bash"
+            label="Example — download all upcoming debates"
+            code={`curl -O https://lobby.market/api/debates/upcoming.ics\n# Then import into Google Calendar → Other calendars → Import`}
+          />
+
+          <div className="mt-4 rounded-xl border border-surface-300 bg-surface-100 p-4 font-mono text-xs text-surface-500 space-y-1">
+            <p><span className="text-white">Format:</span> iCalendar RFC 5545 — VCALENDAR + VEVENT blocks.</p>
+            <p><span className="text-white">Single debate:</span> Returns 410 Gone if the debate has already ended.</p>
+            <p><span className="text-white">Feed cache:</span> 30-minute CDN cache. Refresh to pick up newly scheduled debates.</p>
+            <p><span className="text-white">Duration:</span> 15 min for Quick, 45 min for Grand, 60 min for Tribunal debates.</p>
+          </div>
+
+          <div className="mt-4">
+            <a
+              href="/api/debates/upcoming.ics"
+              download="lobby-market-debates.ics"
+              className={cn(
+                'inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-mono',
+                'bg-emerald/10 border border-emerald/30 text-emerald',
+                'hover:bg-emerald/20 transition-colors',
+                'focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald/50'
+              )}
+            >
+              <CalendarDays className="h-4 w-4" />
+              Download Upcoming Debates (.ics)
+              <ExternalLink className="h-3 w-3 opacity-60" />
+            </a>
+          </div>
+        </section>
+
+        {/* ═══════════════════════════════════════════════════════════════
+            SECTION 4: OG Images
         ═══════════════════════════════════════════════════════════════ */}
         <section id="og" className="mb-16 scroll-mt-20">
           <SectionHeader

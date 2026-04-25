@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { ArrowLeft, List, Plus } from 'lucide-react'
+import { ArrowLeft, CalendarDays, List, Plus } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -164,7 +164,7 @@ export default async function DebateCalendarPage() {
             </p>
           </div>
 
-          {/* View toggle + schedule CTA */}
+          {/* View toggle, subscribe, schedule CTA */}
           <div className="flex items-center gap-2 flex-shrink-0">
             <Link
               href="/debate"
@@ -173,6 +173,16 @@ export default async function DebateCalendarPage() {
               <List className="h-3.5 w-3.5" />
               List View
             </Link>
+            {/* iCal subscribe link */}
+            <a
+              href="/api/debates/upcoming.ics"
+              download="lobby-market-debates.ics"
+              title="Download upcoming debates as iCal file (.ics) — importable into Google Calendar, Apple Calendar, Outlook"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-200 border border-surface-300 text-surface-500 hover:text-white hover:border-surface-400 text-xs font-mono transition-colors"
+            >
+              <CalendarDays className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Export .ics</span>
+            </a>
             <Link
               href="/debate/create"
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-for-600 hover:bg-for-700 text-white text-xs font-mono font-medium transition-colors"
