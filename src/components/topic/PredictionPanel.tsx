@@ -38,6 +38,7 @@ interface PredictionRow {
   id: string
   predicted_law: boolean
   confidence: number
+  reasoning: string | null
   resolved_at: string | null
   correct: boolean | null
   brier_score: number | null
@@ -174,10 +175,12 @@ export function PredictionPanel({ topicId, topicStatus }: PredictionPanelProps) 
   // Editing state
   const [editPredictedLaw, setEditPredictedLaw] = useState<boolean>(true)
   const [editConfidence, setEditConfidence] = useState(70)
+  const [editReasoning, setEditReasoning] = useState('')
   const [isEditing, setIsEditing] = useState(false)
 
   const isTerminal = TERMINAL_STATUSES.has(topicStatus)
   const isLaw = topicStatus === 'law'
+  const MAX_REASONING = 280
 
   // Load initial data
   const load = useCallback(async () => {
@@ -191,6 +194,7 @@ export function PredictionPanel({ topicId, topicStatus }: PredictionPanelProps) 
       if (json.myPrediction) {
         setEditPredictedLaw(json.myPrediction.predicted_law)
         setEditConfidence(json.myPrediction.confidence)
+        setEditReasoning(json.myPrediction.reasoning ?? '')
       }
     } finally {
       setLoading(false)
@@ -210,12 +214,14 @@ export function PredictionPanel({ topicId, topicStatus }: PredictionPanelProps) 
     if (submitting) return
     setSubmitting(true)
     try {
+      const trimmedReasoning = editReasoning.trim()
       const res = await fetch(`/api/topics/${topicId}/predict`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           predicted_law: editPredictedLaw,
           confidence: editConfidence,
+          reasoning: trimmedReasoning || null,
         }),
       })
       if (!res.ok) return
@@ -236,6 +242,7 @@ export function PredictionPanel({ topicId, topicStatus }: PredictionPanelProps) 
       setMyPrediction(null)
       setEditPredictedLaw(true)
       setEditConfidence(70)
+      setEditReasoning('')
       setIsEditing(false)
       await load()
     } finally {
@@ -386,6 +393,11 @@ export function PredictionPanel({ topicId, topicStatus }: PredictionPanelProps) 
                           <span className="text-gold"> · +{myPrediction.clout_earned} clout</span>
                         )}
                       </p>
+                      {myPrediction.reasoning && (
+                        <p className="mt-2 text-xs font-mono text-surface-400 italic leading-relaxed border-l-2 border-surface-400 pl-2">
+                          &ldquo;{myPrediction.reasoning}&rdquo;
+                        </p>
+                      )}
                     </div>
 
                     {!isTerminal && (
@@ -470,6 +482,42 @@ export function PredictionPanel({ topicId, topicStatus }: PredictionPanelProps) 
                         value={editConfidence}
                         onChange={setEditConfidence}
                       />
+
+                      {/* Optional reasoning */}
+                      <div className="space-y-1.5">
+                        <div className="flex items-center justify-between">
+                          <label
+                            className="text-xs font-mono text-surface-500 uppercase tracking-wider"
+                            htmlFor="pred-reasoning"
+                          >
+                            Why? <span className="normal-case text-surface-600">(optional)</span>
+                          </label>
+                          <span className={cn(
+                            'text-[10px] font-mono tabular-nums',
+                            editReasoning.length > MAX_REASONING - 30 ? 'text-against-400' : 'text-surface-600'
+                          )}>
+                            {MAX_REASONING - editReasoning.length}
+                          </span>
+                        </div>
+                        <textarea
+                          id="pred-reasoning"
+                          value={editReasoning}
+                          onChange={(e) => setEditReasoning(e.target.value.slice(0, MAX_REASONING))}
+                          disabled={submitting}
+                          rows={2}
+                          maxLength={MAX_REASONING}
+                          placeholder="Share your analysis — what signals are you seeing?"
+                          aria-label="Prediction reasoning (optional)"
+                          className={cn(
+                            'w-full resize-none rounded-xl px-3 py-2.5 text-xs font-mono',
+                            'bg-surface-200 border border-surface-300',
+                            'text-white placeholder:text-surface-600',
+                            'focus:outline-none focus:border-purple/50 focus:ring-1 focus:ring-purple/20',
+                            'transition-colors',
+                            submitting && 'opacity-60 cursor-not-allowed'
+                          )}
+                        />
+                      </div>
 
                       {/* Submit / cancel */}
                       <div className="flex gap-2">

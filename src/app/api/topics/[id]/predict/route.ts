@@ -9,6 +9,7 @@ interface PredictionRow {
   user_id: string
   predicted_law: boolean
   confidence: number
+  reasoning: string | null
   resolved_at: string | null
   correct: boolean | null
   brier_score: number | null
@@ -84,20 +85,23 @@ export async function POST(
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  let body: { predicted_law?: boolean; confidence?: number }
+  let body: { predicted_law?: boolean; confidence?: number; reasoning?: string | null }
   try {
     body = await request.json()
   } catch {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
   }
 
-  const { predicted_law, confidence } = body
+  const { predicted_law, confidence, reasoning } = body
 
   if (typeof predicted_law !== 'boolean') {
     return NextResponse.json({ error: 'predicted_law must be boolean' }, { status: 400 })
   }
   if (typeof confidence !== 'number' || confidence < 1 || confidence > 100) {
     return NextResponse.json({ error: 'confidence must be 1–100' }, { status: 400 })
+  }
+  if (reasoning !== undefined && reasoning !== null && (typeof reasoning !== 'string' || reasoning.length > 280)) {
+    return NextResponse.json({ error: 'reasoning must be ≤280 characters' }, { status: 400 })
   }
 
   // Verify topic exists and is not yet resolved
@@ -128,6 +132,8 @@ export async function POST(
         user_id: user.id,
         predicted_law,
         confidence,
+        // Preserve existing reasoning if not provided; clear if explicitly null
+        ...(reasoning !== undefined ? { reasoning: reasoning || null } : {}),
         updated_at: new Date().toISOString(),
       },
       { onConflict: 'topic_id,user_id' }

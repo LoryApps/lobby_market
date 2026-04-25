@@ -1361,6 +1361,7 @@ export type Database = {
           user_id: string;
           predicted_law: boolean;
           confidence: number;
+          reasoning: string | null;
           resolved_at: string | null;
           correct: boolean | null;
           brier_score: number | null;
@@ -1374,6 +1375,7 @@ export type Database = {
           user_id: string;
           predicted_law: boolean;
           confidence: number;
+          reasoning?: string | null;
           resolved_at?: string | null;
           correct?: boolean | null;
           brier_score?: number | null;
@@ -1387,6 +1389,7 @@ export type Database = {
           user_id?: string;
           predicted_law?: boolean;
           confidence?: number;
+          reasoning?: string | null;
           resolved_at?: string | null;
           correct?: boolean | null;
           brier_score?: number | null;
