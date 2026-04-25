@@ -241,6 +241,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'catchup',
+    label: 'Catch Up',
+    sublabel: 'What happened while you were away',
+    href: '/catchup',
+    icon: Zap,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
     id: 'activity',
     label: 'Activity',
     sublabel: 'What\'s happening in the Lobby',
