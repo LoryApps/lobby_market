@@ -1660,6 +1660,39 @@ export type Database = {
           }
         ];
       };
+      daily_editorials: {
+        Row: {
+          id: string;
+          date_key: string;
+          headline: string;
+          lede: string;
+          body: string;
+          topics_json: unknown;
+          model: string;
+          generated_at: string;
+        };
+        Insert: {
+          id?: string;
+          date_key: string;
+          headline: string;
+          lede: string;
+          body: string;
+          topics_json?: unknown;
+          model?: string;
+          generated_at?: string;
+        };
+        Update: {
+          id?: string;
+          date_key?: string;
+          headline?: string;
+          lede?: string;
+          body?: string;
+          topics_json?: unknown;
+          model?: string;
+          generated_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;

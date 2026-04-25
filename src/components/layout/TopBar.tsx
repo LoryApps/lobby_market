@@ -394,6 +394,15 @@ export function TopBar() {
                 The Dispatch
               </Link>
               <Link
+                href="/editorial"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <Sparkles className="h-3.5 w-3.5 flex-shrink-0 text-purple" aria-hidden="true" />
+                AI Editorial
+              </Link>
+              <Link
                 href="/live"
                 role="menuitem"
                 onClick={() => setMenuOpen(false)}

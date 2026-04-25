@@ -401,6 +401,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'editorial',
+    label: 'AI Civic Editorial',
+    sublabel: 'Claude analyses today\'s top debates in a daily editorial',
+    href: '/editorial',
+    icon: Sparkles,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
     id: 'digest',
     label: 'Weekly Digest',
     sublabel: 'Laws, debates, and top voices this week',
