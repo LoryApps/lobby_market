@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { BarChart2, Shield, Trophy } from 'lucide-react'
+import { BarChart2, Calendar, Shield, Trophy } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -306,8 +306,40 @@ export default async function LeaderboardPage() {
           <CoalitionLeaderboard coalitions={coalitions} />
         </section>
 
-        {/* Category Power Rankings link */}
+        {/* This Week link */}
         <section className="mt-12">
+          <Link
+            href="/leaderboard/week"
+            className="flex items-center justify-between rounded-2xl border border-for-500/30 bg-for-500/5 px-6 py-5 hover:bg-for-500/10 transition-colors group"
+          >
+            <div className="flex items-center gap-4">
+              <div className="flex items-center justify-center h-11 w-11 rounded-xl bg-for-500/10 border border-for-500/30 flex-shrink-0">
+                <Calendar className="h-5 w-5 text-for-400" />
+              </div>
+              <div>
+                <p className="font-mono text-base font-semibold text-white">
+                  This Week&rsquo;s Rankings
+                </p>
+                <p className="text-sm font-mono text-surface-500 mt-0.5">
+                  Weekly top voters, debators, and clout earners — resets every Monday.
+                </p>
+              </div>
+            </div>
+            <svg
+              className="h-5 w-5 text-surface-500 group-hover:text-surface-300 transition-colors flex-shrink-0"
+              viewBox="0 0 20 20"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.5}
+              aria-hidden
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 4l5 6-5 6" />
+            </svg>
+          </Link>
+        </section>
+
+        {/* Category Power Rankings link */}
+        <section className="mt-6">
           <Link
             href="/leaderboard/categories"
             className="flex items-center justify-between rounded-2xl border border-purple/30 bg-purple/5 px-6 py-5 hover:bg-purple/10 transition-colors group"
