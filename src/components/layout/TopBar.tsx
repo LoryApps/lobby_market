@@ -286,6 +286,15 @@ export function TopBar() {
                 Argument Duel
               </Link>
               <Link
+                href="/crossfire"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <Swords className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
+                The Crossfire
+              </Link>
+              <Link
                 href="/rapid"
                 role="menuitem"
                 onClick={() => setMenuOpen(false)}
