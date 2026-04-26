@@ -30,6 +30,7 @@ import {
   Layers,
   BarChart2,
   FileText,
+  Eye,
 } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { createClient } from '@/lib/supabase/client'
@@ -46,6 +47,7 @@ type NavItem = {
 const navItems: NavItem[] = [
   { href: '/', label: 'Feed', icon: Newspaper },
   { href: '/predictions', label: 'Predictions', icon: Target },
+  { href: '/oracle', label: 'The Oracle', icon: Eye },
   { href: '/trending', label: 'Trending', icon: TrendingUp },
   { href: '/surge', label: 'Surge', icon: Flame },
   { href: '/shifts', label: 'Opinion Shifts', icon: BarChart2 },
