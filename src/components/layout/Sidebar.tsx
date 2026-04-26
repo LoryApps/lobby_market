@@ -29,6 +29,7 @@ import {
   FileWarning,
   Layers,
   BarChart2,
+  FileText,
 } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { createClient } from '@/lib/supabase/client'
@@ -68,6 +69,7 @@ const navItems: NavItem[] = [
   { href: '/saved', label: 'Saved', icon: Bookmark },
   { href: '/leaderboard', label: 'Leaderboard', icon: Trophy },
   { href: '/streaks', label: 'Streak Hall', icon: Flame },
+  { href: '/report-card', label: 'Report Card', icon: FileText },
   { href: '/profile/me', label: 'My Profile', icon: UserCircle },
 ]
 
