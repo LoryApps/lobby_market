@@ -161,6 +161,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'spotlight',
+    label: 'Civic Spotlight',
+    sublabel: 'Best argument, closest call, rising star, and newest law this week',
+    href: '/spotlight',
+    icon: Sparkles,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'leaderboard',
     label: 'Leaderboard',
     sublabel: 'Top voters and lawmakers',
