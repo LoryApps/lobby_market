@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { BarChart2, Calendar, FileText, Flame, MessageSquare, Shield, Sparkles, Trophy } from 'lucide-react'
+import { BarChart2, Calendar, FileText, Flame, Gavel, MessageSquare, Shield, Sparkles, Trophy } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -450,6 +450,38 @@ export default async function LeaderboardPage() {
                 </p>
                 <p className="text-sm font-mono text-surface-500 mt-0.5">
                   The highest-rated FOR and AGAINST arguments — all time, this week, and rising.
+                </p>
+              </div>
+            </div>
+            <svg
+              className="h-5 w-5 text-surface-500 group-hover:text-surface-300 transition-colors flex-shrink-0"
+              viewBox="0 0 20 20"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.5}
+              aria-hidden
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 4l5 6-5 6" />
+            </svg>
+          </Link>
+        </section>
+
+        {/* Laws Hall of Fame link */}
+        <section className="mt-6">
+          <Link
+            href="/leaderboard/laws"
+            className="flex items-center justify-between rounded-2xl border border-gold/30 bg-gold/5 px-6 py-5 hover:bg-gold/10 transition-colors group"
+          >
+            <div className="flex items-center gap-4">
+              <div className="flex items-center justify-center h-11 w-11 rounded-xl bg-gold/10 border border-gold/30 flex-shrink-0">
+                <Gavel className="h-5 w-5 text-gold" />
+              </div>
+              <div>
+                <p className="font-mono text-base font-semibold text-white">
+                  Laws Hall of Fame
+                </p>
+                <p className="text-sm font-mono text-surface-500 mt-0.5">
+                  Every law ranked by votes, consensus, debate intensity, and speed.
                 </p>
               </div>
             </div>
