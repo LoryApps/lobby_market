@@ -8,6 +8,7 @@ import {
   BookOpen,
   Calendar,
   Coins,
+  GitBranch,
   GitCompare,
   Globe,
   Info,
@@ -435,6 +436,13 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
                     >
                       <ScrollText className="h-3.5 w-3.5" />
                       Transcript
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/argument-graph`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-emerald hover:text-emerald/80 transition-colors"
+                    >
+                      <GitBranch className="h-3.5 w-3.5" />
+                      Argument graph
                     </Link>
                     <Link
                       href={`/spar/${topic.id}`}
