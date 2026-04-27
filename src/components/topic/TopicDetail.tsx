@@ -7,6 +7,7 @@ import {
   ArrowLeft,
   BookOpen,
   Calendar,
+  Coins,
   GitCompare,
   Globe,
   Info,
@@ -60,6 +61,7 @@ import { TopicHotTakes } from '@/components/topic/TopicHotTakes'
 import { ArgumentContributors } from '@/components/topic/ArgumentContributors'
 import { ArgumentCitationsPanel } from '@/components/topic/ArgumentCitationsPanel'
 import { TopicAIBrief } from '@/components/topic/TopicAIBrief'
+import { TopicBountyPanel } from '@/components/topic/TopicBountyPanel'
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary'
 
 const SIGNAL_ICONS_DETAIL: Record<string, typeof Flame> = {
@@ -96,7 +98,7 @@ const statusBadgeVariant: Record<string, 'proposed' | 'active' | 'law' | 'failed
   archived: 'proposed',
 }
 
-type TopicTab = 'details' | 'arguments' | 'lobbies'
+type TopicTab = 'details' | 'arguments' | 'lobbies' | 'bounties'
 
 export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
   const router = useRouter()
@@ -351,9 +353,29 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
             <Megaphone className="h-3.5 w-3.5" />
             Lobby Board
           </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('bounties')}
+            className={cn(
+              'inline-flex items-center gap-2 px-4 py-2 font-mono text-xs font-semibold transition-colors border-b-2',
+              activeTab === 'bounties'
+                ? 'text-gold border-gold'
+                : 'text-surface-500 border-transparent hover:text-white'
+            )}
+          >
+            <Coins className="h-3.5 w-3.5" />
+            Bounties
+          </button>
         </div>
 
-        {activeTab === 'lobbies' ? (
+        {activeTab === 'bounties' ? (
+          <ErrorBoundary size="md" label="Couldn't load bounties">
+            <TopicBountyPanel
+              topicId={topic.id}
+              topicStatus={topic.status}
+            />
+          </ErrorBoundary>
+        ) : activeTab === 'lobbies' ? (
           <ErrorBoundary size="md" label="Couldn't load lobby board">
             <LobbyBoard topicId={topic.id} />
           </ErrorBoundary>
