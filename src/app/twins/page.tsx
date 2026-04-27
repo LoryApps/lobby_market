@@ -457,11 +457,18 @@ export default function TwinsPage() {
 
               {/* Stats footer */}
               {data && (
-                <div className="pt-2 text-center">
+                <div className="pt-2 text-center space-y-2">
                   <p className="text-[11px] font-mono text-surface-600">
                     Based on your {Math.min(data.my_total_votes, 200).toLocaleString()} most recent votes
                     · {displayedTwins.length} match{displayedTwins.length !== 1 ? 'es' : ''} found
                   </p>
+                  <Link
+                    href="/rivals"
+                    className="inline-flex items-center gap-1.5 text-[11px] font-mono text-against-400 hover:text-against-300 transition-colors"
+                  >
+                    <Swords className="h-3 w-3" />
+                    Find your Civic Rivals instead
+                  </Link>
                 </div>
               )}
             </motion.div>

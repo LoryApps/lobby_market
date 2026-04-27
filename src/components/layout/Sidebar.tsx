@@ -32,6 +32,7 @@ import {
   FileText,
   Eye,
   Sparkles,
+  Swords,
 } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { createClient } from '@/lib/supabase/client'
@@ -70,6 +71,7 @@ const navItems: NavItem[] = [
   { href: '/arguments', label: 'Top Arguments', icon: ThumbsUp },
   { href: '/collections', label: 'Collections', icon: Layers },
   { href: '/saved', label: 'Saved', icon: Bookmark },
+  { href: '/rivals', label: 'Civic Rivals', icon: Swords },
   { href: '/spotlight', label: 'Spotlight', icon: Sparkles },
   { href: '/leaderboard', label: 'Leaderboard', icon: Trophy },
   { href: '/streaks', label: 'Streak Hall', icon: Flame },

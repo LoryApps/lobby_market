@@ -161,6 +161,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'rivals',
+    label: 'Civic Rivals',
+    sublabel: 'Find citizens who voted opposite to you — your ideological opponents',
+    href: '/rivals',
+    icon: Swords,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-500/10',
+  },
+  {
+    type: 'link',
     id: 'spotlight',
     label: 'Civic Spotlight',
     sublabel: 'Best argument, closest call, rising star, and newest law this week',
