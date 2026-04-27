@@ -171,6 +171,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'records',
+    label: 'Civic Records',
+    sublabel: 'All-time platform records — fastest law, most voted, best argument',
+    href: '/records',
+    icon: Trophy,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/15',
+  },
+  {
+    type: 'link',
     id: 'blitz',
     label: 'Blitz Mode',
     sublabel: '60-second speed voting challenge',

@@ -402,8 +402,40 @@ export default async function LeaderboardPage() {
           </Link>
         </section>
 
+        {/* Records link */}
+        <section className="mt-6">
+          <Link
+            href="/records"
+            className="flex items-center justify-between rounded-2xl border border-gold/40 bg-gold/5 px-6 py-5 hover:bg-gold/10 transition-colors group"
+          >
+            <div className="flex items-center gap-4">
+              <div className="flex items-center justify-center h-11 w-11 rounded-xl bg-gold/10 border border-gold/30 flex-shrink-0">
+                <Trophy className="h-5 w-5 text-gold" />
+              </div>
+              <div>
+                <p className="font-mono text-base font-semibold text-white">
+                  Civic Records
+                </p>
+                <p className="text-sm font-mono text-surface-500 mt-0.5">
+                  Platform all-time records — most voted, fastest law, best argument ever.
+                </p>
+              </div>
+            </div>
+            <svg
+              className="h-5 w-5 text-surface-500 group-hover:text-surface-300 transition-colors flex-shrink-0"
+              viewBox="0 0 20 20"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.5}
+              aria-hidden
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 4l5 6-5 6" />
+            </svg>
+          </Link>
+        </section>
+
         {/* Achievements link */}
-        <section className="mt-12">
+        <section className="mt-6">
           <Link
             href="/achievements"
             className="flex items-center justify-between rounded-2xl border border-gold/30 bg-gold/5 px-6 py-5 hover:bg-gold/10 transition-colors group"
