@@ -231,6 +231,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'trivia',
+    label: 'Civic Trivia',
+    sublabel: 'Daily challenge — guess the community vote split',
+    href: '/trivia',
+    icon: Target,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'senate',
     label: 'The Senate',
     sublabel: 'Topics in final vote — deadlines approaching',
