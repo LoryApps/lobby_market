@@ -30,6 +30,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/oracle`, changeFrequency: 'always', priority: 0.8 },
   { url: `${BASE_URL}/verdicts`, changeFrequency: 'hourly', priority: 0.8 },
   { url: `${BASE_URL}/brief`, changeFrequency: 'daily', priority: 0.75 },
+  { url: `${BASE_URL}/today`, changeFrequency: 'always', priority: 0.9 },
   { url: `${BASE_URL}/newspaper`, changeFrequency: 'daily', priority: 0.85 },
   { url: `${BASE_URL}/digest`, changeFrequency: 'weekly', priority: 0.65 },
   { url: `${BASE_URL}/topic/categories`, changeFrequency: 'weekly', priority: 0.7 },
