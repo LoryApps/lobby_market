@@ -664,6 +664,15 @@ export function TopBar() {
                 Lobby Heatmap
               </Link>
               <Link
+                href="/observatory"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <Globe className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
+                Civic Observatory
+              </Link>
+              <Link
                 href="/streaks"
                 role="menuitem"
                 onClick={() => setMenuOpen(false)}
