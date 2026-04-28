@@ -14,6 +14,7 @@ import {
   Globe,
   Info,
   Megaphone,
+  MessageCircle,
   MessageSquare,
   Newspaper,
   ScrollText,
@@ -252,6 +253,18 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
               aria-label="View debate snapshot"
             >
               <Newspaper className="h-3.5 w-3.5" />
+            </Link>
+            <Link
+              href={`/topic/${topic.id}/chat`}
+              className={cn(
+                'flex items-center justify-center h-8 w-8 rounded-lg',
+                'bg-surface-200 border border-surface-300 text-surface-500',
+                'hover:bg-surface-300 hover:text-for-400 transition-colors',
+              )}
+              title="Live Chat — discuss this topic in real-time"
+              aria-label="Live chat"
+            >
+              <MessageCircle className="h-3.5 w-3.5" />
             </Link>
             <Link
               href={`/compare?a=${topic.id}`}
