@@ -232,6 +232,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'my-challenges',
+    label: 'My Challenges',
+    sublabel: 'Debate duels — accept, decline, or issue challenges',
+    href: '/challenges',
+    icon: Swords,
+    iconColor: 'text-against-300',
+    iconBg: 'bg-against-600/10',
+  },
+  {
+    type: 'link',
     id: 'quiz',
     label: 'Civic Quiz',
     sublabel: 'Find your civic alignment — no login required',
