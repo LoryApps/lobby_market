@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
   ArrowLeft,
+  BarChart2,
   BookOpen,
   Calendar,
   Coins,
@@ -443,6 +444,13 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
                     >
                       <GitBranch className="h-3.5 w-3.5" />
                       Argument graph
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/stats`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-gold hover:text-gold/80 transition-colors"
+                    >
+                      <BarChart2 className="h-3.5 w-3.5" />
+                      Stats
                     </Link>
                     <Link
                       href={`/spar/${topic.id}`}
