@@ -202,6 +202,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'leaderboard-debates',
+    label: 'Debate Hall of Fame',
+    sublabel: 'Top completed debates ranked by viewers, decisive outcomes, and activity',
+    href: '/leaderboard/debates',
+    icon: Mic,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
     id: 'blitz',
     label: 'Blitz Mode',
     sublabel: '60-second speed voting challenge',
