@@ -358,6 +358,15 @@ export function TopBar() {
                 Predictions
               </Link>
               <Link
+                href="/forecast"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <FlaskConical className="h-3.5 w-3.5 flex-shrink-0 text-purple" aria-hidden="true" />
+                Civic Forecast
+              </Link>
+              <Link
                 href="/capsule"
                 role="menuitem"
                 onClick={() => setMenuOpen(false)}

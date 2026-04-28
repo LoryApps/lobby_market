@@ -71,6 +71,7 @@ import {
   BookOpen,
   Skull,
   Swords,
+  FlaskConical,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -277,6 +278,16 @@ const QUICK_LINKS: QuickLink[] = [
     sublabel: 'Community forecasts — stake your accuracy for Clout',
     href: '/predictions',
     icon: Target,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
+    id: 'forecast',
+    label: 'Civic Forecast',
+    sublabel: 'Data-driven pass probability for every topic in final vote',
+    href: '/forecast',
+    icon: FlaskConical,
     iconColor: 'text-purple',
     iconBg: 'bg-purple/10',
   },
