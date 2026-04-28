@@ -358,6 +358,15 @@ export function TopBar() {
                 Time Capsules
               </Link>
               <Link
+                href="/journal"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <BookOpen className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
+                Civic Journal
+              </Link>
+              <Link
                 href="/constitution"
                 role="menuitem"
                 onClick={() => setMenuOpen(false)}
