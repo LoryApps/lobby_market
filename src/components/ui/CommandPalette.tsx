@@ -32,6 +32,7 @@ import {
   Bookmark,
   Flame,
   History,
+  Hourglass,
   LayoutGrid,
   Loader2,
   Mic,
@@ -698,6 +699,16 @@ const QUICK_LINKS: QuickLink[] = [
     icon: Globe,
     iconColor: 'text-for-300',
     iconBg: 'bg-for-400/10',
+  },
+  {
+    type: 'link',
+    id: 'capsule',
+    label: 'Civic Time Capsules',
+    sublabel: 'Write time-locked predictions — seal them, score them, earn Clout',
+    href: '/capsule',
+    icon: Hourglass,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
   },
 ]
 
