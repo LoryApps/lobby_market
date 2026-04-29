@@ -295,6 +295,15 @@ export function TopBar() {
                 My Challenges
               </Link>
               <Link
+                href="/debate/my-record"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <BarChart2 className="h-3.5 w-3.5 flex-shrink-0 text-purple" aria-hidden="true" />
+                My Debate Record
+              </Link>
+              <Link
                 href="/duel"
                 role="menuitem"
                 onClick={() => setMenuOpen(false)}
