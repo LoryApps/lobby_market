@@ -51,6 +51,7 @@ const KEYS = {
   knowledgeTest:'lm_knowledge_test_v1',
   duelPicks:    'lm_duel_picks_v1',
   wordle:       'lm_wordle_v1',
+  connections:  'lm_connections_v1',
 } as const
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -63,6 +64,9 @@ interface ArcadeRecord {
   knowledgeScore: number | null
   wordleDone: boolean
   wordleGuesses: number | null
+  connectionsDone: boolean
+  connectionsWon: boolean
+  connectionsMistakes: number | null
 }
 
 function todayStr(): string {
@@ -88,6 +92,9 @@ function loadRecords(): ArcadeRecord {
     knowledgeScore: null,
     wordleDone: false,
     wordleGuesses: null,
+    connectionsDone: false,
+    connectionsWon: false,
+    connectionsMistakes: null,
   }
   try {
     // Trivia — daily
@@ -124,6 +131,20 @@ function loadRecords(): ArcadeRecord {
       if (w.date === todayStr() && w.gameOver) {
         def.wordleDone = true
         def.wordleGuesses = w.won && Array.isArray(w.guesses) ? w.guesses.length : null
+      }
+    }
+
+    // Connections — daily (keyed by puzzle number = day of year)
+    const cRaw = localStorage.getItem(KEYS.connections)
+    if (cRaw) {
+      const c = JSON.parse(cRaw)
+      const today = new Date()
+      const start = new Date(today.getFullYear(), 0, 0)
+      const dayOfYear = Math.floor((today.getTime() - start.getTime()) / (1000 * 60 * 60 * 24))
+      if (c.puzzleNumber === dayOfYear && c.done) {
+        def.connectionsDone = true
+        def.connectionsWon = !!c.won
+        def.connectionsMistakes = typeof c.mistakes === 'number' ? c.mistakes : null
       }
     }
   } catch {
@@ -373,6 +394,23 @@ const GAMES: GameDef[] = [
     difficulty: 'easy',
     timeEstimate: '1 min',
   },
+  {
+    id: 'connections',
+    href: '/connections',
+    title: 'Civic Connections',
+    tagline: 'Group 4 civic terms that share a bond',
+    description:
+      'Sixteen civic terms, four hidden categories. Find the groups before you run out of guesses. Yellow is easiest, purple is hardest.',
+    icon: Layers,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+    border: 'border-purple/20',
+    badge: 'Daily',
+    badgeColor: 'bg-purple/10 text-purple border-purple/30',
+    refresh: 'daily',
+    difficulty: 'hard',
+    timeEstimate: '3 min',
+  },
 ]
 
 // ─── Difficulty badge ─────────────────────────────────────────────────────────
@@ -530,7 +568,7 @@ export default function ArcadePage() {
   const weeklyGames = GAMES.filter((g) => g.refresh === 'weekly')
   const alwaysGames = GAMES.filter((g) => g.refresh === 'always')
 
-  const dailyDone = (records?.triviaDone ? 1 : 0) + (records?.wordleDone ? 1 : 0)
+  const dailyDone = (records?.triviaDone ? 1 : 0) + (records?.wordleDone ? 1 : 0) + (records?.connectionsDone ? 1 : 0)
   const weeklyDone = records?.knowledgeDone ? 1 : 0
 
   return (
@@ -567,7 +605,7 @@ export default function ArcadePage() {
               >
                 <ScorePill
                   label="Today"
-                  value={`${dailyDone}/2`}
+                  value={`${dailyDone}/3`}
                   color={dailyDone > 0 ? 'text-gold' : 'text-surface-500'}
                 />
                 <div className="w-px h-8 bg-surface-300" />
@@ -602,7 +640,7 @@ export default function ArcadePage() {
               iconColor="text-gold"
               iconBg="bg-gold/10"
               title="Daily Challenges"
-              subtitle={`Resets at midnight · ${dailyDone}/2 done today`}
+              subtitle={`Resets at midnight · ${dailyDone}/3 done today`}
             />
             <div className="space-y-3">
               {dailyGames.map((game) => (
@@ -614,6 +652,8 @@ export default function ArcadePage() {
                       ? records?.triviaDone
                       : game.id === 'wordle'
                       ? records?.wordleDone
+                      : game.id === 'connections'
+                      ? records?.connectionsDone
                       : undefined
                   }
                   score={
@@ -621,6 +661,10 @@ export default function ArcadePage() {
                       ? `${records.triviaScore}/125`
                       : game.id === 'wordle' && records?.wordleGuesses != null
                       ? `${records.wordleGuesses}/6`
+                      : game.id === 'connections' && records?.connectionsDone
+                      ? records.connectionsWon
+                        ? records.connectionsMistakes === 0 ? 'Perfect' : `${records.connectionsMistakes} mistake${records.connectionsMistakes !== 1 ? 's' : ''}`
+                        : 'Lost'
                       : null
                   }
                 />
