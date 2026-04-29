@@ -73,6 +73,7 @@ import {
   Skull,
   Swords,
   FlaskConical,
+  Gamepad2,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -209,6 +210,16 @@ const QUICK_LINKS: QuickLink[] = [
     sublabel: 'Top completed debates ranked by viewers, decisive outcomes, and activity',
     href: '/leaderboard/debates',
     icon: Mic,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
+    id: 'arcade',
+    label: 'Civic Arcade',
+    sublabel: 'All games & challenges in one hub',
+    href: '/arcade',
+    icon: Gamepad2,
     iconColor: 'text-purple',
     iconBg: 'bg-purple/10',
   },
