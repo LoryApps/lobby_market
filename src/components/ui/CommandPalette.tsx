@@ -583,6 +583,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'tally',
+    label: 'Tally Board',
+    sublabel: 'Live election-night results for every topic in the voting phase',
+    href: '/tally',
+    icon: Radio,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
     id: 'trending',
     label: 'Trending',
     sublabel: 'Most active topics in the last 24 hours',

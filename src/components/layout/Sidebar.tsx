@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation'
 import {
   Bookmark,
   Newspaper,
+  Radio,
   TrendingUp,
   Landmark,
   Scale,
@@ -52,6 +53,7 @@ const navItems: NavItem[] = [
   { href: '/oracle', label: 'The Oracle', icon: Eye },
   { href: '/trending', label: 'Trending', icon: TrendingUp },
   { href: '/surge', label: 'Surge', icon: Flame },
+  { href: '/tally', label: 'Tally Board', icon: Radio },
   { href: '/shifts', label: 'Opinion Shifts', icon: BarChart2 },
   { href: '/split', label: 'The Split', icon: GitFork },
   { href: '/floor', label: 'The Floor', icon: Landmark },
