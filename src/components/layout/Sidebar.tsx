@@ -34,6 +34,7 @@ import {
   Eye,
   Sparkles,
   Swords,
+  SwatchBook,
 } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { createClient } from '@/lib/supabase/client'
@@ -70,6 +71,7 @@ const navItems: NavItem[] = [
     icon: Shield,
     moderatorOnly: true,
   },
+  { href: '/swipe', label: 'Swipe & Vote', icon: SwatchBook },
   { href: '/arguments', label: 'Top Arguments', icon: ThumbsUp },
   { href: '/collections', label: 'Collections', icon: Layers },
   { href: '/saved', label: 'Saved', icon: Bookmark },
