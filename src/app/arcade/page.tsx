@@ -25,6 +25,7 @@ import {
   Flame,
   Gavel,
   Gamepad2,
+  Hash,
   Layers,
   RefreshCw,
   Scale,
@@ -49,6 +50,7 @@ const KEYS = {
   blitz:        'lm_blitz_high_score_v1',
   knowledgeTest:'lm_knowledge_test_v1',
   duelPicks:    'lm_duel_picks_v1',
+  wordle:       'lm_wordle_v1',
 } as const
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -59,6 +61,8 @@ interface ArcadeRecord {
   blitzHighScore: number
   knowledgeDone: boolean
   knowledgeScore: number | null
+  wordleDone: boolean
+  wordleGuesses: number | null
 }
 
 function todayStr(): string {
@@ -82,6 +86,8 @@ function loadRecords(): ArcadeRecord {
     blitzHighScore: 0,
     knowledgeDone: false,
     knowledgeScore: null,
+    wordleDone: false,
+    wordleGuesses: null,
   }
   try {
     // Trivia — daily
@@ -108,6 +114,16 @@ function loadRecords(): ArcadeRecord {
       if (k.week === currentWeekKey()) {
         def.knowledgeDone = true
         def.knowledgeScore = typeof k.score === 'number' ? k.score : null
+      }
+    }
+
+    // Wordle — daily
+    const wRaw = localStorage.getItem(KEYS.wordle)
+    if (wRaw) {
+      const w = JSON.parse(wRaw)
+      if (w.date === todayStr() && w.gameOver) {
+        def.wordleDone = true
+        def.wordleGuesses = w.won && Array.isArray(w.guesses) ? w.guesses.length : null
       }
     }
   } catch {
@@ -149,6 +165,23 @@ const GAMES: GameDef[] = [
     border: 'border-gold/20',
     badge: 'Daily',
     badgeColor: 'bg-gold/10 text-gold border-gold/30',
+    refresh: 'daily',
+    difficulty: 'medium',
+    timeEstimate: '2 min',
+  },
+  {
+    id: 'wordle',
+    href: '/wordle',
+    title: 'Civic Wordle',
+    tagline: 'Guess the 5-letter civic word',
+    description:
+      'A daily word puzzle using civic vocabulary — laws, governance, democracy. 6 guesses. Share your result.',
+    icon: Hash,
+    iconColor: 'text-for-300',
+    iconBg: 'bg-for-400/10',
+    border: 'border-for-400/20',
+    badge: 'Daily',
+    badgeColor: 'bg-for-400/10 text-for-300 border-for-400/30',
     refresh: 'daily',
     difficulty: 'medium',
     timeEstimate: '2 min',
@@ -497,7 +530,7 @@ export default function ArcadePage() {
   const weeklyGames = GAMES.filter((g) => g.refresh === 'weekly')
   const alwaysGames = GAMES.filter((g) => g.refresh === 'always')
 
-  const dailyDone = records?.triviaDone ? 1 : 0
+  const dailyDone = (records?.triviaDone ? 1 : 0) + (records?.wordleDone ? 1 : 0)
   const weeklyDone = records?.knowledgeDone ? 1 : 0
 
   return (
@@ -534,7 +567,7 @@ export default function ArcadePage() {
               >
                 <ScorePill
                   label="Today"
-                  value={`${dailyDone}/1`}
+                  value={`${dailyDone}/2`}
                   color={dailyDone > 0 ? 'text-gold' : 'text-surface-500'}
                 />
                 <div className="w-px h-8 bg-surface-300" />
@@ -569,17 +602,25 @@ export default function ArcadePage() {
               iconColor="text-gold"
               iconBg="bg-gold/10"
               title="Daily Challenges"
-              subtitle={`Resets at midnight · ${dailyDone}/1 done today`}
+              subtitle={`Resets at midnight · ${dailyDone}/2 done today`}
             />
             <div className="space-y-3">
               {dailyGames.map((game) => (
                 <GameCard
                   key={game.id}
                   game={game}
-                  done={records?.triviaDone}
+                  done={
+                    game.id === 'trivia'
+                      ? records?.triviaDone
+                      : game.id === 'wordle'
+                      ? records?.wordleDone
+                      : undefined
+                  }
                   score={
                     game.id === 'trivia' && records?.triviaScore != null
                       ? `${records.triviaScore}/125`
+                      : game.id === 'wordle' && records?.wordleGuesses != null
+                      ? `${records.wordleGuesses}/6`
                       : null
                   }
                 />
