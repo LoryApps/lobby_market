@@ -54,6 +54,7 @@ const KEYS = {
   wordle:       'lm_wordle_v1',
   connections:  'lm_connections_v1',
   cloze:        'lm_cloze_v1',
+  crossword:    'lm_crossword_v1',
 } as const
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -71,6 +72,8 @@ interface ArcadeRecord {
   connectionsMistakes: number | null
   clozeDone: boolean
   clozeScore: number | null
+  crosswordDone: boolean
+  crosswordSolved: boolean
 }
 
 function todayStr(): string {
@@ -101,6 +104,8 @@ function loadRecords(): ArcadeRecord {
     connectionsMistakes: null,
     clozeDone: false,
     clozeScore: null,
+    crosswordDone: false,
+    crosswordSolved: false,
   }
   try {
     // Trivia — daily
@@ -160,6 +165,16 @@ function loadRecords(): ArcadeRecord {
       if (cl.date === todayStr()) {
         def.clozeDone = true
         def.clozeScore = typeof cl.score === 'number' ? cl.score : null
+      }
+    }
+
+    // Crossword — daily
+    const cwRaw = localStorage.getItem(KEYS.crossword)
+    if (cwRaw) {
+      const cw = JSON.parse(cwRaw)
+      if (cw.date === todayStr()) {
+        def.crosswordDone = true
+        def.crosswordSolved = !!cw.solved
       }
     }
   } catch {
@@ -443,6 +458,23 @@ const GAMES: GameDef[] = [
     difficulty: 'medium',
     timeEstimate: '2 min',
   },
+  {
+    id: 'crossword',
+    href: '/crossword',
+    title: 'Civic Crossword',
+    tagline: 'Daily mini-crossword with civic clues',
+    description:
+      'Fill in the grid using clues drawn from platform debates, laws, and community concepts. A new puzzle every day.',
+    icon: Hash,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+    border: 'border-purple/20',
+    badge: 'Daily',
+    badgeColor: 'bg-purple/10 text-purple border-purple/30',
+    refresh: 'daily',
+    difficulty: 'medium',
+    timeEstimate: '3 min',
+  },
 ]
 
 // ─── Difficulty badge ─────────────────────────────────────────────────────────
@@ -600,7 +632,7 @@ export default function ArcadePage() {
   const weeklyGames = GAMES.filter((g) => g.refresh === 'weekly')
   const alwaysGames = GAMES.filter((g) => g.refresh === 'always')
 
-  const dailyDone = (records?.triviaDone ? 1 : 0) + (records?.wordleDone ? 1 : 0) + (records?.connectionsDone ? 1 : 0) + (records?.clozeDone ? 1 : 0)
+  const dailyDone = (records?.triviaDone ? 1 : 0) + (records?.wordleDone ? 1 : 0) + (records?.connectionsDone ? 1 : 0) + (records?.clozeDone ? 1 : 0) + (records?.crosswordDone ? 1 : 0)
   const weeklyDone = records?.knowledgeDone ? 1 : 0
 
   return (
@@ -637,7 +669,7 @@ export default function ArcadePage() {
               >
                 <ScorePill
                   label="Today"
-                  value={`${dailyDone}/4`}
+                  value={`${dailyDone}/5`}
                   color={dailyDone > 0 ? 'text-gold' : 'text-surface-500'}
                 />
                 <div className="w-px h-8 bg-surface-300" />
@@ -672,7 +704,7 @@ export default function ArcadePage() {
               iconColor="text-gold"
               iconBg="bg-gold/10"
               title="Daily Challenges"
-              subtitle={`Resets at midnight · ${dailyDone}/4 done today`}
+              subtitle={`Resets at midnight · ${dailyDone}/5 done today`}
             />
             <div className="space-y-3">
               {dailyGames.map((game) => (
@@ -688,6 +720,8 @@ export default function ArcadePage() {
                       ? records?.connectionsDone
                       : game.id === 'cloze'
                       ? records?.clozeDone
+                      : game.id === 'crossword'
+                      ? records?.crosswordDone
                       : undefined
                   }
                   score={
@@ -701,6 +735,8 @@ export default function ArcadePage() {
                         : 'Lost'
                       : game.id === 'cloze' && records?.clozeScore != null
                       ? `${records.clozeScore}/5`
+                      : game.id === 'crossword' && records?.crosswordDone
+                      ? records.crosswordSolved ? 'Solved!' : 'In progress'
                       : null
                   }
                 />
