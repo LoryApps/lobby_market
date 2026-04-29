@@ -635,6 +635,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'amendments',
+    label: 'Amendment Chamber',
+    sublabel: 'Community proposals to refine and extend established laws — vote to ratify',
+    href: '/amendments',
+    icon: FileText,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'law-graph',
     label: 'Law Graph',
     sublabel: 'Interactive knowledge graph of all established laws',

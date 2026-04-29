@@ -31,6 +31,7 @@ import { LawDocument, parseBlocks } from './LawDocument'
 import { LawBacklinks } from './LawBacklinks'
 import { ReopenPetition } from './ReopenPetition'
 import { ProposeRevisionForm } from './ProposeRevisionForm'
+import { LawAmendmentsPanel } from './LawAmendmentsPanel'
 
 interface LawPageProps {
   law: Law
@@ -336,6 +337,11 @@ export function LawPage({
                 lawId={law.id}
                 currentRevisionNum={revisions[0]?.revision_num ?? 0}
               />
+            </div>
+
+            {/* Amendment proposals */}
+            <div className="mt-6">
+              <LawAmendmentsPanel lawId={law.id} />
             </div>
 
             {/* Reopen petition */}
