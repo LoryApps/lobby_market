@@ -457,6 +457,15 @@ export function TopBar() {
                 Analytics
               </Link>
               <Link
+                href="/activity-calendar"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <Calendar className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
+                Activity Calendar
+              </Link>
+              <Link
                 href="/report-card"
                 role="menuitem"
                 onClick={() => setMenuOpen(false)}

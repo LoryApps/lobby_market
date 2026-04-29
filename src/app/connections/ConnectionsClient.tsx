@@ -13,7 +13,7 @@
  *   • Win = all 4 groups solved
  */
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -127,13 +127,16 @@ export function ConnectionsClient() {
   const puzzle = getDailyPuzzle()
   const allItems = puzzle.groups.flatMap((g) => g.items)
 
-  // Map item → group
-  const itemToGroup = new Map<string, PuzzleGroup>()
-  for (const g of puzzle.groups) {
-    for (const item of g.items) {
-      itemToGroup.set(item, g)
+  // Map item → group (stable reference so useCallback deps don't thrash)
+  const itemToGroup = useMemo(() => {
+    const m = new Map<string, PuzzleGroup>()
+    for (const g of puzzle.groups) {
+      for (const item of g.items) {
+        m.set(item, g)
+      }
     }
-  }
+    return m
+  }, [puzzle.groups])
 
   // ── State ──────────────────────────────────────────────────────────────────
 
@@ -178,7 +181,7 @@ export function ConnectionsClient() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const solvedIds = new Set(solvedGroups.map((g) => g.id))
+  const solvedIds = useMemo(() => new Set(solvedGroups.map((g) => g.id)), [solvedGroups])
   const remainingGroups = puzzle.groups.filter((g) => !solvedIds.has(g.id))
 
   // ── Persist on state change ────────────────────────────────────────────────
