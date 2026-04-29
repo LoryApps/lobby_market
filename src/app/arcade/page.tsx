@@ -29,6 +29,7 @@ import {
   Layers,
   RefreshCw,
   Scale,
+  Scroll,
   Sparkles,
   Star,
   Swords,
@@ -52,6 +53,7 @@ const KEYS = {
   duelPicks:    'lm_duel_picks_v1',
   wordle:       'lm_wordle_v1',
   connections:  'lm_connections_v1',
+  cloze:        'lm_cloze_v1',
 } as const
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -67,6 +69,8 @@ interface ArcadeRecord {
   connectionsDone: boolean
   connectionsWon: boolean
   connectionsMistakes: number | null
+  clozeDone: boolean
+  clozeScore: number | null
 }
 
 function todayStr(): string {
@@ -95,6 +99,8 @@ function loadRecords(): ArcadeRecord {
     connectionsDone: false,
     connectionsWon: false,
     connectionsMistakes: null,
+    clozeDone: false,
+    clozeScore: null,
   }
   try {
     // Trivia — daily
@@ -145,6 +151,15 @@ function loadRecords(): ArcadeRecord {
         def.connectionsDone = true
         def.connectionsWon = !!c.won
         def.connectionsMistakes = typeof c.mistakes === 'number' ? c.mistakes : null
+      }
+    }
+    // Cloze — daily
+    const clozeRaw = localStorage.getItem(KEYS.cloze)
+    if (clozeRaw) {
+      const cl = JSON.parse(clozeRaw)
+      if (cl.date === todayStr()) {
+        def.clozeDone = true
+        def.clozeScore = typeof cl.score === 'number' ? cl.score : null
       }
     }
   } catch {
@@ -411,6 +426,23 @@ const GAMES: GameDef[] = [
     difficulty: 'hard',
     timeEstimate: '3 min',
   },
+  {
+    id: 'cloze',
+    href: '/cloze',
+    title: 'Civic Cloze',
+    tagline: 'Fill in the missing word from a real law',
+    description:
+      'Five real platform laws and debate statements — each with one key word blanked out. Pick the correct missing word from four options.',
+    icon: Scroll,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+    border: 'border-gold/20',
+    badge: 'Daily',
+    badgeColor: 'bg-gold/10 text-gold border-gold/30',
+    refresh: 'daily',
+    difficulty: 'medium',
+    timeEstimate: '2 min',
+  },
 ]
 
 // ─── Difficulty badge ─────────────────────────────────────────────────────────
@@ -568,7 +600,7 @@ export default function ArcadePage() {
   const weeklyGames = GAMES.filter((g) => g.refresh === 'weekly')
   const alwaysGames = GAMES.filter((g) => g.refresh === 'always')
 
-  const dailyDone = (records?.triviaDone ? 1 : 0) + (records?.wordleDone ? 1 : 0) + (records?.connectionsDone ? 1 : 0)
+  const dailyDone = (records?.triviaDone ? 1 : 0) + (records?.wordleDone ? 1 : 0) + (records?.connectionsDone ? 1 : 0) + (records?.clozeDone ? 1 : 0)
   const weeklyDone = records?.knowledgeDone ? 1 : 0
 
   return (
@@ -605,7 +637,7 @@ export default function ArcadePage() {
               >
                 <ScorePill
                   label="Today"
-                  value={`${dailyDone}/3`}
+                  value={`${dailyDone}/4`}
                   color={dailyDone > 0 ? 'text-gold' : 'text-surface-500'}
                 />
                 <div className="w-px h-8 bg-surface-300" />
@@ -640,7 +672,7 @@ export default function ArcadePage() {
               iconColor="text-gold"
               iconBg="bg-gold/10"
               title="Daily Challenges"
-              subtitle={`Resets at midnight · ${dailyDone}/3 done today`}
+              subtitle={`Resets at midnight · ${dailyDone}/4 done today`}
             />
             <div className="space-y-3">
               {dailyGames.map((game) => (
@@ -654,6 +686,8 @@ export default function ArcadePage() {
                       ? records?.wordleDone
                       : game.id === 'connections'
                       ? records?.connectionsDone
+                      : game.id === 'cloze'
+                      ? records?.clozeDone
                       : undefined
                   }
                   score={
@@ -665,6 +699,8 @@ export default function ArcadePage() {
                       ? records.connectionsWon
                         ? records.connectionsMistakes === 0 ? 'Perfect' : `${records.connectionsMistakes} mistake${records.connectionsMistakes !== 1 ? 's' : ''}`
                         : 'Lost'
+                      : game.id === 'cloze' && records?.clozeScore != null
+                      ? `${records.clozeScore}/5`
                       : null
                   }
                 />
