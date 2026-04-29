@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Activity, BarChart2, Bell, BookOpen, Calendar, Coins, Compass, FileText, Flame, FlaskConical, Gavel, HelpCircle, History, Hourglass, LayoutGrid, ListChecks, LogOut, MessageSquare, Network, Radio, Scale, Scroll, Search, Plus, Settings, Skull, Sparkles, Star, Swords, Target, Timer, TrendingUp, User, Zap, ArrowUpRight, Globe, Users } from 'lucide-react'
+import { Activity, BarChart2, Bell, BookOpen, Calendar, Cloud, Coins, Compass, FileText, Flame, FlaskConical, Gavel, HelpCircle, History, Hourglass, LayoutGrid, ListChecks, LogOut, MessageSquare, Network, Radio, Scale, Scroll, Search, Plus, Settings, Skull, Sparkles, Star, Swords, Target, Timer, TrendingUp, User, Zap, ArrowUpRight, Globe, Users } from 'lucide-react'
 import { NotificationBell } from '@/components/profile/NotificationBell'
 import { Avatar } from '@/components/ui/Avatar'
 import { openCommandPalette } from '@/lib/hooks/useCommandPalette'
@@ -707,6 +707,15 @@ export function TopBar() {
               >
                 <TrendingUp className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
                 State of the Lobby
+              </Link>
+              <Link
+                href="/weather"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <Cloud className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
+                Civic Weather
               </Link>
               <Link
                 href="/heatmap"
