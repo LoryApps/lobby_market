@@ -5,12 +5,16 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
   ArrowLeft,
+  BarChart2,
   BookOpen,
   Calendar,
+  Coins,
+  GitBranch,
   GitCompare,
   Globe,
   Info,
   Megaphone,
+  MessageCircle,
   MessageSquare,
   Newspaper,
   ScrollText,
@@ -60,6 +64,7 @@ import { TopicHotTakes } from '@/components/topic/TopicHotTakes'
 import { ArgumentContributors } from '@/components/topic/ArgumentContributors'
 import { ArgumentCitationsPanel } from '@/components/topic/ArgumentCitationsPanel'
 import { TopicAIBrief } from '@/components/topic/TopicAIBrief'
+import { TopicBountyPanel } from '@/components/topic/TopicBountyPanel'
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary'
 
 const SIGNAL_ICONS_DETAIL: Record<string, typeof Flame> = {
@@ -96,7 +101,7 @@ const statusBadgeVariant: Record<string, 'proposed' | 'active' | 'law' | 'failed
   archived: 'proposed',
 }
 
-type TopicTab = 'details' | 'arguments' | 'lobbies'
+type TopicTab = 'details' | 'arguments' | 'lobbies' | 'bounties'
 
 export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
   const router = useRouter()
@@ -250,6 +255,18 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
               <Newspaper className="h-3.5 w-3.5" />
             </Link>
             <Link
+              href={`/topic/${topic.id}/chat`}
+              className={cn(
+                'flex items-center justify-center h-8 w-8 rounded-lg',
+                'bg-surface-200 border border-surface-300 text-surface-500',
+                'hover:bg-surface-300 hover:text-for-400 transition-colors',
+              )}
+              title="Live Chat — discuss this topic in real-time"
+              aria-label="Live chat"
+            >
+              <MessageCircle className="h-3.5 w-3.5" />
+            </Link>
+            <Link
               href={`/compare?a=${topic.id}`}
               className={cn(
                 'flex items-center justify-center h-8 w-8 rounded-lg',
@@ -351,9 +368,29 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
             <Megaphone className="h-3.5 w-3.5" />
             Lobby Board
           </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('bounties')}
+            className={cn(
+              'inline-flex items-center gap-2 px-4 py-2 font-mono text-xs font-semibold transition-colors border-b-2',
+              activeTab === 'bounties'
+                ? 'text-gold border-gold'
+                : 'text-surface-500 border-transparent hover:text-white'
+            )}
+          >
+            <Coins className="h-3.5 w-3.5" />
+            Bounties
+          </button>
         </div>
 
-        {activeTab === 'lobbies' ? (
+        {activeTab === 'bounties' ? (
+          <ErrorBoundary size="md" label="Couldn't load bounties">
+            <TopicBountyPanel
+              topicId={topic.id}
+              topicStatus={topic.status}
+            />
+          </ErrorBoundary>
+        ) : activeTab === 'lobbies' ? (
           <ErrorBoundary size="md" label="Couldn't load lobby board">
             <LobbyBoard topicId={topic.id} />
           </ErrorBoundary>
@@ -413,6 +450,20 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
                     >
                       <ScrollText className="h-3.5 w-3.5" />
                       Transcript
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/argument-graph`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-emerald hover:text-emerald/80 transition-colors"
+                    >
+                      <GitBranch className="h-3.5 w-3.5" />
+                      Argument graph
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/stats`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-gold hover:text-gold/80 transition-colors"
+                    >
+                      <BarChart2 className="h-3.5 w-3.5" />
+                      Stats
                     </Link>
                     <Link
                       href={`/spar/${topic.id}`}

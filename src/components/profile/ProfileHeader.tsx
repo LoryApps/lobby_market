@@ -1,20 +1,24 @@
 'use client'
 
-import { useCallback, useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
   AtSign,
   BarChart2,
   Calendar,
+  Check,
   Code2,
   GitCompare,
   Globe,
   Loader2,
+  Search,
   Settings,
   Share2,
+  Swords,
   UserCheck,
   UserMinus,
   UserPlus,
+  X,
 } from 'lucide-react'
 import Link from 'next/link'
 import { Avatar } from '@/components/ui/Avatar'
@@ -128,6 +132,314 @@ function BioText({ text }: { text: string }) {
 import { ReputationMeter } from './ReputationMeter'
 import type { Profile } from '@/lib/supabase/types'
 import { cn } from '@/lib/utils/cn'
+
+// ── Challenge button + modal ──────────────────────────────────────────────────
+
+interface TopicOption {
+  id: string
+  statement: string
+  category: string | null
+  status: string
+}
+
+function ChallengeButton({
+  challengedId,
+  challengedName,
+}: {
+  challengedId: string
+  challengedName: string
+}) {
+  const [open, setOpen] = useState(false)
+  const [query, setQuery] = useState('')
+  const [topics, setTopics] = useState<TopicOption[]>([])
+  const [searching, setSearching] = useState(false)
+  const [selected, setSelected] = useState<TopicOption | null>(null)
+  const [message, setMessage] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+  const [done, setDone] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const backdropRef = useRef<HTMLDivElement>(null)
+
+  // Search topics
+  useEffect(() => {
+    if (!open) return
+    if (query.trim().length < 3) {
+      setTopics([])
+      return
+    }
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    setSearching(true)
+    debounceRef.current = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/search?q=${encodeURIComponent(query)}&type=topics&limit=8`, { cache: 'no-store' })
+        if (res.ok) {
+          const data = await res.json()
+          setTopics((data.topics ?? []).slice(0, 8) as TopicOption[])
+        }
+      } catch {
+        // best-effort
+      } finally {
+        setSearching(false)
+      }
+    }, 400)
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current)
+    }
+  }, [query, open])
+
+  // Close on backdrop click
+  function handleBackdrop(e: React.MouseEvent<HTMLDivElement>) {
+    if (e.target === backdropRef.current) {
+      setOpen(false)
+      reset()
+    }
+  }
+
+  // Escape key
+  useEffect(() => {
+    if (!open) return
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') { setOpen(false); reset() }
+    }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [open])
+
+  function reset() {
+    setQuery('')
+    setTopics([])
+    setSelected(null)
+    setMessage('')
+    setError(null)
+    setDone(false)
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!selected) return
+    setSubmitting(true)
+    setError(null)
+    try {
+      const res = await fetch('/api/challenges', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          challenged_id: challengedId,
+          topic_id: selected.id,
+          message: message.trim() || undefined,
+        }),
+      })
+      if (res.ok) {
+        setDone(true)
+      } else {
+        const data = await res.json()
+        setError(data.error ?? 'Failed to send challenge')
+      }
+    } catch {
+      setError('Something went wrong')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const STATUS_COLOR: Record<string, string> = {
+    active: 'text-for-400', voting: 'text-purple', law: 'text-gold',
+    proposed: 'text-surface-500', failed: 'text-against-400',
+  }
+
+  return (
+    <>
+      <button
+        onClick={() => { setOpen(true); reset() }}
+        className={cn(
+          'flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-mono font-semibold',
+          'bg-against-600/15 hover:bg-against-600/25 text-against-300 hover:text-against-200',
+          'border border-against-600/30 hover:border-against-500/50 transition-all'
+        )}
+        title={`Challenge ${challengedName} to a debate`}
+      >
+        <Swords className="h-4 w-4" />
+        Challenge
+      </button>
+
+      <AnimatePresence>
+        {open && (
+          <div
+            ref={backdropRef}
+            className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+            onClick={handleBackdrop}
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 20, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 20, scale: 0.96 }}
+              transition={{ duration: 0.2, ease: 'easeOut' }}
+              className="w-full max-w-md rounded-2xl border border-surface-300 bg-surface-100 shadow-2xl overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between px-5 py-4 border-b border-surface-300">
+                <div className="flex items-center gap-2.5">
+                  <Swords className="h-5 w-5 text-against-400" />
+                  <div>
+                    <p className="text-sm font-mono font-bold text-white">Issue a Challenge</p>
+                    <p className="text-[11px] font-mono text-surface-500">
+                      Challenge @{challengedName} to debate a topic
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => { setOpen(false); reset() }}
+                  className="h-8 w-8 flex items-center justify-center rounded-lg text-surface-500 hover:text-white hover:bg-surface-300 transition-colors"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+
+              {done ? (
+                /* Success state */
+                <div className="px-5 py-8 flex flex-col items-center gap-4 text-center">
+                  <div className="h-14 w-14 rounded-full bg-for-500/15 border border-for-500/30 flex items-center justify-center">
+                    <Check className="h-6 w-6 text-for-400" />
+                  </div>
+                  <div>
+                    <p className="text-base font-mono font-bold text-white">Challenge sent!</p>
+                    <p className="text-sm font-mono text-surface-500 mt-1">
+                      @{challengedName} has 7 days to respond.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => { setOpen(false); reset() }}
+                    className="px-6 py-2 rounded-xl bg-surface-200 border border-surface-300 text-sm font-mono text-white hover:bg-surface-300 transition-colors"
+                  >
+                    Done
+                  </button>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="p-5 space-y-4">
+
+                  {/* Topic search */}
+                  {!selected ? (
+                    <div className="space-y-2">
+                      <label className="block text-xs font-mono font-medium text-surface-500 uppercase tracking-wider">
+                        Pick a topic
+                      </label>
+                      <div className="relative">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-surface-500 pointer-events-none" />
+                        <input
+                          autoFocus
+                          type="text"
+                          value={query}
+                          onChange={(e) => setQuery(e.target.value)}
+                          placeholder="Search for a topic to debate…"
+                          className={cn(
+                            'w-full pl-9 pr-4 py-2.5 rounded-xl border text-sm font-mono',
+                            'bg-surface-200 text-white placeholder:text-surface-500',
+                            'border-surface-300 focus:border-for-500/50 focus:ring-2 focus:ring-for-500/20 focus:outline-none',
+                            'transition-colors'
+                          )}
+                        />
+                        {searching && (
+                          <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-surface-500 animate-spin" />
+                        )}
+                      </div>
+
+                      {/* Results */}
+                      {topics.length > 0 && (
+                        <div className="space-y-1 max-h-52 overflow-y-auto rounded-xl border border-surface-300 bg-surface-200 p-1">
+                          {topics.map((t) => (
+                            <button
+                              key={t.id}
+                              type="button"
+                              onClick={() => { setSelected(t); setQuery('') }}
+                              className="w-full flex items-start gap-2 text-left px-3 py-2.5 rounded-lg hover:bg-surface-300 transition-colors"
+                            >
+                              <span className={cn('text-[10px] font-mono font-bold mt-0.5 flex-shrink-0 uppercase', STATUS_COLOR[t.status] ?? 'text-surface-500')}>
+                                {t.status}
+                              </span>
+                              <span className="text-sm font-mono text-white leading-snug line-clamp-2">{t.statement}</span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+
+                      {query.length >= 3 && !searching && topics.length === 0 && (
+                        <p className="text-xs font-mono text-surface-500 text-center py-2">No topics found for &ldquo;{query}&rdquo;</p>
+                      )}
+                    </div>
+                  ) : (
+                    /* Selected topic */
+                    <div className="space-y-2">
+                      <label className="block text-xs font-mono font-medium text-surface-500 uppercase tracking-wider">
+                        Topic
+                      </label>
+                      <div className="flex items-start gap-2 rounded-xl border border-for-500/30 bg-for-500/5 px-3 py-2.5">
+                        <p className="flex-1 text-sm font-mono text-white leading-snug">{selected.statement}</p>
+                        <button
+                          type="button"
+                          onClick={() => setSelected(null)}
+                          className="flex-shrink-0 text-surface-500 hover:text-against-400 transition-colors"
+                          aria-label="Clear selection"
+                        >
+                          <X className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Optional message */}
+                  <div className="space-y-2">
+                    <label className="block text-xs font-mono font-medium text-surface-500 uppercase tracking-wider">
+                      Message <span className="normal-case font-normal">(optional)</span>
+                    </label>
+                    <textarea
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value.slice(0, 280))}
+                      placeholder="Add a short provocation…"
+                      rows={2}
+                      className={cn(
+                        'w-full px-3 py-2.5 rounded-xl border text-sm font-mono resize-none',
+                        'bg-surface-200 text-white placeholder:text-surface-500',
+                        'border-surface-300 focus:border-for-500/50 focus:ring-2 focus:ring-for-500/20 focus:outline-none',
+                        'transition-colors'
+                      )}
+                    />
+                    <p className="text-[10px] font-mono text-surface-600 text-right">{message.length}/280</p>
+                  </div>
+
+                  {error && (
+                    <p className="text-xs font-mono text-against-400 bg-against-600/10 border border-against-600/20 rounded-xl px-3 py-2">
+                      {error}
+                    </p>
+                  )}
+
+                  <button
+                    type="submit"
+                    disabled={!selected || submitting}
+                    className={cn(
+                      'w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-mono font-semibold transition-all',
+                      'bg-against-600 hover:bg-against-500 text-white border border-against-500/50',
+                      'disabled:opacity-50 disabled:cursor-not-allowed'
+                    )}
+                  >
+                    {submitting ? (
+                      <><Loader2 className="h-4 w-4 animate-spin" />Sending…</>
+                    ) : (
+                      <><Swords className="h-4 w-4" />Send challenge</>
+                    )}
+                  </button>
+                </form>
+              )}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+    </>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 
 interface ProfileHeaderProps {
   profile: Profile
@@ -455,6 +767,12 @@ export function ProfileHeader({
                 Compare
               </Button>
             </Link>
+
+            {/* Challenge to debate */}
+            <ChallengeButton
+              challengedId={profile.id}
+              challengedName={profile.display_name || profile.username}
+            />
 
             {/* Share civic card */}
             <Link href={`/share/profile/${encodeURIComponent(profile.username)}`}>

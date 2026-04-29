@@ -1361,6 +1361,7 @@ export type Database = {
           user_id: string;
           predicted_law: boolean;
           confidence: number;
+          reasoning: string | null;
           resolved_at: string | null;
           correct: boolean | null;
           brier_score: number | null;
@@ -1374,6 +1375,7 @@ export type Database = {
           user_id: string;
           predicted_law: boolean;
           confidence: number;
+          reasoning?: string | null;
           resolved_at?: string | null;
           correct?: boolean | null;
           brier_score?: number | null;
@@ -1387,6 +1389,7 @@ export type Database = {
           user_id?: string;
           predicted_law?: boolean;
           confidence?: number;
+          reasoning?: string | null;
           resolved_at?: string | null;
           correct?: boolean | null;
           brier_score?: number | null;
@@ -1690,6 +1693,48 @@ export type Database = {
           topics_json?: unknown;
           model?: string;
           generated_at?: string;
+        };
+        Relationships: [];
+      };
+      topic_bounties: {
+        Row: {
+          id: string;
+          topic_id: string;
+          creator_id: string;
+          side: 'for' | 'against' | null;
+          amount: number;
+          description: string;
+          deadline: string | null;
+          winner_argument_id: string | null;
+          winner_id: string | null;
+          status: 'open' | 'awarded' | 'expired';
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          topic_id: string;
+          creator_id: string;
+          side?: 'for' | 'against' | null;
+          amount?: number;
+          description: string;
+          deadline?: string | null;
+          winner_argument_id?: string | null;
+          winner_id?: string | null;
+          status?: 'open' | 'awarded' | 'expired';
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          topic_id?: string;
+          creator_id?: string;
+          side?: 'for' | 'against' | null;
+          amount?: number;
+          description?: string;
+          deadline?: string | null;
+          winner_argument_id?: string | null;
+          winner_id?: string | null;
+          status?: 'open' | 'awarded' | 'expired';
+          created_at?: string;
         };
         Relationships: [];
       };

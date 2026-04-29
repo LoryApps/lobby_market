@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { BookOpen, Calendar, Mic, Plus, Trophy } from 'lucide-react'
+import { BarChart2, BookOpen, Calendar, Mic, Plus, Trophy } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -214,6 +214,17 @@ export default async function DebateIndexPage() {
             >
               <Calendar className="h-4 w-4" />
               <span className="hidden sm:inline">Calendar</span>
+            </Link>
+            <Link
+              href="/debate/my-record"
+              className={cn(
+                'inline-flex items-center gap-2 px-3 py-2 rounded-lg',
+                'bg-surface-200 border border-surface-300 text-surface-500',
+                'hover:bg-surface-300 hover:text-white text-xs font-mono font-medium transition-colors'
+              )}
+            >
+              <BarChart2 className="h-4 w-4" />
+              <span className="hidden sm:inline">My Record</span>
             </Link>
             <Link
               href="/debate/create"

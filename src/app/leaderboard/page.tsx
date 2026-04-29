@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { BarChart2, Shield, Trophy } from 'lucide-react'
+import { BarChart2, Calendar, FileText, Flame, Gavel, MessageSquare, Mic, Shield, Sparkles, Trophy } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -306,8 +306,72 @@ export default async function LeaderboardPage() {
           <CoalitionLeaderboard coalitions={coalitions} />
         </section>
 
-        {/* Category Power Rankings link */}
+        {/* Today's Leaders link */}
         <section className="mt-12">
+          <Link
+            href="/leaderboard/today"
+            className="flex items-center justify-between rounded-2xl border border-against-500/30 bg-against-500/5 px-6 py-5 hover:bg-against-500/10 transition-colors group"
+          >
+            <div className="flex items-center gap-4">
+              <div className="flex items-center justify-center h-11 w-11 rounded-xl bg-against-500/10 border border-against-500/30 flex-shrink-0">
+                <Flame className="h-5 w-5 text-against-400" />
+              </div>
+              <div>
+                <p className="font-mono text-base font-semibold text-white">
+                  Today&rsquo;s Civic Leaders
+                </p>
+                <p className="text-sm font-mono text-surface-500 mt-0.5">
+                  Real-time daily rankings — most votes cast, arguments written, and upvotes received today.
+                </p>
+              </div>
+            </div>
+            <svg
+              className="h-5 w-5 text-surface-500 group-hover:text-surface-300 transition-colors flex-shrink-0"
+              viewBox="0 0 20 20"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.5}
+              aria-hidden
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 4l5 6-5 6" />
+            </svg>
+          </Link>
+        </section>
+
+        {/* This Week link */}
+        <section className="mt-6">
+          <Link
+            href="/leaderboard/week"
+            className="flex items-center justify-between rounded-2xl border border-for-500/30 bg-for-500/5 px-6 py-5 hover:bg-for-500/10 transition-colors group"
+          >
+            <div className="flex items-center gap-4">
+              <div className="flex items-center justify-center h-11 w-11 rounded-xl bg-for-500/10 border border-for-500/30 flex-shrink-0">
+                <Calendar className="h-5 w-5 text-for-400" />
+              </div>
+              <div>
+                <p className="font-mono text-base font-semibold text-white">
+                  This Week&rsquo;s Rankings
+                </p>
+                <p className="text-sm font-mono text-surface-500 mt-0.5">
+                  Weekly top voters, debators, and clout earners — resets every Monday.
+                </p>
+              </div>
+            </div>
+            <svg
+              className="h-5 w-5 text-surface-500 group-hover:text-surface-300 transition-colors flex-shrink-0"
+              viewBox="0 0 20 20"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.5}
+              aria-hidden
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 4l5 6-5 6" />
+            </svg>
+          </Link>
+        </section>
+
+        {/* Category Power Rankings link */}
+        <section className="mt-6">
           <Link
             href="/leaderboard/categories"
             className="flex items-center justify-between rounded-2xl border border-purple/30 bg-purple/5 px-6 py-5 hover:bg-purple/10 transition-colors group"
@@ -338,8 +402,200 @@ export default async function LeaderboardPage() {
           </Link>
         </section>
 
+        {/* Topic Rankings link */}
+        <section className="mt-6">
+          <Link
+            href="/leaderboard/topics"
+            className="flex items-center justify-between rounded-2xl border border-for-600/30 bg-for-600/5 px-6 py-5 hover:bg-for-600/10 transition-colors group"
+          >
+            <div className="flex items-center gap-4">
+              <div className="flex items-center justify-center h-11 w-11 rounded-xl bg-for-600/10 border border-for-600/30 flex-shrink-0">
+                <FileText className="h-5 w-5 text-for-400" />
+              </div>
+              <div>
+                <p className="font-mono text-base font-semibold text-white">
+                  Topic Rankings
+                </p>
+                <p className="text-sm font-mono text-surface-500 mt-0.5">
+                  Most voted, most viewed, most contested, trending, and fastest laws.
+                </p>
+              </div>
+            </div>
+            <svg
+              className="h-5 w-5 text-surface-500 group-hover:text-surface-300 transition-colors flex-shrink-0"
+              viewBox="0 0 20 20"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.5}
+              aria-hidden
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 4l5 6-5 6" />
+            </svg>
+          </Link>
+        </section>
+
+        {/* Argument Hall of Fame link */}
+        <section className="mt-6">
+          <Link
+            href="/leaderboard/arguments"
+            className="flex items-center justify-between rounded-2xl border border-emerald/30 bg-emerald/5 px-6 py-5 hover:bg-emerald/10 transition-colors group"
+          >
+            <div className="flex items-center gap-4">
+              <div className="flex items-center justify-center h-11 w-11 rounded-xl bg-emerald/10 border border-emerald/30 flex-shrink-0">
+                <MessageSquare className="h-5 w-5 text-emerald" />
+              </div>
+              <div>
+                <p className="font-mono text-base font-semibold text-white">
+                  Argument Hall of Fame
+                </p>
+                <p className="text-sm font-mono text-surface-500 mt-0.5">
+                  The highest-rated FOR and AGAINST arguments — all time, this week, and rising.
+                </p>
+              </div>
+            </div>
+            <svg
+              className="h-5 w-5 text-surface-500 group-hover:text-surface-300 transition-colors flex-shrink-0"
+              viewBox="0 0 20 20"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.5}
+              aria-hidden
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 4l5 6-5 6" />
+            </svg>
+          </Link>
+        </section>
+
+        {/* Laws Hall of Fame link */}
+        <section className="mt-6">
+          <Link
+            href="/leaderboard/laws"
+            className="flex items-center justify-between rounded-2xl border border-gold/30 bg-gold/5 px-6 py-5 hover:bg-gold/10 transition-colors group"
+          >
+            <div className="flex items-center gap-4">
+              <div className="flex items-center justify-center h-11 w-11 rounded-xl bg-gold/10 border border-gold/30 flex-shrink-0">
+                <Gavel className="h-5 w-5 text-gold" />
+              </div>
+              <div>
+                <p className="font-mono text-base font-semibold text-white">
+                  Laws Hall of Fame
+                </p>
+                <p className="text-sm font-mono text-surface-500 mt-0.5">
+                  Every law ranked by votes, consensus, debate intensity, and speed.
+                </p>
+              </div>
+            </div>
+            <svg
+              className="h-5 w-5 text-surface-500 group-hover:text-surface-300 transition-colors flex-shrink-0"
+              viewBox="0 0 20 20"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.5}
+              aria-hidden
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 4l5 6-5 6" />
+            </svg>
+          </Link>
+        </section>
+
+        {/* Debate Hall of Fame link */}
+        <section className="mt-6">
+          <Link
+            href="/leaderboard/debates"
+            className="flex items-center justify-between rounded-2xl border border-purple/30 bg-purple/5 px-6 py-5 hover:bg-purple/10 transition-colors group"
+          >
+            <div className="flex items-center gap-4">
+              <div className="flex items-center justify-center h-11 w-11 rounded-xl bg-purple/10 border border-purple/30 flex-shrink-0">
+                <Mic className="h-5 w-5 text-purple" />
+              </div>
+              <div>
+                <p className="font-mono text-base font-semibold text-white">
+                  Debate Hall of Fame
+                </p>
+                <p className="text-sm font-mono text-surface-500 mt-0.5">
+                  Top debates ranked by viewers, decisive outcomes, duration, and activity.
+                </p>
+              </div>
+            </div>
+            <svg
+              className="h-5 w-5 text-surface-500 group-hover:text-surface-300 transition-colors flex-shrink-0"
+              viewBox="0 0 20 20"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.5}
+              aria-hidden
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 4l5 6-5 6" />
+            </svg>
+          </Link>
+        </section>
+
+        {/* Spotlight link */}
+        <section className="mt-6">
+          <Link
+            href="/spotlight"
+            className="flex items-center justify-between rounded-2xl border border-gold/30 bg-gold/5 px-6 py-5 hover:bg-gold/10 transition-colors group"
+          >
+            <div className="flex items-center gap-4">
+              <div className="flex items-center justify-center h-11 w-11 rounded-xl bg-gold/10 border border-gold/30 flex-shrink-0">
+                <Sparkles className="h-5 w-5 text-gold" />
+              </div>
+              <div>
+                <p className="font-mono text-base font-semibold text-white">
+                  Civic Spotlight
+                </p>
+                <p className="text-sm font-mono text-surface-500 mt-0.5">
+                  This week&rsquo;s best argument, hottest debate, newest law, and rising star.
+                </p>
+              </div>
+            </div>
+            <svg
+              className="h-5 w-5 text-surface-500 group-hover:text-surface-300 transition-colors flex-shrink-0"
+              viewBox="0 0 20 20"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.5}
+              aria-hidden
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 4l5 6-5 6" />
+            </svg>
+          </Link>
+        </section>
+
+        {/* Records link */}
+        <section className="mt-6">
+          <Link
+            href="/records"
+            className="flex items-center justify-between rounded-2xl border border-gold/40 bg-gold/5 px-6 py-5 hover:bg-gold/10 transition-colors group"
+          >
+            <div className="flex items-center gap-4">
+              <div className="flex items-center justify-center h-11 w-11 rounded-xl bg-gold/10 border border-gold/30 flex-shrink-0">
+                <Trophy className="h-5 w-5 text-gold" />
+              </div>
+              <div>
+                <p className="font-mono text-base font-semibold text-white">
+                  Civic Records
+                </p>
+                <p className="text-sm font-mono text-surface-500 mt-0.5">
+                  Platform all-time records — most voted, fastest law, best argument ever.
+                </p>
+              </div>
+            </div>
+            <svg
+              className="h-5 w-5 text-surface-500 group-hover:text-surface-300 transition-colors flex-shrink-0"
+              viewBox="0 0 20 20"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.5}
+              aria-hidden
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 4l5 6-5 6" />
+            </svg>
+          </Link>
+        </section>
+
         {/* Achievements link */}
-        <section className="mt-12">
+        <section className="mt-6">
           <Link
             href="/achievements"
             className="flex items-center justify-between rounded-2xl border border-gold/30 bg-gold/5 px-6 py-5 hover:bg-gold/10 transition-colors group"

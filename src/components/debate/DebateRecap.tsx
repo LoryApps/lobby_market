@@ -429,16 +429,21 @@ export function DebateRecap({
         {/* ── CTA ── */}
         <motion.div
           {...fadeUp(6)}
-          className="flex gap-3 pt-2"
+          className="flex gap-3 pt-2 flex-wrap"
         >
           {debate.topic_id && (
-            <Link href={`/topic/${debate.topic_id}`} className="flex-1">
+            <Link href={`/topic/${debate.topic_id}`} className="flex-1 min-w-[120px]">
               <Button variant="for" size="lg" className="w-full">
                 View Topic
               </Button>
             </Link>
           )}
-          <Link href="/debate" className="flex-1">
+          <Link href={`/debate/${debate.id}/transcript`} className="flex-1 min-w-[120px]">
+            <Button variant="ghost" size="lg" className="w-full">
+              Transcript
+            </Button>
+          </Link>
+          <Link href="/debate" className="flex-1 min-w-[120px]">
             <Button variant="ghost" size="lg" className="w-full">
               All Debates
             </Button>

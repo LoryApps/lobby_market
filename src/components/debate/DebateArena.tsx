@@ -366,11 +366,18 @@ export function DebateArena({
               <span className="text-against-400 font-bold">{debate.red_sway}% AGAINST</span>
             </div>
           </div>
-          <Link href={`/debate/${debate.id}/recap`}>
-            <button className="px-6 py-2.5 rounded-full bg-surface-100/90 backdrop-blur-md border border-surface-300 text-sm font-semibold text-white hover:bg-surface-200/90 hover:border-surface-400 transition-all">
-              View Recap
-            </button>
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link href={`/debate/${debate.id}/recap`}>
+              <button className="px-6 py-2.5 rounded-full bg-surface-100/90 backdrop-blur-md border border-surface-300 text-sm font-semibold text-white hover:bg-surface-200/90 hover:border-surface-400 transition-all">
+                View Recap
+              </button>
+            </Link>
+            <Link href={`/debate/${debate.id}/transcript`}>
+              <button className="px-6 py-2.5 rounded-full bg-surface-100/90 backdrop-blur-md border border-surface-300 text-sm font-semibold text-surface-400 hover:text-white hover:bg-surface-200/90 hover:border-surface-400 transition-all">
+                Transcript
+              </button>
+            </Link>
+          </div>
         </div>
       )}
     </div>

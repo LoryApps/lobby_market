@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Activity, BarChart2, Bell, BookOpen, Calendar, Coins, Compass, FileText, Flame, FlaskConical, Gavel, HelpCircle, History, LayoutGrid, LogOut, MessageSquare, Network, Scale, Search, Plus, Settings, Skull, Sparkles, Star, Swords, Target, Timer, TrendingUp, User, Zap, ArrowUpRight, Globe, Users } from 'lucide-react'
+import { Activity, BarChart2, Bell, BookOpen, Calendar, Coins, Compass, FileText, Flame, FlaskConical, Gavel, HelpCircle, History, Hourglass, LayoutGrid, ListChecks, LogOut, MessageSquare, Network, Radio, Scale, Scroll, Search, Plus, Settings, Skull, Sparkles, Star, Swords, Target, Timer, TrendingUp, User, Zap, ArrowUpRight, Globe, Users } from 'lucide-react'
 import { NotificationBell } from '@/components/profile/NotificationBell'
 import { Avatar } from '@/components/ui/Avatar'
 import { openCommandPalette } from '@/lib/hooks/useCommandPalette'
@@ -259,6 +259,15 @@ export function TopBar() {
                 My Positions
               </Link>
               <Link
+                href="/agenda"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <ListChecks className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
+                Civic Agenda
+              </Link>
+              <Link
                 href="/watchlist"
                 role="menuitem"
                 onClick={() => setMenuOpen(false)}
@@ -277,6 +286,24 @@ export function TopBar() {
                 Daily Quorum
               </Link>
               <Link
+                href="/challenges"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <Swords className="h-3.5 w-3.5 flex-shrink-0 text-against-300" aria-hidden="true" />
+                My Challenges
+              </Link>
+              <Link
+                href="/debate/my-record"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <BarChart2 className="h-3.5 w-3.5 flex-shrink-0 text-purple" aria-hidden="true" />
+                My Debate Record
+              </Link>
+              <Link
                 href="/duel"
                 role="menuitem"
                 onClick={() => setMenuOpen(false)}
@@ -284,6 +311,15 @@ export function TopBar() {
               >
                 <Swords className="h-3.5 w-3.5 flex-shrink-0 text-against-400" aria-hidden="true" />
                 Argument Duel
+              </Link>
+              <Link
+                href="/crossfire"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <Swords className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
+                The Crossfire
               </Link>
               <Link
                 href="/rapid"
@@ -340,6 +376,42 @@ export function TopBar() {
                 Predictions
               </Link>
               <Link
+                href="/forecast"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <FlaskConical className="h-3.5 w-3.5 flex-shrink-0 text-purple" aria-hidden="true" />
+                Civic Forecast
+              </Link>
+              <Link
+                href="/tally"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <Radio className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
+                Tally Board
+              </Link>
+              <Link
+                href="/capsule"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <Hourglass className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />
+                Time Capsules
+              </Link>
+              <Link
+                href="/journal"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <BookOpen className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
+                Civic Journal
+              </Link>
+              <Link
                 href="/constitution"
                 role="menuitem"
                 onClick={() => setMenuOpen(false)}
@@ -376,6 +448,15 @@ export function TopBar() {
                 Analytics
               </Link>
               <Link
+                href="/report-card"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <FileText className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
+                Report Card
+              </Link>
+              <Link
                 href="/impact"
                 role="menuitem"
                 onClick={() => setMenuOpen(false)}
@@ -401,6 +482,15 @@ export function TopBar() {
               >
                 <Sparkles className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
                 For You
+              </Link>
+              <Link
+                href="/today"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <Calendar className="h-3.5 w-3.5 flex-shrink-0 text-for-300" aria-hidden="true" />
+                Today in the Lobby
               </Link>
               <Link
                 href="/newspaper"
@@ -466,6 +556,15 @@ export function TopBar() {
                 Momentum
               </Link>
               <Link
+                href="/drift"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <TrendingUp className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
+                Opinion Drift
+              </Link>
+              <Link
                 href="/categories"
                 role="menuitem"
                 onClick={() => setMenuOpen(false)}
@@ -473,6 +572,15 @@ export function TopBar() {
               >
                 <LayoutGrid className="h-3.5 w-3.5 flex-shrink-0 text-purple" aria-hidden="true" />
                 Browse Categories
+              </Link>
+              <Link
+                href="/catchup"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <Zap className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
+                Catch Up
               </Link>
               <Link
                 href="/activity"
@@ -491,6 +599,15 @@ export function TopBar() {
               >
                 <Calendar className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
                 Civic Calendar
+              </Link>
+              <Link
+                href="/almanac"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <BookOpen className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />
+                Civic Almanac
               </Link>
               <Link
                 href="/timeline"
@@ -556,6 +673,15 @@ export function TopBar() {
                 Policy Simulator
               </Link>
               <Link
+                href="/manifesto"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <Scroll className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />
+                Civic Manifesto
+              </Link>
+              <Link
                 href="/discover"
                 role="menuitem"
                 onClick={() => setMenuOpen(false)}
@@ -590,6 +716,24 @@ export function TopBar() {
               >
                 <BarChart2 className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
                 Lobby Heatmap
+              </Link>
+              <Link
+                href="/observatory"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <Globe className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
+                Civic Observatory
+              </Link>
+              <Link
+                href="/streaks"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <Flame className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
+                Streak Hall
               </Link>
               <Link
                 href="/consensus"

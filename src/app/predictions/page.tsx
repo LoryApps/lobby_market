@@ -531,7 +531,7 @@ export default function PredictionsPage() {
                           Browse Topics
                         </Link>
                         <Link
-                          href="/leaderboard"
+                          href="/predictions/leaderboard"
                           className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-surface-200 hover:bg-surface-300 border border-surface-300 text-white font-mono text-sm transition-colors"
                         >
                           <Crown className="h-4 w-4" />
@@ -579,7 +579,7 @@ export default function PredictionsPage() {
                   </li>
                 </ul>
                 <Link
-                  href="/leaderboard"
+                  href="/predictions/leaderboard"
                   className="mt-4 flex items-center gap-1.5 text-xs font-mono text-purple hover:text-for-300 transition-colors"
                 >
                   View predictor rankings

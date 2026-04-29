@@ -25,6 +25,7 @@ import {
   Users,
   Swords,
   Star,
+  Network,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -983,6 +984,13 @@ export default function AnalyticsPage() {
             >
               <Compass className="h-3.5 w-3.5" />
               Compass
+            </Link>
+            <Link
+              href="/mindmap"
+              className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"
+            >
+              <Network className="h-3.5 w-3.5" />
+              Mind Map
             </Link>
             <Link
               href="/profile/me"
