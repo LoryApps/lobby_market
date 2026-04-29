@@ -35,6 +35,7 @@ import {
   Sparkles,
   Swords,
   SwatchBook,
+  GitMerge,
 } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { createClient } from '@/lib/supabase/client'
@@ -72,6 +73,7 @@ const navItems: NavItem[] = [
     moderatorOnly: true,
   },
   { href: '/swipe', label: 'Swipe & Vote', icon: SwatchBook },
+  { href: '/bracket', label: 'Civic Bracket', icon: GitMerge },
   { href: '/arguments', label: 'Top Arguments', icon: ThumbsUp },
   { href: '/collections', label: 'Collections', icon: Layers },
   { href: '/saved', label: 'Saved', icon: Bookmark },
