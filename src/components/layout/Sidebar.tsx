@@ -36,6 +36,7 @@ import {
   Swords,
   SwatchBook,
   GitMerge,
+  GitBranch,
 } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { createClient } from '@/lib/supabase/client'
@@ -59,6 +60,7 @@ const navItems: NavItem[] = [
   { href: '/tally', label: 'Tally Board', icon: Radio },
   { href: '/shifts', label: 'Opinion Shifts', icon: BarChart2 },
   { href: '/split', label: 'The Split', icon: GitFork },
+  { href: '/pipeline', label: 'Pipeline', icon: GitBranch },
   { href: '/floor', label: 'The Floor', icon: Landmark },
   { href: '/law', label: 'Codex', icon: Scale },
   { href: '/petitions', label: 'Petitions', icon: FileWarning },
