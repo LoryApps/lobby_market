@@ -55,6 +55,7 @@ const KEYS = {
   connections:  'lm_connections_v1',
   cloze:        'lm_cloze_v1',
   crossword:    'lm_crossword_v1',
+  myth:         'lm_myth_result',
 } as const
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -74,6 +75,8 @@ interface ArcadeRecord {
   clozeScore: number | null
   crosswordDone: boolean
   crosswordSolved: boolean
+  mythDone: boolean
+  mythScore: number | null
 }
 
 function todayStr(): string {
@@ -106,6 +109,8 @@ function loadRecords(): ArcadeRecord {
     clozeScore: null,
     crosswordDone: false,
     crosswordSolved: false,
+    mythDone: false,
+    mythScore: null,
   }
   try {
     // Trivia — daily
@@ -175,6 +180,16 @@ function loadRecords(): ArcadeRecord {
       if (cw.date === todayStr()) {
         def.crosswordDone = true
         def.crosswordSolved = !!cw.solved
+      }
+    }
+
+    // Law or Myth — daily
+    const mythRaw = localStorage.getItem(KEYS.myth)
+    if (mythRaw) {
+      const m = JSON.parse(mythRaw)
+      if (m.date === todayStr() && m.gameOver) {
+        def.mythDone = true
+        def.mythScore = typeof m.score === 'number' ? m.score : null
       }
     }
   } catch {
@@ -475,6 +490,23 @@ const GAMES: GameDef[] = [
     difficulty: 'medium',
     timeEstimate: '3 min',
   },
+  {
+    id: 'myth',
+    href: '/myth',
+    title: 'Law or Myth',
+    tagline: 'Did the Lobby pass it — or myth?',
+    description:
+      'Five statements from the Codex. For each, decide: did the community vote it into law, or did it fail? Test your civic knowledge.',
+    icon: Gavel,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+    border: 'border-gold/20',
+    badge: 'Daily',
+    badgeColor: 'bg-gold/10 text-gold border-gold/30',
+    refresh: 'daily',
+    difficulty: 'medium',
+    timeEstimate: '3 min',
+  },
 ]
 
 // ─── Difficulty badge ─────────────────────────────────────────────────────────
@@ -632,7 +664,7 @@ export default function ArcadePage() {
   const weeklyGames = GAMES.filter((g) => g.refresh === 'weekly')
   const alwaysGames = GAMES.filter((g) => g.refresh === 'always')
 
-  const dailyDone = (records?.triviaDone ? 1 : 0) + (records?.wordleDone ? 1 : 0) + (records?.connectionsDone ? 1 : 0) + (records?.clozeDone ? 1 : 0) + (records?.crosswordDone ? 1 : 0)
+  const dailyDone = (records?.triviaDone ? 1 : 0) + (records?.wordleDone ? 1 : 0) + (records?.connectionsDone ? 1 : 0) + (records?.clozeDone ? 1 : 0) + (records?.crosswordDone ? 1 : 0) + (records?.mythDone ? 1 : 0)
   const weeklyDone = records?.knowledgeDone ? 1 : 0
 
   return (
@@ -669,7 +701,7 @@ export default function ArcadePage() {
               >
                 <ScorePill
                   label="Today"
-                  value={`${dailyDone}/5`}
+                  value={`${dailyDone}/6`}
                   color={dailyDone > 0 ? 'text-gold' : 'text-surface-500'}
                 />
                 <div className="w-px h-8 bg-surface-300" />
@@ -704,7 +736,7 @@ export default function ArcadePage() {
               iconColor="text-gold"
               iconBg="bg-gold/10"
               title="Daily Challenges"
-              subtitle={`Resets at midnight · ${dailyDone}/5 done today`}
+              subtitle={`Resets at midnight · ${dailyDone}/6 done today`}
             />
             <div className="space-y-3">
               {dailyGames.map((game) => (
@@ -722,6 +754,8 @@ export default function ArcadePage() {
                       ? records?.clozeDone
                       : game.id === 'crossword'
                       ? records?.crosswordDone
+                      : game.id === 'myth'
+                      ? records?.mythDone
                       : undefined
                   }
                   score={
@@ -737,6 +771,8 @@ export default function ArcadePage() {
                       ? `${records.clozeScore}/5`
                       : game.id === 'crossword' && records?.crosswordDone
                       ? records.crosswordSolved ? 'Solved!' : 'In progress'
+                      : game.id === 'myth' && records?.mythScore != null
+                      ? `${records.mythScore}/100`
                       : null
                   }
                 />
