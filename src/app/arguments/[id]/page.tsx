@@ -17,6 +17,7 @@ import { BottomNav } from '@/components/layout/BottomNav'
 import { Badge } from '@/components/ui/Badge'
 import { Avatar } from '@/components/ui/Avatar'
 import { SharePanel } from '@/components/ui/SharePanel'
+import { ArgumentRepliesClient } from './ArgumentRepliesClient'
 import { cn } from '@/lib/utils/cn'
 
 export const dynamic = 'force-dynamic'
@@ -332,12 +333,19 @@ export default async function ArgumentPage({ params }: ArgumentPageProps) {
           </div>
         </div>
 
+        {/* Reply thread */}
+        <ArgumentRepliesClient
+          argumentId={arg.id}
+          topicId={topic.id}
+          initialCount={replyCount}
+        />
+
         {/* CTA to see all arguments */}
         <Link
           href={`/topic/${topic.id}#arguments`}
           className={cn(
-            'flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl',
-            'bg-for-600/80 hover:bg-for-500 border border-for-500/40',
+            'flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl mt-4',
+            'bg-surface-100 hover:bg-surface-200 border border-surface-300',
             'text-sm font-mono font-semibold text-white transition-colors'
           )}
         >
