@@ -18,6 +18,7 @@ import {
   BarChart2,
   BookOpen,
   Calendar,
+  GitCompare,
   CheckCircle2,
   Circle,
   Clock,
@@ -506,6 +507,23 @@ const GAMES: GameDef[] = [
     refresh: 'daily',
     difficulty: 'medium',
     timeEstimate: '3 min',
+  },
+  {
+    id: 'match',
+    href: '/match',
+    title: 'Civic Match',
+    tagline: 'Which topic is more urgent?',
+    description:
+      'Two live topics appear side-by-side. Pick which one you think deserves more urgent attention. Build your personal priority list.',
+    icon: GitCompare,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+    border: 'border-for-500/20',
+    badge: 'Always',
+    badgeColor: 'bg-for-500/10 text-for-400 border-for-500/30',
+    refresh: 'always',
+    difficulty: 'easy',
+    timeEstimate: '2 min',
   },
 ]
 
