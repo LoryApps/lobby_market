@@ -555,6 +555,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'checker',
+    label: 'Civic Claim Checker',
+    sublabel: 'Check any claim against the Codex — see if established laws support or contradict it',
+    href: '/checker',
+    icon: Scale,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+  },
+  {
+    type: 'link',
     id: 'spar',
     label: 'Sparring Arena',
     sublabel: 'Practice debating civic topics against Claude AI in 5-round bouts',

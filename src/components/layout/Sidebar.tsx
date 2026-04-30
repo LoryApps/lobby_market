@@ -53,6 +53,7 @@ const navItems: NavItem[] = [
   { href: '/', label: 'Feed', icon: Newspaper },
   { href: '/predictions', label: 'Predictions', icon: Target },
   { href: '/oracle', label: 'The Oracle', icon: Eye },
+  { href: '/checker', label: 'Claim Checker', icon: Scale },
   { href: '/trending', label: 'Trending', icon: TrendingUp },
   { href: '/surge', label: 'Surge', icon: Flame },
   { href: '/tally', label: 'Tally Board', icon: Radio },
