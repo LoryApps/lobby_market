@@ -597,6 +597,13 @@ export default function SignalsPage() {
                     Open heatmap
                     <ArrowRight className="h-2.5 w-2.5" aria-hidden="true" />
                   </Link>
+                  <Link
+                    href="/polarization"
+                    className="flex items-center gap-1 text-[10px] font-mono text-surface-500 hover:text-purple transition-colors"
+                  >
+                    Polarization index
+                    <ArrowRight className="h-2.5 w-2.5" aria-hidden="true" />
+                  </Link>
                 </div>
               </Section>
 

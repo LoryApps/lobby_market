@@ -68,6 +68,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/collections`, changeFrequency: 'daily', priority: 0.6 },
   { url: `${BASE_URL}/almanac`, changeFrequency: 'daily', priority: 0.7 },
   { url: `${BASE_URL}/arcade`, changeFrequency: 'weekly', priority: 0.75 },
+  { url: `${BASE_URL}/polarization`, changeFrequency: 'daily', priority: 0.72 },
 ]
 
 export const dynamic = 'force-dynamic'

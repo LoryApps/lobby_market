@@ -879,6 +879,14 @@ export default function StatsPage() {
                 <ArrowRight className="h-3.5 w-3.5" />
               </Link>
               <Link
+                href="/polarization"
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-purple/10 border border-purple/30 hover:border-purple/60 hover:bg-purple/15 transition-colors text-sm font-mono text-purple hover:text-purple"
+              >
+                <Scale className="h-4 w-4" />
+                Polarization Index
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+              <Link
                 href="/digest"
                 className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-surface-200 border border-surface-300 hover:border-surface-400 hover:bg-surface-300 transition-colors text-sm font-mono text-surface-500 hover:text-white"
               >
