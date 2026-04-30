@@ -65,6 +65,7 @@ import { ArgumentContributors } from '@/components/topic/ArgumentContributors'
 import { ArgumentCitationsPanel } from '@/components/topic/ArgumentCitationsPanel'
 import { TopicAIBrief } from '@/components/topic/TopicAIBrief'
 import { TopicBountyPanel } from '@/components/topic/TopicBountyPanel'
+import { FollowingVotesPanel } from '@/components/topic/FollowingVotesPanel'
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary'
 
 const SIGNAL_ICONS_DETAIL: Record<string, typeof Flame> = {
@@ -501,6 +502,11 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
                 )}
               </div>
             )}
+
+            {/* Following votes — social proof panel */}
+            <ErrorBoundary size="xs" className="mb-4">
+              <FollowingVotesPanel topicId={topic.id} className="mb-4" />
+            </ErrorBoundary>
 
             {/* Community reactions */}
             <div className="mb-6">
