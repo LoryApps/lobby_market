@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { Calendar, Gavel, Mic, Plus, Vote } from 'lucide-react'
+import { Calendar, CalendarPlus, Gavel, Mic, Plus, Rss, Vote } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -15,6 +15,13 @@ export const metadata: Metadata = {
   title: 'Civic Calendar · Lobby Market',
   description:
     'See all upcoming debates, topic voting windows, and recently established laws on a monthly calendar.',
+  alternates: {
+    types: {
+      'text/calendar': [
+        { url: 'https://lobby.market/api/calendar/feed.ics', title: 'Lobby Market — Civic Calendar' },
+      ],
+    },
+  },
   openGraph: {
     title: 'Civic Calendar · Lobby Market',
     description: 'Every debate, vote deadline, and law in one place.',
@@ -207,17 +214,33 @@ export default async function CivicCalendarPage() {
             </div>
           </div>
 
-          <Link
-            href="/debate/create"
-            className={cn(
-              'hidden sm:flex items-center gap-2 px-3 py-2 rounded-lg flex-shrink-0',
-              'bg-purple/10 border border-purple/30 text-purple',
-              'hover:bg-purple/20 transition-colors text-xs font-mono font-medium'
-            )}
-          >
-            <Plus className="h-3.5 w-3.5" />
-            Schedule Debate
-          </Link>
+          <div className="hidden sm:flex items-center gap-2 flex-shrink-0">
+            {/* iCal subscription */}
+            <a
+              href="/api/calendar/feed.ics"
+              download="lobby-market-civic-calendar.ics"
+              title="Subscribe to Civic Calendar — add to Google Calendar, Apple Calendar, or any app that accepts iCal"
+              className={cn(
+                'flex items-center gap-2 px-3 py-2 rounded-lg',
+                'bg-emerald/10 border border-emerald/30 text-emerald',
+                'hover:bg-emerald/20 transition-colors text-xs font-mono font-medium'
+              )}
+            >
+              <CalendarPlus className="h-3.5 w-3.5" />
+              Subscribe (.ics)
+            </a>
+            <Link
+              href="/debate/create"
+              className={cn(
+                'flex items-center gap-2 px-3 py-2 rounded-lg',
+                'bg-purple/10 border border-purple/30 text-purple',
+                'hover:bg-purple/20 transition-colors text-xs font-mono font-medium'
+              )}
+            >
+              <Plus className="h-3.5 w-3.5" />
+              Schedule Debate
+            </Link>
+          </div>
         </div>
 
         {/* Quick stats */}
@@ -277,6 +300,44 @@ export default async function CivicCalendarPage() {
             <Vote className="h-3.5 w-3.5" />
             Live Senate Floor
           </Link>
+          {/* Mobile subscribe link */}
+          <a
+            href="/api/calendar/feed.ics"
+            download="lobby-market-civic-calendar.ics"
+            className="sm:hidden flex items-center gap-2 px-3 py-2 rounded-lg bg-emerald/10 border border-emerald/30 text-emerald hover:bg-emerald/20 transition-colors text-xs font-mono"
+          >
+            <CalendarPlus className="h-3.5 w-3.5" />
+            Subscribe (.ics)
+          </a>
+        </div>
+
+        {/* iCal subscription card */}
+        <div className="mt-4 rounded-xl bg-emerald/5 border border-emerald/20 px-4 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-start gap-3">
+            <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-emerald/10 border border-emerald/30 flex-shrink-0 mt-0.5">
+              <Rss className="h-4 w-4 text-emerald" />
+            </div>
+            <div>
+              <p className="text-sm font-mono font-semibold text-white">Subscribe to this calendar</p>
+              <p className="text-xs text-surface-500 mt-0.5 leading-relaxed">
+                Add upcoming debates and voting deadlines directly to Google Calendar, Apple Calendar, or Outlook.
+                The feed updates every 15 minutes.
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <code className="hidden md:block text-[10px] font-mono text-surface-500 bg-surface-200 border border-surface-300 px-2 py-1 rounded select-all">
+              /api/calendar/feed.ics
+            </code>
+            <a
+              href="/api/calendar/feed.ics"
+              download="lobby-market-civic-calendar.ics"
+              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-emerald/15 border border-emerald/30 text-emerald hover:bg-emerald/25 transition-colors text-xs font-mono font-semibold"
+            >
+              <CalendarPlus className="h-3.5 w-3.5" />
+              Download .ics
+            </a>
+          </div>
         </div>
       </main>
 
