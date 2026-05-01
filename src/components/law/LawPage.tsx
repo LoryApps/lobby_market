@@ -355,7 +355,7 @@ export function LawPage({
 
             {/* Source topic link */}
             {topic && (
-              <div className="mt-6">
+              <div className="mt-6 space-y-2">
                 <Link
                   href={`/topic/${topic.id}`}
                   className={cn(
@@ -368,6 +368,17 @@ export function LawPage({
                   </p>
                   <p className="text-sm text-white font-mono group-hover:text-for-400 transition-colors">
                     {topic.statement}
+                  </p>
+                </Link>
+                <Link
+                  href={`/topic/${topic.id}/recap`}
+                  className={cn(
+                    'block bg-gold/5 border border-gold/30 rounded-xl p-3',
+                    'hover:border-gold/50 hover:bg-gold/10 transition-colors group'
+                  )}
+                >
+                  <p className="text-xs font-mono text-gold group-hover:text-gold/80 transition-colors text-center">
+                    View Debate Recap →
                   </p>
                 </Link>
               </div>

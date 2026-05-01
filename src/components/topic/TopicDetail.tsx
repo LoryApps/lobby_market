@@ -9,6 +9,7 @@ import {
   BookOpen,
   Calendar,
   Coins,
+  FileText,
   GitBranch,
   GitCompare,
   Globe,
@@ -466,6 +467,15 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
                       <BarChart2 className="h-3.5 w-3.5" />
                       Stats
                     </Link>
+                    {(topic.status === 'law' || topic.status === 'failed') && (
+                      <Link
+                        href={`/topic/${topic.id}/recap`}
+                        className="inline-flex items-center gap-1.5 text-xs font-mono text-purple hover:text-purple/80 transition-colors"
+                      >
+                        <FileText className="h-3.5 w-3.5" />
+                        Recap
+                      </Link>
+                    )}
                     <Link
                       href={`/spar/${topic.id}`}
                       className="inline-flex items-center gap-1.5 text-xs font-mono text-purple hover:text-purple/80 transition-colors"
