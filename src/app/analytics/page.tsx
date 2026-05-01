@@ -993,6 +993,13 @@ export default function AnalyticsPage() {
               Mind Map
             </Link>
             <Link
+              href="/analytics/evolution"
+              className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"
+            >
+              <TrendingUp className="h-3.5 w-3.5" />
+              Opinion Evolution
+            </Link>
+            <Link
               href="/profile/me"
               className="flex items-center gap-1 text-xs text-surface-500 hover:text-white transition-colors"
             >
