@@ -21,6 +21,7 @@ import { StanceShareButton } from '@/components/voting/StanceShareButton'
 import { getTopicSignal, SIGNAL_PILL_CLASSES } from '@/lib/utils/topic-signal'
 import { TopicReactions } from '@/components/topic/TopicReactions'
 import { TrendMini } from '@/components/topic/TrendMini'
+import { TopArgumentsPreview } from '@/components/feed/TopArgumentsPreview'
 
 // ── Signal icon map ───────────────────────────────────────────────────────────
 
@@ -331,6 +332,14 @@ export function TopicCard({ topic, authorName, authorAvatar }: TopicCardProps) {
                   {topic.description}
                 </p>
               )}
+            </div>
+
+            {/* Arguments preview — collapsible, lazy-loaded */}
+            <div
+              className="px-1 pb-3"
+              onClick={(e) => e.preventDefault()}
+            >
+              <TopArgumentsPreview topicId={topic.id} />
             </div>
 
             {/* Bottom: voting / support / law */}
