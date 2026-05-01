@@ -22,7 +22,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { ThumbsUp, ThumbsDown, Sparkles } from 'lucide-react'
+import { ThumbsUp, ThumbsDown, Sparkles, Scale } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
 import type { TopicArgumentWithAuthor } from '@/lib/supabase/types'
@@ -180,11 +180,20 @@ export function ArgumentSpotlight({ topicId, className }: ArgumentSpotlightProps
       className={cn('space-y-3', className)}
     >
       {/* Header */}
-      <div className="flex items-center gap-2">
-        <Sparkles className="h-3.5 w-3.5 text-gold" aria-hidden="true" />
-        <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-surface-500">
-          Top Arguments
-        </span>
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <Sparkles className="h-3.5 w-3.5 text-gold" aria-hidden="true" />
+          <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-surface-500">
+            Top Arguments
+          </span>
+        </div>
+        <Link
+          href={`/topic/${topicId}/versus`}
+          className="flex items-center gap-1 text-[11px] font-mono text-for-400 hover:text-for-300 transition-colors"
+        >
+          <Scale className="h-3 w-3" />
+          Face-off →
+        </Link>
       </div>
 
       {/* Side-by-side cards */}

@@ -18,6 +18,7 @@ import {
   MessageCircle,
   MessageSquare,
   Newspaper,
+  Scale,
   ScrollText,
   Tag,
   ThumbsUp,
@@ -483,6 +484,13 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
                         Recap
                       </Link>
                     )}
+                    <Link
+                      href={`/topic/${topic.id}/versus`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-for-400 hover:text-for-300 transition-colors"
+                    >
+                      <Scale className="h-3.5 w-3.5" />
+                      For vs Against
+                    </Link>
                     <Link
                       href={`/spar/${topic.id}`}
                       className="inline-flex items-center gap-1.5 text-xs font-mono text-purple hover:text-purple/80 transition-colors"

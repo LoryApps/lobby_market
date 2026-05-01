@@ -88,12 +88,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .order('updated_at', { ascending: false })
       .limit(1000)
 
-    const topicUrls: MetadataRoute.Sitemap = (topics ?? []).map((topic) => ({
-      url: `${BASE_URL}/topic/${topic.id}`,
-      lastModified: new Date(topic.updated_at),
-      changeFrequency: topic.status === 'law' ? 'monthly' : 'hourly',
-      priority: topic.status === 'law' ? 0.7 : 0.8,
-    }))
+    const topicUrls: MetadataRoute.Sitemap = (topics ?? []).flatMap((topic) => [
+      {
+        url: `${BASE_URL}/topic/${topic.id}`,
+        lastModified: new Date(topic.updated_at),
+        changeFrequency: (topic.status === 'law' ? 'monthly' : 'hourly') as 'monthly' | 'hourly',
+        priority: topic.status === 'law' ? 0.7 : 0.8,
+      },
+      {
+        url: `${BASE_URL}/topic/${topic.id}/versus`,
+        lastModified: new Date(topic.updated_at),
+        changeFrequency: 'daily' as const,
+        priority: 0.55,
+      },
+    ])
 
     // Wiki pages for topics that have descriptions
     const { data: topicsWithWiki } = await supabase
