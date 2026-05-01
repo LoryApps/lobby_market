@@ -75,6 +75,7 @@ import {
   Swords,
   FlaskConical,
   Gamepad2,
+  Quote,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -393,6 +394,16 @@ const QUICK_LINKS: QuickLink[] = [
     icon: ThumbsUp,
     iconColor: 'text-purple',
     iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
+    id: 'my-arguments',
+    label: 'My Arguments',
+    sublabel: 'Personal argument analytics — upvotes, categories, history',
+    href: '/arguments/mine',
+    icon: Quote,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
   },
   {
     type: 'link',

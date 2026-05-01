@@ -271,6 +271,15 @@ export function TopBar() {
                 My Positions
               </Link>
               <Link
+                href="/arguments/mine"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <Quote className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
+                My Arguments
+              </Link>
+              <Link
                 href="/agenda"
                 role="menuitem"
                 onClick={() => setMenuOpen(false)}
