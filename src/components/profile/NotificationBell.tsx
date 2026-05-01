@@ -11,6 +11,7 @@ import {
   CheckCheck,
   Gavel,
   MessageCircle,
+  MessageSquare,
   Scale,
   Swords,
   TrendingUp,
@@ -18,6 +19,7 @@ import {
   UserPlus,
   Users,
   CheckCircle,
+  Link2,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -40,10 +42,15 @@ const TYPE_CONFIG: Record<
   reply_received:            { icon: MessageCircle, color: 'text-for-400',    bg: 'bg-for-500/10' },
   lobby_update:              { icon: Bell,          color: 'text-surface-500', bg: 'bg-surface-300/40' },
   role_promoted:             { icon: User,          color: 'text-emerald',    bg: 'bg-emerald/10' },
-  coalition_invite:          { icon: Users,         color: 'text-purple',     bg: 'bg-purple/10' },
-  coalition_invite_accepted: { icon: CheckCircle,   color: 'text-emerald',    bg: 'bg-emerald/10' },
-  bookmark_update:           { icon: Bookmark,      color: 'text-gold',       bg: 'bg-gold/10' },
-  new_follower:              { icon: UserPlus,      color: 'text-purple',     bg: 'bg-purple/10' },
+  coalition_invite:          { icon: Users,          color: 'text-purple',      bg: 'bg-purple/10' },
+  coalition_invite_accepted: { icon: CheckCircle,    color: 'text-emerald',     bg: 'bg-emerald/10' },
+  bookmark_update:           { icon: Bookmark,       color: 'text-gold',        bg: 'bg-gold/10' },
+  new_follower:              { icon: UserPlus,       color: 'text-purple',      bg: 'bg-purple/10' },
+  argument_upvoted:          { icon: TrendingUp,     color: 'text-for-400',     bg: 'bg-for-500/10' },
+  argument_cited:            { icon: Link2,          color: 'text-emerald',     bg: 'bg-emerald/10' },
+  topic_subscribed_update:   { icon: Activity,       color: 'text-for-400',     bg: 'bg-for-500/10' },
+  vote_phase_started:        { icon: Scale,          color: 'text-purple',      bg: 'bg-purple/10' },
+  direct_message:            { icon: MessageSquare,  color: 'text-for-300',     bg: 'bg-for-500/10' },
 }
 
 const FALLBACK_CONFIG = { icon: AlertCircle, color: 'text-surface-500', bg: 'bg-surface-200' }

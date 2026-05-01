@@ -1883,7 +1883,12 @@ export type NotificationType =
   | "coalition_invite"
   | "coalition_invite_accepted"
   | "bookmark_update"
-  | "new_follower";
+  | "new_follower"
+  | "argument_upvoted"
+  | "argument_cited"
+  | "topic_subscribed_update"
+  | "vote_phase_started"
+  | "direct_message";
 
 export type AchievementTier = "common" | "rare" | "epic" | "legendary";
 
@@ -2166,3 +2171,25 @@ export type TopicReaction =
 export type TopicReactionInsert =
   Database["public"]["Tables"]["topic_reactions"]["Insert"];
 export type TopicReactionType = TopicReaction["reaction"];
+
+// Direct messages
+export interface DirectMessage {
+  id: string;
+  sender_id: string;
+  receiver_id: string;
+  content: string;
+  is_read: boolean;
+  created_at: string;
+}
+
+export type DirectMessageWithSender = DirectMessage & {
+  sender: Pick<Profile, "id" | "username" | "display_name" | "avatar_url" | "role"> | null;
+};
+
+export interface DmConversation {
+  partner: Pick<Profile, "id" | "username" | "display_name" | "avatar_url" | "role">;
+  last_message: string;
+  last_message_at: string;
+  unread_count: number;
+  last_sender_id: string;
+}

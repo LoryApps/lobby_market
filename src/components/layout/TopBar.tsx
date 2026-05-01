@@ -171,6 +171,18 @@ export function TopBar() {
           </Link>
         )}
 
+        {/* Messages link — shown only when logged in */}
+        {profile && (
+          <Link
+            href="/messages"
+            aria-label="Messages inbox"
+            title="Messages"
+            className="flex items-center justify-center h-8 w-8 rounded-lg bg-surface-200 border border-surface-300 text-surface-500 hover:bg-surface-300 hover:text-white transition-colors"
+          >
+            <MessageSquare className="h-4 w-4" aria-hidden="true" />
+          </Link>
+        )}
+
         <NotificationBell />
 
         {/* User dropdown */}

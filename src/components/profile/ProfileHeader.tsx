@@ -11,6 +11,7 @@ import {
   GitCompare,
   Globe,
   Loader2,
+  MessageSquare,
   Search,
   Settings,
   Share2,
@@ -765,6 +766,14 @@ export function ProfileHeader({
               <Button variant="default" size="md" title="Compare your stances">
                 <GitCompare className="h-4 w-4" />
                 Compare
+              </Button>
+            </Link>
+
+            {/* Direct message */}
+            <Link href={`/messages/${encodeURIComponent(profile.username)}`}>
+              <Button variant="default" size="md" title="Send a message">
+                <MessageSquare className="h-4 w-4" />
+                Message
               </Button>
             </Link>
 

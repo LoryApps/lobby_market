@@ -10,7 +10,9 @@ import {
   Bell,
   Bookmark,
   Gavel,
+  Link2,
   MessageCircle,
+  MessageSquare,
   Scale,
   Swords,
   TrendingUp,
@@ -48,6 +50,11 @@ const typeConfig: Record<
   coalition_invite_accepted: { icon: CheckCircle, color: 'text-emerald' },
   bookmark_update: { icon: Bookmark, color: 'text-gold' },
   new_follower: { icon: UserPlus, color: 'text-purple' },
+  argument_upvoted: { icon: TrendingUp, color: 'text-for-400' },
+  argument_cited: { icon: Link2, color: 'text-emerald' },
+  topic_subscribed_update: { icon: Activity, color: 'text-for-400' },
+  vote_phase_started: { icon: Scale, color: 'text-purple' },
+  direct_message: { icon: MessageSquare, color: 'text-for-300' },
 }
 
 // ─── Filter tabs ──────────────────────────────────────────────────────────────
@@ -68,6 +75,7 @@ const SOCIAL_TYPES: NotificationType[] = [
   'coalition_invite_accepted',
   'reply_received',
   'role_promoted',
+  'direct_message',
 ]
 
 const DEBATE_TYPES: NotificationType[] = ['debate_starting']

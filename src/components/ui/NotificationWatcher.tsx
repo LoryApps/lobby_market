@@ -175,6 +175,31 @@ const TYPE_CONFIG: Record<NotificationType, TypeConfig> = {
     emoji: '👤',
     duration: 5000,
   },
+  argument_upvoted: {
+    prefKey: null,
+    emoji: '👍',
+    duration: 4000,
+  },
+  argument_cited: {
+    prefKey: null,
+    emoji: '🔗',
+    duration: 4000,
+  },
+  topic_subscribed_update: {
+    prefKey: 'topic_activated',
+    emoji: '📌',
+    duration: 5000,
+  },
+  vote_phase_started: {
+    prefKey: 'topic_activated',
+    emoji: '⚖️',
+    duration: 6000,
+  },
+  direct_message: {
+    prefKey: 'reply_received',
+    emoji: '💬',
+    duration: 6000,
+  },
 }
 
 // ─── Achievement body parser (reused logic from AchievementWatcher) ───────────

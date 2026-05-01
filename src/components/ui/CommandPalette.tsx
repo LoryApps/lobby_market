@@ -486,6 +486,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'messages',
+    label: 'Messages',
+    sublabel: 'Private conversations',
+    href: '/messages',
+    icon: MessageSquare,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
     id: 'settings',
     label: 'Settings',
     sublabel: 'Preferences and account',
