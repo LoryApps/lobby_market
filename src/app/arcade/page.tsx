@@ -525,6 +525,23 @@ const GAMES: GameDef[] = [
     difficulty: 'easy',
     timeEstimate: '2 min',
   },
+  {
+    id: 'flashcards',
+    href: '/flashcards',
+    title: 'Civic Flashcards',
+    tagline: 'Study established laws at your own pace',
+    description:
+      'Flip through established laws from the Codex. Mark what you\'ve learned, flag what needs review. Spaced repetition for civic knowledge.',
+    icon: BookOpen,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+    border: 'border-gold/20',
+    badge: 'Study',
+    badgeColor: 'bg-gold/10 text-gold border-gold/30',
+    refresh: 'always',
+    difficulty: 'easy',
+    timeEstimate: '5 min',
+  },
 ]
 
 // ─── Difficulty badge ─────────────────────────────────────────────────────────

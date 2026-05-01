@@ -256,6 +256,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'flashcards',
+    label: 'Civic Flashcards',
+    sublabel: 'Study established laws — self-paced spaced repetition',
+    href: '/flashcards',
+    icon: BookOpen,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'quiz',
     label: 'Civic Quiz',
     sublabel: 'Find your civic alignment — no login required',
