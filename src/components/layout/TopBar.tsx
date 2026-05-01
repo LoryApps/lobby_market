@@ -857,6 +857,15 @@ export function TopBar() {
                 Help & FAQ
               </Link>
               <Link
+                href="/changelog"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <History className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
+                Changelog
+              </Link>
+              <Link
                 href="/developers"
                 role="menuitem"
                 onClick={() => setMenuOpen(false)}
