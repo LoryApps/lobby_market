@@ -461,6 +461,13 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
                       Argument graph
                     </Link>
                     <Link
+                      href={`/topic/${topic.id}/wordcloud`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-purple hover:text-purple/80 transition-colors"
+                    >
+                      <BarChart2 className="h-3.5 w-3.5" />
+                      Word cloud
+                    </Link>
+                    <Link
                       href={`/topic/${topic.id}/stats`}
                       className="inline-flex items-center gap-1.5 text-xs font-mono text-gold hover:text-gold/80 transition-colors"
                     >

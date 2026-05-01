@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
-import { ArrowLeft, ExternalLink, Filter, RefreshCw, RotateCcw, ThumbsDown, ThumbsUp, X } from 'lucide-react'
+import { ArrowLeft, BarChart2, ExternalLink, Filter, RefreshCw, RotateCcw, ThumbsDown, ThumbsUp, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type {
   ArgumentGraphNode,
@@ -249,6 +249,16 @@ export function ArgumentGraphView({ topicId, initialTopic }: ArgumentGraphViewPr
               </span>
             </div>
           )}
+
+          {/* Word cloud link */}
+          <Link
+            href={`/topic/${topicId}/wordcloud`}
+            className="hidden sm:flex items-center gap-1.5 h-9 px-3 rounded-lg text-xs font-mono bg-surface-200 border border-surface-300 text-surface-500 hover:text-purple transition-colors"
+            aria-label="View argument word cloud"
+          >
+            <BarChart2 className="h-3.5 w-3.5" />
+            Word Cloud
+          </Link>
 
           {/* Filter toggle */}
           <button
