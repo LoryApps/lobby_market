@@ -730,6 +730,15 @@ export function TopBar() {
                 Civic Battleground
               </Link>
               <Link
+                href="/extremes"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <Scale className="h-3.5 w-3.5 flex-shrink-0 text-yellow-400" aria-hidden="true" />
+                Civic Extremes
+              </Link>
+              <Link
                 href="/categories"
                 role="menuitem"
                 onClick={() => setMenuOpen(false)}

@@ -668,6 +668,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'extremes',
+    label: 'Civic Extremes',
+    sublabel: 'Most contested debates & strongest mandates',
+    href: '/extremes',
+    icon: Scale,
+    iconColor: 'text-yellow-400',
+    iconBg: 'bg-yellow-500/10',
+  },
+  {
+    type: 'link',
     id: 'surge',
     label: 'Surge',
     sublabel: 'Topics gaining critical momentum right now',
