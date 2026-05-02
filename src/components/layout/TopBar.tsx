@@ -712,6 +712,24 @@ export function TopBar() {
                 The Big Flip
               </Link>
               <Link
+                href="/lens"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <Sparkles className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />
+                Civic Lens
+              </Link>
+              <Link
+                href="/battleground"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <Swords className="h-3.5 w-3.5 flex-shrink-0 text-against-400" aria-hidden="true" />
+                Civic Battleground
+              </Link>
+              <Link
                 href="/categories"
                 role="menuitem"
                 onClick={() => setMenuOpen(false)}
@@ -845,6 +863,15 @@ export function TopBar() {
               >
                 <Scale className="h-3.5 w-3.5 flex-shrink-0 text-emerald" aria-hidden="true" />
                 Claim Checker
+              </Link>
+              <Link
+                href="/crossroads"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <Scale className="h-3.5 w-3.5 flex-shrink-0 text-purple" aria-hidden="true" />
+                Civic Crossroads
               </Link>
               <Link
                 href="/manifesto"
