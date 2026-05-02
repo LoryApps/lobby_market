@@ -688,6 +688,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'vote-stream',
+    label: 'Vote Stream',
+    sublabel: 'Watch democracy in real-time — a live ticker of every vote landing on the platform',
+    href: '/vote-stream',
+    icon: Activity,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
     id: 'trending',
     label: 'Trending',
     sublabel: 'Most active topics in the last 24 hours',

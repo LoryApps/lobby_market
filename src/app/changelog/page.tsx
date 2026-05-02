@@ -278,6 +278,7 @@ const CHAPTERS: Chapter[] = [
     items: [
       { icon: TrendingUp, label: 'Opinion Evolution Tracker — 12-week category drift by week', href: '/analytics/evolution', color: 'text-for-400' },
       { icon: BarChart2, label: 'Sentiment Explorer — emotional tone of civic arguments', href: '/analytics/sentiment', color: 'text-against-400' },
+      { icon: Activity, label: 'Vote Stream — live ticker of every vote landing on the platform', href: '/vote-stream', color: 'text-for-400' },
     ],
   },
 ]
@@ -286,7 +287,7 @@ const CHAPTERS: Chapter[] = [
 
 const STATS = [
   { value: '12', label: 'chapters shipped' },
-  { value: '82+', label: 'features built' },
+  { value: '83+', label: 'features built' },
   { value: '51', label: 'DB migrations' },
   { value: '88', label: 'API routes' },
 ]
