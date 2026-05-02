@@ -317,6 +317,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'missions',
+    label: 'Daily Missions',
+    sublabel: 'Three civic challenges today — earn Clout and protect your streak',
+    href: '/missions',
+    icon: Target,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+  },
+  {
+    type: 'link',
     id: 'analytics',
     label: 'Analytics',
     sublabel: 'Your voting patterns and stats',
