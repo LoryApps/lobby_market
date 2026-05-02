@@ -987,6 +987,13 @@ export default function AnalyticsPage() {
               Compass
             </Link>
             <Link
+              href="/influence"
+              className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"
+            >
+              <Network className="h-3.5 w-3.5" />
+              Influence
+            </Link>
+            <Link
               href="/mindmap"
               className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"
             >
