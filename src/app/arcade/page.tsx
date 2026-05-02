@@ -407,6 +407,23 @@ const GAMES: GameDef[] = [
     timeEstimate: '5 min',
   },
   {
+    id: 'training',
+    href: '/training',
+    title: 'Argument Training',
+    tagline: 'Drill your debate and critical-thinking skills',
+    description:
+      'Three drills in one: spot the logical fallacy, rank arguments by strength, and calibrate your vote sense.',
+    icon: Zap,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+    border: 'border-for-500/20',
+    badge: 'Training',
+    badgeColor: 'bg-for-500/10 text-for-400 border-for-500/30',
+    refresh: 'always',
+    difficulty: 'medium',
+    timeEstimate: '5 min',
+  },
+  {
     id: 'manifesto',
     href: '/manifesto',
     title: 'Civic Manifesto',

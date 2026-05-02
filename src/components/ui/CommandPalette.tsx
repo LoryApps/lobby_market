@@ -288,6 +288,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'training',
+    label: 'Argument Training',
+    sublabel: 'Sharpen your debate skills — fallacy spotting, argument ranking, vote calibration',
+    href: '/training',
+    icon: Zap,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
     id: 'senate',
     label: 'The Senate',
     sublabel: 'Topics in final vote — deadlines approaching',
@@ -695,6 +705,16 @@ const QUICK_LINKS: QuickLink[] = [
     icon: Activity,
     iconColor: 'text-for-400',
     iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
+    id: 'flip',
+    label: 'The Big Flip',
+    sublabel: 'Debates that defied the early odds — the biggest vote reversals in the Lobby',
+    href: '/flip',
+    icon: Flame,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-500/10',
   },
   {
     type: 'link',
