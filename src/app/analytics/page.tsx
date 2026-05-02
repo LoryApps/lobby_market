@@ -12,6 +12,7 @@ import {
   BarChart2,
   ArrowLeft,
   Flame,
+  Heart,
   Scale,
   MessageSquare,
   Award,
@@ -998,6 +999,13 @@ export default function AnalyticsPage() {
             >
               <TrendingUp className="h-3.5 w-3.5" />
               Opinion Evolution
+            </Link>
+            <Link
+              href="/analytics/sentiment"
+              className="flex items-center gap-1 text-xs text-against-400 hover:text-against-300 transition-colors font-mono font-semibold"
+            >
+              <Heart className="h-3.5 w-3.5" />
+              Sentiment
             </Link>
             <Link
               href="/profile/me"

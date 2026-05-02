@@ -267,15 +267,28 @@ const CHAPTERS: Chapter[] = [
       { icon: BookOpen, label: 'Developer API documentation', href: '/developers', color: 'text-for-300' },
     ],
   },
+  {
+    number: 'Ch. 12',
+    title: 'Deeper Analytics',
+    subtitle: 'More ways to understand your civic voice',
+    accent: 'text-against-400',
+    borderColor: 'border-against-500/30',
+    bgColor: 'bg-against-500/5',
+    textColor: 'text-against-400',
+    items: [
+      { icon: TrendingUp, label: 'Opinion Evolution Tracker — 12-week category drift by week', href: '/analytics/evolution', color: 'text-for-400' },
+      { icon: BarChart2, label: 'Sentiment Explorer — emotional tone of civic arguments', href: '/analytics/sentiment', color: 'text-against-400' },
+    ],
+  },
 ]
 
 // ─── Stat pills ───────────────────────────────────────────────────────────────
 
 const STATS = [
-  { value: '11', label: 'chapters shipped' },
-  { value: '80+', label: 'features built' },
+  { value: '12', label: 'chapters shipped' },
+  { value: '82+', label: 'features built' },
   { value: '51', label: 'DB migrations' },
-  { value: '87', label: 'API routes' },
+  { value: '88', label: 'API routes' },
 ]
 
 // ─── Recent builds ────────────────────────────────────────────────────────────
@@ -290,6 +303,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Sentiment Explorer',
+    description: 'Lexicon-based analysis of the emotional tone of civic arguments — see which categories debate with hope vs concern, and how your own voice compares.',
+    href: '/analytics/sentiment',
+    icon: BarChart2,
+    color: 'text-against-400',
+    tag: 'Analytics',
+  },
   {
     title: 'Argument Word Cloud',
     description: 'Visual vocabulary heatmap showing the most-used words in FOR and AGAINST arguments for any debate.',

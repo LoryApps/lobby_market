@@ -627,6 +627,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'sentiment',
+    label: 'Sentiment Explorer',
+    sublabel: 'The emotional tone of civic arguments — hopeful vs critical by category',
+    href: '/analytics/sentiment',
+    icon: Quote,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-500/10',
+  },
+  {
+    type: 'link',
     id: 'surge',
     label: 'Surge',
     sublabel: 'Topics gaining critical momentum right now',
