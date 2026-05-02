@@ -74,6 +74,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/polarization`, changeFrequency: 'daily', priority: 0.72 },
   { url: `${BASE_URL}/changelog`, changeFrequency: 'monthly', priority: 0.55 },
   { url: `${BASE_URL}/missions`, changeFrequency: 'daily', priority: 0.8 },
+  { url: `${BASE_URL}/wisdom`, changeFrequency: 'hourly', priority: 0.75 },
 ]
 
 export const dynamic = 'force-dynamic'
