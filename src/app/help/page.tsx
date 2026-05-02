@@ -247,9 +247,15 @@ export default function HelpPage() {
         {/* Footer CTA */}
         <div className="mt-12 rounded-2xl border border-surface-300 bg-surface-100 p-6 text-center">
           <p className="text-sm font-mono text-surface-600 mb-3">
-            Still have questions? Read the community guidelines or browse the feed.
+            Still have questions? Explore the Civic Glossary, read the community guidelines, or browse the feed.
           </p>
-          <div className="flex items-center justify-center gap-3">
+          <div className="flex items-center justify-center gap-3 flex-wrap">
+            <Link
+              href="/glossary"
+              className="px-4 py-2 rounded-lg border border-for-500/40 bg-for-500/10 hover:bg-for-500/20 text-for-400 text-sm font-mono transition-colors"
+            >
+              Civic Glossary
+            </Link>
             <Link
               href="/guidelines"
               className="px-4 py-2 rounded-lg border border-surface-300 hover:border-surface-400 text-sm font-mono text-surface-700 hover:text-white transition-colors"
