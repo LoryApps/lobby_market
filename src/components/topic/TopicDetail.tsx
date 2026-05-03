@@ -68,6 +68,7 @@ import { ArgumentCitationsPanel } from '@/components/topic/ArgumentCitationsPane
 import { TopicAIBrief } from '@/components/topic/TopicAIBrief'
 import { TopicBountyPanel } from '@/components/topic/TopicBountyPanel'
 import { FollowingVotesPanel } from '@/components/topic/FollowingVotesPanel'
+import { TopicChat } from '@/components/topic/TopicChat'
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary'
 
 const SIGNAL_ICONS_DETAIL: Record<string, typeof Flame> = {
@@ -104,7 +105,7 @@ const statusBadgeVariant: Record<string, 'proposed' | 'active' | 'law' | 'failed
   archived: 'proposed',
 }
 
-type TopicTab = 'details' | 'arguments' | 'lobbies' | 'bounties'
+type TopicTab = 'details' | 'arguments' | 'chat' | 'lobbies' | 'bounties'
 
 export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
   const router = useRouter()
@@ -384,9 +385,26 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
             <Coins className="h-3.5 w-3.5" />
             Bounties
           </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('chat')}
+            className={cn(
+              'inline-flex items-center gap-2 px-4 py-2 font-mono text-xs font-semibold transition-colors border-b-2',
+              activeTab === 'chat'
+                ? 'text-emerald border-emerald'
+                : 'text-surface-500 border-transparent hover:text-white'
+            )}
+          >
+            <MessageCircle className="h-3.5 w-3.5" />
+            Live Chat
+          </button>
         </div>
 
-        {activeTab === 'bounties' ? (
+        {activeTab === 'chat' ? (
+          <ErrorBoundary size="md" label="Couldn't load live chat">
+            <TopicChat topicId={topic.id} />
+          </ErrorBoundary>
+        ) : activeTab === 'bounties' ? (
           <ErrorBoundary size="md" label="Couldn't load bounties">
             <TopicBountyPanel
               topicId={topic.id}
