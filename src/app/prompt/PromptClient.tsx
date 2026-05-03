@@ -359,9 +359,17 @@ export function PromptClient() {
             <ArrowLeft className="h-3.5 w-3.5" />
             Feed
           </Link>
-          <div className="flex items-center gap-2">
-            <Calendar className="h-3.5 w-3.5 text-surface-500" />
-            <span className="text-xs font-mono text-surface-500">{formatDate(date)}</span>
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1.5">
+              <Calendar className="h-3.5 w-3.5 text-surface-500" />
+              <span className="text-xs font-mono text-surface-500">{formatDate(date)}</span>
+            </div>
+            <Link
+              href="/prompt/archive"
+              className="text-xs font-mono text-surface-500 hover:text-white transition-colors flex items-center gap-1"
+            >
+              Archive →
+            </Link>
           </div>
         </div>
 
@@ -654,8 +662,8 @@ export function PromptClient() {
                   <Link href="/quiz" className="text-xs font-mono text-purple hover:text-purple/80 transition-colors">
                     Civic Quiz →
                   </Link>
-                  <Link href="/duel" className="text-xs font-mono text-gold hover:text-gold/80 transition-colors">
-                    Argument Duel →
+                  <Link href="/prompt/archive" className="text-xs font-mono text-surface-500 hover:text-white transition-colors">
+                    Past prompts →
                   </Link>
                 </div>
               </div>
