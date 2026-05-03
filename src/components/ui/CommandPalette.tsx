@@ -776,6 +776,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'watchdog',
+    label: 'Civic Watchdog',
+    sublabel: 'Laws under active community pressure — amendments, petitions, and contested margins',
+    href: '/watchdog',
+    icon: Shield,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-500/10',
+  },
+  {
+    type: 'link',
     id: 'amendments',
     label: 'Amendment Chamber',
     sublabel: 'Community proposals to refine and extend established laws — vote to ratify',

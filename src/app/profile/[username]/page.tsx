@@ -124,6 +124,25 @@ export default async function ProfileUsernamePage({
     initialFollowing = !!followRow
   }
 
+  // Fetch one year of vote dates for the activity calendar heatmap
+  const oneYearAgo = new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString()
+  const { data: calendarVotesRaw } = await supabase
+    .from('votes')
+    .select('created_at')
+    .eq('user_id', profile.id)
+    .gte('created_at', oneYearAgo)
+    .order('created_at', { ascending: true })
+
+  // Group by date → { date: 'YYYY-MM-DD', count: number }[]
+  const calendarDayMap = new Map<string, number>()
+  for (const v of calendarVotesRaw ?? []) {
+    const date = (v.created_at as string).slice(0, 10)
+    calendarDayMap.set(date, (calendarDayMap.get(date) ?? 0) + 1)
+  }
+  const dailyActivity = Array.from(calendarDayMap.entries()).map(
+    ([date, count]) => ({ date, count })
+  )
+
   // Fetch recent votes (50) along with topic statement for display
   const { data: votesRaw } = (await supabase
     .from('votes')
@@ -327,6 +346,7 @@ export default async function ProfileUsernamePage({
             initialFollowing={initialFollowing}
             viewerId={user?.id ?? null}
             voteCategoryBreakdown={voteCategoryBreakdown}
+            dailyActivity={dailyActivity}
           />
         </main>
         <BottomNav />

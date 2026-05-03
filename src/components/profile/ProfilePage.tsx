@@ -19,6 +19,7 @@ import { AchievementGrid } from './AchievementGrid'
 import { NextAchievementsPanel } from './NextAchievementsPanel'
 import { ProfileArguments, type ProfileArgumentEntry } from './ProfileArguments'
 import { VoteDnaPanel, type VoteCategoryBreakdown } from './VoteDnaPanel'
+import { VoteCalendar } from './VoteCalendar'
 import type {
   Profile,
   Topic,
@@ -26,6 +27,8 @@ import type {
   Achievement,
 } from '@/lib/supabase/types'
 import { cn } from '@/lib/utils/cn'
+
+interface DayActivity { date: string; count: number }
 
 interface ProfilePageProps {
   profile: Profile
@@ -39,6 +42,7 @@ interface ProfilePageProps {
   initialFollowing?: boolean
   viewerId?: string | null
   voteCategoryBreakdown?: VoteCategoryBreakdown[]
+  dailyActivity?: DayActivity[]
 }
 
 type TabId = 'overview' | 'votes' | 'topics' | 'laws' | 'achievements' | 'arguments'
@@ -165,6 +169,7 @@ export function ProfilePage({
   initialFollowing = false,
   viewerId = null,
   voteCategoryBreakdown = [],
+  dailyActivity = [],
 }: ProfilePageProps) {
   const [activeTab, setActiveTab] = useState<TabId>('overview')
 
@@ -274,6 +279,11 @@ export function ProfilePage({
               exit={{ opacity: 0, y: -8 }}
               className="space-y-6"
             >
+              {/* Activity calendar heatmap */}
+              {(dailyActivity.length > 0 || profile.total_votes > 0) && (
+                <VoteCalendar days={dailyActivity} />
+              )}
+
               <VoteHistoryTimeline votes={voteHistory} />
 
               {/* Vote DNA: stance split + category breakdown */}
