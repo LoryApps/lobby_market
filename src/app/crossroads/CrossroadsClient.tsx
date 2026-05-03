@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   ArrowLeft,
   ChevronDown,
+  History,
   Loader2,
   Quote,
   RefreshCw,
@@ -603,8 +604,18 @@ export function CrossroadsClient() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
-          className="mt-6 grid grid-cols-2 gap-3"
+          className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3"
         >
+          <Link
+            href="/crossroads/archive"
+            className="flex items-center gap-2 p-4 rounded-xl bg-surface-100 border border-purple/30 hover:border-purple/60 transition-colors"
+          >
+            <History className="h-4 w-4 text-purple" />
+            <div>
+              <div className="text-xs font-mono font-bold text-surface-300">Values Vault</div>
+              <div className="text-xs font-mono text-surface-500">All 8 dilemmas</div>
+            </div>
+          </Link>
           <Link
             href="/compass"
             className="flex items-center gap-2 p-4 rounded-xl bg-surface-100 border border-surface-300 hover:border-surface-400 transition-colors"

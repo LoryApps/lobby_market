@@ -16,6 +16,7 @@ import {
   Gavel,
   GitBranch,
   Globe,
+  History,
   Layers,
   MessageSquare,
   Mic,
@@ -284,13 +285,15 @@ const CHAPTERS: Chapter[] = [
   {
     number: 'Ch. 13',
     title: 'Civic Governance',
-    subtitle: 'The community elects its own representatives',
+    subtitle: 'Elections, values dilemmas, and the archive of civic choices',
     accent: 'text-purple',
     borderColor: 'border-purple/30',
     bgColor: 'bg-purple/5',
     textColor: 'text-purple',
     items: [
       { icon: Vote, label: 'Civic Elections — monthly democratic elections for Senate, Troll Catcher, and Elder roles', href: '/elections', color: 'text-purple' },
+      { icon: Scale, label: 'Civic Crossroads — weekly values dilemmas: two fundamental civic values in direct tension', href: '/crossroads', color: 'text-for-400' },
+      { icon: History, label: 'Values Vault — browse all 8 dilemmas with community results and your personal values profile', href: '/crossroads/archive', color: 'text-purple' },
     ],
   },
 ]
@@ -299,9 +302,9 @@ const CHAPTERS: Chapter[] = [
 
 const STATS = [
   { value: '13', label: 'chapters shipped' },
-  { value: '84+', label: 'features built' },
+  { value: '87+', label: 'features built' },
   { value: '53', label: 'DB migrations' },
-  { value: '90', label: 'API routes' },
+  { value: '104+', label: 'API routes' },
 ]
 
 // ─── Recent builds ────────────────────────────────────────────────────────────
@@ -316,6 +319,30 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Values Vault',
+    description: 'Browse the full archive of every Civic Crossroads dilemma with community results and your personal values history.',
+    href: '/crossroads/archive',
+    icon: History,
+    color: 'text-purple',
+    tag: 'Governance',
+  },
+  {
+    title: 'Civic Elections',
+    description: 'Monthly democratic elections for Senate, Troll Catcher Council, and Elder Circle. Nominate yourself and let the community vote.',
+    href: '/elections',
+    icon: Vote,
+    color: 'text-purple',
+    tag: 'Governance',
+  },
+  {
+    title: 'Civic Crossroads',
+    description: 'Weekly values dilemmas — two fundamental civic values in direct tension. No right answer, only your answer.',
+    href: '/crossroads',
+    icon: Scale,
+    color: 'text-for-400',
+    tag: 'Governance',
+  },
   {
     title: 'Sentiment Explorer',
     description: 'Lexicon-based analysis of the emotional tone of civic arguments — see which categories debate with hope vs concern, and how your own voice compares.',

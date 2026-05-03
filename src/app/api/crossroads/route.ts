@@ -20,7 +20,7 @@ export interface CrossroadsDilemma {
   quoteAuthor: string
 }
 
-const DILEMMAS: CrossroadsDilemma[] = [
+export const DILEMMAS: CrossroadsDilemma[] = [
   {
     id: 'freedom-vs-safety',
     week: 0,
@@ -145,14 +145,14 @@ const DILEMMAS: CrossroadsDilemma[] = [
 
 // ─── Current dilemma selection ─────────────────────────────────────────────────
 
-function getWeekNumber(): number {
+export function getWeekNumber(): number {
   const now = new Date()
   const start = new Date(now.getFullYear(), 0, 1)
   const diff = now.getTime() - start.getTime()
   return Math.floor(diff / (7 * 24 * 60 * 60 * 1000))
 }
 
-function getCurrentDilemma(): CrossroadsDilemma {
+export function getCurrentDilemma(): CrossroadsDilemma {
   const week = getWeekNumber()
   const index = week % DILEMMAS.length
   return { ...DILEMMAS[index], week }
