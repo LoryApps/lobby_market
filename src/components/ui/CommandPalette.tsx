@@ -85,6 +85,7 @@ import {
   Scroll,
   Repeat2,
   Shield,
+  MonitorPlay,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -233,6 +234,16 @@ const QUICK_LINKS: QuickLink[] = [
     icon: Mic,
     iconColor: 'text-purple',
     iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
+    id: 'stage',
+    label: 'Civic Stage',
+    sublabel: 'Full-screen live debate display for town halls & classrooms',
+    href: '/stage',
+    icon: MonitorPlay,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
   },
   {
     type: 'link',

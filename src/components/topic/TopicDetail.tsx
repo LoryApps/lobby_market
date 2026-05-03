@@ -17,6 +17,7 @@ import {
   Megaphone,
   MessageCircle,
   MessageSquare,
+  MonitorPlay,
   Newspaper,
   Scale,
   ScrollText,
@@ -281,6 +282,18 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
               aria-label="Compare with another topic"
             >
               <GitCompare className="h-3.5 w-3.5" />
+            </Link>
+            <Link
+              href={`/stage/${topic.id}`}
+              className={cn(
+                'flex items-center justify-center h-8 w-8 rounded-lg',
+                'bg-surface-200 border border-surface-300 text-surface-500',
+                'hover:bg-surface-300 hover:text-for-400 transition-colors',
+              )}
+              title="Civic Stage — present this debate full-screen"
+              aria-label="Present on stage"
+            >
+              <MonitorPlay className="h-3.5 w-3.5" />
             </Link>
             <SharePanel
               url={typeof window !== 'undefined' ? window.location.href : `/topic/${topic.id}`}
