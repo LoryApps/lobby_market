@@ -216,6 +216,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'ladder',
+    label: 'Argument Ladder',
+    sublabel: 'Top civic arguers ranked by total argument upvotes — who reasons best?',
+    href: '/ladder',
+    icon: MessageSquare,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
     id: 'leaderboard-debates',
     label: 'Debate Hall of Fame',
     sublabel: 'Top completed debates ranked by viewers, decisive outcomes, and activity',
