@@ -286,6 +286,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'archetype',
+    label: 'Civic Archetype',
+    sublabel: 'Discover your political personality — 10 questions, 8 archetypes',
+    href: '/archetype',
+    icon: Crown,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'quiz',
     label: 'Civic Quiz',
     sublabel: 'Find your civic alignment — no login required',
