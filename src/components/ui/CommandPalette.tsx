@@ -717,6 +717,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'hotspot',
+    label: 'Civic Hotspot',
+    sublabel: 'Critical moments: final votes, deadlocks, flash laws, live debates',
+    href: '/hotspot',
+    icon: Flame,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-500/10',
+  },
+  {
+    type: 'link',
     id: 'surge',
     label: 'Surge',
     sublabel: 'Topics gaining critical momentum right now',
