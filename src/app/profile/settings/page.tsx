@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Save, Calendar, Mail, ArrowLeft, AtSign, Code2, Globe, Sparkles } from 'lucide-react'
+import { Save, Calendar, Mail, ArrowLeft, AtSign, Code2, Globe, Sparkles, CheckCircle2, Circle } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -11,6 +11,7 @@ import { RoleBadge } from '@/components/profile/RoleBadge'
 import { AvatarUploader } from '@/components/ui/AvatarUploader'
 import { ARCHETYPE_CONFIG, type ArchetypeId } from '@/lib/config/archetypes'
 import type { Profile } from '@/lib/supabase/types'
+import type { SetupProgress } from '@/app/api/me/setup/route'
 import { cn } from '@/lib/utils/cn'
 
 export default function ProfileSettingsPage() {
@@ -28,6 +29,7 @@ export default function ProfileSettingsPage() {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
+  const [setupProgress, setSetupProgress] = useState<SetupProgress | null>(null)
 
   useEffect(() => {
     async function loadProfile() {
@@ -64,6 +66,14 @@ export default function ProfileSettingsPage() {
     }
 
     loadProfile()
+
+    // Fetch setup progress independently — non-blocking
+    fetch('/api/me/setup')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data: SetupProgress | null) => {
+        if (data) setSetupProgress(data)
+      })
+      .catch(() => {})
   }, [router])
 
   // Called by AvatarUploader after a successful storage upload + profile PATCH
@@ -148,6 +158,56 @@ export default function ProfileSettingsPage() {
             Update how you appear in Lobby Market.
           </p>
         </div>
+
+        {/* ── Setup progress ─────────────────────────────────────────────────── */}
+        {setupProgress && !setupProgress.is_complete && (
+          <div className="rounded-2xl border border-for-500/25 bg-for-500/5 p-4 mb-4">
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-xs font-mono font-semibold text-for-300 uppercase tracking-wider">
+                Civic profile — {setupProgress.completed_count} of {setupProgress.total_count} steps complete
+              </p>
+              <span className="text-xs font-mono text-surface-500">
+                {Math.round((setupProgress.completed_count / setupProgress.total_count) * 100)}%
+              </span>
+            </div>
+            <div
+              className="h-1.5 rounded-full bg-surface-300 overflow-hidden"
+              role="progressbar"
+              aria-valuenow={Math.round((setupProgress.completed_count / setupProgress.total_count) * 100)}
+              aria-valuemin={0}
+              aria-valuemax={100}
+            >
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-for-600 to-for-400 transition-all duration-500"
+                style={{ width: `${Math.round((setupProgress.completed_count / setupProgress.total_count) * 100)}%` }}
+              />
+            </div>
+            <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-1">
+              {[
+                { id: 'has_display_name' as const, label: 'Display name' },
+                { id: 'has_avatar' as const, label: 'Profile photo' },
+                { id: 'has_bio' as const, label: 'Short bio' },
+                { id: 'has_voted' as const, label: 'First vote' },
+                { id: 'has_argued' as const, label: 'First argument' },
+                { id: 'onboarding_complete' as const, label: 'Welcome quiz' },
+              ].map((step) => {
+                const done = !!setupProgress[step.id]
+                return (
+                  <div key={step.id} className="flex items-center gap-2 text-xs font-mono">
+                    {done ? (
+                      <CheckCircle2 className="h-3.5 w-3.5 text-emerald flex-shrink-0" aria-hidden="true" />
+                    ) : (
+                      <Circle className="h-3.5 w-3.5 text-surface-500 flex-shrink-0" aria-hidden="true" />
+                    )}
+                    <span className={done ? 'text-surface-500 line-through' : 'text-surface-300'}>
+                      {step.label}
+                    </span>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
 
         {/* ── Avatar section ──────────────────────────────────────────────────── */}
         <section className="rounded-2xl border border-surface-300 bg-surface-100 p-6 mb-4">
