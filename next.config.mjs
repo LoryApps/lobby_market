@@ -99,6 +99,16 @@ const nextConfig = {
           },
         ],
       },
+      {
+        // Profile badges — allow any origin to embed the SVG (GitHub READMEs, etc.)
+        source: '/api/badges/(.*)',
+        headers: [
+          { key: 'Access-Control-Allow-Origin', value: '*' },
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          // Cache at CDN for 5 min, serve stale for 10 min while revalidating
+          { key: 'Cache-Control', value: 'public, s-maxage=300, stale-while-revalidate=600' },
+        ],
+      },
     ]
   },
 }

@@ -10,6 +10,7 @@ import {
   Layers,
   Rss,
   Share2,
+  Shield,
   Zap,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
@@ -201,13 +202,14 @@ export default function DevelopersPage() {
         {/* ── Quick nav ────────────────────────────────────────────────── */}
         <nav
           aria-label="API sections"
-          className="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-12"
+          className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-12"
         >
           {[
             { href: '#embed', icon: Layers, label: 'Embed Widget', color: 'text-for-400' },
             { href: '#rss', icon: Rss, label: 'RSS Feed', color: 'text-gold' },
             { href: '#ical', icon: CalendarDays, label: 'iCal Export', color: 'text-emerald' },
             { href: '#og', icon: Share2, label: 'OG Images', color: 'text-purple' },
+            { href: '#badges', icon: Shield, label: 'Profile Badges', color: 'text-for-400' },
             { href: '#resize', icon: Zap, label: 'Iframe Resize', color: 'text-surface-400' },
           ].map(({ href, icon: Icon, label, color }) => (
             <a
@@ -568,7 +570,72 @@ export default function DevelopersPage() {
         </section>
 
         {/* ═══════════════════════════════════════════════════════════════
-            SECTION 4: iframe Resize Protocol
+            SECTION 5: Profile Badges
+        ═══════════════════════════════════════════════════════════════ */}
+        <section id="badges" className="mb-16 scroll-mt-20">
+          <SectionHeader
+            icon={Shield}
+            iconColor="text-for-400"
+            iconBg="bg-for-500/10 border-for-500/30"
+            title="Profile Badges"
+            description="SVG badges that embed a user's live civic stats on GitHub READMEs, portfolios, and personal sites."
+          />
+
+          <p className="text-sm font-mono text-surface-500 mb-6 leading-relaxed">
+            Every Lobby Market user gets a shareable SVG badge. It updates automatically
+            — no webhooks, no tokens. Cached for 5 minutes on the CDN.
+          </p>
+
+          <div className="mb-6 p-4 rounded-xl bg-surface-100 border border-surface-300">
+            <p className="text-xs font-mono text-surface-500 mb-3">Badge endpoint</p>
+            <div className="flex items-center gap-2 text-sm font-mono">
+              <span className="px-2 py-0.5 rounded-md bg-emerald/10 text-emerald border border-emerald/30 text-xs font-bold">GET</span>
+              <code className="text-for-300">/api/badges/profile/<span className="text-gold">{'{username}'}</span></code>
+            </div>
+            <p className="text-xs font-mono text-surface-600 mt-2">Returns <code className="text-for-300">image/svg+xml</code> · Cache-Control: 5 min · No auth required</p>
+          </div>
+
+          <div className="mb-6 space-y-3">
+            <p className="text-xs font-mono text-white font-semibold">GitHub README example:</p>
+            <div className="p-4 rounded-xl bg-surface-100 border border-surface-300 font-mono text-xs text-surface-500 leading-relaxed">
+              <span className="text-surface-600">{'# My Projects'}</span>
+              {'\n\n'}
+              <span className="text-for-300">{'[![Lobby Market Badge](https://lobby.market/api/badges/profile/YOUR_USERNAME)](https://lobby.market/profile/YOUR_USERNAME)'}</span>
+            </div>
+          </div>
+
+          <div className="mb-6 space-y-2">
+            <p className="text-xs font-mono text-white font-semibold">Stats shown on the badge:</p>
+            {[
+              { name: 'Clout', desc: 'Total civic currency earned' },
+              { name: 'Votes', desc: 'Topics you\'ve voted on' },
+              { name: 'Rep', desc: 'Reputation score from arguments & debates' },
+              { name: 'Streak', desc: 'Current consecutive daily voting streak' },
+            ].map(({ name, desc }) => (
+              <div key={name} className="flex items-center gap-3 px-3 py-2 rounded-lg bg-surface-100 border border-surface-300">
+                <span className="text-xs font-mono font-bold text-for-400 w-12 flex-shrink-0">{name}</span>
+                <span className="text-xs font-mono text-surface-500">{desc}</span>
+              </div>
+            ))}
+          </div>
+
+          <Link
+            href="/badges"
+            className={cn(
+              'inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-mono font-semibold',
+              'bg-for-600/90 text-white border border-for-500/40',
+              'hover:bg-for-500 transition-colors',
+              'focus:outline-none focus-visible:ring-2 focus-visible:ring-for-400/50'
+            )}
+          >
+            <Shield className="h-4 w-4" />
+            Open Badge Builder
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        </section>
+
+        {/* ═══════════════════════════════════════════════════════════════
+            SECTION 6: iframe Resize Protocol
         ═══════════════════════════════════════════════════════════════ */}
         <section id="resize" className="mb-16 scroll-mt-20">
           <SectionHeader

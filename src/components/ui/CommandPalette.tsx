@@ -84,6 +84,7 @@ import {
   CheckCircle2,
   Scroll,
   Repeat2,
+  Shield,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -800,6 +801,16 @@ const QUICK_LINKS: QuickLink[] = [
     sublabel: 'Embed a live vote widget on any website',
     href: '/widget',
     icon: Layers,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
+    id: 'badges',
+    label: 'Profile Badges',
+    sublabel: 'SVG badges for GitHub README and portfolios',
+    href: '/badges',
+    icon: Shield,
     iconColor: 'text-for-400',
     iconBg: 'bg-for-500/10',
   },

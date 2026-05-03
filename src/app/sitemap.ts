@@ -54,6 +54,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/about`, changeFrequency: 'monthly', priority: 0.6 },
   { url: `${BASE_URL}/widget`, changeFrequency: 'monthly', priority: 0.6 },
   { url: `${BASE_URL}/developers`, changeFrequency: 'monthly', priority: 0.55 },
+  { url: `${BASE_URL}/badges`, changeFrequency: 'monthly', priority: 0.5 },
   { url: `${BASE_URL}/help`, changeFrequency: 'monthly', priority: 0.55 },
   { url: `${BASE_URL}/glossary`, changeFrequency: 'monthly', priority: 0.65 },
   { url: `${BASE_URL}/guidelines`, changeFrequency: 'monthly', priority: 0.5 },
