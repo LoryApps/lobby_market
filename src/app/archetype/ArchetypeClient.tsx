@@ -328,6 +328,12 @@ function computeTopThree(answers: Record<string, number>): ArchetypeId[] {
 
 type Phase = 'intro' | 'quiz' | 'results'
 
+interface ArchetypeStatEntry {
+  archetype: string
+  count: number
+  pct: number
+}
+
 export function ArchetypeClient() {
   const [phase, setPhase] = useState<Phase>('intro')
   const [currentQ, setCurrentQ] = useState(0)
@@ -336,6 +342,7 @@ export function ArchetypeClient() {
   const [result, setResult] = useState<ArchetypeId | null>(null)
   const [topThree, setTopThree] = useState<ArchetypeId[]>([])
   const [copied, setCopied] = useState(false)
+  const [distribution, setDistribution] = useState<ArchetypeStatEntry[] | null>(null)
 
   // Load cached result
   useEffect(() => {
@@ -353,6 +360,15 @@ export function ArchetypeClient() {
       // ignore
     }
   }, [])
+
+  // Fetch platform distribution when results are shown
+  useEffect(() => {
+    if (phase !== 'results') return
+    fetch('/api/archetype')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (d?.distribution) setDistribution(d.distribution as ArchetypeStatEntry[]) })
+      .catch(() => {})
+  }, [phase])
 
   const handleStart = useCallback(() => {
     setPhase('quiz')
@@ -384,6 +400,12 @@ export function ArchetypeClient() {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify({ result: archetype, topThree: top }))
       } catch { /* noop */ }
+      // Persist to profile (best-effort, no UX impact on failure)
+      fetch('/api/profile/archetype', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ archetype }),
+      }).catch(() => {})
     } else {
       setCurrentQ((n) => n + 1)
     }
@@ -796,6 +818,49 @@ export function ArchetypeClient() {
                       <p className={cn('text-xs font-mono font-bold', a.color)}>{a.name}</p>
                       <p className="text-[11px] font-mono text-surface-600 mt-0.5 leading-tight">{a.tagline}</p>
                     </div>
+                  </div>
+                )
+              })}
+            </div>
+          </motion.section>
+        )}
+
+        {/* Platform distribution */}
+        {distribution && distribution.length > 0 && (
+          <motion.section
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.32, duration: 0.4 }}
+            className="mb-6 bg-surface-100 border border-surface-300 rounded-2xl p-5"
+          >
+            <h2 className="font-mono text-xs text-surface-500 uppercase tracking-widest mb-4">
+              Lobby Distribution
+            </h2>
+            <div className="space-y-2.5">
+              {distribution.map((entry) => {
+                const a = ARCHETYPES[entry.archetype as ArchetypeId]
+                if (!a) return null
+                const AIcon = a.icon
+                const isYours = entry.archetype === result
+                return (
+                  <div key={entry.archetype} className="flex items-center gap-3">
+                    <AIcon className={cn('h-3.5 w-3.5 flex-shrink-0', a.color)} />
+                    <span className={cn(
+                      'text-[11px] font-mono w-28 flex-shrink-0',
+                      isYours ? a.color + ' font-bold' : 'text-surface-500'
+                    )}>
+                      {a.name.replace('The ', '')}
+                      {isYours && ' ← you'}
+                    </span>
+                    <div className="flex-1 h-1.5 rounded-full bg-surface-300 overflow-hidden">
+                      <div
+                        className={cn('h-full rounded-full transition-all', a.bgColor.replace('/10', ''))}
+                        style={{ width: `${entry.pct}%` }}
+                      />
+                    </div>
+                    <span className="text-[11px] font-mono text-surface-500 w-8 text-right flex-shrink-0">
+                      {entry.pct}%
+                    </span>
                   </div>
                 )
               })}

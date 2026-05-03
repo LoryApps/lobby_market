@@ -3,12 +3,13 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Save, Calendar, Mail, ArrowLeft, AtSign, Code2, Globe } from 'lucide-react'
+import { Save, Calendar, Mail, ArrowLeft, AtSign, Code2, Globe, Sparkles } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { RoleBadge } from '@/components/profile/RoleBadge'
 import { AvatarUploader } from '@/components/ui/AvatarUploader'
+import { ARCHETYPE_CONFIG, type ArchetypeId } from '@/lib/config/archetypes'
 import type { Profile } from '@/lib/supabase/types'
 import { cn } from '@/lib/utils/cn'
 
@@ -300,6 +301,48 @@ export default function ProfileSettingsPage() {
                 />
               </div>
             </div>
+          </div>
+
+          {/* Civic Archetype */}
+          <div>
+            <span className="block text-sm font-semibold text-white mb-2 flex items-center gap-2">
+              <Sparkles className="h-4 w-4 text-gold" aria-hidden="true" />
+              Civic Archetype
+            </span>
+            {profile?.civic_archetype && ARCHETYPE_CONFIG[profile.civic_archetype as ArchetypeId] ? (() => {
+              const arch = ARCHETYPE_CONFIG[profile.civic_archetype as ArchetypeId]
+              const AIcon = arch.icon
+              return (
+                <div className={cn(
+                  'flex items-center justify-between p-4 rounded-xl border',
+                  arch.bgColor, arch.borderColor
+                )}>
+                  <div className="flex items-center gap-3">
+                    <AIcon className={cn('h-5 w-5 flex-shrink-0', arch.color)} />
+                    <div>
+                      <p className={cn('text-sm font-mono font-bold', arch.color)}>{arch.name}</p>
+                      <p className="text-xs font-mono text-surface-500 italic mt-0.5">&ldquo;{arch.tagline}&rdquo;</p>
+                    </div>
+                  </div>
+                  <Link
+                    href="/archetype"
+                    className="text-xs font-mono text-surface-500 hover:text-white transition-colors underline underline-offset-2 flex-shrink-0 ml-3"
+                  >
+                    Retake
+                  </Link>
+                </div>
+              )
+            })() : (
+              <div className="flex items-center justify-between p-4 rounded-xl border border-surface-300 bg-surface-200/50">
+                <p className="text-sm font-mono text-surface-500">You haven&apos;t taken the quiz yet.</p>
+                <Link
+                  href="/archetype"
+                  className="text-xs font-mono text-for-400 hover:text-for-300 transition-colors underline underline-offset-2 flex-shrink-0 ml-3"
+                >
+                  Take quiz
+                </Link>
+              </div>
+            )}
           </div>
 
           {/* Status messages */}

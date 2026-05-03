@@ -28,6 +28,7 @@ import { GiftCloutButton } from '@/components/clout/GiftCloutButton'
 import { RoleBadge, getRoleRingClass } from './RoleBadge'
 import { FollowersModal, type FollowTab } from './FollowersModal'
 import { AlignmentBadge } from './AlignmentBadge'
+import { ARCHETYPE_CONFIG, type ArchetypeId } from '@/lib/config/archetypes'
 
 // ── Inline bio markdown renderer ──────────────────────────────────────────────
 // Supports: **bold**, *italic*, `code`, [text](url)
@@ -657,6 +658,26 @@ export function ProfileHeader({
             <Calendar className="h-3.5 w-3.5" />
             Joined {formatJoinDate(profile.created_at)}
           </div>
+
+          {/* Civic Archetype badge */}
+          {profile.civic_archetype && ARCHETYPE_CONFIG[profile.civic_archetype as ArchetypeId] && (() => {
+            const arch = ARCHETYPE_CONFIG[profile.civic_archetype as ArchetypeId]
+            const AIcon = arch.icon
+            return (
+              <Link
+                href="/archetype"
+                className={cn(
+                  'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border mb-2',
+                  'text-[11px] font-mono font-semibold transition-opacity hover:opacity-80',
+                  arch.bgColor, arch.borderColor, arch.color
+                )}
+                title={`${arch.name} — ${arch.tagline}`}
+              >
+                <AIcon className="h-3 w-3 flex-shrink-0" aria-hidden />
+                {arch.name}
+              </Link>
+            )
+          })()}
 
           {/* Social links */}
           {profile.social_links && (

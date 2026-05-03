@@ -25,6 +25,8 @@ export type Database = {
           category_preferences: string[];
           followers_count: number;
           following_count: number;
+          civic_archetype: string | null;
+          archetype_set_at: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -51,6 +53,8 @@ export type Database = {
           category_preferences?: string[];
           followers_count?: number;
           following_count?: number;
+          civic_archetype?: string | null;
+          archetype_set_at?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -77,6 +81,8 @@ export type Database = {
           category_preferences?: string[];
           followers_count?: number;
           following_count?: number;
+          civic_archetype?: string | null;
+          archetype_set_at?: string | null;
           created_at?: string;
           updated_at?: string;
         };
