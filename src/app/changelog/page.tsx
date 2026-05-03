@@ -281,15 +281,27 @@ const CHAPTERS: Chapter[] = [
       { icon: Activity, label: 'Vote Stream — live ticker of every vote landing on the platform', href: '/vote-stream', color: 'text-for-400' },
     ],
   },
+  {
+    number: 'Ch. 13',
+    title: 'Civic Governance',
+    subtitle: 'The community elects its own representatives',
+    accent: 'text-purple',
+    borderColor: 'border-purple/30',
+    bgColor: 'bg-purple/5',
+    textColor: 'text-purple',
+    items: [
+      { icon: Vote, label: 'Civic Elections — monthly democratic elections for Senate, Troll Catcher, and Elder roles', href: '/elections', color: 'text-purple' },
+    ],
+  },
 ]
 
 // ─── Stat pills ───────────────────────────────────────────────────────────────
 
 const STATS = [
-  { value: '12', label: 'chapters shipped' },
-  { value: '83+', label: 'features built' },
-  { value: '51', label: 'DB migrations' },
-  { value: '88', label: 'API routes' },
+  { value: '13', label: 'chapters shipped' },
+  { value: '84+', label: 'features built' },
+  { value: '53', label: 'DB migrations' },
+  { value: '90', label: 'API routes' },
 ]
 
 // ─── Recent builds ────────────────────────────────────────────────────────────
