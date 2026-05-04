@@ -17,6 +17,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   ArrowLeft,
   ArrowRight,
+  BarChart2,
   BookOpen,
   Brain,
   Check,
@@ -956,13 +957,21 @@ export function ArchetypeClient() {
           </div>
 
           {/* Navigation links */}
-          <div className="flex items-center justify-center gap-4 mt-2">
+          <div className="flex items-center justify-center gap-4 mt-2 flex-wrap">
             <Link
               href="/"
               className="flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-white transition-colors"
             >
               <Flame className="h-3.5 w-3.5" />
               Go to Feed
+            </Link>
+            <span className="text-surface-600">·</span>
+            <Link
+              href="/archetype/intelligence"
+              className="flex items-center gap-1.5 text-xs font-mono text-purple hover:text-white transition-colors"
+            >
+              <BarChart2 className="h-3.5 w-3.5" />
+              Archetype Intelligence
             </Link>
             <span className="text-surface-600">·</span>
             <Link

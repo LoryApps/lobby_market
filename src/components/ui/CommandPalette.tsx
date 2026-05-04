@@ -309,6 +309,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'archetype-intelligence',
+    label: 'Archetype Intelligence',
+    sublabel: 'How each civic archetype votes — divisive topics, cross-archetype consensus',
+    href: '/archetype/intelligence',
+    icon: Brain,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
     id: 'quiz',
     label: 'Civic Quiz',
     sublabel: 'Find your civic alignment — no login required',
