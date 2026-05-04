@@ -377,6 +377,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'dashboard',
+    label: 'Dashboard',
+    sublabel: 'Personal command centre — league, predictions, watchlist',
+    href: '/dashboard',
+    icon: LayoutGrid,
+    iconColor: 'text-for-300',
+    iconBg: 'bg-for-400/10',
+  },
+  {
+    type: 'link',
     id: 'analytics',
     label: 'Analytics',
     sublabel: 'Your voting patterns and stats',
