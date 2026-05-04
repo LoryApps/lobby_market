@@ -11,7 +11,7 @@ import {
   ListOrdered,
   Link2,
   Eye,
-  EyeOff,
+  Columns2,
   BookOpen,
   History,
   Pencil,
@@ -354,10 +354,16 @@ export function TopicWikiSection({
   const [currentUserId, setCurrentUserId] = useState<string | null>(null)
   const [editing, setEditing] = useState(false)
   const [previewMode, setPreviewMode] = useState(false)
+  const [splitView, setSplitView] = useState(false)
   const [draft, setDraft] = useState('')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [draftRestored, setDraftRestored] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const autoSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // Auto-save key for localStorage: scoped to the topic
+  const autoSaveKey = `lm_wiki_draft_${topicId}`
 
   // ── Wikilink autocomplete state ────────────────────────────────────────────
   const [wikilinkOpen, setWikilinkOpen] = useState(false)
@@ -379,17 +385,37 @@ export function TopicWikiSection({
   const isAuthor = currentUserId === authorId
 
   const startEditing = useCallback(() => {
-    setDraft(description ?? '')
+    // Check for a saved auto-draft that's newer than the current description
+    let initialDraft = description ?? ''
+    let restored = false
+    try {
+      const saved = localStorage.getItem(autoSaveKey)
+      if (saved && saved !== (description ?? '')) {
+        initialDraft = saved
+        restored = true
+      }
+    } catch {
+      // localStorage unavailable (private mode, etc.)
+    }
+    setDraft(initialDraft)
+    setDraftRestored(restored)
     setPreviewMode(false)
+    setSplitView(false)
     setError(null)
     setEditing(true)
-  }, [description])
+  }, [description, autoSaveKey])
 
   const cancelEditing = useCallback(() => {
+    // Clear the auto-saved draft on explicit cancel
+    try { localStorage.removeItem(autoSaveKey) } catch {}
+    if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current)
     setEditing(false)
     setDraft('')
+    setDraftRestored(false)
+    setPreviewMode(false)
+    setSplitView(false)
     setError(null)
-  }, [])
+  }, [autoSaveKey])
 
   const handleSave = useCallback(async () => {
     if (saving) return
@@ -410,8 +436,12 @@ export function TopicWikiSection({
 
       const { topic } = await res.json()
       onUpdate(topic.description ?? null)
+      // Clear auto-saved draft after successful save
+      try { localStorage.removeItem(autoSaveKey) } catch {}
+      if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current)
       setEditing(false)
       setDraft('')
+      setDraftRestored(false)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong')
     } finally {
@@ -484,6 +514,18 @@ export function TopicWikiSection({
     ta.style.height = `${Math.max(120, ta.scrollHeight)}px`
   }, [draft, editing])
 
+  // Debounced auto-save to localStorage (2 s after last keystroke)
+  useEffect(() => {
+    if (!editing) return
+    if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current)
+    autoSaveTimerRef.current = setTimeout(() => {
+      try { localStorage.setItem(autoSaveKey, draft) } catch {}
+    }, 2000)
+    return () => {
+      if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current)
+    }
+  }, [draft, editing, autoSaveKey])
+
   const remaining = MAX_CHARS - draft.length
   const nearLimit = remaining < 200
 
@@ -521,27 +563,58 @@ export function TopicWikiSection({
           <span className="text-xs font-mono text-surface-500 uppercase tracking-wider flex-1">
             Context
           </span>
-          <button
-            onClick={() => setPreviewMode((p) => !p)}
-            className={cn(
-              'flex items-center gap-1.5 px-2 py-1 rounded-md text-[11px] font-mono transition-colors',
-              previewMode
-                ? 'bg-for-600/20 text-for-400 border border-for-500/30'
-                : 'text-surface-500 hover:text-white hover:bg-surface-300'
-            )}
-            aria-pressed={previewMode}
-            title={previewMode ? 'Back to editor' : 'Preview'}
-          >
-            {previewMode ? (
-              <><EyeOff className="h-3 w-3" /> Edit</>
-            ) : (
-              <><Eye className="h-3 w-3" /> Preview</>
-            )}
-          </button>
+          {/* View mode toggle group */}
+          <div className="flex items-center gap-0.5 bg-surface-200/80 border border-surface-300 rounded-lg p-0.5">
+            {/* Write */}
+            <button
+              onClick={() => { setPreviewMode(false); setSplitView(false) }}
+              className={cn(
+                'flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-mono transition-all',
+                !previewMode && !splitView
+                  ? 'bg-surface-300 text-white'
+                  : 'text-surface-500 hover:text-surface-300'
+              )}
+              aria-pressed={!previewMode && !splitView}
+              title="Write"
+            >
+              <Pencil className="h-2.5 w-2.5" />
+              <span className="hidden sm:inline">Write</span>
+            </button>
+            {/* Split — only on md+ */}
+            <button
+              onClick={() => { setSplitView(true); setPreviewMode(false) }}
+              className={cn(
+                'hidden md:flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-mono transition-all',
+                splitView
+                  ? 'bg-for-600/30 text-for-300 border border-for-500/30'
+                  : 'text-surface-500 hover:text-surface-300'
+              )}
+              aria-pressed={splitView}
+              title="Split view (editor + live preview)"
+            >
+              <Columns2 className="h-2.5 w-2.5" />
+              <span>Split</span>
+            </button>
+            {/* Preview */}
+            <button
+              onClick={() => { setPreviewMode(true); setSplitView(false) }}
+              className={cn(
+                'flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-mono transition-all',
+                previewMode && !splitView
+                  ? 'bg-surface-300 text-white'
+                  : 'text-surface-500 hover:text-surface-300'
+              )}
+              aria-pressed={previewMode && !splitView}
+              title="Preview rendered output"
+            >
+              <Eye className="h-2.5 w-2.5" />
+              <span className="hidden sm:inline">Preview</span>
+            </button>
+          </div>
         </div>
 
         {/* Toolbar */}
-        {!previewMode && (
+        {(!previewMode || splitView) && (
           <div
             className="flex items-center gap-0.5 px-3 py-1.5 border-b border-surface-300 flex-wrap"
             role="toolbar"
@@ -593,8 +666,88 @@ export function TopicWikiSection({
         )}
 
         {/* Content area */}
-        <div className="p-4">
-          {previewMode ? (
+        <div className={cn('p-4', splitView && 'md:p-0')}>
+          {/* Split view: editor + live preview side-by-side (md+) */}
+          {splitView ? (
+            <div className="md:grid md:grid-cols-2 md:divide-x md:divide-surface-300">
+              {/* Editor pane */}
+              <div className="relative md:p-4">
+                <textarea
+                  ref={textareaRef}
+                  value={draft}
+                  onChange={(e) => {
+                    const newVal = e.target.value.slice(0, MAX_CHARS)
+                    setDraft(newVal)
+                    const pos = e.target.selectionStart
+                    const ctx = getWikilinkContext(newVal, pos)
+                    if (ctx) {
+                      setWikilinkStartPos(ctx.startPos)
+                      setWikilinkQuery(ctx.query)
+                      setWikilinkSelectedIdx(0)
+                      setWikilinkOpen(true)
+                    } else {
+                      setWikilinkOpen(false)
+                      setWikilinkQuery('')
+                    }
+                  }}
+                  onKeyDown={(e) => {
+                    if (!wikilinkOpen) return
+                    if (e.key === 'ArrowDown') {
+                      e.preventDefault()
+                      setWikilinkSelectedIdx((i) => Math.min(i + 1, wikilinkResultCount - 1))
+                    } else if (e.key === 'ArrowUp') {
+                      e.preventDefault()
+                      setWikilinkSelectedIdx((i) => Math.max(i - 1, 0))
+                    } else if (e.key === 'Escape') {
+                      e.preventDefault()
+                      setWikilinkOpen(false)
+                      setWikilinkQuery('')
+                    } else if (e.key === 'Enter') {
+                      const suggestion = wikilinkResultsRef.current[wikilinkSelectedIdx]
+                      if (suggestion) {
+                        e.preventDefault()
+                        handleWikilinkSelect(suggestion)
+                      }
+                    }
+                  }}
+                  placeholder={`Add background context, evidence links, key facts, or reasoning…\n\nUse **bold**, *italic*, > blockquotes, and - bullets.\nType [[ to link to a related topic.`}
+                  rows={5}
+                  className={cn(
+                    'w-full bg-transparent text-sm text-surface-700 placeholder-surface-500',
+                    'font-mono leading-relaxed resize-none outline-none',
+                    'min-h-[180px] transition-all'
+                  )}
+                  aria-label="Topic context editor"
+                  aria-autocomplete="list"
+                  aria-haspopup="listbox"
+                  spellCheck
+                />
+                {wikilinkOpen && (
+                  <WikilinkAutocomplete
+                    query={wikilinkQuery}
+                    excludeTopicId={topicId}
+                    selectedIndex={wikilinkSelectedIdx}
+                    onSelect={handleWikilinkSelect}
+                    onClose={() => { setWikilinkOpen(false); setWikilinkQuery('') }}
+                    onResultsChange={(count) => {
+                      setWikilinkResultCount(count)
+                      setWikilinkSelectedIdx((i) => Math.min(i, Math.max(0, count - 1)))
+                    }}
+                    onResultsReady={(results) => { wikilinkResultsRef.current = results }}
+                  />
+                )}
+              </div>
+              {/* Live preview pane */}
+              <div className="hidden md:block md:p-4 min-h-[180px] border-t border-surface-300 md:border-t-0">
+                <p className="text-[10px] font-mono uppercase tracking-wider text-surface-600 mb-2">Preview</p>
+                {draft.trim() ? (
+                  <WikiPreview markdown={draft} />
+                ) : (
+                  <p className="text-surface-500 italic text-sm font-mono">Start typing to see a preview…</p>
+                )}
+              </div>
+            </div>
+          ) : previewMode ? (
             <div className="min-h-[120px]">
               {draft.trim() ? (
                 <WikiPreview markdown={draft} />
@@ -610,7 +763,6 @@ export function TopicWikiSection({
                 onChange={(e) => {
                   const newVal = e.target.value.slice(0, MAX_CHARS)
                   setDraft(newVal)
-                  // Detect [[ trigger for wikilink autocomplete
                   const pos = e.target.selectionStart
                   const ctx = getWikilinkContext(newVal, pos)
                   if (ctx) {
@@ -627,9 +779,7 @@ export function TopicWikiSection({
                   if (!wikilinkOpen) return
                   if (e.key === 'ArrowDown') {
                     e.preventDefault()
-                    setWikilinkSelectedIdx((i) =>
-                      Math.min(i + 1, wikilinkResultCount - 1)
-                    )
+                    setWikilinkSelectedIdx((i) => Math.min(i + 1, wikilinkResultCount - 1))
                   } else if (e.key === 'ArrowUp') {
                     e.preventDefault()
                     setWikilinkSelectedIdx((i) => Math.max(i - 1, 0))
@@ -657,25 +807,18 @@ export function TopicWikiSection({
                 aria-haspopup="listbox"
                 spellCheck
               />
-
-              {/* Wikilink autocomplete dropdown */}
               {wikilinkOpen && (
                 <WikilinkAutocomplete
                   query={wikilinkQuery}
                   excludeTopicId={topicId}
                   selectedIndex={wikilinkSelectedIdx}
                   onSelect={handleWikilinkSelect}
-                  onClose={() => {
-                    setWikilinkOpen(false)
-                    setWikilinkQuery('')
-                  }}
+                  onClose={() => { setWikilinkOpen(false); setWikilinkQuery('') }}
                   onResultsChange={(count) => {
                     setWikilinkResultCount(count)
                     setWikilinkSelectedIdx((i) => Math.min(i, Math.max(0, count - 1)))
                   }}
-                  onResultsReady={(results) => {
-                    wikilinkResultsRef.current = results
-                  }}
+                  onResultsReady={(results) => { wikilinkResultsRef.current = results }}
                 />
               )}
             </div>
@@ -692,6 +835,22 @@ export function TopicWikiSection({
           >
             {draft.length.toLocaleString()} / {MAX_CHARS.toLocaleString()}
           </span>
+
+          {/* Draft restored notice */}
+          {draftRestored && !error && (
+            <span className="text-[11px] font-mono text-gold flex items-center gap-1 flex-1 truncate">
+              <Clock className="h-2.5 w-2.5 flex-shrink-0" />
+              Draft restored
+              <button
+                type="button"
+                onClick={() => { setDraft(description ?? ''); setDraftRestored(false) }}
+                className="ml-1 underline hover:no-underline"
+                title="Discard draft and start from current saved version"
+              >
+                discard
+              </button>
+            </span>
+          )}
 
           {error && (
             <span className="text-xs text-against-400 flex-1 truncate">{error}</span>
