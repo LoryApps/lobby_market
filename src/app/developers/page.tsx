@@ -210,6 +210,7 @@ export default function DevelopersPage() {
             { href: '#ical', icon: CalendarDays, label: 'iCal Export', color: 'text-emerald' },
             { href: '#og', icon: Share2, label: 'OG Images', color: 'text-purple' },
             { href: '#badges', icon: Shield, label: 'Profile Badges', color: 'text-for-400' },
+            { href: '#topic-badges', icon: FileCode2, label: 'Topic Badges', color: 'text-purple' },
             { href: '#resize', icon: Zap, label: 'Iframe Resize', color: 'text-surface-400' },
           ].map(({ href, icon: Icon, label, color }) => (
             <a
@@ -632,6 +633,85 @@ export default function DevelopersPage() {
             Open Badge Builder
             <ArrowRight className="h-3.5 w-3.5" />
           </Link>
+        </section>
+
+        {/* ═══════════════════════════════════════════════════════════════
+            SECTION 5b: Topic Badges
+        ═══════════════════════════════════════════════════════════════ */}
+        <section id="topic-badges" className="mb-16 scroll-mt-20">
+          <SectionHeader
+            icon={FileCode2}
+            iconColor="text-purple"
+            iconBg="bg-purple/10 border-purple/30"
+            title="Topic Badges"
+            description="Embeddable SVG badges for any debate — live vote split, status, and category. Perfect for blogs, READMEs, and forums."
+          />
+
+          <p className="text-sm font-mono text-surface-500 mb-6 leading-relaxed">
+            Topic badges are self-updating SVG images showing the current FOR/AGAINST split,
+            topic status, vote count, and category. No auth required. Cached for 1 minute.
+            Copy the badge code from the Share menu on any topic page.
+          </p>
+
+          <div className="mb-6 p-4 rounded-xl bg-surface-100 border border-surface-300">
+            <p className="text-xs font-mono text-surface-500 mb-3">Badge endpoint</p>
+            <div className="flex items-center gap-2 text-sm font-mono">
+              <span className="px-2 py-0.5 rounded-md bg-emerald/10 text-emerald border border-emerald/30 text-xs font-bold">GET</span>
+              <code className="text-for-300">/api/badges/topic/<span className="text-gold">{'{id}'}</span></code>
+            </div>
+            <p className="text-xs font-mono text-surface-600 mt-2">
+              Returns <code className="text-for-300">image/svg+xml</code> · Cache-Control: 1 min · No auth required · CORS: *
+            </p>
+          </div>
+
+          <div className="mb-6 space-y-3">
+            <p className="text-xs font-mono text-white font-semibold">HTML embed:</p>
+            <div className="p-4 rounded-xl bg-surface-100 border border-surface-300 font-mono text-xs text-surface-500 leading-relaxed whitespace-pre">
+              <span className="text-surface-600">{'<!-- Link the badge to the topic page -->'}</span>
+              {'\n'}
+              <span className="text-purple">{'<a'}</span>
+              <span className="text-gold">{' href'}</span>
+              <span className="text-for-300">{'="https://lobby.market/topic/TOPIC_UUID"'}</span>
+              <span className="text-purple">{'>'}</span>
+              {'\n  '}
+              <span className="text-purple">{'<img'}</span>
+              <span className="text-gold">{' src'}</span>
+              <span className="text-for-300">{'="https://lobby.market/api/badges/topic/TOPIC_UUID"'}</span>
+              {'\n       '}
+              <span className="text-gold">{'alt'}</span>
+              <span className="text-for-300">{'="Lobby Market debate badge"'}</span>
+              <span className="text-gold">{' width'}</span>
+              <span className="text-for-300">{'="440"'}</span>
+              <span className="text-gold">{' height'}</span>
+              <span className="text-for-300">{'="120"'}</span>
+              <span className="text-purple">{' />'}</span>
+              {'\n'}
+              <span className="text-purple">{'</a>'}</span>
+            </div>
+          </div>
+
+          <div className="mb-6 space-y-2">
+            <p className="text-xs font-mono text-white font-semibold">Stats shown on the topic badge:</p>
+            {[
+              { name: 'Status', desc: 'PROPOSED / ACTIVE / VOTING / LAW / FAILED' },
+              { name: 'Category', desc: 'Topic category with matching accent colour' },
+              { name: 'Statement', desc: 'Topic statement (first 72 characters)' },
+              { name: 'Vote bar', desc: 'Blue FOR / Red AGAINST proportional split bar' },
+              { name: 'Vote %', desc: 'FOR % and AGAINST % labels' },
+              { name: 'Vote count', desc: 'Total votes cast, formatted (12.4K, 1.1M, etc.)' },
+            ].map(({ name, desc }) => (
+              <div key={name} className="flex items-center gap-3 px-3 py-2 rounded-lg bg-surface-100 border border-surface-300">
+                <span className="text-xs font-mono font-bold text-purple w-20 flex-shrink-0">{name}</span>
+                <span className="text-xs font-mono text-surface-500">{desc}</span>
+              </div>
+            ))}
+          </div>
+
+          <p className="text-xs font-mono text-surface-600 leading-relaxed">
+            <span className="text-white">Tip:</span> Use the Share button on any topic page and click{' '}
+            <span className="text-purple font-semibold">&ldquo;Copy SVG badge&rdquo;</span> to get the
+            ready-to-paste HTML code for that specific topic.
+          </p>
         </section>
 
         {/* ═══════════════════════════════════════════════════════════════

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   ArrowLeft,
@@ -337,16 +338,18 @@ export default function BadgesPage() {
                     <span className="text-xs font-mono">Badge unavailable for @{previewUsername}</span>
                   </div>
                 )}
-                <img
+                <Image
                   src={badgeUrl}
                   alt={`Lobby Market badge for @${previewUsername}`}
+                  width={440}
+                  height={130}
+                  unoptimized
                   className={cn(
                     'max-w-full h-auto rounded-lg transition-opacity',
                     imgLoading || imgError ? 'hidden' : 'opacity-100'
                   )}
                   onLoad={() => { setImgLoading(false); setImgError(false) }}
                   onError={() => { setImgLoading(false); setImgError(true) }}
-                  style={{ imageRendering: 'auto' }}
                 />
               </div>
 

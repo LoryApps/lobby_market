@@ -32,9 +32,11 @@ export function SharePanel({ url, text, topicId, lawId, className }: SharePanelP
   const [open, setOpen] = useState(false)
   const [copied, setCopied] = useState(false)
   const [embedCopied, setEmbedCopied] = useState(false)
+  const [badgeCopied, setBadgeCopied] = useState(false)
   const panelRef = useRef<HTMLDivElement>(null)
   const copyTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const embedTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const badgeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Close on outside click
   useEffect(() => {
@@ -97,6 +99,24 @@ export function SharePanel({ url, text, topicId, lawId, className }: SharePanelP
       setEmbedCopied(true)
       if (embedTimer.current) clearTimeout(embedTimer.current)
       embedTimer.current = setTimeout(() => setEmbedCopied(false), 2500)
+    } catch {
+      // ignore
+    }
+  }
+
+  async function handleCopyBadge() {
+    if (!topicId) return
+    const badgeSrc = `${BASE_URL}/api/badges/topic/${topicId}`
+    const code = [
+      `<a href="${BASE_URL}/topic/${topicId}" target="_blank" rel="noopener">`,
+      `  <img src="${badgeSrc}" alt="Lobby Market debate badge" width="440" height="120" />`,
+      `</a>`,
+    ].join('\n')
+    try {
+      await navigator.clipboard.writeText(code)
+      setBadgeCopied(true)
+      if (badgeTimer.current) clearTimeout(badgeTimer.current)
+      badgeTimer.current = setTimeout(() => setBadgeCopied(false), 2500)
     } catch {
       // ignore
     }
@@ -234,6 +254,25 @@ export function SharePanel({ url, text, topicId, lawId, className }: SharePanelP
                   )}
                   <span className={cn(embedCopied && 'text-emerald')}>
                     {embedCopied ? 'Embed copied!' : 'Copy embed code'}
+                  </span>
+                </button>
+                {/* SVG badge */}
+                <button
+                  type="button"
+                  role="menuitem"
+                  onClick={handleCopyBadge}
+                  className={cn(
+                    'w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors',
+                    'text-white hover:bg-surface-200'
+                  )}
+                >
+                  {badgeCopied ? (
+                    <Check className="h-4 w-4 text-emerald flex-shrink-0" />
+                  ) : (
+                    <Code2 className="h-4 w-4 text-purple/70 flex-shrink-0" />
+                  )}
+                  <span className={cn(badgeCopied && 'text-emerald')}>
+                    {badgeCopied ? 'Badge copied!' : 'Copy SVG badge'}
                   </span>
                 </button>
               </>
