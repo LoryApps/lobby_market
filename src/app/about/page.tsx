@@ -349,6 +349,12 @@ export default function AboutPage() {
             >
               Developer API
             </Link>
+            <Link
+              href="/transparency"
+              className="px-6 py-2.5 rounded-xl border border-surface-300 hover:border-surface-400 text-surface-700 hover:text-white text-sm font-medium font-mono transition-colors"
+            >
+              Transparency Report
+            </Link>
           </div>
         </section>
       </main>
