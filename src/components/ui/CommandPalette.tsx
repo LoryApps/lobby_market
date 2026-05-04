@@ -87,6 +87,7 @@ import {
   Shield,
   MonitorPlay,
   Brain,
+  Mail,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -1454,6 +1455,16 @@ const QUICK_LINKS: QuickLink[] = [
     icon: Repeat2,
     iconColor: 'text-gold',
     iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'letter',
+    label: 'Civic Letter Generator',
+    sublabel: 'AI-powered letters to representatives, op-eds, petitions, and social threads — grounded in community consensus data',
+    href: '/letter',
+    icon: Mail,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
   },
   {
     type: 'link',

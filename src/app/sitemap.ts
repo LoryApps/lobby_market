@@ -127,6 +127,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/crucible`, changeFrequency: 'daily', priority: 0.72 },
   { url: `${BASE_URL}/judge`, changeFrequency: 'daily', priority: 0.7 },
   { url: `${BASE_URL}/perspective`, changeFrequency: 'daily', priority: 0.65 },
+  { url: `${BASE_URL}/letter`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/weather`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/wrapped`, changeFrequency: 'weekly', priority: 0.7 },
   { url: `${BASE_URL}/skill-tree`, changeFrequency: 'weekly', priority: 0.65 },

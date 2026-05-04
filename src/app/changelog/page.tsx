@@ -18,6 +18,7 @@ import {
   Globe,
   History,
   Layers,
+  Mail,
   MessageSquare,
   Mic,
   Network,
@@ -194,6 +195,7 @@ const CHAPTERS: Chapter[] = [
       { icon: Sparkles, label: 'Oracle — AI debate outcome prediction', href: '/oracle', color: 'text-gold' },
       { icon: BookOpen, label: 'Topic AI Briefs — auto-generated summaries', href: '/brief', color: 'text-for-300' },
       { icon: Zap, label: 'Manifesto Generator — AI writes your civic platform', href: '/manifesto', color: 'text-purple' },
+      { icon: Mail, label: 'Civic Letter Generator — AI letters to reps, op-eds, petitions, social threads', href: '/letter', color: 'text-for-400' },
     ],
   },
   {
