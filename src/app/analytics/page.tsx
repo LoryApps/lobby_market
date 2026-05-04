@@ -27,6 +27,7 @@ import {
   Swords,
   Star,
   Network,
+  Sparkles,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -1013,6 +1014,13 @@ export default function AnalyticsPage() {
             >
               <Heart className="h-3.5 w-3.5" />
               Sentiment
+            </Link>
+            <Link
+              href="/karma"
+              className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"
+            >
+              <Sparkles className="h-3.5 w-3.5" />
+              Karma
             </Link>
             <Link
               href="/profile/me"

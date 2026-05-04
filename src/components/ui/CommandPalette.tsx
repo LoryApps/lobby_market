@@ -1079,6 +1079,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'karma',
+    label: 'Civic Karma Score',
+    sublabel: 'Your holistic civic credit score — discourse, predictions, breadth, engagement, trust',
+    href: '/karma',
+    icon: Sparkles,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
     id: 'positions',
     label: 'My Positions',
     sublabel: 'Your full vote history — every topic you took a stance on, searchable',
