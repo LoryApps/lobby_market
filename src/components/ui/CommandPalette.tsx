@@ -190,6 +190,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'moments',
+    label: 'Civic Moments',
+    sublabel: 'Swipeable highlights — new laws, vote surges, and debates resolved',
+    href: '/moments',
+    icon: Sparkles,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+  },
+  {
+    type: 'link',
     id: 'spotlight',
     label: 'Civic Spotlight',
     sublabel: 'Best argument, closest call, rising star, and newest law this week',
