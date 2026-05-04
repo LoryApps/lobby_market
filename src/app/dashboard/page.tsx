@@ -39,6 +39,7 @@ import { BottomNav } from '@/components/layout/BottomNav'
 import { Avatar } from '@/components/ui/Avatar'
 import { Badge } from '@/components/ui/Badge'
 import { Skeleton } from '@/components/ui/Skeleton'
+import { SeasonProgressCard } from '@/components/season/SeasonProgressCard'
 import { cn } from '@/lib/utils/cn'
 import type {
   DashboardResponse,
@@ -420,6 +421,9 @@ export default function DashboardPage() {
                   ))}
                 </div>
               </div>
+
+              {/* ── Civic Season ─────────────────────────────────────────── */}
+              <SeasonProgressCard />
 
               {/* ── League Standing ──────────────────────────────────────── */}
               <div className={cn('rounded-2xl border p-5 bg-gradient-to-br', TIER_GRADIENT[data.league.tier_rank] ?? 'bg-surface-100', 'border-surface-300')}>

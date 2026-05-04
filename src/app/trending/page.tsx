@@ -18,6 +18,7 @@ import {
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
+import { ActiveSeasonBanner } from '@/components/season/ActiveSeasonBanner'
 import { cn } from '@/lib/utils/cn'
 import type { Topic, Law, Profile } from '@/lib/supabase/types'
 import { getTopicSignal, SIGNAL_PILL_CLASSES } from '@/lib/utils/topic-signal'
@@ -520,6 +521,7 @@ export default async function TrendingPage() {
   return (
     <div className="min-h-screen bg-surface-50">
       <TopBar />
+      <ActiveSeasonBanner />
 
       <main className="max-w-6xl mx-auto px-4 py-8 pb-24 md:pb-10">
         {/* ── Hero ─────────────────────────────────────────────── */}

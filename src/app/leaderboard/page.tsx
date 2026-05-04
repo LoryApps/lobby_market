@@ -4,6 +4,7 @@ import { BarChart2, Calendar, FileText, Flame, Gavel, MessageSquare, Mic, Shield
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
+import { ActiveSeasonBanner } from '@/components/season/ActiveSeasonBanner'
 import { LeaderboardTabs } from '@/components/leaderboard/LeaderboardTabs'
 import { CoalitionLeaderboard } from '@/components/leaderboard/CoalitionLeaderboard'
 import type { Coalition, Profile, Topic, Vote } from '@/lib/supabase/types'
@@ -263,6 +264,7 @@ export default async function LeaderboardPage() {
   return (
     <div className="min-h-screen bg-surface-50">
       <TopBar />
+      <ActiveSeasonBanner />
       <main className="max-w-6xl mx-auto px-4 py-8 pb-24 md:pb-12">
         {/* Hero */}
         <div className="mb-8 flex items-center gap-3">
