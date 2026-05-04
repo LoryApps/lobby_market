@@ -6,6 +6,7 @@ import { ToastProvider } from '@/components/ui/Toaster'
 import { NotificationWatcher } from '@/components/ui/NotificationWatcher'
 import { useCommandPalette, toggleCommandPalette } from '@/lib/hooks/useCommandPalette'
 import { InstallPrompt } from '@/components/layout/InstallPrompt'
+import { RouteProgressBar } from '@/components/layout/RouteProgressBar'
 
 // Lazy-load heavy modal components — they're only needed when the user
 // triggers them, so they should not bloat the initial JS bundle.
@@ -48,6 +49,7 @@ function CommandPaletteProvider() {
 export function Providers({ children }: ProvidersProps) {
   return (
     <ToastProvider>
+      <RouteProgressBar />
       {children}
       <NotificationWatcher />
       <CommandPaletteProvider />
