@@ -142,6 +142,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/stage`, changeFrequency: 'always', priority: 0.72 },
   { url: `${BASE_URL}/karma`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/hotspot`, changeFrequency: 'always', priority: 0.8 },
+  { url: `${BASE_URL}/forecasters`, changeFrequency: 'hourly', priority: 0.75 },
 ]
 
 export const dynamic = 'force-dynamic'

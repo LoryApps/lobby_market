@@ -86,6 +86,7 @@ import {
   Repeat2,
   Shield,
   MonitorPlay,
+  Brain,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -1393,6 +1394,16 @@ const QUICK_LINKS: QuickLink[] = [
     icon: Eye,
     iconColor: 'text-purple',
     iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
+    id: 'forecasters',
+    label: 'Oracle Board',
+    sublabel: 'Prediction accuracy leaderboard — top forecasters ranked by Brier score, accuracy, and category breadth',
+    href: '/forecasters',
+    icon: Brain,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
   },
   {
     type: 'link',
