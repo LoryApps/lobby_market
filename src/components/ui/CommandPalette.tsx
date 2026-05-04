@@ -88,6 +88,7 @@ import {
   MonitorPlay,
   Brain,
   Mail,
+  HandHeart,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -1170,6 +1171,16 @@ const QUICK_LINKS: QuickLink[] = [
     icon: GitBranch,
     iconColor: 'text-gold',
     iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'pledges',
+    label: 'Civic Pledge Wall',
+    sublabel: 'Make public civic commitments — let the community witness your actions',
+    href: '/pledges',
+    icon: HandHeart,
+    iconColor: 'text-for-300',
+    iconBg: 'bg-for-500/10',
   },
   {
     type: 'link',

@@ -105,6 +105,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/spotlight`, changeFrequency: 'daily', priority: 0.75 },
   { url: `${BASE_URL}/amendments`, changeFrequency: 'daily', priority: 0.72 },
   { url: `${BASE_URL}/petitions`, changeFrequency: 'daily', priority: 0.7 },
+  { url: `${BASE_URL}/pledges`, changeFrequency: 'hourly', priority: 0.75 },
   { url: `${BASE_URL}/watchdog`, changeFrequency: 'hourly', priority: 0.78 },
   { url: `${BASE_URL}/manifesto`, changeFrequency: 'monthly', priority: 0.6 },
   { url: `${BASE_URL}/capsule`, changeFrequency: 'daily', priority: 0.65 },
