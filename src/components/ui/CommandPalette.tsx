@@ -220,6 +220,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'season',
+    label: 'Civic Season',
+    sublabel: 'Monthly championship — earn Season Points for every vote, argument, and law',
+    href: '/season',
+    icon: Crown,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'records',
     label: 'Civic Records',
     sublabel: 'All-time platform records — fastest law, most voted, best argument',

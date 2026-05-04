@@ -2199,3 +2199,30 @@ export interface DmConversation {
   unread_count: number;
   last_sender_id: string;
 }
+
+// Civic Seasons
+export interface CivicSeason {
+  id: string;
+  name: string;
+  slug: string;
+  tagline: string | null;
+  starts_at: string;
+  ends_at: string;
+  is_active: boolean;
+  theme_color: string;
+  theme_icon: string;
+  created_at: string;
+}
+
+export interface SeasonPoints {
+  id: string;
+  season_id: string;
+  user_id: string;
+  vote_pts: number;
+  argument_pts: number;
+  debate_pts: number;
+  law_pts: number;
+  upvote_pts: number;
+  prediction_pts: number;
+  updated_at: string;
+}
