@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { TrendingUp, Clock, Flame, Scale, FileText, Zap, Gavel, Tag, LayoutGrid, Globe, Users, MapPin, Sparkles, History } from 'lucide-react'
+import { TrendingUp, Clock, Flame, Scale, FileText, Zap, Gavel, Tag, LayoutGrid, Globe, Users, MapPin, Sparkles, History, X } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { useFeedStore } from '@/lib/stores/feed-store'
 import type { FeedSort, FeedStatus, FeedMode, FeedScope } from '@/lib/stores/feed-store'
@@ -96,11 +96,23 @@ export function FeedFilters() {
     setCategoryFilter,
     setScopeFilter,
     setFeedMode,
+    clearFilters,
   } = useFeedStore()
+
+  // Count non-default active filters in discover mode
+  const activeFilterCount = feedMode === 'discover'
+    ? [
+        statusFilter !== null,
+        categoryFilter !== null,
+        scopeFilter !== null,
+        sort !== 'top',
+      ].filter(Boolean).length
+    : (sort !== 'new' && feedMode === 'following' ? 1 : 0)
+      + (sort !== 'top' && feedMode === 'foryou' ? 1 : 0)
 
   return (
     <div className="flex flex-col gap-1.5">
-      {/* Row 0: Discover / Following mode toggle */}
+      {/* Row 0: Discover / Following mode toggle + clear-filters */}
       <div className="flex items-center gap-2 px-3 pt-2">
         <div className="flex items-center gap-0.5 bg-surface-200/80 border border-surface-300 rounded-xl p-0.5 backdrop-blur-sm">
           {FEED_MODES.map(({ id, label, icon: Icon }) => (
@@ -124,6 +136,22 @@ export function FeedFilters() {
             </button>
           ))}
         </div>
+
+        {/* Clear-filters pill — shown when any non-default filter is active */}
+        {activeFilterCount > 0 && (
+          <button
+            onClick={clearFilters}
+            aria-label="Clear all filters"
+            className={cn(
+              'flex items-center gap-1 flex-shrink-0 px-2 py-1 rounded-lg text-[11px] font-mono font-medium',
+              'bg-against-500/15 border border-against-500/30 text-against-300',
+              'hover:bg-against-500/25 hover:border-against-500/50 transition-all duration-150'
+            )}
+          >
+            <X className="h-2.5 w-2.5" />
+            <span>{activeFilterCount}</span>
+          </button>
+        )}
       </div>
 
       {/* Row 1: Sort + Status (hidden in Following mode) */}

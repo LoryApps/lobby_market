@@ -14,6 +14,7 @@ import { DailyQuorumNudge } from '@/components/feed/DailyQuorumNudge'
 import { SetupChecklist } from '@/components/feed/SetupChecklist'
 import { FeedInsightStrip } from '@/components/feed/FeedInsightStrip'
 import { FeedFilters } from '@/components/feed/FeedFilters'
+import { LivePlatformBanner } from '@/components/feed/LivePlatformBanner'
 import { PulseDot } from '@/components/simulation/PulseDot'
 import { Avatar } from '@/components/ui/Avatar'
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary'
@@ -593,6 +594,7 @@ export function FeedContainer() {
             )}
           </AnimatePresence>
           <FeedFilters />
+          <LivePlatformBanner />
         </div>
       </div>
 
