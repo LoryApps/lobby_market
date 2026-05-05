@@ -18,6 +18,7 @@ import { useVoteStore } from '@/lib/stores/vote-store'
 import { useFeedStore } from '@/lib/stores/feed-store'
 import { BookmarkButton } from '@/components/ui/BookmarkButton'
 import { StanceShareButton } from '@/components/voting/StanceShareButton'
+import { TopicSubscribeButton } from '@/components/topic/TopicSubscribeButton'
 import { getTopicSignal, SIGNAL_PILL_CLASSES } from '@/lib/utils/topic-signal'
 import { TopicReactions } from '@/components/topic/TopicReactions'
 import { TrendMini } from '@/components/topic/TrendMini'
@@ -63,6 +64,17 @@ const statusBadgeVariant: Record<string, 'proposed' | 'active' | 'law' | 'failed
 function glowForStatus(status: string): 'blue' | 'red' | 'gold' | undefined {
   if (status === 'law') return 'gold'
   return undefined
+}
+
+function relativeTime(iso: string): string {
+  const diff = Date.now() - new Date(iso).getTime()
+  const mins = Math.floor(diff / 60_000)
+  if (mins < 60) return `${mins}m ago`
+  const hrs = Math.floor(mins / 60)
+  if (hrs < 24) return `${hrs}h ago`
+  const days = Math.floor(hrs / 24)
+  if (days < 30) return `${days}d ago`
+  return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 }
 
 // How many pixels of drag before the vote is committed
@@ -553,6 +565,9 @@ export function TopicCard({ topic, authorName, authorAvatar }: TopicCardProps) {
                   <span className="text-sm text-surface-500">
                     {authorName || 'Anonymous'}
                   </span>
+                  <span className="text-xs text-surface-600" aria-label={`Posted ${relativeTime(topic.created_at)}`}>
+                    {relativeTime(topic.created_at)}
+                  </span>
                 </div>
                 <div
                   className="flex items-center gap-1 text-xs text-surface-500"
@@ -601,6 +616,7 @@ export function TopicCard({ topic, authorName, authorAvatar }: TopicCardProps) {
           </span>
         </div>
         <BookmarkButton topicId={topic.id} />
+        <TopicSubscribeButton topicId={topic.id} size="sm" />
         <button
           onClick={handleShare}
           className="flex items-center justify-center h-10 w-10 rounded-full bg-surface-200 text-surface-500 hover:bg-surface-300 hover:text-white transition-colors"
