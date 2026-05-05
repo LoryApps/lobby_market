@@ -927,6 +927,7 @@ export type Database = {
           description: string;
           icon: string;
           tier: AchievementTier;
+          category: string;
           criteria: Record<string, unknown>;
           created_at: string;
         };
@@ -937,6 +938,7 @@ export type Database = {
           description: string;
           icon: string;
           tier: AchievementTier;
+          category?: string;
           criteria?: Record<string, unknown>;
           created_at?: string;
         };
@@ -947,6 +949,7 @@ export type Database = {
           description?: string;
           icon?: string;
           tier?: AchievementTier;
+          category?: string;
           criteria?: Record<string, unknown>;
           created_at?: string;
         };

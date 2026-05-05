@@ -134,6 +134,72 @@ async function computeMetric(
       return count ?? 999_999
     }
 
+    case 'total_arguments': {
+      const { data } = await supabase
+        .from('profiles')
+        .select('total_arguments')
+        .eq('id', userId)
+        .single()
+      return data?.total_arguments ?? 0
+    }
+
+    case 'clout_balance': {
+      const { data } = await supabase
+        .from('profiles')
+        .select('clout')
+        .eq('id', userId)
+        .single()
+      return data?.clout ?? 0
+    }
+
+    case 'bookmarks_count': {
+      const { count } = await supabase
+        .from('topic_bookmarks')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', userId)
+      return count ?? 0
+    }
+
+    case 'topics_supported': {
+      const { count } = await supabase
+        .from('topic_supports')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', userId)
+      return count ?? 0
+    }
+
+    case 'predictions_count': {
+      const { count } = await supabase
+        .from('topic_predictions')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', userId)
+      return count ?? 0
+    }
+
+    case 'debates_count': {
+      const { count } = await supabase
+        .from('debate_participants')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', userId)
+      return count ?? 0
+    }
+
+    case 'coalitions_count': {
+      const { count } = await supabase
+        .from('coalition_members')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', userId)
+      return count ?? 0
+    }
+
+    case 'follower_count': {
+      const { count } = await supabase
+        .from('user_follows')
+        .select('*', { count: 'exact', head: true })
+        .eq('following_id', userId)
+      return count ?? 0
+    }
+
     default:
       return 0
   }
