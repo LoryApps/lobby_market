@@ -27,10 +27,32 @@ export default function AchievementsLoading() {
           ))}
         </div>
 
-        {/* Filter pills */}
-        <div className="flex gap-2 mb-6">
+        {/* Branch mastery */}
+        <div className="mb-6">
+          <Skeleton className="h-3 w-36 mb-3" />
+          <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="flex flex-col items-center gap-1.5 p-3 rounded-xl border border-surface-300 bg-surface-100 animate-pulse">
+                <Skeleton className="h-8 w-8 rounded-lg" />
+                <Skeleton className="h-3 w-12" />
+                <Skeleton className="h-3 w-8" />
+                <Skeleton className="h-0.5 w-full rounded-full" />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Tier filter pills */}
+        <div className="flex gap-2 mb-3">
           {Array.from({ length: 5 }).map((_, i) => (
-            <Skeleton key={i} className="h-8 w-20 rounded-full" />
+            <Skeleton key={i} className="h-7 w-20 rounded-full" />
+          ))}
+        </div>
+
+        {/* Branch filter pills */}
+        <div className="flex gap-2 mb-6">
+          {Array.from({ length: 7 }).map((_, i) => (
+            <Skeleton key={i} className="h-7 w-20 rounded-full" />
           ))}
         </div>
 
