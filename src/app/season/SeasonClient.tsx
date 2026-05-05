@@ -837,9 +837,20 @@ export function SeasonClient() {
                         description="Season history will appear here once the first season ends."
                       />
                     ) : (
-                      pastSeasons.map((s, i) => (
-                        <PastSeasonRow key={s.id} s={s} index={i} />
-                      ))
+                      <>
+                        {pastSeasons.map((s, i) => (
+                          <PastSeasonRow key={s.id} s={s} index={i} />
+                        ))}
+                        <div className="pt-2 text-center">
+                          <Link
+                            href="/seasons"
+                            className="inline-flex items-center gap-1.5 text-xs font-mono text-for-400 hover:text-for-300 transition-colors"
+                          >
+                            View full Hall of Fame
+                            <ChevronRight className="h-3 w-3" />
+                          </Link>
+                        </div>
+                      </>
                     )}
                   </motion.div>
                 )}

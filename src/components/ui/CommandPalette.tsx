@@ -230,6 +230,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'seasons',
+    label: 'Hall of Fame',
+    sublabel: 'All-time season champions — every winner, every era',
+    href: '/seasons',
+    icon: Trophy,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'records',
     label: 'Civic Records',
     sublabel: 'All-time platform records — fastest law, most voted, best argument',
