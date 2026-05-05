@@ -67,6 +67,7 @@ import { TopicHotTakes } from '@/components/topic/TopicHotTakes'
 import { ArgumentContributors } from '@/components/topic/ArgumentContributors'
 import { ArgumentCitationsPanel } from '@/components/topic/ArgumentCitationsPanel'
 import { TopicAIBrief } from '@/components/topic/TopicAIBrief'
+import { TopicContextPanel } from '@/components/topic/TopicContextPanel'
 import { TopicBountyPanel } from '@/components/topic/TopicBountyPanel'
 import { FollowingVotesPanel } from '@/components/topic/FollowingVotesPanel'
 import { TopicChat } from '@/components/topic/TopicChat'
@@ -656,6 +657,11 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
                 )}
               </div>
             </div>
+
+            {/* Real-world context — Claude-generated background on what this debate means in practice */}
+            <ErrorBoundary size="sm" label="Couldn't load context" className="mt-6">
+              <TopicContextPanel topicId={topic.id} className="mt-6" />
+            </ErrorBoundary>
 
             {/* Topic context / wiki description — editable by author */}
             <ErrorBoundary size="sm" label="Couldn't load wiki section">
