@@ -466,6 +466,13 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
                       See who voted
                     </Link>
                     <Link
+                      href={`/topic/${topic.id}/reasons`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-for-400 hover:text-for-300 transition-colors"
+                    >
+                      <MessageSquare className="h-3.5 w-3.5" />
+                      Why people voted
+                    </Link>
+                    <Link
                       href={`/topic/${topic.id}/timeline`}
                       className="inline-flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-white transition-colors"
                     >

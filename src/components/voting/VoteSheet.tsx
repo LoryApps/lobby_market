@@ -250,6 +250,16 @@ function VoteConfirmed({
         category={topic.category}
       />
 
+      {/* Why people voted link */}
+      <Link
+        href={`/topic/${topic.id}/reasons`}
+        onClick={onClose}
+        className="text-xs font-mono text-surface-500 hover:text-for-400 transition-colors flex items-center gap-1"
+      >
+        <MessageSquare className="h-3 w-3" aria-hidden />
+        See why others voted
+      </Link>
+
       {/* ── Related topics nudge ─────────────────────────────────────────── */}
       <AnimatePresence>
         {!loadingRelated && related.length > 0 && (

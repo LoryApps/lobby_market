@@ -430,9 +430,18 @@ export default async function VotersPage({ params }: VotersPageProps) {
 
         {/* ── Footer note ── */}
         {totalVotes > 0 && (
-          <p className="text-center text-xs font-mono text-surface-600 mt-8">
-            Ranked by reputation score. Showing recent voters within each side.
-          </p>
+          <div className="mt-8 flex flex-col items-center gap-3">
+            <p className="text-center text-xs font-mono text-surface-600">
+              Ranked by reputation score. Showing recent voters within each side.
+            </p>
+            <Link
+              href={`/topic/${params.id}/reasons`}
+              className="inline-flex items-center gap-1.5 text-xs font-mono text-for-400 hover:text-for-300 transition-colors"
+            >
+              <MessageSquare className="h-3.5 w-3.5" />
+              See why people voted →
+            </Link>
+          </div>
         )}
       </main>
 
