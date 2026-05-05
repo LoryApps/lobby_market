@@ -372,6 +372,11 @@ export default function SettingsPage() {
                   href="/analytics"
                 />
                 <LinkRow
+                  label="Vote Alignment Intelligence"
+                  description="How your votes align with platform consensus"
+                  href="/prescient"
+                />
+                <LinkRow
                   label="My profile page"
                   description="See how others see your profile"
                   href="/profile/me"

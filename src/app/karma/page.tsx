@@ -504,7 +504,7 @@ export default function KarmaPage() {
         <div className="grid grid-cols-2 gap-2">
           {[
             { href: '/arguments', label: 'Write Arguments', icon: MessageSquare },
-            { href: '/predictions', label: 'Make Predictions', icon: Target },
+            { href: '/prescient', label: 'Vote Alignment', icon: Target },
             { href: '/topic/categories', label: 'Explore Categories', icon: BarChart2 },
             { href: '/impact', label: 'View Impact', icon: Gavel },
           ].map(({ href, label, icon: Icon }) => (
