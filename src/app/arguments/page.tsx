@@ -13,6 +13,7 @@ import {
   RefreshCw,
   Scale,
   ThumbsDown,
+  Trophy,
   ThumbsUp,
   TrendingUp,
 } from 'lucide-react'
@@ -397,13 +398,22 @@ export default function ArgumentsPage() {
             <p className="text-sm font-mono text-surface-500">
               The most-upvoted arguments ever made across the Lobby
             </p>
-            <Link
-              href="/arguments/trending"
-              className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-against-500/10 border border-against-500/30 text-[11px] font-mono font-semibold text-against-300 hover:bg-against-500/20 transition-colors flex-shrink-0"
-            >
-              <Flame className="h-3 w-3" aria-hidden />
-              Trending
-            </Link>
+            <div className="flex items-center gap-2">
+              <Link
+                href="/arguments/daily"
+                className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-gold/10 border border-gold/30 text-[11px] font-mono font-semibold text-gold hover:bg-gold/20 transition-colors flex-shrink-0"
+              >
+                <Trophy className="h-3 w-3" aria-hidden />
+                Daily Pick
+              </Link>
+              <Link
+                href="/arguments/trending"
+                className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-against-500/10 border border-against-500/30 text-[11px] font-mono font-semibold text-against-300 hover:bg-against-500/20 transition-colors flex-shrink-0"
+              >
+                <Flame className="h-3 w-3" aria-hidden />
+                Trending
+              </Link>
+            </div>
           </div>
         </div>
 
