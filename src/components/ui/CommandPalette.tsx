@@ -850,6 +850,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'law-today',
+    label: 'Law of the Day',
+    sublabel: 'One spotlighted established law, refreshed every 24 hours',
+    href: '/law/today',
+    icon: Gavel,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'constitution',
     label: 'Civic Constitution',
     sublabel: 'Living constitutional document of all established laws',

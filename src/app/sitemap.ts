@@ -15,6 +15,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/split`, changeFrequency: 'hourly', priority: 0.85 },
   { url: `${BASE_URL}/momentum`, changeFrequency: 'always', priority: 0.85 },
   { url: `${BASE_URL}/law`, changeFrequency: 'daily', priority: 0.85 },
+  { url: `${BASE_URL}/law/today`, changeFrequency: 'daily', priority: 0.82 },
   { url: `${BASE_URL}/law/graph`, changeFrequency: 'daily', priority: 0.7 },
   { url: `${BASE_URL}/law/atlas`, changeFrequency: 'daily', priority: 0.7 },
   { url: `${BASE_URL}/law/timeline`, changeFrequency: 'daily', priority: 0.65 },
