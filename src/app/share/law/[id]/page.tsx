@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import {
   ArrowRight,
+  Award,
   BarChart2,
   BookOpen,
   Calendar,
@@ -404,6 +405,14 @@ export default async function LawSharePage({ params }: PageProps) {
               See {argCount.toLocaleString()} {argCount === 1 ? 'argument' : 'arguments'} that shaped this law
             </Link>
           )}
+
+          <Link
+            href={`/certificate/${law.id}`}
+            className="flex items-center justify-center gap-2 py-3 rounded-xl font-mono text-sm text-surface-400 hover:text-white bg-surface-200/50 border border-surface-300 hover:border-surface-400 transition-all"
+          >
+            <Award className="h-4 w-4 text-gold" aria-hidden="true" />
+            View contribution certificate
+          </Link>
 
           <Link
             href="/law"

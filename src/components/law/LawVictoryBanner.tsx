@@ -11,8 +11,9 @@
  */
 
 import { useEffect, useRef, useState } from 'react'
+import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Share2, Trophy, X } from 'lucide-react'
+import { Award, Share2, Trophy, X } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { ConfettiBurst } from '@/components/simulation/ConfettiBurst'
 import { cn } from '@/lib/utils/cn'
@@ -180,12 +181,24 @@ export function LawVictoryBanner({
 
               {/* Actions */}
               <div className="flex items-center gap-2 flex-shrink-0">
-                <button
-                  onClick={() => shareVictory(lawStatement, lawId)}
+                <Link
+                  href={`/certificate/${lawId}`}
                   className={cn(
                     'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-semibold',
                     'bg-gold/20 text-gold border border-gold/40',
                     'hover:bg-gold/30 transition-colors'
+                  )}
+                  aria-label="View your civic contribution certificate"
+                >
+                  <Award className="h-3.5 w-3.5" />
+                  Certificate
+                </Link>
+                <button
+                  onClick={() => shareVictory(lawStatement, lawId)}
+                  className={cn(
+                    'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-semibold',
+                    'bg-surface-200 text-surface-300 border border-surface-400',
+                    'hover:bg-surface-300 hover:text-white transition-colors'
                   )}
                   aria-label="Share your contribution to this law"
                 >
