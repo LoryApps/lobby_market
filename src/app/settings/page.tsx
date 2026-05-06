@@ -7,6 +7,8 @@ import { motion } from 'framer-motion'
 import {
   ArrowLeft,
   Bell,
+  BellRing,
+  Check,
   ChevronRight,
   Code2,
   Database,
@@ -19,6 +21,7 @@ import {
   Shield,
   Smartphone,
   User,
+  X,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { TopBar } from '@/components/layout/TopBar'
@@ -203,6 +206,11 @@ export default function SettingsPage() {
   const [embedCopied, setEmbedCopied] = useState(false)
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
+  // Browser notification state
+  const [browserNotifPermission, setBrowserNotifPermission] = useState<NotificationPermission | 'unsupported'>('default')
+  const [browserNotifEnabled, setBrowserNotifEnabled] = useState(false)
+  const [browserNotifRequesting, setBrowserNotifRequesting] = useState(false)
+
   // PWA install state
   const [isInstalled, setIsInstalled] = useState(false)
   const [isIOS, setIsIOS] = useState(false)
@@ -227,6 +235,21 @@ export default function SettingsPage() {
     window.addEventListener('appinstalled', () => setIsInstalled(true))
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstall as EventListener)
+    }
+  }, [])
+
+  // Read browser notification permission + enabled state on mount
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    if (!('Notification' in window)) {
+      setBrowserNotifPermission('unsupported')
+      return
+    }
+    setBrowserNotifPermission(window.Notification.permission)
+    try {
+      setBrowserNotifEnabled(localStorage.getItem('lm_browser_notifs') === 'true')
+    } catch {
+      setBrowserNotifEnabled(false)
     }
   }, [])
 
@@ -297,6 +320,35 @@ export default function SettingsPage() {
 
       return next
     })
+  }
+
+  async function requestBrowserNotifications() {
+    if (browserNotifRequesting) return
+    if (!('Notification' in window)) return
+    setBrowserNotifRequesting(true)
+    try {
+      const result = await window.Notification.requestPermission()
+      setBrowserNotifPermission(result)
+      if (result === 'granted') {
+        try { localStorage.setItem('lm_browser_notifs', 'true') } catch {}
+        setBrowserNotifEnabled(true)
+        // Fire a test notification so the user sees it working
+        new window.Notification('Lobby Market', {
+          body: 'Browser notifications enabled. You\'ll see alerts when new activity arrives.',
+          icon: '/assets/logo-mark.png',
+          badge: '/assets/logo-mark.png',
+        })
+      }
+    } catch {
+      // requestPermission may throw in some environments
+    } finally {
+      setBrowserNotifRequesting(false)
+    }
+  }
+
+  function toggleBrowserNotifEnabled(value: boolean) {
+    try { localStorage.setItem('lm_browser_notifs', value ? 'true' : 'false') } catch {}
+    setBrowserNotifEnabled(value)
   }
 
   async function handleSignOut() {
@@ -476,6 +528,81 @@ export default function SettingsPage() {
                 />
               </div>
             </div>
+
+            {/* ── Browser Notifications ─────────────────────────────────── */}
+            {browserNotifPermission !== 'unsupported' && (
+              <div className={cardClass}>
+                <SectionHeader icon={BellRing} title="Browser Notifications" />
+                <p className="text-xs text-surface-500 mb-4">
+                  Get OS-level alerts even when the Lobby tab is in the background.
+                  Works whenever your browser is open.
+                </p>
+
+                {browserNotifPermission === 'denied' && (
+                  <div className="flex items-start gap-3 p-3 rounded-xl bg-against-500/10 border border-against-500/20 mb-3">
+                    <X className="h-4 w-4 text-against-400 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-sm font-medium text-against-300">Blocked by browser</p>
+                      <p className="text-xs text-surface-500 mt-0.5">
+                        Open your browser&rsquo;s site settings and allow notifications for lobby.market, then reload this page.
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {browserNotifPermission === 'granted' && (
+                  <div className="flex items-center justify-between gap-4 py-3 border-b border-surface-300">
+                    <label className="flex-1 cursor-pointer">
+                      <span className="block text-sm font-medium text-white">Enable browser alerts</span>
+                      <span className="block text-xs text-surface-500 mt-0.5">
+                        Show OS notifications for achievements, laws, debate starts, and replies
+                      </span>
+                    </label>
+                    <button
+                      role="switch"
+                      aria-checked={browserNotifEnabled}
+                      onClick={() => toggleBrowserNotifEnabled(!browserNotifEnabled)}
+                      className={cn(
+                        'relative flex-shrink-0 h-5 w-9 rounded-full transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-for-500/40',
+                        browserNotifEnabled ? 'bg-for-600' : 'bg-surface-400'
+                      )}
+                    >
+                      <span
+                        className={cn(
+                          'absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform duration-200',
+                          browserNotifEnabled ? 'translate-x-4' : 'translate-x-0.5'
+                        )}
+                      />
+                    </button>
+                  </div>
+                )}
+
+                {browserNotifPermission === 'granted' && browserNotifEnabled && (
+                  <div className="flex items-center gap-2 mt-3 text-xs text-emerald">
+                    <Check className="h-3.5 w-3.5 flex-shrink-0" />
+                    <span>Browser notifications active</span>
+                  </div>
+                )}
+
+                {browserNotifPermission === 'default' && (
+                  <button
+                    type="button"
+                    onClick={requestBrowserNotifications}
+                    disabled={browserNotifRequesting}
+                    className={cn(
+                      'flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-mono font-semibold transition-all',
+                      'bg-for-600/20 border border-for-600/40 text-for-300',
+                      'hover:bg-for-600/30 hover:text-white',
+                      'disabled:opacity-50 disabled:cursor-not-allowed',
+                      'focus:outline-none focus-visible:ring-2 focus-visible:ring-for-500/40'
+                    )}
+                  >
+                    <Bell className="h-4 w-4" />
+                    {browserNotifRequesting ? 'Requesting…' : 'Enable browser notifications'}
+                  </button>
+                )}
+              </div>
+            )}
 
             {/* ── Appearance ────────────────────────────────────────────── */}
             <div className={cardClass}>

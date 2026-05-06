@@ -19,6 +19,9 @@
  *   (set by the Settings page) before showing a toast.
  * - After showing, marks the notification as read on the server.
  * - Deduplicates via a per-session in-memory Set + localStorage fallback.
+ * - When browser notification permission is granted and lm_browser_notifs is
+ *   enabled, also fires a native OS notification so the user sees it even
+ *   when the tab is in the background.
  *
  * Must be rendered inside <ToastProvider>.
  */
@@ -29,6 +32,45 @@ import { createClient } from '@/lib/supabase/client'
 import { useToast } from '@/lib/hooks/useToast'
 import type { ToastTier } from '@/lib/hooks/useToast'
 import type { Notification, NotificationType } from '@/lib/supabase/types'
+
+// ─── Browser notification preference ─────────────────────────────────────────
+
+const BROWSER_NOTIF_KEY = 'lm_browser_notifs'
+
+function isBrowserNotifEnabled(): boolean {
+  if (typeof window === 'undefined') return false
+  if (!('Notification' in window)) return false
+  if (window.Notification.permission !== 'granted') return false
+  try {
+    return localStorage.getItem(BROWSER_NOTIF_KEY) === 'true'
+  } catch {
+    return false
+  }
+}
+
+function fireBrowserNotification(title: string, body: string | null | undefined, icon: string) {
+  if (!isBrowserNotifEnabled()) return
+  // Only fire when the tab is backgrounded — no need to interrupt the user
+  // while they're actively using the app.
+  if (document.visibilityState === 'visible') return
+  try {
+    const n = new window.Notification(title, {
+      body: body ?? undefined,
+      icon,
+      badge: '/assets/logo-mark.png',
+      tag: title, // collapse duplicate notifications
+      renotify: false,
+    })
+    // Auto-close after 8 s so it doesn't pile up in the notification center
+    setTimeout(() => n.close(), 8000)
+    n.onclick = () => {
+      window.focus()
+      n.close()
+    }
+  } catch {
+    // Notification constructor may fail in sandboxed iframes — safe to ignore
+  }
+}
 
 // ─── Preference storage (mirrors Settings page) ───────────────────────────────
 
@@ -344,6 +386,11 @@ export function NotificationWatcher() {
           tier,
           duration: config.duration,
         })
+        fireBrowserNotification(
+          `${config.emoji} ${n.title}`,
+          body ?? null,
+          '/assets/logo-mark.png',
+        )
         return
       }
 
@@ -355,6 +402,11 @@ export function NotificationWatcher() {
         icon: config.emoji,
         duration: config.duration,
       })
+      fireBrowserNotification(
+        `${config.emoji} ${n.title}`,
+        n.body,
+        '/assets/logo-mark.png',
+      )
     }
 
     setup()
