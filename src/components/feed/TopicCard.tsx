@@ -554,6 +554,25 @@ export function TopicCard({ topic, authorName, authorAvatar }: TopicCardProps) {
                 <TopicReactions topicId={topic.id} size="sm" />
               </div>
 
+              {/* Tag pills — max 3, link to /tags/[tag] */}
+              {Array.isArray(topic.tags) && topic.tags.length > 0 && (
+                <div
+                  className="flex items-center gap-1.5 flex-wrap pt-1"
+                  onClick={(e) => e.preventDefault()}
+                >
+                  {topic.tags.slice(0, 3).map((tag) => (
+                    <a
+                      key={tag}
+                      href={`/tags/${encodeURIComponent(tag)}`}
+                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono border bg-surface-200/50 text-surface-500 border-surface-300 hover:text-surface-300 hover:border-surface-400 transition-colors"
+                      aria-label={`Browse #${tag} tag`}
+                    >
+                      #{tag}
+                    </a>
+                  ))}
+                </div>
+              )}
+
               {/* Author + view count row */}
               <div className="flex items-center justify-between pt-2 border-t border-surface-300">
                 <div className="flex items-center gap-2">

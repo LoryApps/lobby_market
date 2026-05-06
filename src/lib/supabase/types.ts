@@ -116,6 +116,7 @@ export type Database = {
           updated_at: string;
           description_updated_at: string | null;
           description_updated_by: string | null;
+          tags: string[];
         };
         Insert: {
           id?: string;
@@ -144,6 +145,7 @@ export type Database = {
           updated_at?: string;
           description_updated_at?: string | null;
           description_updated_by?: string | null;
+          tags?: string[];
         };
         Update: {
           id?: string;
@@ -172,6 +174,7 @@ export type Database = {
           updated_at?: string;
           description_updated_at?: string | null;
           description_updated_by?: string | null;
+          tags?: string[];
         };
         Relationships: [];
       };
