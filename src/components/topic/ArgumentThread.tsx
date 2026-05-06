@@ -31,11 +31,13 @@ import {
   MessageSquarePlus,
   Send,
   Share2,
+  Sparkles,
   ThumbsDown,
   ThumbsUp,
   Trash2,
   TrendingUp,
   Clock,
+  X,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { Avatar } from '@/components/ui/Avatar'
@@ -756,6 +758,12 @@ function PostArgumentForm({
   const [draftRestored, setDraftRestored] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
+  // AI starter state
+  const [aiStartersOpen, setAiStartersOpen] = useState(false)
+  const [aiStartersLoading, setAiStartersLoading] = useState(false)
+  const [aiStarters, setAiStarters] = useState<{ text: string; angle: string }[]>([])
+  const [aiUnavailable, setAiUnavailable] = useState(false)
+
   // @mention autocomplete state
   const [mentionQuery, setMentionQuery] = useState<string | null>(null)
   const [mentionSelectedIndex, setMentionSelectedIndex] = useState(0)
@@ -777,6 +785,39 @@ function PostArgumentForm({
   const remaining = MAX_CHARS - content.length
   const isValid = side !== null && content.trim().length >= MIN_CHARS && content.trim().length <= MAX_CHARS && !sourceUrlError
 
+  // Argument quality score (0-25, pure client-side heuristic)
+  const argQuality = (() => {
+    const text = content.trim()
+    if (!text) return null
+    let score = 0
+    // Length (0-10)
+    const len = text.length
+    if (len >= 350) score += 10
+    else if (len >= 150) score += 7
+    else if (len >= 80) score += 5
+    else if (len >= 40) score += 3
+    else score += 1
+    // Evidence (0-5)
+    if (sourceUrl.trim()) score += 5
+    // Specificity: numbers, percentages, years (0-5)
+    const specMatches = (text.match(/\d+\.?\d*%?/g) ?? []).length
+    score += Math.min(specMatches * 2, 5)
+    // Completeness: ends with sentence-terminating punctuation (0-5)
+    if (/[.!?]$/.test(text)) score += 3
+    if (text.split(/[.!?]/).filter(s => s.trim().length > 10).length >= 2) score += 2
+    return Math.min(score, 25)
+  })()
+
+  const qualityMeta = argQuality === null ? null : argQuality >= 21
+    ? { label: 'Compelling', bar: 'bg-gold', text: 'text-gold', pct: 100 }
+    : argQuality >= 16
+      ? { label: 'Strong', bar: 'bg-emerald', text: 'text-emerald', pct: 80 }
+      : argQuality >= 11
+        ? { label: 'Solid', bar: 'bg-for-400', text: 'text-for-400', pct: 60 }
+        : argQuality >= 6
+          ? { label: 'Basic', bar: 'bg-gold/60', text: 'text-gold/80', pct: 36 }
+          : { label: 'Developing', bar: 'bg-surface-400', text: 'text-surface-500', pct: 16 }
+
   const handleSourceUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value
     setSourceUrl(val)
@@ -794,6 +835,34 @@ function PostArgumentForm({
     } catch {
       setSourceUrlError('Enter a valid URL (e.g. https://example.com)')
     }
+  }
+
+  async function fetchAiStarters() {
+    if (!side || aiStartersLoading) return
+    setAiStartersLoading(true)
+    setAiStartersOpen(true)
+    setAiStarters([])
+    setAiUnavailable(false)
+    try {
+      const res = await fetch(`/api/topics/${topicId}/argument-starters`, { method: 'POST' })
+      if (!res.ok) throw new Error('Failed')
+      const data = await res.json() as { starters?: { for: { text: string; angle: string }[]; against: { text: string; angle: string }[] }; unavailable?: boolean }
+      if (data.unavailable) { setAiUnavailable(true); return }
+      const starters = side === 'blue' ? (data.starters?.for ?? []) : (data.starters?.against ?? [])
+      setAiStarters(starters)
+    } catch {
+      setAiStarters([])
+    } finally {
+      setAiStartersLoading(false)
+    }
+  }
+
+  function applyStarter(text: string) {
+    setContent(text)
+    saveDraft(topicId, side, text)
+    setAiStartersOpen(false)
+    setAiStarters([])
+    setTimeout(() => textareaRef.current?.focus(), 50)
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -991,6 +1060,125 @@ function PostArgumentForm({
           {remaining}
         </span>
       </div>
+
+      {/* Argument quality meter — shown when content exists */}
+      {qualityMeta && content.trim().length >= 10 && (
+        <div className="flex items-center gap-2" aria-live="polite" aria-label={`Argument quality: ${qualityMeta.label}`}>
+          <div className="flex-1 h-1 rounded-full bg-surface-300 overflow-hidden">
+            <div
+              className={cn('h-full rounded-full transition-all duration-300', qualityMeta.bar)}
+              style={{ width: `${qualityMeta.pct}%` }}
+            />
+          </div>
+          <span className={cn('text-[10px] font-mono flex-shrink-0 tabular-nums', qualityMeta.text)}>
+            {qualityMeta.label}
+          </span>
+        </div>
+      )}
+
+      {/* AI Starter — shown when side is selected and content is empty */}
+      {side && !content.trim() && (
+        <div className="space-y-2">
+          <button
+            type="button"
+            onClick={() => {
+              if (aiStartersOpen) {
+                setAiStartersOpen(false)
+              } else {
+                void fetchAiStarters()
+              }
+            }}
+            className={cn(
+              'flex items-center gap-1.5 text-[11px] font-mono transition-colors',
+              aiStartersOpen
+                ? 'text-surface-400 hover:text-surface-300'
+                : side === 'blue'
+                  ? 'text-for-400/70 hover:text-for-300'
+                  : 'text-against-400/70 hover:text-against-300',
+            )}
+            aria-expanded={aiStartersOpen}
+            aria-controls="ai-starter-panel"
+          >
+            {aiStartersLoading ? (
+              <Loader2 className="h-3 w-3 animate-spin" aria-hidden />
+            ) : aiStartersOpen ? (
+              <X className="h-3 w-3" aria-hidden />
+            ) : (
+              <Sparkles className="h-3 w-3" aria-hidden />
+            )}
+            {aiStartersLoading
+              ? 'Generating starters…'
+              : aiStartersOpen
+                ? 'Hide starters'
+                : 'Need a starting angle? AI suggestions'}
+          </button>
+
+          <AnimatePresence>
+            {aiStartersOpen && !aiStartersLoading && (
+              <motion.div
+                id="ai-starter-panel"
+                role="list"
+                aria-label="AI argument starters"
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.2, ease: 'easeOut' }}
+                className="overflow-hidden"
+              >
+                {aiUnavailable ? (
+                  <p className="text-[11px] font-mono text-surface-500 py-1">
+                    AI starters are unavailable on this deployment.
+                  </p>
+                ) : aiStarters.length === 0 ? (
+                  <p className="text-[11px] font-mono text-surface-500 py-1">
+                    No starters available — try writing freely.
+                  </p>
+                ) : (
+                  <div className="space-y-1.5 pt-0.5">
+                    {aiStarters.map((starter, i) => (
+                      <button
+                        key={i}
+                        type="button"
+                        role="listitem"
+                        onClick={() => applyStarter(starter.text)}
+                        className={cn(
+                          'w-full text-left rounded-xl border px-3.5 py-2.5 space-y-1',
+                          'transition-all group',
+                          side === 'blue'
+                            ? 'border-for-500/20 bg-for-500/5 hover:border-for-500/40 hover:bg-for-500/10'
+                            : 'border-against-500/20 bg-against-500/5 hover:border-against-500/40 hover:bg-against-500/10',
+                        )}
+                        aria-label={`Use starter: ${starter.text}`}
+                      >
+                        <div className="flex items-center justify-between gap-2">
+                          <span className={cn(
+                            'text-[9px] font-mono font-bold uppercase tracking-widest',
+                            side === 'blue' ? 'text-for-400/60' : 'text-against-400/60',
+                          )}>
+                            {starter.angle}
+                          </span>
+                          <span className={cn(
+                            'text-[9px] font-mono opacity-0 group-hover:opacity-100 transition-opacity',
+                            side === 'blue' ? 'text-for-400' : 'text-against-400',
+                          )}>
+                            Use this →
+                          </span>
+                        </div>
+                        <p className="text-[11px] font-mono text-surface-300 leading-relaxed group-hover:text-white transition-colors line-clamp-2">
+                          &ldquo;{starter.text}&rdquo;
+                        </p>
+                      </button>
+                    ))}
+                    <p className="text-[10px] font-mono text-surface-600 pt-0.5 pl-0.5">
+                      Click a starter to fill your argument — edit it freely before posting.
+                    </p>
+                  </div>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      )}
 
       {/* Optional source URL */}
       <div className="space-y-1">
