@@ -1038,6 +1038,16 @@ const QUICK_LINKS: QuickLink[] = [
     iconColor: 'text-gold',
     iconBg: 'bg-gold/10',
   },
+  {
+    type: 'link',
+    id: 'time-machine',
+    label: 'Civic Time Machine',
+    sublabel: 'Revisit any date — see which topics, laws, arguments, and debates shaped that day',
+    href: '/time-machine',
+    icon: History,
+    iconColor: 'text-for-300',
+    iconBg: 'bg-for-500/10',
+  },
   // ── Live / activity ────────────────────────────────────────────────────────
   {
     type: 'link',
