@@ -218,12 +218,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .order('reputation_score', { ascending: false })
       .limit(500)
 
-    const profileUrls: MetadataRoute.Sitemap = (profiles ?? []).map((p) => ({
-      url: `${BASE_URL}/profile/${p.username}`,
-      lastModified: new Date(p.updated_at),
-      changeFrequency: 'weekly' as const,
-      priority: 0.5,
-    }))
+    const profileUrls: MetadataRoute.Sitemap = (profiles ?? []).flatMap((p) => ([
+      {
+        url: `${BASE_URL}/profile/${p.username}`,
+        lastModified: new Date(p.updated_at),
+        changeFrequency: 'weekly' as const,
+        priority: 0.5,
+      },
+      {
+        url: `${BASE_URL}/profile/${p.username}/achievements`,
+        lastModified: new Date(p.updated_at),
+        changeFrequency: 'weekly' as const,
+        priority: 0.4,
+      },
+    ]))
 
     // Fetch top arguments (most upvoted) for permalink pages
     const { data: topArguments } = await supabase

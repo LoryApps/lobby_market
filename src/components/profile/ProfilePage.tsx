@@ -574,12 +574,19 @@ export function ProfilePage({
                 earnedAchievementIds={earnedAchievementIds}
                 allAchievements={allAchievements}
               />
-              <div className="mt-4 text-center">
+              <div className="mt-4 flex items-center justify-center gap-4 text-xs font-mono text-surface-500">
+                <a
+                  href={`/profile/${profile.username}/achievements`}
+                  className="hover:text-for-400 transition-colors underline underline-offset-2"
+                >
+                  Shareable achievement page ↗
+                </a>
+                <span className="text-surface-600">·</span>
                 <a
                   href="/achievements"
-                  className="text-xs font-mono text-surface-500 hover:text-surface-300 transition-colors underline underline-offset-2"
+                  className="hover:text-surface-300 transition-colors underline underline-offset-2"
                 >
-                  Browse all achievements →
+                  Full catalog →
                 </a>
               </div>
             </motion.div>
