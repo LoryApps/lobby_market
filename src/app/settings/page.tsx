@@ -8,6 +8,8 @@ import {
   ArrowLeft,
   Bell,
   ChevronRight,
+  Code2,
+  Database,
   Download,
   Eye,
   LogOut,
@@ -197,6 +199,8 @@ export default function SettingsPage() {
   const [prefs, setPrefs] = useState<NotifPrefs>(DEFAULT_PREFS)
   const [signingOut, setSigningOut] = useState(false)
   const [savedBanner, setSavedBanner] = useState(false)
+  const [exportLoading, setExportLoading] = useState(false)
+  const [embedCopied, setEmbedCopied] = useState(false)
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // PWA install state
@@ -301,6 +305,36 @@ export default function SettingsPage() {
     const supabase = createClient()
     await supabase.auth.signOut()
     router.push('/login')
+  }
+
+  async function handleExportData() {
+    if (exportLoading) return
+    setExportLoading(true)
+    try {
+      const res = await fetch('/api/export')
+      if (!res.ok) throw new Error('Export failed')
+      const blob = await res.blob()
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      const date = new Date().toISOString().slice(0, 10)
+      a.download = `lobby-market-export-${date}.json`
+      a.click()
+      URL.revokeObjectURL(url)
+    } catch {
+      // Non-fatal
+    } finally {
+      setExportLoading(false)
+    }
+  }
+
+  function handleCopyEmbed() {
+    if (!user) return
+    const code = `<iframe src="https://lobby.market/api/embed/profile/${user.username}" width="320" height="280" frameborder="0" style="border-radius:12px;overflow:hidden"></iframe>`
+    navigator.clipboard.writeText(code).then(() => {
+      setEmbedCopied(true)
+      setTimeout(() => setEmbedCopied(false), 2000)
+    }).catch(() => {/* clipboard unavailable */})
   }
 
   const cardClass =
@@ -538,6 +572,51 @@ export default function SettingsPage() {
                   description="View your vote timeline on your profile"
                   href="/profile/me"
                 />
+              </div>
+            </div>
+
+            {/* ── Data & Portability ────────────────────────────────────── */}
+            <div className={cardClass}>
+              <SectionHeader icon={Database} title="Data &amp; Portability" />
+              <div>
+                {/* Export data */}
+                <button
+                  type="button"
+                  onClick={handleExportData}
+                  disabled={exportLoading}
+                  className="w-full text-left"
+                >
+                  <div className="flex items-center justify-between gap-4 py-3 border-b border-surface-300 group cursor-pointer">
+                    <div className="flex-1">
+                      <span className="block text-sm font-medium text-white group-hover:text-for-400 transition-colors">
+                        {exportLoading ? 'Preparing export…' : 'Export your data'}
+                      </span>
+                      <span className="block text-xs text-surface-500 mt-0.5">
+                        Download all your votes, arguments, achievements, and more as JSON
+                      </span>
+                    </div>
+                    <Download className="h-4 w-4 text-surface-500 group-hover:text-white flex-shrink-0 transition-colors" />
+                  </div>
+                </button>
+
+                {/* Profile embed */}
+                <button
+                  type="button"
+                  onClick={handleCopyEmbed}
+                  className="w-full text-left"
+                >
+                  <div className="flex items-center justify-between gap-4 py-3 group cursor-pointer">
+                    <div className="flex-1">
+                      <span className="block text-sm font-medium text-white group-hover:text-for-400 transition-colors">
+                        {embedCopied ? 'Embed code copied!' : 'Copy profile embed code'}
+                      </span>
+                      <span className="block text-xs text-surface-500 mt-0.5">
+                        Embed your civic profile card on any website
+                      </span>
+                    </div>
+                    <Code2 className="h-4 w-4 text-surface-500 group-hover:text-white flex-shrink-0 transition-colors" />
+                  </div>
+                </button>
               </div>
             </div>
 

@@ -34,6 +34,8 @@ export function VoteBar({
 
       {/* Bar */}
       <div
+        role="img"
+        aria-label={`${Math.round(bluePct)}% for, ${Math.round(redPct)}% against — ${totalVotes.toLocaleString()} votes cast`}
         className={cn(
           'relative w-full h-3 rounded-full overflow-hidden bg-surface-300',
           blueWinning ? 'glow-blue' : 'glow-red'
@@ -42,6 +44,7 @@ export function VoteBar({
         {/* Blue side */}
         <motion.div
           className="absolute inset-y-0 left-0 bg-gradient-to-r from-for-600 to-for-400 rounded-l-full"
+          aria-hidden="true"
           initial={false}
           animate={{ width: `${bluePct}%` }}
           transition={{ type: 'spring', stiffness: 100, damping: 20 }}
@@ -51,6 +54,7 @@ export function VoteBar({
         {/* Red side */}
         <motion.div
           className="absolute inset-y-0 right-0 bg-gradient-to-r from-against-400 to-against-600 rounded-r-full"
+          aria-hidden="true"
           initial={false}
           animate={{ width: `${redPct}%` }}
           transition={{ type: 'spring', stiffness: 100, damping: 20 }}
