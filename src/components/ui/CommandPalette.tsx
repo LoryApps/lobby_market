@@ -1519,6 +1519,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'common-threads',
+    label: 'Common Threads',
+    sublabel: 'Recurring civic themes that run through multiple debates — see cross-cutting values at a glance',
+    href: '/common-threads',
+    icon: Layers,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'judge',
     label: 'Argument Acuity',
     sublabel: 'Which argument is more convincing? Rate FOR vs AGAINST to build your argument acuity score',
