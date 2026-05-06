@@ -493,13 +493,21 @@ export default function WidgetBuilderPage() {
             {/* API reference callout */}
             <div className="rounded-xl border border-surface-300/50 bg-surface-100/50 p-4 flex items-start gap-3">
               <Code2 className="h-4 w-4 text-surface-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
-              <div className="text-xs font-mono text-surface-500">
-                <span className="text-surface-400">API endpoint: </span>
-                <code className="text-for-400">GET /api/embed/topic/{'{id}'}</code>
-                {' · '}
-                <Link href="/developers#embed" className="text-for-400 hover:text-for-300 underline underline-offset-2">
-                  Full docs →
-                </Link>
+              <div className="text-xs font-mono text-surface-500 space-y-1">
+                <div>
+                  <span className="text-surface-400">Topics: </span>
+                  <code className="text-for-400">GET /api/embed/topic/{'{id}'}</code>
+                </div>
+                <div>
+                  <span className="text-surface-400">Arguments: </span>
+                  <code className="text-for-400">GET /api/embed/argument/{'{id}'}</code>
+                  <span className="text-surface-600 ml-2">— embed any individual argument as a quote card</span>
+                </div>
+                <div className="pt-1">
+                  <Link href="/developers#embed" className="text-for-400 hover:text-for-300 underline underline-offset-2">
+                    Full docs →
+                  </Link>
+                </div>
               </div>
             </div>
           </div>

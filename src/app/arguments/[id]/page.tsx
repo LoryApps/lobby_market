@@ -18,6 +18,7 @@ import { Badge } from '@/components/ui/Badge'
 import { Avatar } from '@/components/ui/Avatar'
 import { SharePanel } from '@/components/ui/SharePanel'
 import { ArgumentRepliesClient } from './ArgumentRepliesClient'
+import { ArgumentEmbedPanel } from './ArgumentEmbedPanel'
 import { cn } from '@/lib/utils/cn'
 
 export const dynamic = 'force-dynamic'
@@ -332,6 +333,9 @@ export default async function ArgumentPage({ params }: ArgumentPageProps) {
             </div>
           </div>
         </div>
+
+        {/* Embed panel */}
+        <ArgumentEmbedPanel argumentId={arg.id} isFor={isFor} />
 
         {/* Reply thread */}
         <ArgumentRepliesClient
