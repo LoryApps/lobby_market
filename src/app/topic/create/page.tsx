@@ -16,6 +16,7 @@ import {
   Scale,
   Save,
   Sparkles,
+  Wand2,
   X,
   Zap,
   FileText,
@@ -23,6 +24,7 @@ import {
 import { Button } from '@/components/ui/Button'
 import { cn } from '@/lib/utils/cn'
 import type { SuggestResponse } from '@/app/api/topics/suggest/route'
+import type { CategorizeResponse } from '@/app/api/topics/categorize/route'
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -396,6 +398,11 @@ export default function CreateTopicPage() {
   const [aiUnavailable, setAiUnavailable] = useState(false)
   const [aiDismissed, setAiDismissed] = useState(false)
 
+  // AI auto-fill state (category + scope + description)
+  const [autoFillLoading, setAutoFillLoading] = useState(false)
+  const [autoFillApplied, setAutoFillApplied] = useState(false)
+  const autoFillTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
   const charCount = statement.length
   const isOverLimit = charCount > MAX_CHARS
   const descCount = description.length
@@ -483,6 +490,34 @@ export default function CreateTopicPage() {
       setAiLoading(false)
     }
   }, [statement, category, aiLoading])
+
+  // ── AI auto-fill: category + scope + description ─────────────────────────
+
+  const fetchAutoFill = useCallback(async () => {
+    const q = statement.trim()
+    if (q.length < 20 || autoFillLoading) return
+    setAutoFillLoading(true)
+    try {
+      const res = await fetch('/api/topics/categorize', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ statement: q }),
+      })
+      if (!res.ok) return
+      const data = (await res.json()) as CategorizeResponse
+      if (data.unavailable) return
+      if (data.category) setCategory(data.category)
+      if (data.scope) setScope(data.scope)
+      if (data.description && !description.trim()) setDescription(data.description)
+      setAutoFillApplied(true)
+      if (autoFillTimerRef.current) clearTimeout(autoFillTimerRef.current)
+      autoFillTimerRef.current = setTimeout(() => setAutoFillApplied(false), 4000)
+    } catch {
+      // best-effort
+    } finally {
+      setAutoFillLoading(false)
+    }
+  }, [statement, description, autoFillLoading])
 
   // ── Form handling ────────────────────────────────────────────────────────
 
@@ -688,7 +723,30 @@ export default function CreateTopicPage() {
                   Make it clear, specific, and binary.
                 </p>
               )}
-              <div className="flex items-center gap-3 flex-shrink-0">
+              <div className="flex items-center gap-2 flex-shrink-0">
+                {/* AI auto-fill button — fills category, scope, and description */}
+                {!aiUnavailable && statement.trim().length >= 20 && (
+                  <button
+                    type="button"
+                    onClick={fetchAutoFill}
+                    disabled={autoFillLoading}
+                    title="Auto-detect category, scope, and add context"
+                    className={cn(
+                      'flex items-center gap-1.5 text-xs font-mono rounded-lg px-2.5 py-1 border transition-all',
+                      autoFillLoading
+                        ? 'border-emerald/30 bg-emerald/5 text-emerald/60 cursor-wait'
+                        : 'border-emerald/40 bg-emerald/10 text-emerald hover:bg-emerald/20 hover:border-emerald/60'
+                    )}
+                    aria-label="Auto-fill category, scope, and context with AI"
+                  >
+                    {autoFillLoading ? (
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                    ) : (
+                      <Wand2 className="h-3 w-3" />
+                    )}
+                    Auto-fill
+                  </button>
+                )}
                 {/* AI suggest button — only show when there's enough text and Claude is available */}
                 {!aiUnavailable && statement.trim().length >= 10 && (
                   <button
@@ -754,6 +812,33 @@ export default function CreateTopicPage() {
               }}
             />
           )}
+
+          {/* AI auto-fill success toast */}
+          <AnimatePresence>
+            {autoFillApplied && (
+              <motion.div
+                key="autofill-banner"
+                initial={{ opacity: 0, y: -6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.2 }}
+                className="flex items-center gap-2.5 rounded-xl border border-emerald/30 bg-emerald/5 px-4 py-3"
+              >
+                <Wand2 className="h-4 w-4 text-emerald flex-shrink-0" aria-hidden="true" />
+                <p className="text-sm font-mono text-emerald flex-1">
+                  AI filled in category, scope, and context. Review and adjust as needed.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setAutoFillApplied(false)}
+                  aria-label="Dismiss"
+                  className="text-emerald/60 hover:text-emerald transition-colors"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Description / Context */}
           <div className="space-y-2">
