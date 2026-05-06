@@ -15,12 +15,14 @@ import {
   Loader2,
   Scale,
   Save,
+  Sparkles,
   X,
   Zap,
   FileText,
 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { cn } from '@/lib/utils/cn'
+import type { SuggestResponse } from '@/app/api/topics/suggest/route'
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -226,6 +228,91 @@ function SimilarTopicsPanel({
   )
 }
 
+// ─── AI Statement Suggestions ────────────────────────────────────────────────
+
+function AIStatementSuggestions({
+  suggestions,
+  loading,
+  unavailable,
+  onSelect,
+  onDismiss,
+}: {
+  suggestions: string[]
+  loading: boolean
+  unavailable: boolean
+  onSelect: (s: string) => void
+  onDismiss: () => void
+}) {
+  if (unavailable) return null
+
+  return (
+    <AnimatePresence mode="wait">
+      {(loading || suggestions.length > 0) && (
+        <motion.div
+          key="ai-suggestions"
+          initial={{ opacity: 0, y: -6 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -4 }}
+          transition={{ duration: 0.2 }}
+          className="rounded-xl border border-purple/30 bg-purple/5 p-4 space-y-3"
+        >
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <Sparkles className="h-4 w-4 text-purple flex-shrink-0" />
+              <p className="text-sm font-mono font-semibold text-purple">
+                AI-suggested phrasings
+              </p>
+            </div>
+            {!loading && (
+              <button
+                type="button"
+                onClick={onDismiss}
+                className="text-surface-500 hover:text-surface-300 transition-colors text-xs font-mono flex-shrink-0"
+                aria-label="Dismiss suggestions"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            )}
+          </div>
+
+          {loading ? (
+            <div className="flex items-center gap-2 text-xs text-surface-500 font-mono py-1">
+              <Loader2 className="h-3 w-3 animate-spin text-purple" />
+              Generating cleaner phrasings…
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {suggestions.map((s, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => onSelect(s)}
+                  className={cn(
+                    'w-full text-left rounded-lg px-3.5 py-2.5 border',
+                    'bg-surface-200 border-surface-300 hover:border-purple/40 hover:bg-purple/5',
+                    'text-sm text-white font-mono leading-snug transition-all group'
+                  )}
+                >
+                  <div className="flex items-start gap-2">
+                    <span className="text-[10px] font-mono text-purple bg-purple/10 rounded px-1.5 py-0.5 mt-0.5 flex-shrink-0">
+                      {i + 1}
+                    </span>
+                    <span className="flex-1">{s}</span>
+                    <ArrowRight className="h-3.5 w-3.5 text-surface-500 group-hover:text-purple flex-shrink-0 mt-0.5 transition-colors" />
+                  </div>
+                </button>
+              ))}
+              <p className="text-[11px] text-surface-500 font-mono pt-1">
+                Click any suggestion to apply it to the statement field.
+              </p>
+            </div>
+          )}
+        </motion.div>
+      )}
+    </AnimatePresence>
+  )
+}
+
 // ─── Writing tips ─────────────────────────────────────────────────────────────
 
 function WritingTips() {
@@ -303,6 +390,12 @@ export default function CreateTopicPage() {
   const [draftRestored, setDraftRestored] = useState(false)
   const draftSaveRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
+  // AI suggestion state
+  const [aiSuggestions, setAiSuggestions] = useState<string[]>([])
+  const [aiLoading, setAiLoading] = useState(false)
+  const [aiUnavailable, setAiUnavailable] = useState(false)
+  const [aiDismissed, setAiDismissed] = useState(false)
+
   const charCount = statement.length
   const isOverLimit = charCount > MAX_CHARS
   const descCount = description.length
@@ -360,6 +453,36 @@ export default function CreateTopicPage() {
       if (debounceRef.current) clearTimeout(debounceRef.current)
     }
   }, [statement, searchSimilar])
+
+  // ── AI suggestions ───────────────────────────────────────────────────────
+
+  const fetchAiSuggestions = useCallback(async () => {
+    const q = statement.trim()
+    if (q.length < 10 || aiLoading) return
+    setAiLoading(true)
+    setAiDismissed(false)
+    try {
+      const res = await fetch('/api/topics/suggest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ statement: q, category: category || null }),
+      })
+      if (!res.ok) {
+        if (res.status === 401) return // user not logged in — silently hide
+        return
+      }
+      const data = (await res.json()) as SuggestResponse
+      if (data.unavailable) {
+        setAiUnavailable(true)
+        return
+      }
+      setAiSuggestions(data.suggestions ?? [])
+    } catch {
+      // best-effort — don't block the user
+    } finally {
+      setAiLoading(false)
+    }
+  }, [statement, category, aiLoading])
 
   // ── Form handling ────────────────────────────────────────────────────────
 
@@ -565,14 +688,39 @@ export default function CreateTopicPage() {
                   Make it clear, specific, and binary.
                 </p>
               )}
-              <span
-                className={cn(
-                  'text-xs font-mono flex-shrink-0',
-                  isOverLimit ? 'text-against-400' : charCount > MAX_CHARS * 0.8 ? 'text-gold' : 'text-surface-500'
+              <div className="flex items-center gap-3 flex-shrink-0">
+                {/* AI suggest button — only show when there's enough text and Claude is available */}
+                {!aiUnavailable && statement.trim().length >= 10 && (
+                  <button
+                    type="button"
+                    onClick={fetchAiSuggestions}
+                    disabled={aiLoading}
+                    title="Get AI-suggested phrasings"
+                    className={cn(
+                      'flex items-center gap-1.5 text-xs font-mono rounded-lg px-2.5 py-1 border transition-all',
+                      aiLoading
+                        ? 'border-purple/30 bg-purple/5 text-purple/60 cursor-wait'
+                        : 'border-purple/40 bg-purple/10 text-purple hover:bg-purple/20 hover:border-purple/60'
+                    )}
+                    aria-label="Suggest better phrasings with AI"
+                  >
+                    {aiLoading ? (
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                    ) : (
+                      <Sparkles className="h-3 w-3" />
+                    )}
+                    Suggest
+                  </button>
                 )}
-              >
-                {charCount}/{MAX_CHARS}
-              </span>
+                <span
+                  className={cn(
+                    'text-xs font-mono',
+                    isOverLimit ? 'text-against-400' : charCount > MAX_CHARS * 0.8 ? 'text-gold' : 'text-surface-500'
+                  )}
+                >
+                  {charCount}/{MAX_CHARS}
+                </span>
+              </div>
             </div>
           </div>
 
@@ -588,6 +736,24 @@ export default function CreateTopicPage() {
               />
             )}
           </AnimatePresence>
+
+          {/* AI suggestions panel */}
+          {!aiDismissed && (
+            <AIStatementSuggestions
+              suggestions={aiSuggestions}
+              loading={aiLoading}
+              unavailable={aiUnavailable}
+              onSelect={(s) => {
+                setStatement(s)
+                setAiSuggestions([])
+                setAiDismissed(true)
+              }}
+              onDismiss={() => {
+                setAiSuggestions([])
+                setAiDismissed(true)
+              }}
+            />
+          )}
 
           {/* Description / Context */}
           <div className="space-y-2">
