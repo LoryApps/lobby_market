@@ -14,6 +14,7 @@ import {
   GitCompare,
   Globe,
   Info,
+  Lightbulb,
   Megaphone,
   MessageCircle,
   MessageSquare,
@@ -536,6 +537,13 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
                     >
                       <Swords className="h-3.5 w-3.5" />
                       Spar with AI
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/argue`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-gold hover:text-gold/80 transition-colors"
+                    >
+                      <Lightbulb className="h-3.5 w-3.5" />
+                      Argument starter
                     </Link>
                   </div>
                 )}
