@@ -12,6 +12,13 @@ export interface VelocityBucket {
   forPct: number
 }
 
+// Cumulative consensus curve point — cumulative running FOR% over time
+export interface ConsensusCurvePoint {
+  date: string     // YYYY-MM-DD
+  forPct: number   // cumulative FOR% up to this date (0-100)
+  totalVotes: number
+}
+
 export interface RoleSplit {
   role: string
   forVotes: number
@@ -43,6 +50,9 @@ export interface TopicStatsResponse {
 
   // Vote velocity (daily buckets, most recent 30 days)
   velocity: VelocityBucket[]
+
+  // Cumulative consensus curve — all-time running FOR% per day
+  consensusCurve: ConsensusCurvePoint[]
 
   // Velocity stats
   votesLast24h: number
@@ -130,6 +140,20 @@ export async function GET(
       forVotes: b.for,
       againstVotes: b.against,
       forPct: total > 0 ? Math.round((b.for / total) * 100) : 50,
+    }
+  })
+
+  // Cumulative consensus curve — running FOR% across all-time daily buckets
+  let cumFor = 0
+  let cumTotal = 0
+  const consensusCurve: ConsensusCurvePoint[] = sortedDays.map((date) => {
+    const b = byDay.get(date)!
+    cumFor += b.for
+    cumTotal += b.for + b.against
+    return {
+      date,
+      forPct: cumTotal > 0 ? Math.round((cumFor / cumTotal) * 100 * 10) / 10 : 50,
+      totalVotes: cumTotal,
     }
   })
 
@@ -227,6 +251,7 @@ export async function GET(
     forPct: Math.round(topic.blue_pct ?? 50),
 
     velocity,
+    consensusCurve,
     votesLast24h,
     votesLast7d,
     peakDay,

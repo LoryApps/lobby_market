@@ -27,7 +27,7 @@ import { Badge } from '@/components/ui/Badge'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { cn } from '@/lib/utils/cn'
-import type { TopicStatsResponse, VelocityBucket } from '@/app/api/topics/[id]/stats/route'
+import type { TopicStatsResponse, VelocityBucket, ConsensusCurvePoint } from '@/app/api/topics/[id]/stats/route'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -129,6 +129,159 @@ function VelocityChart({ buckets }: { buckets: VelocityBucket[] }) {
         <span className="text-[10px] font-mono text-surface-500">
           {formatDay(visible[visible.length - 1].date)}
         </span>
+      </div>
+    </div>
+  )
+}
+
+// ─── Consensus Curve (SVG line chart) ─────────────────────────────────────────
+
+function ConsensusCurve({ points }: { points: ConsensusCurvePoint[] }) {
+  if (points.length < 2) {
+    return (
+      <div className="flex items-center justify-center h-40 text-sm text-surface-500 font-mono">
+        Not enough data yet
+      </div>
+    )
+  }
+
+  const W = 600
+  const H = 140
+  const padX = 8
+  const padY = 12
+
+  // Map date index → x coordinate, forPct → y coordinate
+  const n = points.length
+  const getX = (i: number) => padX + (i / (n - 1)) * (W - padX * 2)
+  const getY = (pct: number) => padY + ((100 - pct) / 100) * (H - padY * 2)
+
+  // 50% midline y
+  const midY = getY(50)
+
+  // Build the SVG path
+  const pathD = points
+    .map((p, i) => `${i === 0 ? 'M' : 'L'} ${getX(i).toFixed(1)} ${getY(p.forPct).toFixed(1)}`)
+    .join(' ')
+
+  // Area fill: polygon from first point, along line, back down to midY
+  const areaD =
+    `M ${getX(0).toFixed(1)} ${midY.toFixed(1)} ` +
+    points.map((p, i) => `L ${getX(i).toFixed(1)} ${getY(p.forPct).toFixed(1)}`).join(' ') +
+    ` L ${getX(n - 1).toFixed(1)} ${midY.toFixed(1)} Z`
+
+  const lastPct = points[n - 1].forPct
+  const firstPct = points[0].forPct
+  const delta = lastPct - firstPct
+  const lineColor = lastPct >= 50 ? '#3b82f6' : '#ef4444'
+
+  // Key milestones to label on x-axis
+  const labelIdxs = [0, Math.floor((n - 1) / 2), n - 1].filter(
+    (v, i, a) => a.indexOf(v) === i
+  )
+
+  return (
+    <div className="w-full">
+      <div className="w-full overflow-x-auto">
+        <svg
+          viewBox={`0 0 ${W} ${H}`}
+          className="w-full h-auto"
+          style={{ minWidth: 280 }}
+          aria-label="Consensus curve chart showing how FOR percentage evolved over time"
+          role="img"
+        >
+          {/* Deadlock zone band (45-55%) */}
+          <rect
+            x={0}
+            y={getY(55)}
+            width={W}
+            height={getY(45) - getY(55)}
+            fill="#6b7280"
+            opacity={0.07}
+          />
+
+          {/* 50% midline */}
+          <line
+            x1={0}
+            y1={midY}
+            x2={W}
+            y2={midY}
+            stroke="#6b7280"
+            strokeWidth={1}
+            strokeDasharray="4 3"
+            opacity={0.5}
+          />
+
+          {/* Area fill under/above curve */}
+          <path d={areaD} fill={lineColor} opacity={0.12} />
+
+          {/* Main consensus line */}
+          <path
+            d={pathD}
+            fill="none"
+            stroke={lineColor}
+            strokeWidth={2.5}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+
+          {/* Start dot */}
+          <circle cx={getX(0)} cy={getY(firstPct)} r={3} fill={firstPct >= 50 ? '#3b82f6' : '#ef4444'} opacity={0.7} />
+
+          {/* End dot */}
+          <circle cx={getX(n - 1)} cy={getY(lastPct)} r={4} fill={lineColor} />
+
+          {/* Current % label at end */}
+          <text
+            x={getX(n - 1) + 6}
+            y={getY(lastPct) + 4}
+            fill={lineColor}
+            fontSize={10}
+            fontFamily="monospace"
+            fontWeight="700"
+          >
+            {lastPct.toFixed(1)}%
+          </text>
+
+          {/* Y-axis tick labels */}
+          {[25, 50, 75].map((pct) => (
+            <text
+              key={pct}
+              x={3}
+              y={getY(pct) + 3}
+              fill="#6b7280"
+              fontSize={8}
+              fontFamily="monospace"
+            >
+              {pct}%
+            </text>
+          ))}
+        </svg>
+      </div>
+
+      {/* X-axis date labels */}
+      <div className="relative mt-1" style={{ paddingLeft: padX, paddingRight: padX }}>
+        <div className="flex justify-between">
+          {labelIdxs.map((i) => (
+            <span key={i} className="text-[10px] font-mono text-surface-500">
+              {formatDay(points[i].date)}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* Delta summary */}
+      <div className="flex items-center gap-3 mt-3 text-xs font-mono">
+        <span className={cn(
+          'flex items-center gap-1 font-semibold',
+          delta > 0 ? 'text-for-400' : delta < 0 ? 'text-against-400' : 'text-surface-400'
+        )}>
+          {delta > 0 ? '▲' : delta < 0 ? '▼' : '—'}
+          {Math.abs(delta).toFixed(1)}pp shift
+        </span>
+        <span className="text-surface-500">
+          since first vote · {points[n - 1].totalVotes.toLocaleString()} total
+        </span>
+        <span className="ml-auto text-[10px] text-surface-600">deadlock zone ±5%</span>
       </div>
     </div>
   )
@@ -477,6 +630,32 @@ export default function TopicStatsPage() {
                   </div>
                 </div>
               </div>
+
+              {/* ── Consensus Curve ─────────────────────────────────────── */}
+              {data.consensusCurve && data.consensusCurve.length >= 2 && (
+                <div className="rounded-2xl bg-surface-100 border border-surface-300 p-5">
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="flex items-center gap-2">
+                      <Scale className="h-4 w-4 text-purple" />
+                      <h2 className="text-sm font-semibold text-white">Consensus Curve</h2>
+                    </div>
+                    <div className="flex items-center gap-3 text-[11px] font-mono">
+                      <span className="flex items-center gap-1">
+                        <span className="h-2 w-2 rounded-full bg-for-500 inline-block" />
+                        <span className="text-surface-500">FOR</span>
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <span className="h-2 w-2 rounded-full bg-against-500 inline-block" />
+                        <span className="text-surface-500">AGAINST</span>
+                      </span>
+                    </div>
+                  </div>
+                  <p className="text-[11px] text-surface-500 font-mono mb-4">
+                    Cumulative FOR% over the debate&apos;s lifetime
+                  </p>
+                  <ConsensusCurve points={data.consensusCurve} />
+                </div>
+              )}
 
               {/* ── Role breakdown ──────────────────────────────────────── */}
               {data.roleSplit.length > 0 && (
