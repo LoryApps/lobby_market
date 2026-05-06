@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   BookOpen,
@@ -16,6 +16,7 @@ import * as Icons from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import Link from 'next/link'
 import type { Achievement, AchievementTier } from '@/lib/supabase/types'
+import type { AchievementProgress, AchievementProgressResponse } from '@/app/api/achievements/progress/route'
 import { cn } from '@/lib/utils/cn'
 
 interface AchievementsGalleryProps {
@@ -24,6 +25,8 @@ interface AchievementsGalleryProps {
   totalProfiles: number
   myEarnedIds: string[]
   showBranchMastery?: boolean
+  /** When true, fetches and overlays per-achievement progress for logged-in user */
+  showProgress?: boolean
 }
 
 type TierFilter = 'all' | AchievementTier
@@ -46,6 +49,7 @@ const TIER_STYLES: Record<
     text: string
     iconBg: string
     pill: string
+    bar: string
   }
 > = {
   legendary: {
@@ -55,6 +59,7 @@ const TIER_STYLES: Record<
     text: 'text-gold',
     iconBg: 'bg-gold/15',
     pill: 'bg-gold/15 border-gold/40 text-gold',
+    bar: 'bg-gold',
   },
   epic: {
     label: 'Epic',
@@ -63,6 +68,7 @@ const TIER_STYLES: Record<
     text: 'text-purple',
     iconBg: 'bg-purple/15',
     pill: 'bg-purple/15 border-purple/40 text-purple',
+    bar: 'bg-purple',
   },
   rare: {
     label: 'Rare',
@@ -71,6 +77,7 @@ const TIER_STYLES: Record<
     text: 'text-for-400',
     iconBg: 'bg-for-500/15',
     pill: 'bg-for-500/15 border-for-500/40 text-for-400',
+    bar: 'bg-for-500',
   },
   common: {
     label: 'Common',
@@ -79,6 +86,7 @@ const TIER_STYLES: Record<
     text: 'text-surface-400',
     iconBg: 'bg-surface-300/40',
     pill: 'bg-surface-300/30 border-surface-400/30 text-surface-500',
+    bar: 'bg-surface-400',
   },
 }
 
@@ -163,10 +171,23 @@ export function AchievementsGallery({
   totalProfiles,
   myEarnedIds,
   showBranchMastery = true,
+  showProgress = false,
 }: AchievementsGalleryProps) {
   const [activeTier, setActiveTier] = useState<TierFilter>('all')
   const [activeBranch, setActiveBranch] = useState<BranchFilter>('all')
+  const [progressMap, setProgressMap] = useState<Map<string, AchievementProgress>>(new Map())
   const myEarnedSet = new Set(myEarnedIds)
+
+  useEffect(() => {
+    if (!showProgress || myEarnedIds.length === 0) return
+    fetch('/api/achievements/progress')
+      .then((r) => r.ok ? r.json() : null)
+      .then((d: AchievementProgressResponse | null) => {
+        if (!d?.inProgress) return
+        setProgressMap(new Map(d.inProgress.map((p) => [p.id, p])))
+      })
+      .catch(() => {})
+  }, [showProgress, myEarnedIds.length])
 
   // Compute which branches exist in the data
   const availableBranches = BRANCH_ORDER.filter((b) =>
@@ -365,6 +386,7 @@ export function AchievementsGallery({
                 : 0
             const branchMeta = achievement.category ? BRANCH_META[achievement.category] : null
             const BranchIconSmall = branchMeta?.icon
+            const progress = !earned ? progressMap.get(achievement.id) : undefined
 
             return (
               <motion.div
@@ -429,6 +451,28 @@ export function AchievementsGallery({
                     >
                       {achievement.description}
                     </p>
+
+                    {/* Progress bar — shown on unearned achievements when logged in */}
+                    {progress && progress.pct > 0 && (
+                      <div className="mt-2 space-y-0.5">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-mono text-surface-600">
+                            {progress.current.toLocaleString()} / {progress.threshold.toLocaleString()}
+                          </span>
+                          <span className={cn('text-[10px] font-mono font-semibold', style.text)}>
+                            {progress.pct}%
+                          </span>
+                        </div>
+                        <div className="h-1 rounded-full bg-surface-300/50 overflow-hidden">
+                          <motion.div
+                            className={cn('h-full rounded-full', style.bar)}
+                            initial={{ width: 0 }}
+                            animate={{ width: `${progress.pct}%` }}
+                            transition={{ duration: 0.5, ease: 'easeOut' }}
+                          />
+                        </div>
+                      </div>
+                    )}
 
                     {/* Branch + Rarity row */}
                     <div className="flex items-center gap-2 mt-2 flex-wrap">

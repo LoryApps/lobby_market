@@ -33,6 +33,14 @@ const METRIC_LABELS: Record<string, string> = {
   minority_wins: 'minority wins',
   chain_depth: 'chain depth',
   signup_rank: 'early members joined first',
+  total_arguments: 'arguments made',
+  bookmarks_count: 'topics bookmarked',
+  clout_balance: 'clout earned',
+  coalitions_count: 'coalitions joined',
+  debates_count: 'debates participated in',
+  follower_count: 'followers',
+  predictions_count: 'predictions made',
+  topics_supported: 'laws you helped pass',
 }
 
 async function computeMetric(
@@ -116,6 +124,72 @@ async function computeMetric(
         .select('*', { count: 'exact', head: true })
         .lte('created_at', profile.created_at)
       return count ?? 999_999
+    }
+    case 'total_arguments': {
+      const { data } = await supabase
+        .from('profiles')
+        .select('total_arguments')
+        .eq('id', userId)
+        .single()
+      return (data as { total_arguments?: number } | null)?.total_arguments ?? 0
+    }
+    case 'bookmarks_count': {
+      const { count } = await supabase
+        .from('topic_bookmarks')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', userId)
+      return count ?? 0
+    }
+    case 'clout_balance': {
+      const { data } = await supabase
+        .from('profiles')
+        .select('clout')
+        .eq('id', userId)
+        .single()
+      return data?.clout ?? 0
+    }
+    case 'coalitions_count': {
+      const { count } = await supabase
+        .from('coalition_members')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', userId)
+      return count ?? 0
+    }
+    case 'debates_count': {
+      const { count } = await supabase
+        .from('debate_participants')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', userId)
+      return count ?? 0
+    }
+    case 'follower_count': {
+      const { data } = await supabase
+        .from('profiles')
+        .select('followers_count')
+        .eq('id', userId)
+        .single()
+      return (data as { followers_count?: number } | null)?.followers_count ?? 0
+    }
+    case 'predictions_count': {
+      const { count } = await supabase
+        .from('topic_predictions')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', userId)
+      return count ?? 0
+    }
+    case 'topics_supported': {
+      const { data: userVotes } = await supabase
+        .from('votes')
+        .select('topic_id')
+        .eq('user_id', userId)
+      if (!userVotes?.length) return 0
+      const topicIds = userVotes.map((v) => v.topic_id)
+      const { count } = await supabase
+        .from('topics')
+        .select('*', { count: 'exact', head: true })
+        .in('id', topicIds)
+        .eq('status', 'law')
+      return count ?? 0
     }
     default:
       return 0
@@ -211,9 +285,9 @@ export async function GET() {
     return tierWeight[a.tier] - tierWeight[b.tier]
   })
 
-  // Return top 6 (enough for profile + overview sections)
+  // Return top 8 (enough for profile + overview sections across all branches)
   return NextResponse.json<AchievementProgressResponse>({
-    inProgress: progress.slice(0, 6),
+    inProgress: progress.slice(0, 8),
     earnedCount: earnedIds.size,
     totalCount: allAchievements.length,
   })

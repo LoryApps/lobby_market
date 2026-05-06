@@ -184,6 +184,7 @@ export default async function AchievementsPage() {
           totalProfiles={totalProfiles}
           myEarnedIds={myEarnedIds}
           showBranchMastery={!!user}
+          showProgress={!!user}
         />
 
         {/* CTA for logged-out users */}

@@ -59,24 +59,44 @@ const TIER_STYLES: Record<
 
 // ─── Action hint ──────────────────────────────────────────────────────────────
 
+function plural(n: number, word: string, pluralForm?: string): string {
+  return n === 1 ? `1 ${word}` : `${n.toLocaleString()} ${pluralForm ?? word + 's'}`
+}
+
 function actionHint(type: string, remaining: number): string {
   switch (type) {
     case 'total_votes':
-      return `Cast ${remaining.toLocaleString()} more vote${remaining !== 1 ? 's' : ''}`
+      return `Cast ${plural(remaining, 'more vote')}`
     case 'topics_authored':
-      return `Propose ${remaining} more topic${remaining !== 1 ? 's' : ''}`
+      return `Propose ${plural(remaining, 'more topic')}`
     case 'laws_authored':
-      return `Get ${remaining} more topic${remaining !== 1 ? 's' : ''} passed into law`
+      return `Get ${plural(remaining, 'more topic')} passed into law`
     case 'vote_streak':
-      return `Vote for ${remaining} more consecutive day${remaining !== 1 ? 's' : ''}`
+      return `Vote for ${plural(remaining, 'more consecutive day')}`
     case 'minority_wins':
-      return `Win ${remaining} more minority position${remaining !== 1 ? 's' : ''}`
+      return `Win ${plural(remaining, 'more minority position')}`
     case 'chain_depth':
       return `Reach chain depth ${remaining} in a topic chain`
     case 'signup_rank':
       return 'Available to early members only'
+    case 'total_arguments':
+      return `Make ${plural(remaining, 'more argument')}`
+    case 'bookmarks_count':
+      return `Bookmark ${plural(remaining, 'more topic')}`
+    case 'clout_balance':
+      return `Earn ${remaining.toLocaleString()} more clout`
+    case 'coalitions_count':
+      return `Join ${plural(remaining, 'more coalition')}`
+    case 'debates_count':
+      return `Join ${plural(remaining, 'more debate')}`
+    case 'follower_count':
+      return `Gain ${plural(remaining, 'more follower')}`
+    case 'predictions_count':
+      return `Make ${plural(remaining, 'more prediction')}`
+    case 'topics_supported':
+      return `Vote on ${plural(remaining, 'more topic')} that become law`
     default:
-      return `${remaining} more needed`
+      return `${remaining.toLocaleString()} more needed`
   }
 }
 
