@@ -1317,6 +1317,16 @@ const QUICK_LINKS: QuickLink[] = [
   // ── Debate & Writing Tools ─────────────────────────────────────────────────
   {
     type: 'link',
+    id: 'advisor',
+    label: 'Civic Advisor',
+    sublabel: 'AI-powered personalised briefing — which topics need your voice most right now',
+    href: '/advisor',
+    icon: Sparkles,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'coach',
     label: 'Argument Coach',
     sublabel: 'AI workshop: draft an argument, get a Claude critique across Clarity, Evidence, Logic, and Persuasion',
