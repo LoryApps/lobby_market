@@ -671,6 +671,33 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
                   </Link>
                 )}
               </div>
+
+              {/* Topic tags — auto-generated keyword pills */}
+              {Array.isArray(topic.tags) && topic.tags.length > 0 && (
+                <div className="pt-3 border-t border-surface-300">
+                  <p className="text-xs font-mono text-surface-600 uppercase tracking-wider mb-2">
+                    Tags
+                  </p>
+                  <div className="flex flex-wrap gap-1.5" role="list" aria-label="Topic tags">
+                    {topic.tags.map((tag) => (
+                      <Link
+                        key={tag}
+                        href={`/tags/${encodeURIComponent(tag)}`}
+                        role="listitem"
+                        aria-label={`Browse topics tagged ${tag}`}
+                        className={cn(
+                          'inline-flex items-center gap-1 px-2 py-0.5 rounded-full',
+                          'text-[11px] font-mono border transition-colors',
+                          'bg-surface-200 border-surface-400 text-surface-400',
+                          'hover:bg-surface-300 hover:border-surface-500 hover:text-white',
+                        )}
+                      >
+                        #{tag}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Real-world context — Claude-generated background on what this debate means in practice */}

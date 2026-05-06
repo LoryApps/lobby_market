@@ -3,23 +3,15 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { Compass, TrendingUp } from 'lucide-react'
+import { Compass, Tag, TrendingUp } from 'lucide-react'
 import { Badge } from '@/components/ui/Badge'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { TopicHoverCard } from '@/components/ui/TopicHoverCard'
 import type { TopicPreview } from '@/app/api/topics/[id]/preview/route'
+import type { RelatedTopicResult } from '@/app/api/topics/[id]/related/route'
 import { cn } from '@/lib/utils/cn'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
-
-interface RelatedTopic {
-  id: string
-  statement: string
-  category: string | null
-  status: string
-  blue_pct: number
-  total_votes: number
-}
 
 interface RelatedTopicsProps {
   topicId: string
@@ -42,6 +34,21 @@ const STATUS_LABEL: Record<string, string> = {
   voting: 'Voting',
   law: 'LAW',
   failed: 'Failed',
+}
+
+// ─── Tag palette — deterministic colour per tag ───────────────────────────────
+
+const TAG_PALETTES = [
+  { text: 'text-for-300',      bg: 'bg-for-500/10',      border: 'border-for-500/25'      },
+  { text: 'text-against-300',  bg: 'bg-against-500/10',  border: 'border-against-500/25'  },
+  { text: 'text-gold',         bg: 'bg-gold/10',         border: 'border-gold/25'         },
+  { text: 'text-emerald',      bg: 'bg-emerald/10',      border: 'border-emerald/25'      },
+  { text: 'text-purple',       bg: 'bg-purple/10',       border: 'border-purple/25'       },
+]
+
+function tagPalette(tag: string) {
+  const code = tag.charCodeAt(0) + tag.charCodeAt(Math.min(2, tag.length - 1))
+  return TAG_PALETTES[code % TAG_PALETTES.length]
 }
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
@@ -70,11 +77,11 @@ function RelatedSkeleton() {
 
 // ─── Single related topic card ─────────────────────────────────────────────────
 
-function RelatedCard({ topic }: { topic: RelatedTopic }) {
+function RelatedCard({ topic }: { topic: RelatedTopicResult }) {
   const forPct = Math.round(topic.blue_pct ?? 50)
   const againstPct = 100 - forPct
+  const hasSharedTags = topic.shared_tags.length > 0
 
-  // Build a TopicPreview-compatible object from the already-fetched data
   const preloaded: TopicPreview = {
     id: topic.id,
     statement: topic.statement,
@@ -98,72 +105,91 @@ function RelatedCard({ topic }: { topic: RelatedTopic }) {
         preloaded={preloaded}
         className="block"
       >
-      <Link
-        href={`/topic/${topic.id}`}
-        className={cn(
-          'group flex items-start gap-3 rounded-xl',
-          'bg-surface-100 border border-surface-300',
-          'hover:border-surface-400 hover:bg-surface-200',
-          'p-4 transition-colors block'
-        )}
-      >
-        {/* Left vote-color accent */}
-        <div
-          className="mt-1 h-8 w-1 rounded-full flex-shrink-0 overflow-hidden"
-          aria-hidden="true"
+        <Link
+          href={`/topic/${topic.id}`}
+          className={cn(
+            'group flex items-start gap-3 rounded-xl',
+            'bg-surface-100 border border-surface-300',
+            'hover:border-surface-400 hover:bg-surface-200',
+            'p-4 transition-colors block'
+          )}
         >
+          {/* Left vote-colour accent bar */}
           <div
-            className="bg-for-500 rounded-t-full"
-            style={{ height: `${forPct}%` }}
-          />
-          <div
-            className="bg-against-500 rounded-b-full"
-            style={{ height: `${againstPct}%` }}
-          />
-        </div>
+            className="mt-1 h-8 w-1 rounded-full flex-shrink-0 overflow-hidden"
+            aria-hidden="true"
+          >
+            <div
+              className="bg-for-500 rounded-t-full"
+              style={{ height: `${forPct}%` }}
+            />
+            <div
+              className="bg-against-500 rounded-b-full"
+              style={{ height: `${againstPct}%` }}
+            />
+          </div>
 
-        <div className="flex-1 min-w-0">
-          {/* Statement */}
-          <p className="text-sm font-medium text-white leading-snug line-clamp-2 group-hover:text-for-300 transition-colors">
-            {topic.statement}
-          </p>
+          <div className="flex-1 min-w-0">
+            {/* Statement */}
+            <p className="text-sm font-medium text-white leading-snug line-clamp-2 group-hover:text-for-300 transition-colors">
+              {topic.statement}
+            </p>
 
-          {/* Meta row */}
-          <div className="mt-2 flex items-center gap-2 flex-wrap">
-            <Badge
-              variant={STATUS_VARIANT[topic.status] ?? 'proposed'}
-              className="text-[10px] px-2 py-0.5"
-            >
-              {STATUS_LABEL[topic.status] ?? topic.status}
-            </Badge>
-
-            {topic.category && (
-              <span className="text-[10px] font-mono uppercase tracking-wider text-surface-500">
-                {topic.category}
-              </span>
-            )}
-
-            {/* Inline vote bar */}
-            <div className="flex items-center gap-1.5 ml-auto">
-              <span className="text-[10px] font-mono text-for-400 tabular-nums">
-                {forPct}%
-              </span>
-              <div
-                className="h-1 w-16 rounded-full overflow-hidden bg-surface-300"
-                aria-label={`${forPct}% for, ${againstPct}% against`}
+            {/* Meta row */}
+            <div className="mt-2 flex items-center gap-2 flex-wrap">
+              <Badge
+                variant={STATUS_VARIANT[topic.status] ?? 'proposed'}
+                className="text-[10px] px-2 py-0.5"
               >
+                {STATUS_LABEL[topic.status] ?? topic.status}
+              </Badge>
+
+              {topic.category && (
+                <span className="text-[10px] font-mono uppercase tracking-wider text-surface-500">
+                  {topic.category}
+                </span>
+              )}
+
+              {/* Shared tags — show up to 2 */}
+              {hasSharedTags && topic.shared_tags.slice(0, 2).map((tag) => {
+                const p = tagPalette(tag)
+                return (
+                  <span
+                    key={tag}
+                    className={cn(
+                      'inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full',
+                      'text-[9px] font-mono border',
+                      p.text, p.bg, p.border
+                    )}
+                    title={`Matched by #${tag}`}
+                  >
+                    <Tag className="h-2 w-2" aria-hidden="true" />
+                    {tag}
+                  </span>
+                )
+              })}
+
+              {/* Inline vote bar */}
+              <div className="flex items-center gap-1.5 ml-auto">
+                <span className="text-[10px] font-mono text-for-400 tabular-nums">
+                  {forPct}%
+                </span>
                 <div
-                  className="h-full bg-for-500 float-left"
-                  style={{ width: `${forPct}%` }}
-                />
+                  className="h-1 w-16 rounded-full overflow-hidden bg-surface-300"
+                  aria-label={`${forPct}% for, ${againstPct}% against`}
+                >
+                  <div
+                    className="h-full bg-for-500 float-left"
+                    style={{ width: `${forPct}%` }}
+                  />
+                </div>
+                <span className="text-[10px] font-mono text-against-400 tabular-nums">
+                  {againstPct}%
+                </span>
               </div>
-              <span className="text-[10px] font-mono text-against-400 tabular-nums">
-                {againstPct}%
-              </span>
             </div>
           </div>
-        </div>
-      </Link>
+        </Link>
       </TopicHoverCard>
     </motion.div>
   )
@@ -172,7 +198,7 @@ function RelatedCard({ topic }: { topic: RelatedTopic }) {
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export function RelatedTopics({ topicId, className }: RelatedTopicsProps) {
-  const [topics, setTopics] = useState<RelatedTopic[]>([])
+  const [topics, setTopics] = useState<RelatedTopicResult[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -197,17 +223,22 @@ export function RelatedTopics({ topicId, className }: RelatedTopicsProps) {
     return () => { cancelled = true }
   }, [topicId])
 
-  // Don't render the section at all if there's nothing to show after load
   if (!loading && topics.length === 0) return null
+
+  const hasTagMatches = topics.some((t) => t.shared_tags.length > 0)
 
   return (
     <section className={cn('space-y-3', className)} aria-label="Related topics">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <TrendingUp className="h-4 w-4 text-purple" aria-hidden="true" />
+          {hasTagMatches ? (
+            <Tag className="h-4 w-4 text-purple" aria-hidden="true" />
+          ) : (
+            <TrendingUp className="h-4 w-4 text-purple" aria-hidden="true" />
+          )}
           <h2 className="text-sm font-mono font-semibold text-surface-600 uppercase tracking-wider">
-            You might also debate
+            {hasTagMatches ? 'Related by tag' : 'You might also debate'}
           </h2>
         </div>
         <Link
