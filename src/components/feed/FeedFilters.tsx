@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { TrendingUp, Clock, Flame, Scale, FileText, Zap, Gavel, Tag, LayoutGrid, Globe, Users, MapPin, Sparkles, History, X } from 'lucide-react'
+import { TrendingUp, Clock, Flame, Scale, FileText, Zap, Gavel, Tag, LayoutGrid, Globe, Users, MapPin, Sparkles, History, X, Hash } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { useFeedStore } from '@/lib/stores/feed-store'
 import type { FeedSort, FeedStatus, FeedMode, FeedScope } from '@/lib/stores/feed-store'
@@ -75,6 +75,30 @@ const SCOPE_OPTIONS: {
   { id: 'Local', label: 'Local', activeClass: 'bg-against-600/20 text-against-300 border-against-500/50' },
 ]
 
+// Popular tags surfaced in the feed filter — drawn from the civic vocabulary in migration 00059
+const POPULAR_TAGS: { id: string; label: string }[] = [
+  { id: 'climate',      label: 'Climate'      },
+  { id: 'economy',      label: 'Economy'      },
+  { id: 'healthcare',   label: 'Healthcare'   },
+  { id: 'ai',           label: 'AI'           },
+  { id: 'immigration',  label: 'Immigration'  },
+  { id: 'tax',          label: 'Tax'          },
+  { id: 'housing',      label: 'Housing'      },
+  { id: 'education',    label: 'Education'    },
+  { id: 'democracy',    label: 'Democracy'    },
+  { id: 'free-speech',  label: 'Free Speech'  },
+  { id: 'guns',         label: 'Guns'         },
+  { id: 'labor',        label: 'Labor'        },
+  { id: 'energy',       label: 'Energy'       },
+  { id: 'privacy',      label: 'Privacy'      },
+  { id: 'justice',      label: 'Justice'      },
+  { id: 'gender',       label: 'Gender'       },
+  { id: 'race',         label: 'Race'         },
+  { id: 'policing',     label: 'Policing'     },
+  { id: 'military',     label: 'Military'     },
+  { id: 'abortion',     label: 'Abortion'     },
+]
+
 const FEED_MODES: { id: FeedMode; label: string; icon: typeof Globe }[] = [
   { id: 'discover', label: 'Discover', icon: Globe },
   { id: 'following', label: 'Following', icon: Users },
@@ -87,6 +111,7 @@ export function FeedFilters() {
     statusFilter,
     categoryFilter,
     scopeFilter,
+    tagFilter,
     feedMode,
     preferredCategories,
     preferenceSource,
@@ -95,6 +120,7 @@ export function FeedFilters() {
     setStatusFilter,
     setCategoryFilter,
     setScopeFilter,
+    setTagFilter,
     setFeedMode,
     clearFilters,
   } = useFeedStore()
@@ -105,6 +131,7 @@ export function FeedFilters() {
         statusFilter !== null,
         categoryFilter !== null,
         scopeFilter !== null,
+        tagFilter !== null,
         sort !== 'top',
       ].filter(Boolean).length
     : (sort !== 'new' && feedMode === 'following' ? 1 : 0)
@@ -262,7 +289,7 @@ export function FeedFilters() {
       {/* Row 3: Scope chips (hidden in Following mode) */}
       {feedMode === 'discover' && <div
         className={cn(
-          'flex items-center gap-1.5 px-3 pb-2',
+          'flex items-center gap-1.5 px-3',
           'overflow-x-auto',
           '[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
         )}
@@ -284,6 +311,62 @@ export function FeedFilters() {
             {label}
           </button>
         ))}
+      </div>}
+
+      {/* Row 4: Tag chips (hidden in Following / For You mode) */}
+      {feedMode === 'discover' && <div
+        className={cn(
+          'flex items-center gap-1.5 px-3 pb-2',
+          'overflow-x-auto',
+          '[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
+        )}
+        aria-label="Filter by topic tag"
+      >
+        <Hash className="h-3 w-3 text-surface-500 flex-shrink-0" aria-hidden />
+        {/* Clear-tag chip */}
+        <button
+          onClick={() => setTagFilter(null)}
+          aria-pressed={tagFilter === null}
+          className={cn(
+            'flex-shrink-0 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium',
+            'border transition-all duration-150',
+            tagFilter === null
+              ? 'bg-surface-400 text-white border-surface-400'
+              : 'bg-transparent text-surface-500 border-surface-500/40 hover:text-surface-400 hover:border-surface-400'
+          )}
+        >
+          All
+        </button>
+        {POPULAR_TAGS.map(({ id, label }) => (
+          <button
+            key={id}
+            onClick={() => setTagFilter(tagFilter === id ? null : id)}
+            aria-pressed={tagFilter === id}
+            className={cn(
+              'flex-shrink-0 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium',
+              'border transition-all duration-150',
+              tagFilter === id
+                ? 'bg-emerald/20 text-emerald border-emerald/50'
+                : 'bg-transparent text-surface-500 border-surface-500/40 hover:text-surface-400 hover:border-surface-400'
+            )}
+          >
+            {label}
+          </button>
+        ))}
+        {/* Separator + browse all tags link */}
+        <div className="h-3.5 w-px bg-surface-500/30 flex-shrink-0 mx-0.5" aria-hidden />
+        <Link
+          href="/tags"
+          className={cn(
+            'flex-shrink-0 flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium',
+            'border border-surface-500/40 text-surface-500',
+            'hover:text-surface-300 hover:border-surface-400 transition-all duration-150'
+          )}
+          aria-label="Browse all tags"
+        >
+          <LayoutGrid className="h-2.5 w-2.5" />
+          All tags
+        </Link>
       </div>}
 
       {/* Following mode: sort strip (only New/Hot/Top, no status or category) */}

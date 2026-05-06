@@ -9,11 +9,15 @@ export async function GET(request: NextRequest) {
   const status = searchParams.get('status') || null
   const category = searchParams.get('category') || null
   const scope = searchParams.get('scope') || null
+  const tag = searchParams.get('tag') || null
 
   const VALID_SCOPES = ['Global', 'National', 'Regional', 'Local'] as const
   const validatedScope = VALID_SCOPES.includes(scope as typeof VALID_SCOPES[number])
     ? (scope as typeof VALID_SCOPES[number])
     : null
+
+  // Sanitise tag: only allow lowercase alphanumerics and hyphens to prevent injection
+  const validatedTag = tag && /^[a-z0-9-]{1,40}$/.test(tag) ? tag : null
 
   const supabase = await createClient()
 
@@ -37,6 +41,11 @@ export async function GET(request: NextRequest) {
   // Scope filter
   if (validatedScope) {
     query = query.eq('scope', validatedScope)
+  }
+
+  // Tag filter — uses GIN array containment (@>)
+  if (validatedTag) {
+    query = query.contains('tags', [validatedTag])
   }
 
   // Sort order

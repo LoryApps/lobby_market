@@ -6,6 +6,7 @@ export type FeedSort = "top" | "new" | "hot";
 export type FeedStatus = "proposed" | "active" | "voting" | "law" | null;
 export type FeedCategory = string | null;
 export type FeedScope = "Global" | "National" | "Regional" | "Local" | null;
+export type FeedTag = string | null;
 export type FeedMode = "discover" | "following" | "foryou";
 
 interface FeedState {
@@ -17,6 +18,7 @@ interface FeedState {
   statusFilter: FeedStatus;
   categoryFilter: FeedCategory;
   scopeFilter: FeedScope;
+  tagFilter: FeedTag;
   feedMode: FeedMode;
   /** How many users the current user follows (set from the API response) */
   followingCount: number;
@@ -35,6 +37,7 @@ interface FeedState {
   setStatusFilter: (status: FeedStatus) => void;
   setCategoryFilter: (category: FeedCategory) => void;
   setScopeFilter: (scope: FeedScope) => void;
+  setTagFilter: (tag: FeedTag) => void;
   setFeedMode: (mode: FeedMode) => void;
   clearFilters: () => void;
   /** Realtime-injected topics don't have author data — treated as TopicWithAuthor with null author */
@@ -53,6 +56,7 @@ export const useFeedStore = create<FeedState>()(
       statusFilter: null,
       categoryFilter: null,
       scopeFilter: null,
+      tagFilter: null,
       feedMode: "discover",
       followingCount: 0,
       preferredCategories: [],
@@ -70,6 +74,7 @@ export const useFeedStore = create<FeedState>()(
           statusFilter,
           categoryFilter,
           scopeFilter,
+          tagFilter,
           feedMode,
           _generation,
         } = get();
@@ -179,6 +184,7 @@ export const useFeedStore = create<FeedState>()(
             if (statusFilter) params.set("status", statusFilter);
             if (categoryFilter) params.set("category", categoryFilter);
             if (scopeFilter) params.set("scope", scopeFilter);
+            if (tagFilter) params.set("tag", tagFilter);
 
             const res = await fetch(`/api/feed?${params.toString()}`);
 
@@ -263,6 +269,19 @@ export const useFeedStore = create<FeedState>()(
         get().fetchNextPage();
       },
 
+      setTagFilter: (tagFilter) => {
+        const gen = get()._generation + 1;
+        set({
+          tagFilter,
+          topics: [],
+          offset: 0,
+          hasMore: true,
+          isLoading: false,
+          _generation: gen,
+        });
+        get().fetchNextPage();
+      },
+
       setFeedMode: (feedMode) => {
         const gen = get()._generation + 1;
         // Reset sort to "new" for following, "top" for everything else
@@ -286,6 +305,7 @@ export const useFeedStore = create<FeedState>()(
           statusFilter: null,
           categoryFilter: null,
           scopeFilter: null,
+          tagFilter: null,
           sort: "top",
           topics: [],
           offset: 0,
@@ -318,6 +338,7 @@ export const useFeedStore = create<FeedState>()(
         statusFilter: state.statusFilter,
         categoryFilter: state.categoryFilter,
         scopeFilter: state.scopeFilter,
+        tagFilter: state.tagFilter,
       }),
     }
   )

@@ -428,7 +428,7 @@ export function FeedContainer() {
       // onInsert — queue new topics; don't auto-scroll the user away
       (newTopic) => {
         if (!mounted) return
-        const { statusFilter, categoryFilter, scopeFilter, feedMode: mode, preferredCategories } = useFeedStore.getState()
+        const { statusFilter, categoryFilter, scopeFilter, tagFilter, feedMode: mode, preferredCategories } = useFeedStore.getState()
         if (mode === 'following') return
         // For You mode: only queue topics that match the user's preferred categories
         if (mode === 'foryou') {
@@ -438,6 +438,7 @@ export function FeedContainer() {
         if (statusFilter && newTopic.status !== statusFilter) return
         if (categoryFilter && newTopic.category !== categoryFilter) return
         if (scopeFilter && newTopic.scope !== scopeFilter) return
+        if (tagFilter && !((newTopic as { tags?: string[] }).tags ?? []).includes(tagFilter)) return
         setPendingNew((prev) => {
           // De-dupe in case of double delivery
           if (prev.some((t) => t.id === newTopic.id)) return prev

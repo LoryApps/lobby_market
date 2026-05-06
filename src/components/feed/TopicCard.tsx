@@ -80,6 +80,43 @@ function relativeTime(iso: string): string {
 // How many pixels of drag before the vote is committed
 const SWIPE_THRESHOLD = 88
 
+// ── TagPills ──────────────────────────────────────────────────────────────────
+// Renders up to 3 tag pills. Active feed-filter tag is highlighted in emerald.
+// Clicking a tag toggles it as the feed tag filter (instead of navigating away).
+function TagPills({ tags }: { tags: string[] }) {
+  const tagFilter = useFeedStore((s) => s.tagFilter)
+  const setTagFilter = useFeedStore((s) => s.setTagFilter)
+
+  return (
+    <div className="flex items-center gap-1.5 flex-wrap pt-1">
+      {tags.slice(0, 3).map((tag) => {
+        const isActive = tagFilter === tag
+        return (
+          <button
+            key={tag}
+            type="button"
+            onClick={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              setTagFilter(isActive ? null : tag)
+            }}
+            aria-pressed={isActive}
+            aria-label={isActive ? `Remove #${tag} filter` : `Filter feed by #${tag}`}
+            className={cn(
+              'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono border transition-colors',
+              isActive
+                ? 'bg-emerald/20 text-emerald border-emerald/50'
+                : 'bg-surface-200/50 text-surface-500 border-surface-300 hover:text-surface-300 hover:border-surface-400'
+            )}
+          >
+            #{tag}
+          </button>
+        )
+      })}
+    </div>
+  )
+}
+
 export function TopicCard({ topic, authorName, authorAvatar }: TopicCardProps) {
   const { castVote, hasVoted, getVoteSide } = useVoteStore()
   const updateTopic = useFeedStore((s) => s.updateTopic)
@@ -554,23 +591,9 @@ export function TopicCard({ topic, authorName, authorAvatar }: TopicCardProps) {
                 <TopicReactions topicId={topic.id} size="sm" />
               </div>
 
-              {/* Tag pills — max 3, link to /tags/[tag] */}
+              {/* Tag pills — max 3; active tag is highlighted + clicking sets the feed filter */}
               {Array.isArray(topic.tags) && topic.tags.length > 0 && (
-                <div
-                  className="flex items-center gap-1.5 flex-wrap pt-1"
-                  onClick={(e) => e.preventDefault()}
-                >
-                  {topic.tags.slice(0, 3).map((tag) => (
-                    <a
-                      key={tag}
-                      href={`/tags/${encodeURIComponent(tag)}`}
-                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono border bg-surface-200/50 text-surface-500 border-surface-300 hover:text-surface-300 hover:border-surface-400 transition-colors"
-                      aria-label={`Browse #${tag} tag`}
-                    >
-                      #{tag}
-                    </a>
-                  ))}
-                </div>
+                <TagPills tags={topic.tags} />
               )}
 
               {/* Author + view count row */}
