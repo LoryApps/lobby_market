@@ -36,7 +36,6 @@ import {
   ThumbsUp,
   Trash2,
   TrendingUp,
-  Clock,
   X,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
@@ -1293,12 +1292,19 @@ export function ArgumentThread({ topicId }: ArgumentThreadProps) {
   const [showForm, setShowForm] = useState(false)
   const [sortMode, setSortMode] = useState<SortMode>('top')
   const [mobileTab, setMobileTab] = useState<MobileTab>('all')
+  // Realtime: track new arguments that arrived from other users while viewing
+  const [pendingNewCount, setPendingNewCount] = useState(0)
+  const currentUserIdRef = useRef<string | null>(null)
+  const loadedArgIdsRef = useRef<Set<string>>(new Set())
+  const sortModeRef = useRef<SortMode>('top')
 
   // Get current user id for self-detection
   useEffect(() => {
     const supabase = createClient()
     supabase.auth.getUser().then(({ data }) => {
-      setCurrentUserId(data.user?.id ?? null)
+      const uid = data.user?.id ?? null
+      setCurrentUserId(uid)
+      currentUserIdRef.current = uid
     })
   }, [])
 
@@ -1307,16 +1313,60 @@ export function ArgumentThread({ topicId }: ArgumentThreadProps) {
       const res = await fetch(`/api/topics/${topicId}/arguments`)
       if (!res.ok) return
       const json = await res.json()
-      setArgs(json.arguments ?? [])
+      const newArgs: TopicArgumentWithAuthor[] = json.arguments ?? []
+      setArgs(newArgs)
       setMyArgumentId(json.myArgumentId ?? null)
+      // After a refresh, sync the known IDs set and reset pending count
+      loadedArgIdsRef.current = new Set(newArgs.map((a) => a.id))
+      setPendingNewCount(0)
     } finally {
       setLoading(false)
     }
   }, [topicId])
 
+  // Keep sortModeRef in sync so the realtime callback can read current value
+  useEffect(() => {
+    sortModeRef.current = sortMode
+  }, [sortMode])
+
   useEffect(() => {
     loadArguments()
   }, [loadArguments])
+
+  // Realtime: subscribe to new argument inserts for this topic
+  useEffect(() => {
+    const supabase = createClient()
+    const channel = supabase
+      .channel(`arguments:${topicId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'topic_arguments',
+          filter: `topic_id=eq.${topicId}`,
+        },
+        (payload) => {
+          const newArg = payload.new as { id: string; user_id: string }
+          // Ignore if already loaded (e.g., the user posted it themselves)
+          if (loadedArgIdsRef.current.has(newArg.id)) return
+          // Ignore the current user's own argument (handlePosted does a full reload)
+          if (newArg.user_id === currentUserIdRef.current) return
+          // In "new" sort mode: auto-refresh so the argument appears immediately
+          if (sortModeRef.current === 'new') {
+            loadArguments()
+          } else {
+            // In "top" sort mode: show a banner so we don't interrupt reading
+            setPendingNewCount((n) => n + 1)
+          }
+        }
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [topicId, loadArguments])
 
   // Append a newly posted argument and hide the form
   const handlePosted = (_newArg: TopicArgumentWithAuthor) => {
@@ -1433,6 +1483,31 @@ export function ArgumentThread({ topicId }: ArgumentThreadProps) {
 
   return (
     <div className="space-y-5">
+      {/* ── Realtime: new arguments banner ── */}
+      <AnimatePresence>
+        {pendingNewCount > 0 && (
+          <motion.button
+            key="new-args-banner"
+            type="button"
+            initial={{ opacity: 0, y: -8, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -8, scale: 0.97 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+            onClick={() => loadArguments()}
+            className={cn(
+              'w-full flex items-center justify-center gap-2 py-2 px-4 rounded-xl',
+              'border border-for-500/40 bg-for-600/10 text-for-300',
+              'text-xs font-mono font-semibold hover:bg-for-600/20 transition-colors',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-for-500'
+            )}
+            aria-label={`Load ${pendingNewCount} new argument${pendingNewCount !== 1 ? 's' : ''}`}
+          >
+            <MessageSquarePlus className="h-3.5 w-3.5 flex-shrink-0" aria-hidden />
+            {pendingNewCount} new argument{pendingNewCount !== 1 ? 's' : ''} — click to load
+          </motion.button>
+        )}
+      </AnimatePresence>
+
       {/* ── Header ── */}
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div>
@@ -1469,7 +1544,10 @@ export function ArgumentThread({ topicId }: ArgumentThreadProps) {
                 </>
               ) : (
                 <>
-                  <Clock className="h-3 w-3" aria-hidden />
+                  <span className="relative flex h-2 w-2 flex-shrink-0" aria-hidden>
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-for-400 opacity-60" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-for-500" />
+                  </span>
                   New
                 </>
               )}
