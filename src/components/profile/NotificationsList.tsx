@@ -10,6 +10,7 @@ import {
   Bell,
   Bookmark,
   Gavel,
+  Hash,
   Link2,
   MessageCircle,
   MessageSquare,
@@ -55,6 +56,7 @@ const typeConfig: Record<
   topic_subscribed_update: { icon: Activity, color: 'text-for-400' },
   vote_phase_started: { icon: Scale, color: 'text-purple' },
   direct_message: { icon: MessageSquare, color: 'text-for-300' },
+  new_topic_in_tag: { icon: Hash, color: 'text-for-400' },
 }
 
 // ─── Filter tabs ──────────────────────────────────────────────────────────────
@@ -78,7 +80,7 @@ const SOCIAL_TYPES: NotificationType[] = [
   'direct_message',
 ]
 
-const DEBATE_TYPES: NotificationType[] = ['debate_starting']
+const DEBATE_TYPES: NotificationType[] = ['debate_starting', 'new_topic_in_tag']
 
 const ACHIEVEMENT_TYPES: NotificationType[] = ['achievement_earned']
 

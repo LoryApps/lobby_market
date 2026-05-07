@@ -275,6 +275,15 @@ export function TagsClient() {
               Compare
             </Link>
 
+            <Link
+              href="/tags/my-tags"
+              aria-label="My followed tags"
+              className="flex items-center gap-1 px-3 py-2 rounded-lg bg-for-500/10 hover:bg-for-500/20 border border-for-500/30 text-for-400 hover:text-for-300 transition-colors text-xs font-mono"
+            >
+              <Bell className="h-3.5 w-3.5" />
+              My Tags
+            </Link>
+
             <button
               onClick={load}
               disabled={loading}

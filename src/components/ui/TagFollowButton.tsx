@@ -12,6 +12,8 @@ interface TagFollowButtonProps {
   initialCount?: number
   size?: 'sm' | 'md'
   className?: string
+  /** Called after the user successfully unfollows */
+  onUnfollowed?: () => void
 }
 
 export function TagFollowButton({
@@ -20,6 +22,7 @@ export function TagFollowButton({
   initialCount,
   size = 'md',
   className,
+  onUnfollowed,
 }: TagFollowButtonProps) {
   const router = useRouter()
   const [following, setFollowing] = useState<boolean | null>(initialFollowing ?? null)
@@ -78,6 +81,9 @@ export function TagFollowButton({
         const d = await res.json()
         setFollowing(d.following as boolean)
         setCount(d.follower_count as number)
+        if (!(d.following as boolean) && onUnfollowed) {
+          onUnfollowed()
+        }
       }
     } catch {
       // best-effort

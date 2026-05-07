@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { ArrowLeft, BarChart2, Gavel, GitCompare, Network, Tag, TrendingUp, Zap } from 'lucide-react'
+import { ArrowLeft, BarChart2, Bell, Gavel, GitCompare, Network, Tag, TrendingUp, Zap } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -260,6 +260,15 @@ export default async function TagPage({ params, searchParams }: PageProps) {
             <GitCompare className="h-3.5 w-3.5" />
             Compare
           </Link>
+          {user && (
+            <Link
+              href="/tags/my-tags"
+              className="inline-flex items-center gap-1.5 text-xs font-mono text-for-400 hover:text-for-300 transition-colors"
+            >
+              <Bell className="h-3.5 w-3.5" />
+              My Tags
+            </Link>
+          )}
         </div>
 
         <div className="mb-6 flex items-start justify-between gap-4 flex-wrap">
