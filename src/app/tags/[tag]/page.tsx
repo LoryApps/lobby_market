@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { ArrowLeft, BarChart2, Gavel, Tag, TrendingUp, Zap } from 'lucide-react'
+import { ArrowLeft, BarChart2, Gavel, GitCompare, Tag, TrendingUp, Zap } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -238,13 +238,22 @@ export default async function TagPage({ params, searchParams }: PageProps) {
       <main className="max-w-3xl mx-auto px-4 pt-6 pb-24 md:pb-12">
 
         {/* ── Back + header ────────────────────────────────────────────── */}
-        <Link
-          href="/tags"
-          className="inline-flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-surface-300 transition-colors mb-4"
-        >
-          <ArrowLeft className="h-3.5 w-3.5" />
-          All tags
-        </Link>
+        <div className="flex items-center justify-between mb-4">
+          <Link
+            href="/tags"
+            className="inline-flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-surface-300 transition-colors"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" />
+            All tags
+          </Link>
+          <Link
+            href={`/tags/compare?a=${encodeURIComponent(tag)}`}
+            className="inline-flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-purple transition-colors"
+          >
+            <GitCompare className="h-3.5 w-3.5" />
+            Compare
+          </Link>
+        </div>
 
         <div className="mb-6 flex items-start justify-between gap-4 flex-wrap">
           <div className="flex items-center gap-3">

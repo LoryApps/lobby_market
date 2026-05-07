@@ -19,6 +19,7 @@ import {
   ArrowRight,
   Bell,
   Gavel,
+  GitCompare,
   Hash,
   Loader2,
   RefreshCw,
@@ -254,6 +255,15 @@ export function TagsClient() {
                 Grid
               </button>
             </div>
+
+            <Link
+              href="/tags/compare"
+              aria-label="Compare two tags"
+              className="flex items-center gap-1 px-3 py-2 rounded-lg bg-surface-200 hover:bg-surface-300 text-surface-400 hover:text-white transition-colors text-xs font-mono"
+            >
+              <GitCompare className="h-3.5 w-3.5" />
+              Compare
+            </Link>
 
             <button
               onClick={load}
