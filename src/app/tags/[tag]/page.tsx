@@ -6,6 +6,7 @@ import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { Badge } from '@/components/ui/Badge'
 import { EmptyState } from '@/components/ui/EmptyState'
+import { TagFollowButton } from '@/components/ui/TagFollowButton'
 import { cn } from '@/lib/utils/cn'
 
 export const dynamic = 'force-dynamic'
@@ -99,15 +100,32 @@ export default async function TagPage({ params, searchParams }: PageProps) {
   const statusFilter = searchParams?.status ?? null
 
   const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
 
-  // ── Fetch ALL topics for this tag (for stats) ─────────────────────────────
-  const { data: allTopics } = await supabase
-    .from('topics')
-    .select('id, statement, category, status, blue_pct, total_votes, view_count, tags, created_at, voting_ends_at')
-    .contains('tags', [tag])
-    .limit(200)
+  // ── Fetch topics + follow status in parallel ──────────────────────────────
+  const [topicsRes, followRes, countRes] = await Promise.all([
+    supabase
+      .from('topics')
+      .select('id, statement, category, status, blue_pct, total_votes, view_count, tags, created_at, voting_ends_at')
+      .contains('tags', [tag])
+      .limit(200),
+    user
+      ? supabase
+          .from('user_tag_follows')
+          .select('tag')
+          .eq('user_id', user.id)
+          .eq('tag', tag)
+          .maybeSingle()
+      : Promise.resolve({ data: null }),
+    supabase
+      .from('user_tag_follows')
+      .select('user_id', { count: 'exact', head: true })
+      .eq('tag', tag),
+  ])
 
-  const allTagTopics = allTopics ?? []
+  const allTagTopics = topicsRes.data ?? []
+  const initialFollowing = !!followRes.data
+  const followerCount = countRes.count ?? 0
 
   // ── Aggregate sentiment ────────────────────────────────────────────────────
   const votedTopics = allTagTopics.filter((t) => (t.total_votes ?? 0) > 0)
@@ -243,6 +261,12 @@ export default async function TagPage({ params, searchParams }: PageProps) {
               </p>
             </div>
           </div>
+
+          <TagFollowButton
+            tag={tag}
+            initialFollowing={initialFollowing}
+            initialCount={followerCount}
+          />
         </div>
 
         {/* ── Sentiment + stats panel ───────────────────────────────────── */}

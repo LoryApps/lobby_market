@@ -7,7 +7,7 @@ export type FeedStatus = "proposed" | "active" | "voting" | "law" | null;
 export type FeedCategory = string | null;
 export type FeedScope = "Global" | "National" | "Regional" | "Local" | null;
 export type FeedTag = string | null;
-export type FeedMode = "discover" | "following" | "foryou";
+export type FeedMode = "discover" | "following" | "foryou" | "mytags";
 
 interface FeedState {
   topics: TopicWithAuthor[];
@@ -174,6 +174,46 @@ export const useFeedStore = create<FeedState>()(
               offset: state.offset + json.topics.length,
               hasMore: json.topics.length === 20,
             }));
+          } else if (feedMode === "mytags") {
+            // My Tags feed — topics matching the user's followed tags
+            const params = new URLSearchParams({
+              limit: "20",
+              offset: String(offset),
+              sort,
+            });
+
+            const res = await fetch(`/api/feed/tags?${params.toString()}`);
+
+            if (get()._generation !== capturedGen) return;
+
+            if (res.status === 401) {
+              set({ hasMore: false });
+              return;
+            }
+
+            if (!res.ok) {
+              console.error("Failed to fetch my-tags feed:", res.statusText);
+              return;
+            }
+
+            const json: {
+              topics: TopicWithAuthor[];
+              followedTags: string[];
+              followedTagCount: number;
+            } = await res.json();
+
+            if (get()._generation !== capturedGen) return;
+
+            if (json.followedTagCount === 0 || json.topics.length === 0) {
+              set({ hasMore: false });
+              return;
+            }
+
+            set((state) => ({
+              topics: [...state.topics, ...json.topics],
+              offset: state.offset + json.topics.length,
+              hasMore: json.topics.length === 20,
+            }));
           } else {
             // Discover feed
             const params = new URLSearchParams({
@@ -284,8 +324,8 @@ export const useFeedStore = create<FeedState>()(
 
       setFeedMode: (feedMode) => {
         const gen = get()._generation + 1;
-        // Reset sort to "new" for following, "top" for everything else
-        const sort = feedMode === "following" ? "new" : "top";
+        // Reset sort to "new" for following/mytags, "top" for everything else
+        const sort = (feedMode === "following" || feedMode === "mytags") ? "new" : "top";
         set({
           feedMode,
           sort,

@@ -13,10 +13,13 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   ArrowRight,
+  Bell,
   Gavel,
+  Hash,
   Loader2,
   RefreshCw,
   Tag,
@@ -28,6 +31,7 @@ import { BottomNav } from '@/components/layout/BottomNav'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { cn } from '@/lib/utils/cn'
 import type { TrendingTag, TrendingTagsResponse } from '@/app/api/tags/trending/route'
+import type { FollowedTagsResponse } from '@/app/api/tags/following/route'
 
 // ── Tag colour palette ────────────────────────────────────────────────────────
 // Deterministically assign a colour bucket to each tag based on its first char.
@@ -156,17 +160,27 @@ function TopTagCard({ tag, rank }: { tag: TrendingTag; rank: number }) {
 // ── Main component ────────────────────────────────────────────────────────────
 
 export function TagsClient() {
+  const router = useRouter()
   const [tags, setTags] = useState<TrendingTag[]>([])
   const [loading, setLoading] = useState(true)
   const [view, setView] = useState<'cloud' | 'grid'>('cloud')
+  const [followedTags, setFollowedTags] = useState<string[]>([])
 
   const load = useCallback(async () => {
     setLoading(true)
     try {
-      const res = await fetch('/api/tags/trending', { cache: 'no-store' })
-      if (!res.ok) throw new Error('fetch failed')
-      const json = (await res.json()) as TrendingTagsResponse
-      setTags(json.tags)
+      const [trendingRes, followedRes] = await Promise.all([
+        fetch('/api/tags/trending', { cache: 'no-store' }),
+        fetch('/api/tags/following', { cache: 'no-store' }),
+      ])
+      if (trendingRes.ok) {
+        const json = (await trendingRes.json()) as TrendingTagsResponse
+        setTags(json.tags)
+      }
+      if (followedRes.ok) {
+        const json = (await followedRes.json()) as FollowedTagsResponse
+        setFollowedTags(json.tags)
+      }
     } catch {
       // ignore
     } finally {
@@ -236,6 +250,39 @@ export function TagsClient() {
             </button>
           </div>
         </div>
+
+        {/* ── Followed tags strip ───────────────────────────────────────── */}
+        {followedTags.length > 0 && (
+          <div className="mb-6 rounded-xl bg-for-500/5 border border-for-500/20 p-4">
+            <div className="flex items-center justify-between gap-2 mb-3">
+              <div className="flex items-center gap-2">
+                <Bell className="h-4 w-4 text-for-400" aria-hidden />
+                <span className="font-mono text-sm font-bold text-for-300">
+                  Following {followedTags.length} tag{followedTags.length !== 1 ? 's' : ''}
+                </span>
+              </div>
+              <button
+                onClick={() => router.push('/?mode=mytags')}
+                className="text-[11px] font-mono text-for-400 hover:text-for-300 transition-colors flex items-center gap-1"
+              >
+                <Hash className="h-3 w-3" />
+                View My Tags feed
+              </button>
+            </div>
+            <div className="flex items-center gap-2 flex-wrap">
+              {followedTags.map((t) => (
+                <Link
+                  key={t}
+                  href={`/tags/${encodeURIComponent(t)}`}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-mono font-medium border bg-for-500/10 text-for-300 border-for-500/30 hover:bg-for-500/20 transition-colors"
+                >
+                  <Bell className="h-2.5 w-2.5 opacity-70" />
+                  #{t}
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
 
         {loading ? (
           <div className="flex items-center justify-center py-24">

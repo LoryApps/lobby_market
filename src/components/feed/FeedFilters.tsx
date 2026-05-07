@@ -99,10 +99,11 @@ const POPULAR_TAGS: { id: string; label: string }[] = [
   { id: 'abortion',     label: 'Abortion'     },
 ]
 
-const FEED_MODES: { id: FeedMode; label: string; icon: typeof Globe }[] = [
-  { id: 'discover', label: 'Discover', icon: Globe },
-  { id: 'following', label: 'Following', icon: Users },
-  { id: 'foryou', label: 'For You', icon: Sparkles },
+const FEED_MODES: { id: FeedMode; label: string; icon: typeof Globe; activeClass: string }[] = [
+  { id: 'discover', label: 'Discover', icon: Globe, activeClass: 'bg-for-600 text-white shadow-sm' },
+  { id: 'following', label: 'Following', icon: Users, activeClass: 'bg-purple/90 text-white shadow-sm' },
+  { id: 'foryou', label: 'For You', icon: Sparkles, activeClass: 'bg-gold/20 text-gold border border-gold/40 shadow-sm' },
+  { id: 'mytags', label: 'My Tags', icon: Hash, activeClass: 'bg-for-500/20 text-for-300 border border-for-500/30 shadow-sm' },
 ]
 
 export function FeedFilters() {
@@ -136,26 +137,21 @@ export function FeedFilters() {
       ].filter(Boolean).length
     : (sort !== 'new' && feedMode === 'following' ? 1 : 0)
       + (sort !== 'top' && feedMode === 'foryou' ? 1 : 0)
+      + (sort !== 'new' && feedMode === 'mytags' ? 1 : 0)
 
   return (
     <div className="flex flex-col gap-1.5">
       {/* Row 0: Discover / Following mode toggle + clear-filters */}
       <div className="flex items-center gap-2 px-3 pt-2">
         <div className="flex items-center gap-0.5 bg-surface-200/80 border border-surface-300 rounded-xl p-0.5 backdrop-blur-sm">
-          {FEED_MODES.map(({ id, label, icon: Icon }) => (
+          {FEED_MODES.map(({ id, label, icon: Icon, activeClass }) => (
             <button
               key={id}
               onClick={() => setFeedMode(id)}
               aria-pressed={feedMode === id}
               className={cn(
                 'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-semibold transition-all duration-150',
-                feedMode === id
-                  ? id === 'following'
-                    ? 'bg-purple/90 text-white shadow-sm'
-                    : id === 'foryou'
-                    ? 'bg-gold/20 text-gold border border-gold/40 shadow-sm'
-                    : 'bg-for-600 text-white shadow-sm'
-                  : 'text-surface-500 hover:text-surface-300'
+                feedMode === id ? activeClass : 'text-surface-500 hover:text-surface-300'
               )}
             >
               <Icon className="h-3 w-3 flex-shrink-0" />
@@ -486,6 +482,52 @@ export function FeedFilters() {
               Personalised from {inferredFromVotes} vote{inferredFromVotes !== 1 ? 's' : ''} — take the quiz for better accuracy
             </p>
           )}
+        </div>
+      )}
+
+      {/* ── My Tags mode ──────────────────────────────────────────────────── */}
+      {feedMode === 'mytags' && (
+        <div className="flex flex-col gap-1 pb-1">
+          {/* Sort controls */}
+          <div
+            className={cn(
+              'flex items-center gap-2 px-3 py-1.5',
+              'overflow-x-auto',
+              '[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
+            )}
+          >
+            <div className="flex items-center gap-0.5 flex-shrink-0 bg-surface-200/80 border border-surface-300 rounded-lg p-0.5 backdrop-blur-sm">
+              {SORT_OPTIONS.map(({ id, label, icon: Icon }) => (
+                <button
+                  key={id}
+                  onClick={() => setSort(id)}
+                  aria-pressed={sort === id}
+                  className={cn(
+                    'flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-mono font-medium transition-all duration-150',
+                    sort === id
+                      ? 'bg-for-500/20 text-for-300 shadow-sm border border-for-500/30'
+                      : 'text-surface-500 hover:text-surface-700'
+                  )}
+                >
+                  <Icon className="h-3 w-3 flex-shrink-0" />
+                  <span>{label}</span>
+                </button>
+              ))}
+            </div>
+
+            {/* Link to browse / manage followed tags */}
+            <Link
+              href="/tags"
+              className={cn(
+                'flex-shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-mono font-medium',
+                'border border-surface-500/40 text-surface-500',
+                'hover:text-surface-300 hover:border-surface-400 transition-all duration-150'
+              )}
+            >
+              <Hash className="h-3 w-3" />
+              Manage tags
+            </Link>
+          </div>
         </div>
       )}
     </div>

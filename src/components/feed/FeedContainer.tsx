@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useCallback, useState } from 'react'
 import Link from 'next/link'
-import { Users, Search, Keyboard, RefreshCw, ChevronUp, Sparkles, UserPlus, Check, Loader2, History, Vote } from 'lucide-react'
+import { Users, Search, Keyboard, RefreshCw, ChevronUp, Sparkles, UserPlus, Check, Loader2, History, Vote, Hash } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useFeedStore } from '@/lib/stores/feed-store'
 import { useVoteStore } from '@/lib/stores/vote-store'
@@ -290,6 +290,34 @@ function ForYouEmptyState({
   )
 }
 
+// ─── My Tags empty state ──────────────────────────────────────────────────────
+
+function MyTagsEmptyState() {
+  return (
+    <div className="feed-card flex items-center justify-center">
+      <div className="text-center px-8 max-w-xs">
+        <div className="flex items-center justify-center h-14 w-14 rounded-2xl bg-for-500/10 border border-for-500/30 mx-auto mb-5">
+          <Hash className="h-7 w-7 text-for-400" />
+        </div>
+        <h2 className="text-xl font-bold text-white font-mono mb-2">No followed tags yet</h2>
+        <p className="text-sm text-surface-500 leading-relaxed mb-6">
+          Follow tags like #climate, #housing, or #ai to build a feed that only shows
+          topics you care about. Find them on any tag page.
+        </p>
+        <div className="flex flex-col gap-2">
+          <Link
+            href="/tags"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-for-600 hover:bg-for-500 text-white text-sm font-mono font-medium transition-colors"
+          >
+            <Hash className="h-4 w-4" />
+            Browse all tags
+          </Link>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 // ─── Keyboard shortcuts help overlay ─────────────────────────────────────────
 
 
@@ -406,12 +434,24 @@ function EndOfFeed({
 // ─── Main feed container ──────────────────────────────────────────────────────
 
 export function FeedContainer() {
-  const { topics, isLoading, hasMore, feedMode, followingCount, hasPreferences, preferenceSource, fetchNextPage, updateTopic, prependTopic } = useFeedStore()
+  const { topics, isLoading, hasMore, feedMode, followingCount, hasPreferences, preferenceSource, fetchNextPage, updateTopic, prependTopic, setFeedMode } = useFeedStore()
   const { castVote } = useVoteStore()
   const [pendingNew, setPendingNew] = useState<TopicWithAuthor[]>([])
   const [isLive, setIsLive] = useState(false)
   const sentinelRef = useRef<HTMLDivElement>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
+
+  // Handle ?mode=mytags URL param to switch feed mode on arrival
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const url = new URL(window.location.href)
+    const mode = url.searchParams.get('mode')
+    if (mode === 'mytags') {
+      setFeedMode('mytags')
+      url.searchParams.delete('mode')
+      window.history.replaceState({}, '', url.toString())
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Initial fetch
   useEffect(() => {
@@ -429,7 +469,7 @@ export function FeedContainer() {
       (newTopic) => {
         if (!mounted) return
         const { statusFilter, categoryFilter, scopeFilter, tagFilter, feedMode: mode, preferredCategories } = useFeedStore.getState()
-        if (mode === 'following') return
+        if (mode === 'following' || mode === 'mytags') return
         // For You mode: only queue topics that match the user's preferred categories
         if (mode === 'foryou') {
           if (!newTopic.category || !preferredCategories.includes(newTopic.category)) return
@@ -701,6 +741,11 @@ export function FeedContainer() {
         {/* Empty state: for you feed */}
         {!isLoading && topics.length === 0 && feedMode === 'foryou' && (
           <ForYouEmptyState hasPreferences={hasPreferences} preferenceSource={preferenceSource} />
+        )}
+
+        {/* Empty state: my tags feed */}
+        {!isLoading && topics.length === 0 && feedMode === 'mytags' && (
+          <MyTagsEmptyState />
         )}
 
         {/* Sentinel for infinite scroll */}
