@@ -522,6 +522,25 @@ export default function ActivityPage() {
           </button>
         </div>
 
+        {/* ── Platform / Following toggle ────────────────────────────────── */}
+        <div className="flex gap-1 p-1 bg-surface-200 rounded-xl mb-5" role="tablist">
+          <span
+            role="tab"
+            aria-selected={true}
+            className="flex-1 flex items-center justify-center h-8 rounded-lg text-xs font-mono font-medium bg-surface-100 text-white shadow-sm"
+          >
+            Platform
+          </span>
+          <Link
+            href="/activity/following"
+            role="tab"
+            aria-selected={false}
+            className="flex-1 flex items-center justify-center h-8 rounded-lg text-xs font-mono font-medium text-surface-500 hover:text-surface-300 transition-colors"
+          >
+            Following
+          </Link>
+        </div>
+
         {/* ── Last updated ──────────────────────────────────────────────── */}
         {lastUpdated && !loading && (
           <p className="text-[10px] font-mono text-surface-600 mb-4 -mt-2">

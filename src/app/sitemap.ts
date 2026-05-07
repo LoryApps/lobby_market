@@ -73,6 +73,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/mindmap`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/spar`, changeFrequency: 'hourly', priority: 0.75 },
   { url: `${BASE_URL}/activity`, changeFrequency: 'daily', priority: 0.6 },
+  { url: `${BASE_URL}/activity/following`, changeFrequency: 'always', priority: 0.65 },
   { url: `${BASE_URL}/city`, changeFrequency: 'daily', priority: 0.6 },
   { url: `${BASE_URL}/coalitions`, changeFrequency: 'daily', priority: 0.6 },
   { url: `${BASE_URL}/lobby`, changeFrequency: 'daily', priority: 0.6 },
