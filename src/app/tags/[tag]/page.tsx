@@ -7,6 +7,7 @@ import { BottomNav } from '@/components/layout/BottomNav'
 import { Badge } from '@/components/ui/Badge'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { TagFollowButton } from '@/components/ui/TagFollowButton'
+import { TagAIBrief } from '@/components/ui/TagAIBrief'
 import { cn } from '@/lib/utils/cn'
 
 export const dynamic = 'force-dynamic'
@@ -393,6 +394,11 @@ export default async function TagPage({ params, searchParams }: PageProps) {
               ))}
             </div>
           </div>
+        )}
+
+        {/* ── AI Tag Brief ──────────────────────────────────────────────── */}
+        {allTagTopics.length >= 2 && (
+          <TagAIBrief tag={tag} className="mb-5" />
         )}
 
         {/* ── Filter / sort bar ─────────────────────────────────────────── */}
