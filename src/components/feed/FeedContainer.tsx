@@ -292,28 +292,126 @@ function ForYouEmptyState({
 
 // ─── My Tags empty state ──────────────────────────────────────────────────────
 
+interface RecommendedTag {
+  tag: string
+  topic_count: number
+  active_count: number
+  total_votes: number
+  reason: 'voted_topic' | 'cooccurrence' | 'trending'
+}
+
+const REASON_LABEL: Record<RecommendedTag['reason'], string> = {
+  voted_topic:  'Based on your votes',
+  cooccurrence: 'Related to your tags',
+  trending:     'Trending now',
+}
+
 function MyTagsEmptyState() {
+  const [recommendations, setRecommendations] = useState<RecommendedTag[]>([])
+  const [followed, setFollowed] = useState<Set<string>>(new Set())
+  const [loading, setLoading] = useState(true)
+  const feedMode = useFeedStore((s) => s.feedMode)
+  const setTagFilter = useFeedStore((s) => s.setTagFilter)
+  const setFeedMode = useFeedStore((s) => s.setFeedMode)
+
+  useEffect(() => {
+    fetch('/api/tags/recommended')
+      .then((r) => r.ok ? r.json() : { recommendations: [] })
+      .then((d) => setRecommendations(d.recommendations ?? []))
+      .catch(() => {})
+      .finally(() => setLoading(false))
+  }, [])
+
+  async function handleFollow(tag: string) {
+    if (followed.has(tag)) return
+    setFollowed((prev) => new Set([...prev, tag]))
+    try {
+      await fetch('/api/tags/follow', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tag }),
+      })
+    } catch {
+      setFollowed((prev) => { const n = new Set(prev); n.delete(tag); return n })
+    }
+  }
+
+  function handleGoToTag(tag: string) {
+    setTagFilter(tag)
+    if (feedMode !== 'discover') setFeedMode('discover')
+  }
+
   return (
-    <div className="feed-card flex items-center justify-center">
-      <div className="text-center px-8 max-w-xs">
-        <div className="flex items-center justify-center h-14 w-14 rounded-2xl bg-for-500/10 border border-for-500/30 mx-auto mb-5">
+    <div className="feed-card">
+      <div className="text-center mb-6">
+        <div className="flex items-center justify-center h-14 w-14 rounded-2xl bg-for-500/10 border border-for-500/30 mx-auto mb-4">
           <Hash className="h-7 w-7 text-for-400" />
         </div>
         <h2 className="text-xl font-bold text-white font-mono mb-2">No followed tags yet</h2>
-        <p className="text-sm text-surface-500 leading-relaxed mb-6">
-          Follow tags like #climate, #housing, or #ai to build a feed that only shows
-          topics you care about. Find them on any tag page.
+        <p className="text-sm text-surface-500 leading-relaxed">
+          Follow tags to build a personalised feed. Click any suggestion below to get started.
         </p>
-        <div className="flex flex-col gap-2">
-          <Link
-            href="/tags"
-            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-for-600 hover:bg-for-500 text-white text-sm font-mono font-medium transition-colors"
-          >
-            <Hash className="h-4 w-4" />
-            Browse all tags
-          </Link>
-        </div>
       </div>
+
+      {loading ? (
+        <div className="grid grid-cols-2 gap-2 mb-4">
+          {[0,1,2,3].map((i) => (
+            <div key={i} className="h-16 rounded-xl bg-surface-200 animate-pulse" />
+          ))}
+        </div>
+      ) : recommendations.length > 0 ? (
+        <div className="space-y-2 mb-5">
+          {recommendations.slice(0, 6).map((rec) => {
+            const isFollowed = followed.has(rec.tag)
+            return (
+              <div
+                key={rec.tag}
+                className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-surface-200/60 border border-surface-300/60 hover:border-surface-400/60 transition-colors"
+              >
+                <button
+                  onClick={() => handleGoToTag(rec.tag)}
+                  className="flex-1 flex items-center gap-2.5 min-w-0 text-left"
+                >
+                  <Hash className="h-3.5 w-3.5 text-for-400 flex-shrink-0" />
+                  <div className="min-w-0">
+                    <p className="text-sm font-mono font-semibold text-white truncate">
+                      {rec.tag}
+                    </p>
+                    <p className="text-[10px] font-mono text-surface-500 truncate">
+                      {rec.active_count > 0 ? `${rec.active_count} active · ` : ''}{rec.topic_count} topic{rec.topic_count !== 1 ? 's' : ''} · {REASON_LABEL[rec.reason]}
+                    </p>
+                  </div>
+                </button>
+                <button
+                  onClick={() => handleFollow(rec.tag)}
+                  disabled={isFollowed}
+                  aria-label={isFollowed ? `Following #${rec.tag}` : `Follow #${rec.tag}`}
+                  className={cn(
+                    'flex-shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-mono font-semibold border transition-all',
+                    isFollowed
+                      ? 'bg-for-600/20 border-for-600/40 text-for-400 cursor-default'
+                      : 'bg-purple/80 border-purple/50 text-white hover:bg-purple'
+                  )}
+                >
+                  {isFollowed ? (
+                    <><Check className="h-3 w-3" /> Following</>
+                  ) : (
+                    <>+ Follow</>
+                  )}
+                </button>
+              </div>
+            )
+          })}
+        </div>
+      ) : null}
+
+      <Link
+        href="/tags"
+        className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl bg-surface-200 hover:bg-surface-300 text-surface-400 hover:text-white text-sm font-mono font-medium transition-colors border border-surface-300"
+      >
+        <Hash className="h-4 w-4" />
+        Browse all tags
+      </Link>
     </div>
   )
 }

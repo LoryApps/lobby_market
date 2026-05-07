@@ -22,6 +22,7 @@ import {
   Hash,
   Loader2,
   RefreshCw,
+  Sparkles,
   Tag,
   TrendingUp,
   Zap,
@@ -29,9 +30,11 @@ import {
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { EmptyState } from '@/components/ui/EmptyState'
+import { TagFollowButton } from '@/components/ui/TagFollowButton'
 import { cn } from '@/lib/utils/cn'
 import type { TrendingTag, TrendingTagsResponse } from '@/app/api/tags/trending/route'
 import type { FollowedTagsResponse } from '@/app/api/tags/following/route'
+import type { RecommendedTag, RecommendedTagsResponse } from '@/app/api/tags/recommended/route'
 
 // ── Tag colour palette ────────────────────────────────────────────────────────
 // Deterministically assign a colour bucket to each tag based on its first char.
@@ -159,19 +162,27 @@ function TopTagCard({ tag, rank }: { tag: TrendingTag; rank: number }) {
 
 // ── Main component ────────────────────────────────────────────────────────────
 
+const REASON_LABEL: Record<RecommendedTag['reason'], string> = {
+  voted_topic: 'Based on your votes',
+  cooccurrence: 'Related to your tags',
+  trending: 'Trending',
+}
+
 export function TagsClient() {
   const router = useRouter()
   const [tags, setTags] = useState<TrendingTag[]>([])
   const [loading, setLoading] = useState(true)
   const [view, setView] = useState<'cloud' | 'grid'>('cloud')
   const [followedTags, setFollowedTags] = useState<string[]>([])
+  const [recommendations, setRecommendations] = useState<RecommendedTag[]>([])
 
   const load = useCallback(async () => {
     setLoading(true)
     try {
-      const [trendingRes, followedRes] = await Promise.all([
+      const [trendingRes, followedRes, recommendedRes] = await Promise.all([
         fetch('/api/tags/trending', { cache: 'no-store' }),
         fetch('/api/tags/following', { cache: 'no-store' }),
+        fetch('/api/tags/recommended', { cache: 'no-store' }),
       ])
       if (trendingRes.ok) {
         const json = (await trendingRes.json()) as TrendingTagsResponse
@@ -180,6 +191,10 @@ export function TagsClient() {
       if (followedRes.ok) {
         const json = (await followedRes.json()) as FollowedTagsResponse
         setFollowedTags(json.tags)
+      }
+      if (recommendedRes.ok) {
+        const json = (await recommendedRes.json()) as RecommendedTagsResponse
+        setRecommendations(json.recommendations ?? [])
       }
     } catch {
       // ignore
@@ -296,6 +311,55 @@ export function TagsClient() {
           />
         ) : (
           <>
+            {/* ── Suggested for You ─────────────────────────────────────── */}
+            {recommendations.length > 0 && (
+              <section className="mb-8">
+                <div className="flex items-center gap-2 mb-3">
+                  <Sparkles className="h-4 w-4 text-purple" aria-hidden />
+                  <h2 className="font-mono text-sm font-bold text-surface-400 uppercase tracking-wider">
+                    Suggested for You
+                  </h2>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {recommendations.map((rec, i) => {
+                    const palette = tagPalette(rec.tag)
+                    return (
+                      <motion.div
+                        key={rec.tag}
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: i * 0.04 }}
+                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-surface-100/50 border border-surface-200 hover:border-surface-300 transition-all"
+                      >
+                        <Link
+                          href={`/tags/${encodeURIComponent(rec.tag)}`}
+                          className="flex-1 flex items-center gap-2.5 min-w-0"
+                        >
+                          <div className={cn('h-8 w-8 rounded-lg flex items-center justify-center flex-shrink-0', palette.bg, 'border', palette.border)}>
+                            <Tag className={cn('h-3.5 w-3.5', palette.text)} aria-hidden />
+                          </div>
+                          <div className="min-w-0">
+                            <p className={cn('text-sm font-mono font-semibold truncate', palette.text)}>
+                              #{rec.tag}
+                            </p>
+                            <p className="text-[10px] font-mono text-surface-500 truncate">
+                              {rec.active_count > 0 ? `${rec.active_count} active · ` : ''}{rec.topic_count} debate{rec.topic_count !== 1 ? 's' : ''} · {REASON_LABEL[rec.reason]}
+                            </p>
+                          </div>
+                        </Link>
+                        <TagFollowButton
+                          tag={rec.tag}
+                          initialFollowing={followedTags.includes(rec.tag)}
+                          size="sm"
+                          className="flex-shrink-0"
+                        />
+                      </motion.div>
+                    )
+                  })}
+                </div>
+              </section>
+            )}
+
             {/* ── Top 5 cards ───────────────────────────────────────────── */}
             {top5.length > 0 && (
               <section className="mb-8">
