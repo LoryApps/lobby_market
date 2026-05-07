@@ -19,6 +19,7 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const tag = decodeURIComponent(params.tag)
+  const ogImageUrl = `/api/og/tag/${encodeURIComponent(tag)}`
   return {
     title: `#${tag} · Lobby Market`,
     description: `All civic debates tagged "${tag}" on Lobby Market — browse, vote, and argue.`,
@@ -27,11 +28,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       description: `Every debate tagged "${tag}" — from proposals to established laws.`,
       type: 'website',
       siteName: 'Lobby Market',
+      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: `#${tag} debates on Lobby Market` }],
     },
     twitter: {
-      card: 'summary',
+      card: 'summary_large_image',
       title: `#${tag} · Lobby Market`,
       description: `Debates tagged "${tag}" on Lobby Market.`,
+      images: [ogImageUrl],
     },
   }
 }
