@@ -68,6 +68,7 @@ import { TopicHotTakes } from '@/components/topic/TopicHotTakes'
 import { ArgumentContributors } from '@/components/topic/ArgumentContributors'
 import { ArgumentCitationsPanel } from '@/components/topic/ArgumentCitationsPanel'
 import { TopicAIBrief } from '@/components/topic/TopicAIBrief'
+import { TopicSynthesisPanel } from '@/components/topic/TopicSynthesisPanel'
 import { TopicContextPanel } from '@/components/topic/TopicContextPanel'
 import { TopicBountyPanel } from '@/components/topic/TopicBountyPanel'
 import { FollowingVotesPanel } from '@/components/topic/FollowingVotesPanel'
@@ -434,7 +435,9 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
           <ErrorBoundary size="md" label="Couldn't load arguments">
             <>
               {/* AI brief — neutral Claude-generated debate summary */}
-              <TopicAIBrief topicId={topic.id} className="mb-6" />
+              <TopicAIBrief topicId={topic.id} className="mb-4" />
+              {/* Synthesis — common ground, core tensions, nuanced position */}
+              <TopicSynthesisPanel topicId={topic.id} className="mb-6" />
               {/* Spotlight: top FOR + AGAINST argument preview */}
               <ArgumentSpotlight topicId={topic.id} className="mb-6" />
               <ArgumentThread topicId={topic.id} />
