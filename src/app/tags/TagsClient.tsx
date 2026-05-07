@@ -22,6 +22,7 @@ import {
   GitCompare,
   Hash,
   Loader2,
+  Network,
   RefreshCw,
   Sparkles,
   Tag,
@@ -255,6 +256,15 @@ export function TagsClient() {
                 Grid
               </button>
             </div>
+
+            <Link
+              href="/tags/graph"
+              aria-label="View tag network graph"
+              className="flex items-center gap-1 px-3 py-2 rounded-lg bg-surface-200 hover:bg-surface-300 text-surface-400 hover:text-white transition-colors text-xs font-mono"
+            >
+              <Network className="h-3.5 w-3.5" />
+              Graph
+            </Link>
 
             <Link
               href="/tags/compare"
