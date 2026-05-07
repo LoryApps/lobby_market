@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { ArrowLeft, BarChart2, Bell, Gavel, GitCompare, Network, Tag, TrendingUp, Zap } from 'lucide-react'
+import { ArrowLeft, BarChart2, Bell, Gavel, GitCompare, Network, Tag, TrendingUp, Zap, LineChart } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -246,6 +246,13 @@ export default async function TagPage({ params, searchParams }: PageProps) {
           >
             <ArrowLeft className="h-3.5 w-3.5" />
             All tags
+          </Link>
+          <Link
+            href={`/tags/${encodeURIComponent(tag)}/stats`}
+            className="inline-flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-emerald transition-colors"
+          >
+            <LineChart className="h-3.5 w-3.5" />
+            Analytics
           </Link>
           <Link
             href="/tags/graph"
