@@ -50,6 +50,7 @@ interface NotifPrefs {
   reply_received: boolean
   role_promoted: boolean
   lobby_update: boolean
+  new_topic_in_tag: boolean
 }
 
 const DEFAULT_PREFS: NotifPrefs = {
@@ -61,6 +62,7 @@ const DEFAULT_PREFS: NotifPrefs = {
   reply_received: true,
   role_promoted: true,
   lobby_update: false,
+  new_topic_in_tag: true,
 }
 
 function loadPrefs(): NotifPrefs {
@@ -525,6 +527,12 @@ export default function SettingsPage() {
                   description="General lobby activity and announcements"
                   checked={prefs.lobby_update}
                   onChange={(v) => updatePref('lobby_update', v)}
+                />
+                <SettingRow
+                  label="New topics in followed tags"
+                  description="When a new debate is created in a tag you follow"
+                  checked={prefs.new_topic_in_tag}
+                  onChange={(v) => updatePref('new_topic_in_tag', v)}
                 />
               </div>
             </div>

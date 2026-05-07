@@ -10,6 +10,7 @@ import {
   Bookmark,
   CheckCheck,
   Gavel,
+  Hash,
   MessageCircle,
   MessageSquare,
   Scale,
@@ -51,6 +52,7 @@ const TYPE_CONFIG: Record<
   topic_subscribed_update:   { icon: Activity,       color: 'text-for-400',     bg: 'bg-for-500/10' },
   vote_phase_started:        { icon: Scale,          color: 'text-purple',      bg: 'bg-purple/10' },
   direct_message:            { icon: MessageSquare,  color: 'text-for-300',     bg: 'bg-for-500/10' },
+  new_topic_in_tag:          { icon: Hash,            color: 'text-purple',      bg: 'bg-purple/10' },
 }
 
 const FALLBACK_CONFIG = { icon: AlertCircle, color: 'text-surface-500', bg: 'bg-surface-200' }

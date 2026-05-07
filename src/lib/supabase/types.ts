@@ -1900,7 +1900,8 @@ export type NotificationType =
   | "argument_cited"
   | "topic_subscribed_update"
   | "vote_phase_started"
-  | "direct_message";
+  | "direct_message"
+  | "new_topic_in_tag";
 
 export type AchievementTier = "common" | "rare" | "epic" | "legendary";
 

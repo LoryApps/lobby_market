@@ -12,6 +12,7 @@ export interface NotifPrefs {
   reply_received: boolean
   role_promoted: boolean
   lobby_update: boolean
+  new_topic_in_tag: boolean
 }
 
 const DEFAULT_PREFS: NotifPrefs = {
@@ -23,6 +24,7 @@ const DEFAULT_PREFS: NotifPrefs = {
   reply_received: true,
   role_promoted: true,
   lobby_update: false,
+  new_topic_in_tag: true,
 }
 
 // ─── GET ───────────────────────────────────────────────────────────────────────
@@ -41,7 +43,7 @@ export async function GET() {
   const { data, error } = await supabase
     .from('user_notification_prefs')
     .select(
-      'achievement_earned, debate_starting, law_established, topic_activated, vote_threshold, reply_received, role_promoted, lobby_update'
+      'achievement_earned, debate_starting, law_established, topic_activated, vote_threshold, reply_received, role_promoted, lobby_update, new_topic_in_tag'
     )
     .eq('user_id', user.id)
     .maybeSingle()
