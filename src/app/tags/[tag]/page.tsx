@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { ArrowLeft, Gavel, Tag, TrendingUp, Zap } from 'lucide-react'
+import { ArrowLeft, BarChart2, Gavel, Tag, TrendingUp, Zap } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -78,6 +78,19 @@ const CATEGORY_COLOR: Record<string, string> = {
   Education:   'text-purple',
 }
 
+const CATEGORY_PILL: Record<string, string> = {
+  Economics:   'bg-gold/10 text-gold border-gold/30',
+  Politics:    'bg-for-500/10 text-for-400 border-for-500/30',
+  Technology:  'bg-purple/10 text-purple border-purple/30',
+  Science:     'bg-emerald/10 text-emerald border-emerald/30',
+  Ethics:      'bg-against-500/10 text-against-300 border-against-500/30',
+  Philosophy:  'bg-for-500/5 text-for-300 border-for-500/20',
+  Culture:     'bg-gold/10 text-gold border-gold/30',
+  Health:      'bg-against-500/10 text-against-300 border-against-500/30',
+  Environment: 'bg-emerald/10 text-emerald border-emerald/30',
+  Education:   'bg-purple/10 text-purple border-purple/30',
+}
+
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 export default async function TagPage({ params, searchParams }: PageProps) {
@@ -87,36 +100,77 @@ export default async function TagPage({ params, searchParams }: PageProps) {
 
   const supabase = await createClient()
 
-  let query = supabase
+  // ── Fetch ALL topics for this tag (for stats) ─────────────────────────────
+  const { data: allTopics } = await supabase
     .from('topics')
     .select('id, statement, category, status, blue_pct, total_votes, view_count, tags, created_at, voting_ends_at')
     .contains('tags', [tag])
+    .limit(200)
+
+  const allTagTopics = allTopics ?? []
+
+  // ── Aggregate sentiment ────────────────────────────────────────────────────
+  const votedTopics = allTagTopics.filter((t) => (t.total_votes ?? 0) > 0)
+  const totalVotesAcrossTag = votedTopics.reduce((sum, t) => sum + (t.total_votes ?? 0), 0)
+
+  // Weighted average FOR% (weighted by vote count so high-volume topics count more)
+  const weightedForPct =
+    totalVotesAcrossTag > 0
+      ? Math.round(
+          votedTopics.reduce((sum, t) => sum + (t.blue_pct ?? 50) * (t.total_votes ?? 0), 0) /
+            totalVotesAcrossTag,
+        )
+      : 50
+
+  const lawCount = allTagTopics.filter((t) => t.status === 'law').length
+  const activeCount = allTagTopics.filter((t) => t.status === 'active' || t.status === 'voting').length
+  const proposedCount = allTagTopics.filter((t) => t.status === 'proposed').length
+
+  // ── Related tags ──────────────────────────────────────────────────────────
+  // Count co-occurrence of every other tag across all topics carrying this tag
+  const coTagCounts = new Map<string, number>()
+  for (const topic of allTagTopics) {
+    const topicTags: string[] = (topic as { tags?: string[] }).tags ?? []
+    for (const t of topicTags) {
+      if (t !== tag) {
+        coTagCounts.set(t, (coTagCounts.get(t) ?? 0) + 1)
+      }
+    }
+  }
+  const relatedTags = Array.from(coTagCounts.entries())
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 8)
+    .map(([t]) => t)
+
+  // ── Category breakdown ────────────────────────────────────────────────────
+  const catCounts = new Map<string, number>()
+  for (const topic of allTagTopics) {
+    if (topic.category) {
+      catCounts.set(topic.category, (catCounts.get(topic.category) ?? 0) + 1)
+    }
+  }
+  const categoryBreakdown = Array.from(catCounts.entries())
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+
+  // ── Filtered + sorted list for display ────────────────────────────────────
+  let topics = [...allTagTopics]
 
   if (statusFilter) {
-    query = query.eq('status', statusFilter)
+    topics = topics.filter((t) =>
+      statusFilter === 'active' ? t.status === 'active' || t.status === 'voting' : t.status === statusFilter,
+    )
   }
 
   if (sort === 'new') {
-    query = query.order('created_at', { ascending: false })
+    topics.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
   } else if (sort === 'hot') {
-    query = query.order('view_count', { ascending: false })
+    topics.sort((a, b) => (b.view_count ?? 0) - (a.view_count ?? 0))
   } else {
-    query = query.order('total_votes', { ascending: false })
+    topics.sort((a, b) => (b.total_votes ?? 0) - (a.total_votes ?? 0))
   }
 
-  const { data, error } = await query.limit(50)
-
-  if (error) {
-    console.error('[/tags/[tag]]', error)
-  }
-
-  const topics = data ?? []
-  if (!topics.length && !error) {
-    // Tag exists but no topics — show empty state gracefully, don't 404
-  }
-
-  const lawCount = topics.filter((t) => t.status === 'law').length
-  const activeCount = topics.filter((t) => t.status === 'active' || t.status === 'voting').length
+  topics = topics.slice(0, 50)
 
   // Sort options as links
   const sorts = [
@@ -130,6 +184,7 @@ export default async function TagPage({ params, searchParams }: PageProps) {
     { key: 'active', label: 'Active' },
     { key: 'voting', label: 'Voting' },
     { key: 'law', label: 'LAW' },
+    { key: 'proposed', label: 'Proposed' },
     { key: 'failed', label: 'Failed' },
   ]
 
@@ -140,6 +195,21 @@ export default async function TagPage({ params, searchParams }: PageProps) {
     const qs = p.toString()
     return `/tags/${encodeURIComponent(tag)}${qs ? `?${qs}` : ''}`
   }
+
+  const forPctDisplay = weightedForPct
+  const againstPctDisplay = 100 - forPctDisplay
+  const leanLabel =
+    forPctDisplay >= 60
+      ? 'Mostly FOR'
+      : forPctDisplay <= 40
+        ? 'Mostly AGAINST'
+        : 'Contested'
+  const leanColor =
+    forPctDisplay >= 60
+      ? 'text-for-400'
+      : forPctDisplay <= 40
+        ? 'text-against-400'
+        : 'text-surface-400'
 
   return (
     <div className="min-h-screen bg-surface-50">
@@ -163,7 +233,7 @@ export default async function TagPage({ params, searchParams }: PageProps) {
             <div>
               <h1 className="font-mono text-2xl font-bold text-white">#{tag}</h1>
               <p className="text-sm font-mono text-surface-500 mt-0.5">
-                {topics.length} debate{topics.length !== 1 ? 's' : ''}
+                {allTagTopics.length} debate{allTagTopics.length !== 1 ? 's' : ''}
                 {lawCount > 0 && (
                   <span className="text-gold ml-2">· {lawCount} law{lawCount !== 1 ? 's' : ''}</span>
                 )}
@@ -174,6 +244,104 @@ export default async function TagPage({ params, searchParams }: PageProps) {
             </div>
           </div>
         </div>
+
+        {/* ── Sentiment + stats panel ───────────────────────────────────── */}
+        {allTagTopics.length > 0 && (
+          <div className="rounded-2xl bg-surface-100 border border-surface-300 p-5 mb-6 space-y-4">
+            {/* Weighted sentiment */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-mono text-surface-500">
+                  Consensus sentiment
+                  {totalVotesAcrossTag > 0 && (
+                    <span className="ml-2 text-surface-600">
+                      across {totalVotesAcrossTag.toLocaleString()} votes
+                    </span>
+                  )}
+                </span>
+                <span className={cn('text-xs font-mono font-semibold', leanColor)}>
+                  {leanLabel}
+                </span>
+              </div>
+              <div className="h-2.5 w-full rounded-full overflow-hidden bg-surface-300 flex">
+                <div
+                  className="h-full bg-gradient-to-r from-for-600 to-for-400 transition-all"
+                  style={{ width: `${forPctDisplay}%` }}
+                  aria-label={`${forPctDisplay}% in favour`}
+                />
+              </div>
+              <div className="flex items-center justify-between mt-1.5 text-[10px] font-mono">
+                <span className="text-for-400 font-semibold">{forPctDisplay}% FOR</span>
+                <span className="text-against-400 font-semibold">{againstPctDisplay}% AGAINST</span>
+              </div>
+            </div>
+
+            {/* Stat grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+              <div className="rounded-xl bg-surface-200/50 border border-surface-300 px-3 py-2.5 text-center">
+                <p className="font-mono text-lg font-bold text-white">{allTagTopics.length}</p>
+                <p className="text-[10px] font-mono text-surface-500 mt-0.5">Debates</p>
+              </div>
+              <div className="rounded-xl bg-surface-200/50 border border-surface-300 px-3 py-2.5 text-center">
+                <p className="font-mono text-lg font-bold text-gold">{lawCount}</p>
+                <p className="text-[10px] font-mono text-surface-500 mt-0.5">Laws</p>
+              </div>
+              <div className="rounded-xl bg-surface-200/50 border border-surface-300 px-3 py-2.5 text-center">
+                <p className="font-mono text-lg font-bold text-emerald">{activeCount}</p>
+                <p className="text-[10px] font-mono text-surface-500 mt-0.5">Live</p>
+              </div>
+              <div className="rounded-xl bg-surface-200/50 border border-surface-300 px-3 py-2.5 text-center">
+                <p className="font-mono text-lg font-bold text-surface-300">{proposedCount}</p>
+                <p className="text-[10px] font-mono text-surface-500 mt-0.5">Proposed</p>
+              </div>
+            </div>
+
+            {/* Category breakdown */}
+            {categoryBreakdown.length > 0 && (
+              <div>
+                <p className="text-[10px] font-mono text-surface-500 mb-2 uppercase tracking-wider">
+                  Categories
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {categoryBreakdown.map(([cat, count]) => (
+                    <Link
+                      key={cat}
+                      href={`/categories/${cat.toLowerCase()}`}
+                      className={cn(
+                        'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-mono border transition-opacity hover:opacity-80',
+                        CATEGORY_PILL[cat] ?? 'bg-surface-200 text-surface-400 border-surface-300',
+                      )}
+                    >
+                      <BarChart2 className="h-2.5 w-2.5" aria-hidden />
+                      {cat}
+                      <span className="opacity-60">({count})</span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── Related tags ──────────────────────────────────────────────── */}
+        {relatedTags.length > 0 && (
+          <div className="mb-5">
+            <p className="text-[10px] font-mono text-surface-500 uppercase tracking-wider mb-2">
+              Related tags
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {relatedTags.map((t) => (
+                <Link
+                  key={t}
+                  href={`/tags/${encodeURIComponent(t)}`}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full font-mono text-xs border bg-surface-200/50 text-surface-400 border-surface-300 hover:text-white hover:border-surface-400 transition-colors"
+                >
+                  #{t}
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* ── Filter / sort bar ─────────────────────────────────────────── */}
         <div className="flex items-center gap-4 mb-5 flex-wrap">
@@ -196,7 +364,7 @@ export default async function TagPage({ params, searchParams }: PageProps) {
           </div>
 
           {/* Status filter */}
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 flex-wrap">
             {statusFilters.map((sf) => (
               <Link
                 key={sf.key ?? 'all'}
@@ -218,9 +386,9 @@ export default async function TagPage({ params, searchParams }: PageProps) {
         {topics.length === 0 ? (
           <EmptyState
             icon={Tag}
-            title={`No debates tagged "${tag}"`}
+            title={statusFilter ? `No ${statusFilter} debates tagged "${tag}"` : `No debates tagged "${tag}"`}
             description="This tag has no matching debates yet — they'll appear here automatically."
-            action={{ label: 'Browse all tags', href: '/tags' }}
+            actions={[{ label: 'Browse all tags', href: '/tags' }]}
           />
         ) : (
           <div className="space-y-3">
@@ -270,10 +438,10 @@ export default async function TagPage({ params, searchParams }: PageProps) {
                     </div>
                   </div>
 
-                  {/* Tags */}
+                  {/* Tags (show others besides current tag) */}
                   {tags.length > 1 && (
                     <div className="flex items-center gap-1.5 flex-wrap">
-                      {tags.slice(0, 4).map((t) => (
+                      {tags.slice(0, 5).map((t) => (
                         <span
                           key={t}
                           className={cn(

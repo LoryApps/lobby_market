@@ -150,6 +150,21 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/karma`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/hotspot`, changeFrequency: 'always', priority: 0.8 },
   { url: `${BASE_URL}/forecasters`, changeFrequency: 'hourly', priority: 0.75 },
+  // ── Tag pages (added with tag-sentiment enhancement) ─────────────────────
+  { url: `${BASE_URL}/tags`, changeFrequency: 'daily', priority: 0.72 },
+  // Popular civic tags — static list mirrors migration 00059 civic vocabulary
+  ...([
+    'climate', 'tax', 'housing', 'healthcare', 'education', 'immigration',
+    'economy', 'democracy', 'justice', 'technology', 'privacy', 'energy',
+    'welfare', 'trade', 'defense', 'policing', 'infrastructure', 'rights',
+    'labor', 'environment', 'regulation', 'freedom', 'equality', 'security',
+  ].map((t) => ({
+    url: `${BASE_URL}/tags/${t}`,
+    changeFrequency: 'daily' as const,
+    priority: 0.65,
+  }))),
+  // ── Common Threads discovery ───────────────────────────────────────────────
+  { url: `${BASE_URL}/common-threads`, changeFrequency: 'hourly', priority: 0.72 },
 ]
 
 export const dynamic = 'force-dynamic'
@@ -248,7 +263,42 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.45,
     }))
 
-    return [...STATIC_ROUTES, ...topicUrls, ...wikiUrls, ...lawUrls, ...profileUrls, ...argumentUrls]
+    // Fetch all distinct tags from topics for dynamic tag pages
+    const { data: tagRows } = await supabase
+      .from('topics')
+      .select('tags, updated_at')
+      .not('tags', 'is', null)
+      .order('updated_at', { ascending: false })
+      .limit(500)
+
+    const tagSet = new Map<string, Date>()
+    for (const row of tagRows ?? []) {
+      const rowTags: string[] = (row as { tags?: string[] }).tags ?? []
+      const updatedAt = new Date((row as { updated_at: string }).updated_at)
+      for (const t of rowTags) {
+        const existing = tagSet.get(t)
+        if (!existing || updatedAt > existing) {
+          tagSet.set(t, updatedAt)
+        }
+      }
+    }
+
+    const dynamicTagUrls: MetadataRoute.Sitemap = Array.from(tagSet.entries()).map(([t, lastMod]) => ({
+      url: `${BASE_URL}/tags/${encodeURIComponent(t)}`,
+      lastModified: lastMod,
+      changeFrequency: 'daily' as const,
+      priority: 0.6,
+    }))
+
+    return [
+      ...STATIC_ROUTES,
+      ...topicUrls,
+      ...wikiUrls,
+      ...lawUrls,
+      ...profileUrls,
+      ...argumentUrls,
+      ...dynamicTagUrls,
+    ]
   } catch {
     // If DB is unavailable (e.g. during build), return only static routes
     return STATIC_ROUTES
