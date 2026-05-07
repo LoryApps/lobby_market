@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { BarChart2, Calendar, FileText, Flame, Gavel, MessageSquare, Mic, Shield, Sparkles, Trophy } from 'lucide-react'
+import { BarChart2, Calendar, FileText, Flame, Gavel, Hash, MessageSquare, Mic, Shield, Sparkles, Trophy } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -484,6 +484,38 @@ export default async function LeaderboardPage() {
                 </p>
                 <p className="text-sm font-mono text-surface-500 mt-0.5">
                   Every law ranked by votes, consensus, debate intensity, and speed.
+                </p>
+              </div>
+            </div>
+            <svg
+              className="h-5 w-5 text-surface-500 group-hover:text-surface-300 transition-colors flex-shrink-0"
+              viewBox="0 0 20 20"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.5}
+              aria-hidden
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 4l5 6-5 6" />
+            </svg>
+          </Link>
+        </section>
+
+        {/* Tag Leaderboard link */}
+        <section className="mt-6">
+          <Link
+            href="/leaderboard/tags"
+            className="flex items-center justify-between rounded-2xl border border-for-500/30 bg-for-500/5 px-6 py-5 hover:bg-for-500/10 transition-colors group"
+          >
+            <div className="flex items-center gap-4">
+              <div className="flex items-center justify-center h-11 w-11 rounded-xl bg-for-500/10 border border-for-500/30 flex-shrink-0">
+                <Hash className="h-5 w-5 text-for-400" />
+              </div>
+              <div>
+                <p className="font-mono text-base font-semibold text-white">
+                  Tag Leaderboard
+                </p>
+                <p className="text-sm font-mono text-surface-500 mt-0.5">
+                  Top arguers ranked within each tag — see who leads on #climate, #ai, and more.
                 </p>
               </div>
             </div>
