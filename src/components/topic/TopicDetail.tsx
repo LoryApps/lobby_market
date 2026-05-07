@@ -73,6 +73,7 @@ import { TopicContextPanel } from '@/components/topic/TopicContextPanel'
 import { TopicBountyPanel } from '@/components/topic/TopicBountyPanel'
 import { FollowingVotesPanel } from '@/components/topic/FollowingVotesPanel'
 import { TopicChat } from '@/components/topic/TopicChat'
+import { TopicEvidencePanel } from '@/components/topic/TopicEvidencePanel'
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary'
 
 const SIGNAL_ICONS_DETAIL: Record<string, typeof Flame> = {
@@ -109,7 +110,7 @@ const statusBadgeVariant: Record<string, 'proposed' | 'active' | 'law' | 'failed
   archived: 'proposed',
 }
 
-type TopicTab = 'details' | 'arguments' | 'chat' | 'lobbies' | 'bounties'
+type TopicTab = 'details' | 'arguments' | 'chat' | 'lobbies' | 'bounties' | 'evidence'
 
 export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
   const router = useRouter()
@@ -403,6 +404,19 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
           </button>
           <button
             type="button"
+            onClick={() => setActiveTab('evidence')}
+            className={cn(
+              'inline-flex items-center gap-2 px-4 py-2 font-mono text-xs font-semibold transition-colors border-b-2',
+              activeTab === 'evidence'
+                ? 'text-purple border-purple'
+                : 'text-surface-500 border-transparent hover:text-white'
+            )}
+          >
+            <BookOpen className="h-3.5 w-3.5" />
+            Evidence
+          </button>
+          <button
+            type="button"
             onClick={() => setActiveTab('chat')}
             className={cn(
               'inline-flex items-center gap-2 px-4 py-2 font-mono text-xs font-semibold transition-colors border-b-2',
@@ -419,6 +433,10 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
         {activeTab === 'chat' ? (
           <ErrorBoundary size="md" label="Couldn't load live chat">
             <TopicChat topicId={topic.id} />
+          </ErrorBoundary>
+        ) : activeTab === 'evidence' ? (
+          <ErrorBoundary size="md" label="Couldn't load evidence board">
+            <TopicEvidencePanel topicId={topic.id} />
           </ErrorBoundary>
         ) : activeTab === 'bounties' ? (
           <ErrorBoundary size="md" label="Couldn't load bounties">
