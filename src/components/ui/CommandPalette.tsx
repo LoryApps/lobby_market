@@ -1020,6 +1020,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'evidence',
+    label: 'Civic Evidence Library',
+    sublabel: 'Best community-curated evidence from the Evidence Board, ranked by votes',
+    href: '/evidence',
+    icon: BookOpen,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+  },
+  {
+    type: 'link',
     id: 'discover',
     label: 'Discover',
     sublabel: 'Suggested people, hot topics, debates, and new laws',

@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
+import NextLink from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   ArrowUpRight,
@@ -651,9 +652,18 @@ export function TopicEvidencePanel({ topicId, className }: TopicEvidencePanelPro
 
       {/* Footer note */}
       {!loading && data && data.counts.total > 0 && (
-        <p className="text-[10px] font-mono text-surface-600 text-center">
-          Sorted by community upvotes · {data.counts.total} source{data.counts.total !== 1 ? 's' : ''} submitted
-        </p>
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-[10px] font-mono text-surface-600">
+            Sorted by community upvotes · {data.counts.total} source{data.counts.total !== 1 ? 's' : ''} submitted
+          </p>
+          <NextLink
+            href="/evidence"
+            className="text-[10px] font-mono text-surface-500 hover:text-emerald transition-colors flex items-center gap-1 shrink-0"
+          >
+            Browse library
+            <ArrowUpRight className="h-2.5 w-2.5" />
+          </NextLink>
+        </div>
       )}
     </section>
   )
