@@ -270,6 +270,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'leaderboard-evidence',
+    label: 'Evidence Leaderboard',
+    sublabel: 'Top evidence contributors, best-documented topics, and trusted sources',
+    href: '/leaderboard/evidence',
+    icon: BookOpen,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+  },
+  {
+    type: 'link',
     id: 'stage',
     label: 'Civic Stage',
     sublabel: 'Full-screen live debate display for town halls & classrooms',
