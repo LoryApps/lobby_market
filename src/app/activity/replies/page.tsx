@@ -41,7 +41,7 @@ import { EmptyState } from '@/components/ui/EmptyState'
 import { cn } from '@/lib/utils/cn'
 import type { ReplyActivity, RepliesActivityResponse } from '@/app/api/activity/replies/route'
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+// ─── Helpers ──────────────────────────────────────────────────────────────────────────────
 
 function relativeTime(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime()
@@ -62,7 +62,7 @@ function truncate(text: string, max: number): string {
   return text.slice(0, max).trimEnd() + '…'
 }
 
-// ─── Role badge config ────────────────────────────────────────────────────────
+// ─── Role badge config ─────────────────────────────────────────────────────────────────────────
 
 const ROLE_LABEL: Record<string, string> = {
   person:       'Citizen',
@@ -82,7 +82,7 @@ const ROLE_COLOR: Record<string, string> = {
   lawmaker:     'text-gold',
 }
 
-// ─── Status badge variant ─────────────────────────────────────────────────────
+// ─── Status badge variant ─────────────────────────────────────────────────────────────────────────
 
 const STATUS_VARIANT: Record<string, 'proposed' | 'active' | 'law' | 'failed'> = {
   proposed: 'proposed',
@@ -92,7 +92,7 @@ const STATUS_VARIANT: Record<string, 'proposed' | 'active' | 'law' | 'failed'> =
   failed:   'failed',
 }
 
-// ─── Loading skeleton ─────────────────────────────────────────────────────────
+// ─── Loading skeleton ─────────────────────────────────────────────────────────────────────────
 
 function RepliesSkeleton() {
   return (
@@ -115,7 +115,7 @@ function RepliesSkeleton() {
   )
 }
 
-// ─── Reply card ───────────────────────────────────────────────────────────────
+// ─── Reply card ──────────────────────────────────────────────────────────────────────────
 
 function ReplyCard({ item }: { item: ReplyActivity }) {
   const isFor = item.argument_side === 'blue'
@@ -284,7 +284,7 @@ function ReplyCard({ item }: { item: ReplyActivity }) {
   )
 }
 
-// ─── Main page ────────────────────────────────────────────────────────────────
+// ─── Main page ──────────────────────────────────────────────────────────────────────────
 
 const PAGE_SIZE = 20
 
@@ -360,7 +360,7 @@ export default function ActivityRepliesPage() {
 
       <main className="max-w-2xl mx-auto px-4 pt-5 pb-24 md:pb-10 space-y-5">
 
-        {/* ── Header ─────────────────────────────────────────────────────── */}
+        {/* ── Header ────────────────────────────────────────────────────────────────── */}
         <div className="flex items-start gap-3">
           <Link
             href="/activity"
@@ -401,13 +401,14 @@ export default function ActivityRepliesPage() {
           </button>
         </div>
 
-        {/* ── Quick nav ───────────────────────────────────────────────────── */}
+        {/* ── Quick nav ─────────────────────────────────────────────────────────────────── */}
         <nav className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none" aria-label="Activity navigation">
           {[
             { href: '/activity',           label: 'Feed' },
             { href: '/activity/following', label: 'Following' },
             { href: '/activity/replies',   label: 'Replies', active: true },
             { href: '/activity/upvotes',   label: 'Upvotes' },
+            { href: '/activity/mentions',  label: 'Mentions' },
             { href: '/notifications',      label: 'Notifications' },
           ].map(({ href, label, active }) => (
             <Link
@@ -425,7 +426,7 @@ export default function ActivityRepliesPage() {
           ))}
         </nav>
 
-        {/* ── Content ─────────────────────────────────────────────────────── */}
+        {/* ── Content ─────────────────────────────────────────────────────────────────────── */}
         <AnimatePresence mode="wait">
           {loading ? (
             <motion.div key="skeleton" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
@@ -498,7 +499,7 @@ export default function ActivityRepliesPage() {
           )}
         </AnimatePresence>
 
-        {/* ── Related links ────────────────────────────────────────────────── */}
+        {/* ── Related links ────────────────────────────────────────────────────────────────── */}
         {!loading && !error && (
           <nav
             aria-label="Related pages"
