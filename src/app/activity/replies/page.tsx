@@ -407,7 +407,7 @@ export default function ActivityRepliesPage() {
             { href: '/activity',           label: 'Feed' },
             { href: '/activity/following', label: 'Following' },
             { href: '/activity/replies',   label: 'Replies', active: true },
-            { href: '/arguments/mine',     label: 'My Arguments' },
+            { href: '/activity/upvotes',   label: 'Upvotes' },
             { href: '/notifications',      label: 'Notifications' },
           ].map(({ href, label, active }) => (
             <Link
@@ -505,9 +505,9 @@ export default function ActivityRepliesPage() {
             className="grid grid-cols-2 gap-3 pt-2"
           >
             {[
+              { href: '/activity/upvotes', label: 'Upvotes',       sub: 'Who upvoted your arguments' },
               { href: '/arguments/mine',  label: 'My Arguments',  sub: 'All your debate posts' },
-              { href: '/notifications',   label: 'Notifications', sub: 'System alerts & upvotes' },
-              { href: '/live',            label: 'Live Stream',   sub: 'Real-time argument feed' },
+              { href: '/notifications',   label: 'Notifications', sub: 'System alerts & milestones' },
               { href: '/pulse',           label: 'Pulse',         sub: 'Hottest arguments now' },
             ].map(({ href, label, sub }) => (
               <Link
