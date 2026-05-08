@@ -19,6 +19,7 @@ import { motion, AnimatePresence, useDragControls, useMotionValue, useTransform 
 import { X } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { useFocusTrap } from '@/lib/hooks/useFocusTrap'
+import { haptics } from '@/lib/hooks/useHaptics'
 
 interface BottomSheetProps {
   open: boolean
@@ -107,6 +108,7 @@ export function BottomSheet({
             dragElastic={{ top: 0.05, bottom: 0.4 }}
             onDragEnd={(_, info) => {
               if (info.offset.y > 80 || info.velocity.y > 400) {
+                haptics.dismiss()
                 onClose()
               } else {
                 // Snap back

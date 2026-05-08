@@ -8,6 +8,7 @@ import { useFeedStore } from '@/lib/stores/feed-store'
 import { useVoteStore } from '@/lib/stores/vote-store'
 import { subscribeToFeed } from '@/lib/supabase/realtime'
 import { openKeyboardShortcuts } from '@/lib/hooks/useKeyboardShortcuts'
+import { haptics } from '@/lib/hooks/useHaptics'
 import { TopicCard } from '@/components/feed/TopicCard'
 import { FeedTutorial } from '@/components/feed/FeedTutorial'
 import { DailyQuorumNudge } from '@/components/feed/DailyQuorumNudge'
@@ -677,9 +678,7 @@ export function FeedContainer() {
         if (!topic) return
         if (topic.status !== 'active' && topic.status !== 'voting') return
         if (useVoteStore.getState().hasVoted(topic.id)) return
-        if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
-          navigator.vibrate(40)
-        }
+        if (side === 'blue') { haptics.voteFor() } else { haptics.voteAgainst() }
         const isBlue = side === 'blue'
         await castVote(topic.id, side as 'blue' | 'red')
         updateTopic(topic.id, {

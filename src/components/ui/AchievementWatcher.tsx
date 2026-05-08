@@ -14,6 +14,7 @@
 import { useEffect, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useToast } from '@/lib/hooks/useToast'
+import { haptics } from '@/lib/hooks/useHaptics'
 import type { ToastTier } from '@/lib/hooks/useToast'
 
 const POLL_INTERVAL_MS = 60_000
@@ -138,6 +139,13 @@ export function AchievementWatcher() {
             n.reference_type === 'achievement' && n.reference_id
               ? `/achievements/${n.reference_id}`
               : undefined
+
+          // Haptic pattern scales with achievement tier
+          if (tier === 'legendary' || tier === 'epic') {
+            haptics.milestone()
+          } else {
+            haptics.success()
+          }
 
           addToast({
             variant: 'achievement',

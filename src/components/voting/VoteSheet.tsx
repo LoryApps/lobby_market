@@ -20,6 +20,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowLeft, ArrowRight, CheckCircle2, Compass, MessageSquare, ThumbsDown, ThumbsUp, Timer } from 'lucide-react'
 import { BottomSheet } from '@/components/ui/BottomSheet'
 import { StanceShareButton } from '@/components/voting/StanceShareButton'
+import { haptics } from '@/lib/hooks/useHaptics'
 import { cn } from '@/lib/utils/cn'
 import type { Topic, VoteSide } from '@/lib/supabase/types'
 
@@ -486,9 +487,11 @@ export function VoteSheet({
     async (reason: string | null) => {
       if (!selectedSide || submitting) return
       setSubmitting(true)
+      if (selectedSide === 'blue') { haptics.voteFor() } else { haptics.voteAgainst() }
       try {
         await onVote(selectedSide, reason ?? undefined)
         if (mountedRef.current) {
+          haptics.success()
           setConfirmedSide(selectedSide)
           setConfirmedReason(reason)
           setStep('confirmed')
@@ -496,6 +499,7 @@ export function VoteSheet({
         }
       } catch {
         if (mountedRef.current) {
+          haptics.error()
           setSubmitting(false)
         }
       }

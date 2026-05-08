@@ -16,6 +16,7 @@ import { VoteTimer } from '@/components/voting/VoteTimer'
 import { SupportButton } from '@/components/voting/SupportButton'
 import { useVoteStore } from '@/lib/stores/vote-store'
 import { useFeedStore } from '@/lib/stores/feed-store'
+import { haptics } from '@/lib/hooks/useHaptics'
 import { BookmarkButton } from '@/components/ui/BookmarkButton'
 import { StanceShareButton } from '@/components/voting/StanceShareButton'
 import { TopicSubscribeButton } from '@/components/topic/TopicSubscribeButton'
@@ -154,10 +155,7 @@ export function TopicCard({ topic, authorName, authorAvatar }: TopicCardProps) {
   // ── Handlers ───────────────────────────────────────────────────────────────
 
   const handleVote = async (side: VoteSide, reason?: string) => {
-    // Best-effort haptic feedback on devices that support it (Android / some PWA)
-    if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
-      navigator.vibrate(40)
-    }
+    if (side === 'blue') { haptics.voteFor() } else { haptics.voteAgainst() }
     await castVote(topic.id, side, reason)
     const isBlue = side === 'blue'
     updateTopic(topic.id, {
