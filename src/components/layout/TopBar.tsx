@@ -11,7 +11,7 @@ import { openCommandPalette } from '@/lib/hooks/useCommandPalette'
 import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils/cn'
 
-// ─── Mini profile type ────────────────────────────────────────────────────────
+// ─── Mini profile type ────────────────────────────────────────────────────────────────
 
 interface MiniProfile {
   username: string
@@ -22,7 +22,7 @@ interface MiniProfile {
   vote_streak: number
 }
 
-// ─── Role label helper ────────────────────────────────────────────────────────
+// ─── Role label helper ──────────────────────────────────────────────────────────────
 
 const ROLE_LABELS: Record<string, { label: string; color: string }> = {
   person: { label: 'Citizen', color: 'text-surface-500' },
@@ -621,6 +621,15 @@ export function TopBar() {
               >
                 <FileText className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
                 Report Card
+              </Link>
+              <Link
+                href="/calibration"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <FlaskConical className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
+                Calibration
               </Link>
               <Link
                 href="/missions"
