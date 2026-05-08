@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Activity, BarChart2, Bell, BookOpen, Calendar, Cloud, Coins, Compass, Crown, FileText, Fingerprint, Flame, FlaskConical, Gamepad2, Gavel, GitBranch, HelpCircle, History, Hourglass, LayoutGrid, Layers, ListChecks, LogOut, Mail, MessageSquare, Network, Quote, Radio, Scale, Scroll, Search, Plus, Settings, Shield, Skull, Sparkles, Star, Swords, Target, Timer, TrendingUp, Trophy, User, Zap, ArrowUpRight, Globe, Users } from 'lucide-react'
 import { NotificationBell } from '@/components/profile/NotificationBell'
+import { MessagesButton } from '@/components/profile/MessagesButton'
 import { Avatar } from '@/components/ui/Avatar'
 import { openCommandPalette } from '@/lib/hooks/useCommandPalette'
 import { createClient } from '@/lib/supabase/client'
@@ -171,17 +172,8 @@ export function TopBar() {
           </Link>
         )}
 
-        {/* Messages link — shown only when logged in */}
-        {profile && (
-          <Link
-            href="/messages"
-            aria-label="Messages inbox"
-            title="Messages"
-            className="flex items-center justify-center h-8 w-8 rounded-lg bg-surface-200 border border-surface-300 text-surface-500 hover:bg-surface-300 hover:text-white transition-colors"
-          >
-            <MessageSquare className="h-4 w-4" aria-hidden="true" />
-          </Link>
-        )}
+        {/* Messages button — live unread badge + conversation preview */}
+        <MessagesButton />
 
         <NotificationBell />
 

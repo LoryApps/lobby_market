@@ -73,12 +73,15 @@ function relativeTime(iso: string): string {
 
 function buildHref(n: Notification): string {
   if (!n.reference_id) return '/notifications'
+  // DM notifications: link to inbox since we only have sender UUID, not username
+  if (n.type === 'direct_message') return '/messages'
   switch (n.reference_type) {
     case 'topic':     return `/topic/${n.reference_id}`
     case 'law':       return `/law/${n.reference_id}`
     case 'debate':    return `/debate/${n.reference_id}`
     case 'profile':   return `/profile/${n.reference_id}`
     case 'coalition': return `/coalitions/${n.reference_id}`
+    case 'argument':  return `/arguments/${n.reference_id}`
     default:          return '/notifications'
   }
 }

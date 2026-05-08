@@ -111,8 +111,9 @@ function filterNotifications(
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function buildHref(notification: Notification): string {
-  const { reference_id, reference_type } = notification
+  const { reference_id, reference_type, type } = notification
   if (!reference_id) return '#'
+  if (type === 'direct_message') return '/messages'
   switch (reference_type) {
     case 'topic':
       return `/topic/${reference_id}`
@@ -124,6 +125,8 @@ function buildHref(notification: Notification): string {
       return `/profile/${reference_id}`
     case 'coalition':
       return `/coalitions/${reference_id}`
+    case 'argument':
+      return `/arguments/${reference_id}`
     default:
       return '#'
   }
