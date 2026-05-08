@@ -4,14 +4,18 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import NextLink from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
+  AlertCircle,
   ArrowUpRight,
+  BarChart2,
   BookOpen,
   ChevronDown,
   ChevronUp,
   ExternalLink,
   Loader2,
   Plus,
+  RefreshCw,
   Shield,
+  Sparkles,
   ThumbsDown,
   ThumbsUp,
   Trash2,
@@ -22,6 +26,7 @@ import { Skeleton } from '@/components/ui/Skeleton'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { cn } from '@/lib/utils/cn'
 import type { EvidenceItem, EvidenceResponse } from '@/app/api/topics/[id]/evidence/route'
+import type { EvidenceAnalysisResponse } from '@/app/api/topics/[id]/evidence-analysis/route'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -448,6 +453,11 @@ export function TopicEvidencePanel({ topicId, className }: TopicEvidencePanelPro
   const [filter, setFilter] = useState<SideFilter>('all')
   const [showForm, setShowForm] = useState(false)
 
+  const [analysis, setAnalysis] = useState<EvidenceAnalysisResponse | null>(null)
+  const [analysisLoading, setAnalysisLoading] = useState(false)
+  const [showAnalysis, setShowAnalysis] = useState(false)
+  const [analysisGenerating, setAnalysisGenerating] = useState(false)
+
   const load = useCallback(async () => {
     setLoading(true)
     try {
@@ -461,7 +471,36 @@ export function TopicEvidencePanel({ topicId, className }: TopicEvidencePanelPro
     }
   }, [topicId])
 
+  const loadAnalysis = useCallback(async () => {
+    setAnalysisLoading(true)
+    try {
+      const res = await fetch(`/api/topics/${topicId}/evidence-analysis`)
+      if (res.ok) {
+        const json = (await res.json()) as EvidenceAnalysisResponse
+        setAnalysis(json)
+        if (json.quality_score !== null) setShowAnalysis(true)
+      }
+    } finally {
+      setAnalysisLoading(false)
+    }
+  }, [topicId])
+
+  const generateAnalysis = useCallback(async () => {
+    setAnalysisGenerating(true)
+    setShowAnalysis(true)
+    try {
+      const res = await fetch(`/api/topics/${topicId}/evidence-analysis`, { method: 'POST' })
+      if (res.ok) {
+        const json = (await res.json()) as EvidenceAnalysisResponse
+        setAnalysis(json)
+      }
+    } finally {
+      setAnalysisGenerating(false)
+    }
+  }, [topicId])
+
   useEffect(() => { load() }, [load])
+  useEffect(() => { loadAnalysis() }, [loadAnalysis])
 
   function handleSubmitted(item: EvidenceItem) {
     setData((prev) => {
@@ -650,6 +689,170 @@ export function TopicEvidencePanel({ topicId, className }: TopicEvidencePanelPro
         </div>
       )}
 
+      {/* ── AI Evidence Analysis ───────────────────────────────────────── */}
+      {!loading && data && data.counts.total >= 3 && !analysis?.unavailable && (
+        <div className="rounded-xl border border-purple/20 bg-purple/5 overflow-hidden">
+          {/* Trigger bar */}
+          <button
+            onClick={() => {
+              if (showAnalysis && analysis?.quality_score !== null) {
+                setShowAnalysis(false)
+              } else if (!analysis?.quality_score) {
+                generateAnalysis()
+              } else {
+                setShowAnalysis(true)
+              }
+            }}
+            disabled={analysisGenerating}
+            className="w-full flex items-center justify-between gap-2 px-4 py-3 hover:bg-purple/10 transition-colors"
+          >
+            <div className="flex items-center gap-2">
+              <Sparkles className="h-3.5 w-3.5 text-purple shrink-0" />
+              <span className="text-xs font-mono font-semibold text-purple">
+                {analysis?.quality_score !== null && analysis?.quality_score !== undefined
+                  ? 'AI Evidence Analysis'
+                  : 'Analyze Evidence Quality'}
+              </span>
+              {analysis?.quality_score !== null && analysis?.quality_score !== undefined && (
+                <span className="text-[10px] font-mono text-surface-500">
+                  · Quality {analysis.quality_score}/10 · Balance {analysis.bias_score}/10
+                </span>
+              )}
+            </div>
+            {analysisGenerating || analysisLoading ? (
+              <Loader2 className="h-3.5 w-3.5 text-purple animate-spin shrink-0" />
+            ) : analysis?.quality_score !== null && analysis?.quality_score !== undefined ? (
+              showAnalysis ? (
+                <ChevronUp className="h-3.5 w-3.5 text-surface-500 shrink-0" />
+              ) : (
+                <ChevronDown className="h-3.5 w-3.5 text-surface-500 shrink-0" />
+              )
+            ) : (
+              <BarChart2 className="h-3.5 w-3.5 text-purple/60 shrink-0" />
+            )}
+          </button>
+
+          {/* Analysis panel */}
+          <AnimatePresence>
+            {showAnalysis && (analysisGenerating || (analysis?.quality_score !== null && analysis?.quality_score !== undefined)) && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.2 }}
+                className="overflow-hidden border-t border-purple/20"
+              >
+                {analysisGenerating ? (
+                  <div className="px-4 py-5 space-y-3">
+                    <div className="flex items-center gap-2 text-xs font-mono text-purple">
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      Analyzing {data?.counts.total} evidence items…
+                    </div>
+                    <Skeleton className="h-3 w-full rounded" />
+                    <Skeleton className="h-3 w-4/5 rounded" />
+                    <div className="grid grid-cols-2 gap-3 mt-4">
+                      <Skeleton className="h-16 rounded-lg" />
+                      <Skeleton className="h-16 rounded-lg" />
+                    </div>
+                  </div>
+                ) : analysis ? (
+                  <div className="px-4 py-4 space-y-4">
+                    {/* Score bars */}
+                    <div className="grid grid-cols-2 gap-3">
+                      <EvidenceScoreBar
+                        label="Quality"
+                        score={analysis.quality_score ?? 0}
+                        max={10}
+                        colorClass="bg-emerald"
+                        helpText="Source credibility & reliability"
+                      />
+                      <EvidenceScoreBar
+                        label="Balance"
+                        score={analysis.bias_score ?? 0}
+                        max={10}
+                        colorClass="bg-purple"
+                        helpText="FOR vs AGAINST coverage"
+                      />
+                    </div>
+
+                    {/* Summary */}
+                    {analysis.summary && (
+                      <p className="text-xs font-mono text-surface-400 leading-relaxed">
+                        {analysis.summary}
+                      </p>
+                    )}
+
+                    {/* Strongest items */}
+                    {(analysis.strongest_for || analysis.strongest_against) && (
+                      <div className="space-y-2">
+                        {analysis.strongest_for && (
+                          <div className="flex items-start gap-2 rounded-lg bg-for-500/10 border border-for-500/20 px-3 py-2">
+                            <ThumbsUp className="h-3 w-3 text-for-400 shrink-0 mt-0.5" />
+                            <div>
+                              <p className="text-[10px] font-mono text-for-400 font-semibold mb-0.5">Strongest FOR</p>
+                              <p className="text-[11px] font-mono text-surface-300">{analysis.strongest_for}</p>
+                            </div>
+                          </div>
+                        )}
+                        {analysis.strongest_against && (
+                          <div className="flex items-start gap-2 rounded-lg bg-against-500/10 border border-against-500/20 px-3 py-2">
+                            <ThumbsDown className="h-3 w-3 text-against-400 shrink-0 mt-0.5" />
+                            <div>
+                              <p className="text-[10px] font-mono text-against-400 font-semibold mb-0.5">Strongest AGAINST</p>
+                              <p className="text-[11px] font-mono text-surface-300">{analysis.strongest_against}</p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Key claim */}
+                    {analysis.key_claim && (
+                      <div className="flex items-start gap-2 rounded-lg bg-surface-300/30 border border-surface-400/30 px-3 py-2">
+                        <BarChart2 className="h-3 w-3 text-gold shrink-0 mt-0.5" />
+                        <div>
+                          <p className="text-[10px] font-mono text-gold font-semibold mb-0.5">Key Claim</p>
+                          <p className="text-[11px] font-mono text-surface-300">{analysis.key_claim}</p>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Missing perspective */}
+                    {analysis.missing_perspective && (
+                      <div className="flex items-start gap-2 rounded-lg bg-surface-300/20 border border-surface-400/20 px-3 py-2">
+                        <AlertCircle className="h-3 w-3 text-surface-500 shrink-0 mt-0.5" />
+                        <div>
+                          <p className="text-[10px] font-mono text-surface-500 font-semibold mb-0.5">Missing Perspective</p>
+                          <p className="text-[11px] font-mono text-surface-400">{analysis.missing_perspective}</p>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Refresh + generated time */}
+                    <div className="flex items-center justify-between pt-1">
+                      <p className="text-[10px] font-mono text-surface-600">
+                        {analysis.generated_at
+                          ? `Generated ${new Date(analysis.generated_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
+                          : 'AI-generated analysis'}
+                      </p>
+                      <button
+                        onClick={generateAnalysis}
+                        disabled={analysisGenerating}
+                        className="flex items-center gap-1 text-[10px] font-mono text-surface-500 hover:text-purple transition-colors"
+                        title="Refresh analysis"
+                      >
+                        <RefreshCw className="h-2.5 w-2.5" />
+                        Refresh
+                      </button>
+                    </div>
+                  </div>
+                ) : null}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      )}
+
       {/* Footer note */}
       {!loading && data && data.counts.total > 0 && (
         <div className="flex items-center justify-between gap-2">
@@ -666,5 +869,40 @@ export function TopicEvidencePanel({ topicId, className }: TopicEvidencePanelPro
         </div>
       )}
     </section>
+  )
+}
+
+// ─── Score bar sub-component ──────────────────────────────────────────────────
+
+function EvidenceScoreBar({
+  label,
+  score,
+  max,
+  colorClass,
+  helpText,
+}: {
+  label: string
+  score: number
+  max: number
+  colorClass: string
+  helpText: string
+}) {
+  const pct = Math.round((score / max) * 100)
+  return (
+    <div className="rounded-lg bg-surface-300/30 border border-surface-400/20 px-3 py-2.5 space-y-1.5">
+      <div className="flex items-center justify-between">
+        <span className="text-[10px] font-mono font-semibold text-surface-400">{label}</span>
+        <span className="text-sm font-mono font-bold text-white">{score}<span className="text-surface-600 text-[10px]">/{max}</span></span>
+      </div>
+      <div className="h-1.5 rounded-full bg-surface-400/40 overflow-hidden">
+        <motion.div
+          className={cn('h-full rounded-full', colorClass)}
+          initial={{ width: 0 }}
+          animate={{ width: `${pct}%` }}
+          transition={{ duration: 0.6, ease: 'easeOut' }}
+        />
+      </div>
+      <p className="text-[9px] font-mono text-surface-600">{helpText}</p>
+    </div>
   )
 }
