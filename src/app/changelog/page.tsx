@@ -35,7 +35,9 @@ import {
   Rocket,
   Scale,
   Search,
+  Gauge,
   Shield,
+  Skull,
   Sparkles,
   Star,
   Swords,
@@ -90,7 +92,7 @@ interface Chapter {
   items: ChangeItem[]
 }
 
-// ─── Chapters ────────────────────────────────────────────────────────────────────────────────────
+// ─── Chapters ───────────────────────────────────────────────────────────────────────────────────
 
 const CHAPTERS: Chapter[] = [
   {
@@ -523,18 +525,48 @@ const CHAPTERS: Chapter[] = [
       { icon: BarChart2, label: 'Reveal phase shows correct chronological order with establishment dates for each law', href: '/civic-timeline', color: 'text-surface-400' },
     ],
   },
+  {
+    number: 'Ch. 27',
+    title: 'Civic Imposter',
+    subtitle: 'Daily fake-law detection — spot the one plausible imposter hiding among five real Codex laws',
+    accent: 'text-against-400',
+    borderColor: 'border-against-600/30',
+    bgColor: 'bg-against-600/5',
+    textColor: 'text-against-400',
+    items: [
+      { icon: Skull, label: 'Daily game: six law statements appear — five are real Lobby Codex laws, one is a plausible-sounding fake. One guess per day.', href: '/civic-imposter', color: 'text-against-400' },
+      { icon: Search, label: 'Streak mechanic: correct daily answers build a consecutive-day detection streak displayed on completion', href: '/civic-imposter', color: 'text-surface-400' },
+      { icon: Trophy, label: 'Share result: copy a spoiler-free result snippet (correct/fooled + streak) for social sharing', href: '/civic-imposter', color: 'text-gold' },
+      { icon: Gamepad2, label: 'Arcade hub now tracks 11 daily games; Civic Imposter completion status and streak shown on hub', href: '/arcade', color: 'text-surface-400' },
+    ],
+  },
+  {
+    number: 'Ch. 28',
+    title: 'Civic Mirror',
+    subtitle: 'Daily gut-check — vote FOR or AGAINST on 5 topics, then see if you\'re with the majority or a contrarian outlier',
+    accent: 'text-for-400',
+    borderColor: 'border-for-500/30',
+    bgColor: 'bg-for-500/5',
+    textColor: 'text-for-400',
+    items: [
+      { icon: Gauge, label: 'Daily game: 5 civic topics with vote splits hidden — tap FOR or AGAINST on gut instinct, then see the community majority revealed', href: '/civic-mirror', color: 'text-for-400' },
+      { icon: Users, label: 'Instant reveal: animated vote bar shows the real FOR/AGAINST split after each answer, with majority/minority verdict', href: '/civic-mirror', color: 'text-for-300' },
+      { icon: Trophy, label: 'Score 1 pt per vote cast with the majority — max 5. Receive a persona label: Consensus Voice, Centrist, Independent, or Contrarian Outsider', href: '/civic-mirror', color: 'text-gold' },
+      { icon: Gamepad2, label: 'Arcade hub: Civic Mirror shown in daily challenges with score display (x/5 majority)', href: '/arcade', color: 'text-surface-400' },
+    ],
+  },
 ]
 
-// ─── Stat pills ──────────────────────────────────────────────────────────────────────────────────────
+// ─── Stat pills ──────────────────────────────────────────────────────────────────────────────────
 
 const STATS = [
-  { value: '26', label: 'chapters shipped' },
+  { value: '28', label: 'chapters shipped' },
   { value: '215+', label: 'features built' },
   { value: '67', label: 'DB migrations' },
   { value: '335+', label: 'API routes' },
 ]
 
-// ─── Recent builds ─────────────────────────────────────────────────────────────────────────────────────────
+// ─── Recent builds ──────────────────────────────────────────────────────────────────────────────────
 
 interface RecentBuild {
   title: string
@@ -546,6 +578,22 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Civic Mirror',
+    description: 'A daily self-awareness game. Five civic topics shown with vote splits hidden — tap FOR or AGAINST on gut instinct. After each vote, the community majority is instantly revealed. Score how often you\'re with the majority and receive your civic persona label.',
+    href: '/civic-mirror',
+    icon: Gauge,
+    color: 'text-for-400',
+    tag: 'Ch. 28',
+  },
+  {
+    title: 'Civic Imposter',
+    description: 'A daily fake-law detection challenge. Six law statements appear — five are real established laws from the Lobby Codex, one is a plausible-sounding fake. One guess per day. Build a consecutive-day detection streak and share your result without spoilers.',
+    href: '/civic-imposter',
+    icon: Skull,
+    color: 'text-against-400',
+    tag: 'Ch. 27',
+  },
   {
     title: 'Civic Timeline',
     description: 'A daily chronology challenge. Three rounds, five established laws each. Arrange them from oldest to newest — by when the community passed them into law. Tests historical civic knowledge with a 60-second countdown and reveal showing actual establishment dates.',
@@ -700,7 +748,7 @@ const RECENT_BUILDS: RecentBuild[] = [
   },
 ]
 
-// ─── Page ───────────────────────────────────────────────────────────────────────────────────────
+// ─── Page ───────────────────────────────────────────────────────────────────────────────────
 
 export default function ChangelogPage() {
   return (
@@ -822,7 +870,7 @@ export default function ChangelogPage() {
   )
 }
 
-// ─── Chapter block ──────────────────────────────────────────────────────────────────────────────────────────
+// ─── Chapter block ──────────────────────────────────────────────────────────────────────────────────────
 
 function ChapterBlock({ chapter }: { chapter: Chapter }) {
   return (
