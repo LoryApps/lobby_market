@@ -49,7 +49,7 @@ import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { cn } from '@/lib/utils/cn'
 
-// ─── localStorage key constants (must match game pages exactly) ──────────────────────────────────────────
+// ─── localStorage key constants (must match game pages exactly) ──────────────────────────────────────────────────────────────────────────────────────────────────────
 
 const KEYS = {
   trivia:       'lm_trivia_result',
@@ -69,9 +69,10 @@ const KEYS = {
   sprintToday:   'lm_sprint_today_v1',
   imposter:      'lm_imposter_v1',
   mirror:        'lm_mirror_v1',
+  oddOneOut:     'lm_odd_one_out',
 } as const
 
-// ─── Types ─────────────────────────────────────────────────────────────────────────────────
+// ─── Types ──────────────────────────────────────────────────────────────────────────────────────
 
 interface ArcadeRecord {
   triviaScore: number | null
@@ -104,6 +105,8 @@ interface ArcadeRecord {
   imposterStreak: number
   mirrorDone: boolean
   mirrorScore: number | null
+  oddOneOutDone: boolean
+  oddOneOutScore: number | null
 }
 
 function todayStr(): string {
@@ -152,6 +155,8 @@ function loadRecords(): ArcadeRecord {
     imposterStreak: 0,
     mirrorDone: false,
     mirrorScore: null,
+    oddOneOutDone: false,
+    oddOneOutScore: null,
   }
   try {
     // Trivia — daily
@@ -309,13 +314,23 @@ function loadRecords(): ArcadeRecord {
         def.mirrorScore = typeof mr.score === 'number' ? mr.score : null
       }
     }
+
+    // Civic Odd One Out — daily
+    const oddRaw = localStorage.getItem(KEYS.oddOneOut)
+    if (oddRaw) {
+      const od = JSON.parse(oddRaw)
+      if (od.date === todayStr()) {
+        def.oddOneOutDone = true
+        def.oddOneOutScore = typeof od.score === 'number' ? od.score : null
+      }
+    }
   } catch {
     // best-effort
   }
   return def
 }
 
-// ─── Game definitions ───────────────────────────────────────────────────────────────────────────────
+// ─── Game definitions ────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 interface GameDef {
   id: string
@@ -794,9 +809,26 @@ const GAMES: GameDef[] = [
     difficulty: 'easy',
     timeEstimate: '2 min',
   },
+  {
+    id: 'odd-one-out',
+    href: '/odd-one-out',
+    title: 'Civic Odd One Out',
+    tagline: 'Three belong together — find the one that doesn\'t',
+    description:
+      'Four civic topics appear each round. Three share the same policy category; one is the odd one out. Tap the intruder before your three lives run out. Five rounds per day.',
+    icon: Layers,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+    border: 'border-purple/20',
+    badge: 'Daily',
+    badgeColor: 'bg-purple/10 text-purple border-purple/30',
+    refresh: 'daily',
+    difficulty: 'medium',
+    timeEstimate: '3 min',
+  },
 ]
 
-// ─── Difficulty badge ─────────────────────────────────────────────────────────────────
+// ─── Difficulty badge ──────────────────────────────────────────────────────────────────────────────────────
 
 const DIFF_STYLE = {
   easy: 'text-emerald border-emerald/30 bg-emerald/10',
@@ -804,7 +836,7 @@ const DIFF_STYLE = {
   hard: 'text-against-400 border-against-500/30 bg-against-500/10',
 } as const
 
-// ─── Score display ──────────────────────────────────────────────────────────────────────────────
+// ─── Score display ──────────────────────────────────────────────────────────────────────────────────────────────────
 
 function ScorePill({ label, value, color }: { label: string; value: string; color: string }) {
   return (
@@ -815,7 +847,7 @@ function ScorePill({ label, value, color }: { label: string; value: string; colo
   )
 }
 
-// ─── Game card ───────────────────────────────────────────────────────────────────────────────
+// ─── Game card ───────────────────────────────────────────────────────────────────────────────────────────────────
 
 interface GameCardProps {
   game: GameDef
@@ -903,7 +935,7 @@ function GameCard({ game, done, score, highScore }: GameCardProps) {
   )
 }
 
-// ─── Section header ──────────────────────────────────────────────────────────────────────────────
+// ─── Section header ──────────────────────────────────────────────────────────────────────────────────────────────────
 
 function SectionHeader({
   icon: Icon,
@@ -931,7 +963,7 @@ function SectionHeader({
   )
 }
 
-// ─── Page ───────────────────────────────────────────────────────────────────────────────────
+// ─── Page ───────────────────────────────────────────────────────────────────────────────────────────────────
 
 export default function ArcadePage() {
   const [records, setRecords] = useState<ArcadeRecord | null>(null)
@@ -1064,6 +1096,8 @@ export default function ArcadePage() {
                       ? imposterDoneToday
                       : game.id === 'civic-mirror'
                       ? mirrorDoneToday
+                      : game.id === 'odd-one-out'
+                      ? records?.oddOneOutDone
                       : undefined
                   }
                   score={
@@ -1093,6 +1127,8 @@ export default function ArcadePage() {
                         : 'Fooled'
                       : game.id === 'civic-mirror' && mirrorDoneToday && records?.mirrorScore != null
                       ? `${records.mirrorScore}/5 majority`
+                      : game.id === 'odd-one-out' && records?.oddOneOutDone && records.oddOneOutScore != null
+                      ? `${records.oddOneOutScore}/100`
                       : null
                   }
                 />
@@ -1219,6 +1255,7 @@ export default function ArcadePage() {
                 { href: '/civic-timeline', icon: CalendarClock, label: 'Civic Timeline', color: 'text-purple', bg: 'bg-purple/10', border: 'border-purple/20' },
                 { href: '/civic-imposter', icon: Skull, label: 'Civic Imposter', color: 'text-against-400', bg: 'bg-against-600/10', border: 'border-against-600/20' },
                 { href: '/civic-mirror', icon: Gauge, label: 'Civic Mirror', color: 'text-for-400', bg: 'bg-for-500/10', border: 'border-for-500/20' },
+                { href: '/odd-one-out', icon: Layers, label: 'Odd One Out', color: 'text-purple', bg: 'bg-purple/10', border: 'border-purple/20' },
                 { href: '/archetype', icon: Layers, label: 'Archetype', color: 'text-purple', bg: 'bg-purple/10', border: 'border-purple/20' },
                 { href: '/crossroads', icon: Scale, label: 'Crossroads', color: 'text-for-400', bg: 'bg-for-500/10', border: 'border-for-500/20' },
               ].map((item) => (
