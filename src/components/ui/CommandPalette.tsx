@@ -28,6 +28,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useFocusTrap } from '@/lib/hooks/useFocusTrap'
 import {
   Activity,
+  ArrowDownUp,
   BarChart2,
   Bookmark,
   Flame,
@@ -42,13 +43,13 @@ import {
   Target,
   ThumbsUp,
   Trophy,
+  TrendingUp,
   User,
   Users,
   X,
   Building2,
   Landmark,
   FileText,
-  TrendingUp,
   Bell,
   Settings,
   HelpCircle,
@@ -136,7 +137,7 @@ interface PersonResult {
 
 type PaletteItem = QuickLink | TopicResult | LawResult | PersonResult
 
-// ─── Quick-nav links shown when no query is typed ────────────────────────────────────────────────
+// ─── Quick-nav links shown when no query is typed ──────────────────────────────────────────────
 
 const QUICK_LINKS: QuickLink[] = [
   { type: 'link', id: 'feed', label: 'Feed', sublabel: 'Live topic feed', href: '/', icon: Flame, iconColor: 'text-against-400', iconBg: 'bg-against-500/10' },
@@ -261,6 +262,7 @@ const QUICK_LINKS: QuickLink[] = [
   { type: 'link', id: 'crossword', label: 'Civic Crossword', sublabel: 'Daily mini-crossword with clues drawn from platform debates and laws', href: '/crossword', icon: LayoutGrid, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
   { type: 'link', id: 'bingo', label: 'Civic Bingo', sublabel: 'Weekly 5×5 bingo card — mark topics as they pass into law and get five in a row', href: '/bingo', icon: Star, iconColor: 'text-for-400', iconBg: 'bg-for-500/10' },
   { type: 'link', id: 'gauntlet', label: 'Civic Gauntlet', sublabel: 'Sudden-death survival game — pick the majority side each round or be eliminated', href: '/gauntlet', icon: Swords, iconColor: 'text-against-400', iconBg: 'bg-against-600/10' },
+  { type: 'link', id: 'civic-rank', label: 'Civic Rank', sublabel: 'Daily sorting challenge — arrange 4 laws by community support (% FOR) across 5 rounds', href: '/civic-rank', icon: ArrowDownUp, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
   { type: 'link', id: 'advisor', label: 'Civic Advisor', sublabel: 'AI-powered personalised briefing — which topics need your voice most right now', href: '/advisor', icon: Sparkles, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
   { type: 'link', id: 'coach', label: 'Argument Coach', sublabel: 'AI workshop: draft an argument, get a Claude critique across Clarity, Evidence, Logic, and Persuasion', href: '/coach', icon: Sparkles, iconColor: 'text-purple', iconBg: 'bg-purple/10' },
   { type: 'link', id: 'prep', label: 'Debate Prep', sublabel: 'Full debate dossier for any topic — your strongest arguments, likely counterattacks, AI talking points', href: '/prep', icon: Layers, iconColor: 'text-for-400', iconBg: 'bg-for-500/10' },
@@ -310,7 +312,7 @@ const STATUS_COLOR: Record<string, string> = {
   failed: 'text-against-400',
 }
 
-// ─── Single result row ─────────────────────────────────────────────────────────────────────────────────────
+// ─── Single result row ──────────────────────────────────────────────────────────────────────────────────────
 
 function ResultRow({
   item,
@@ -462,7 +464,7 @@ function ResultRow({
   )
 }
 
-// ─── Section header ──────────────────────────────────────────────────────────────────────────────────
+// ─── Section header ──────────────────────────────────────────────────────────────────────────────────────
 
 function SectionHeader({ label }: { label: string }) {
   return (
@@ -474,7 +476,7 @@ function SectionHeader({ label }: { label: string }) {
   )
 }
 
-// ─── The palette itself ───────────────────────────────────────────────────────────────────────────────
+// ─── The palette itself ───────────────────────────────────────────────────────────────────────────────────────
 
 interface CommandPaletteProps {
   open: boolean
