@@ -13,6 +13,7 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import {
   Activity,
+  ArrowDownUp,
   ArrowRight,
   Award,
   BarChart2,
@@ -45,7 +46,7 @@ import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { cn } from '@/lib/utils/cn'
 
-// ─── localStorage key constants (must match game pages exactly) ─────────────────────
+// ─── localStorage key constants (must match game pages exactly) ──────────────────────────────────────────
 
 const KEYS = {
   trivia:       'lm_trivia_result',
@@ -58,9 +59,10 @@ const KEYS = {
   crossword:    'lm_crossword_v1',
   myth:         'lm_myth_result',
   gauntlet:     'lm_gauntlet_best_v1',
+  civicRank:    'lm_civic_rank_v1',
 } as const
 
-// ─── Types ─────────────────────────────────────────────────────────────────────────────
+// ─── Types ─────────────────────────────────────────────────────────────────────────────────
 
 interface ArcadeRecord {
   triviaScore: number | null
@@ -80,6 +82,8 @@ interface ArcadeRecord {
   mythDone: boolean
   mythScore: number | null
   gauntletBest: number
+  civicRankBest: number
+  civicRankDate: string | null
 }
 
 function todayStr(): string {
@@ -115,6 +119,8 @@ function loadRecords(): ArcadeRecord {
     mythDone: false,
     mythScore: null,
     gauntletBest: 0,
+    civicRankBest: 0,
+    civicRankDate: null,
   }
   try {
     // Trivia — daily
@@ -203,13 +209,23 @@ function loadRecords(): ArcadeRecord {
       const g = parseInt(gauntletRaw, 10)
       if (!isNaN(g)) def.gauntletBest = g
     }
+
+    // Civic Rank — daily, best score for today
+    const rankRaw = localStorage.getItem(KEYS.civicRank)
+    if (rankRaw) {
+      const rk = JSON.parse(rankRaw)
+      if (typeof rk.score === 'number') {
+        def.civicRankBest = rk.score
+        def.civicRankDate = rk.date ?? null
+      }
+    }
   } catch {
     // best-effort
   }
   return def
 }
 
-// ─── Game definitions ────────────────────────────────────────────────────────────────────────
+// ─── Game definitions ───────────────────────────────────────────────────────────────────────────────
 
 interface GameDef {
   id: string
@@ -244,55 +260,55 @@ const GAMES: GameDef[] = [
     badgeColor: 'bg-gold/10 text-gold border-gold/30',
     refresh: 'daily',
     difficulty: 'medium',
-    timeEstimate: '2 min',
+    timeEstimate: '3 min',
   },
   {
     id: 'wordle',
     href: '/wordle',
     title: 'Civic Wordle',
-    tagline: 'Guess the 5-letter civic word',
+    tagline: 'Guess today\'s 5-letter civic word',
     description:
-      'A daily word puzzle using civic vocabulary — laws, governance, democracy. 6 guesses. Share your result.',
+      'A new civic-themed five-letter word every day. Six tries. Letter hints after each guess. Classic Wordle mechanics for civic vocabulary.',
     icon: Hash,
-    iconColor: 'text-for-300',
-    iconBg: 'bg-for-400/10',
-    border: 'border-for-400/20',
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+    border: 'border-emerald/20',
     badge: 'Daily',
-    badgeColor: 'bg-for-400/10 text-for-300 border-for-400/30',
+    badgeColor: 'bg-emerald/10 text-emerald border-emerald/30',
     refresh: 'daily',
     difficulty: 'medium',
-    timeEstimate: '2 min',
+    timeEstimate: '3 min',
   },
   {
     id: 'knowledge-test',
     href: '/knowledge-test',
     title: 'Knowledge Test',
-    tagline: 'Weekly civic literacy quiz',
+    tagline: 'Eight questions on civic platform data',
     description:
-      'Ten questions on platform laws, debate outcomes, and community milestones. Changes every Monday.',
+      'Eight multiple-choice questions built from real platform data. Vote counts, laws passed, category stats, debate types, top users. New test each week.',
     icon: BookOpen,
-    iconColor: 'text-emerald',
-    iconBg: 'bg-emerald/10',
-    border: 'border-emerald/20',
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+    border: 'border-purple/20',
     badge: 'Weekly',
-    badgeColor: 'bg-emerald/10 text-emerald border-emerald/30',
+    badgeColor: 'bg-purple/10 text-purple border-purple/30',
     refresh: 'weekly',
-    difficulty: 'hard',
+    difficulty: 'medium',
     timeEstimate: '5 min',
   },
   {
     id: 'blitz',
     href: '/blitz',
     title: 'Opinion Blitz',
-    tagline: '60-second speed-voting challenge',
+    tagline: '60-second speed voting sprint',
     description:
-      'Vote on as many topics as possible in 60 seconds. Beat your high score. No thinking — just gut reaction.',
-    icon: Timer,
+      'Vote on as many topics as you can in 60 seconds. Your score is the number of votes cast. Can you break your high score today?',
+    icon: Zap,
     iconColor: 'text-against-400',
     iconBg: 'bg-against-500/10',
     border: 'border-against-500/20',
     badge: 'Always',
-    badgeColor: 'bg-against-500/10 text-against-400 border-against-500/30',
+    badgeColor: 'bg-against-600/10 text-against-400 border-against-600/30',
     refresh: 'always',
     difficulty: 'easy',
     timeEstimate: '1 min',
@@ -301,179 +317,179 @@ const GAMES: GameDef[] = [
     id: 'judge',
     href: '/judge',
     title: 'Argument Judge',
-    tagline: 'Pick the stronger argument',
+    tagline: 'Rate argument quality across five dimensions',
     description:
-      'Two real arguments go head-to-head. You decide which is more compelling. Test your rhetorical eye.',
+      'Read a real civic argument and rate it on Clarity, Logic, Evidence, Persuasion, and Fairness. See how your ratings compare to the community\'s verdict.',
     icon: Scale,
-    iconColor: 'text-purple',
-    iconBg: 'bg-purple/10',
-    border: 'border-purple/20',
-    badge: 'Always',
-    badgeColor: 'bg-purple/10 text-purple border-purple/30',
-    refresh: 'always',
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+    border: 'border-for-500/20',
+    badge: 'Daily',
+    badgeColor: 'bg-for-500/10 text-for-400 border-for-500/30',
+    refresh: 'daily',
     difficulty: 'medium',
-    timeEstimate: '3 min',
+    timeEstimate: '4 min',
   },
   {
     id: 'bracket',
     href: '/bracket',
     title: 'Civic Bracket',
-    tagline: 'Weekly topic tournament',
+    tagline: 'Tournament of the most urgent civic debates',
     description:
-      'Eight topics compete head-to-head. Vote each round until a champion emerges. New bracket every week.',
-    icon: Layers,
-    iconColor: 'text-for-400',
-    iconBg: 'bg-for-500/10',
-    border: 'border-for-500/20',
+      'Pick which debate matters more in each head-to-head match-up. Work through the bracket to crown the week\'s most pressing issue.',
+    icon: Award,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+    border: 'border-gold/20',
     badge: 'Weekly',
-    badgeColor: 'bg-for-500/10 text-for-400 border-for-500/30',
+    badgeColor: 'bg-gold/10 text-gold border-gold/30',
     refresh: 'weekly',
     difficulty: 'easy',
-    timeEstimate: '2 min',
+    timeEstimate: '5 min',
   },
   {
     id: 'duel',
     href: '/duel',
     title: 'The Duel',
-    tagline: 'FOR vs AGAINST argument showdown',
+    tagline: 'Head-to-head argument quality vote',
     description:
-      'The top FOR argument and top AGAINST argument from each topic face off. Pick your champion.',
+      'Two arguments on the same topic, side-by-side. Pick the stronger one. Daily fresh matchups drawn from the most upvoted arguments on the platform.',
     icon: Swords,
-    iconColor: 'text-against-300',
-    iconBg: 'bg-against-500/10',
-    border: 'border-against-500/20',
-    badge: 'Always',
-    badgeColor: 'bg-against-500/10 text-against-300 border-against-500/30',
-    refresh: 'always',
-    difficulty: 'medium',
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-600/10',
+    border: 'border-against-600/20',
+    badge: 'Daily',
+    badgeColor: 'bg-against-600/10 text-against-400 border-against-600/30',
+    refresh: 'daily',
+    difficulty: 'easy',
     timeEstimate: '3 min',
   },
   {
     id: 'swipe',
     href: '/swipe',
     title: 'Swipe & Vote',
-    tagline: 'Card-by-card voting flow',
+    tagline: 'Tinder-style topic voting',
     description:
-      'Focused, distraction-free voting. Swipe right to agree, left to disagree. One topic at a time.',
-    icon: Vote,
-    iconColor: 'text-for-300',
-    iconBg: 'bg-for-400/10',
-    border: 'border-for-400/20',
+      'Swipe left for AGAINST, swipe right for FOR. Each card is a live civic topic. Go through as many as you like — no timer, no pressure.',
+    icon: ThumbsUp,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+    border: 'border-for-500/20',
     badge: 'Always',
-    badgeColor: 'bg-for-400/10 text-for-300 border-for-400/30',
-    refresh: 'always',
-    difficulty: 'easy',
-    timeEstimate: '5 min',
-  },
-  {
-    id: 'rapid',
-    href: '/rapid',
-    title: 'Rapid Fire',
-    tagline: 'Fast-paced argument voting',
-    description:
-      'Arguments scroll by quickly. Vote thumbs up or down before time runs out. Pure instinct.',
-    icon: Zap,
-    iconColor: 'text-gold',
-    iconBg: 'bg-gold/10',
-    border: 'border-gold/20',
-    badge: 'Always',
-    badgeColor: 'bg-gold/10 text-gold border-gold/30',
+    badgeColor: 'bg-for-500/10 text-for-400 border-for-500/30',
     refresh: 'always',
     difficulty: 'easy',
     timeEstimate: '2 min',
   },
   {
+    id: 'rapid',
+    href: '/rapid',
+    title: 'Rapid Fire',
+    tagline: 'Fast-paced civic Q&A',
+    description:
+      'Questions fire in rapid succession — each one a different type: category quiz, vote-split guess, law-or-not binary. Ten questions, top speed.',
+    icon: Zap,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+    border: 'border-gold/20',
+    badge: 'Daily',
+    badgeColor: 'bg-gold/10 text-gold border-gold/30',
+    refresh: 'daily',
+    difficulty: 'hard',
+    timeEstimate: '3 min',
+  },
+  {
     id: 'simulate',
     href: '/simulate',
     title: 'Policy Simulator',
-    tagline: 'AI analysis of any policy statement',
+    tagline: 'Model real-world outcomes with AI',
     description:
-      'Pick any topic or write your own policy proposal. Claude analyses consequences, tradeoffs, and viability.',
-    icon: Sparkles,
+      'Choose a topic and ask Claude to model the downstream effects of a FOR or AGAINST outcome. A sandbox for civic consequence thinking.',
+    icon: Activity,
     iconColor: 'text-emerald',
     iconBg: 'bg-emerald/10',
     border: 'border-emerald/20',
-    badge: 'AI',
+    badge: 'AI Tool',
     badgeColor: 'bg-emerald/10 text-emerald border-emerald/30',
     refresh: 'always',
-    difficulty: 'hard',
+    difficulty: 'medium',
     timeEstimate: '5 min',
   },
   {
     id: 'coach',
     href: '/coach',
     title: 'Argument Coach',
-    tagline: 'AI critique of your arguments',
+    tagline: 'AI critique of your civic argument',
     description:
-      'Write a civic argument and get scored on Clarity, Evidence, Logic, and Persuasion by Claude.',
-    icon: Award,
+      'Write a civic argument and get a detailed AI critique across Clarity, Evidence, Logic, and Persuasion. Sharpen your reasoning with Claude.',
+    icon: Gavel,
     iconColor: 'text-purple',
     iconBg: 'bg-purple/10',
     border: 'border-purple/20',
-    badge: 'AI',
+    badge: 'AI Tool',
     badgeColor: 'bg-purple/10 text-purple border-purple/30',
     refresh: 'always',
-    difficulty: 'medium',
+    difficulty: 'hard',
     timeEstimate: '5 min',
   },
   {
     id: 'training',
     href: '/training',
     title: 'Argument Training',
-    tagline: 'Drill your debate and critical-thinking skills',
+    tagline: 'Sharpen debate skills with drills',
     description:
-      'Three drills in one: spot the logical fallacy, rank arguments by strength, and calibrate your vote sense.',
-    icon: Zap,
+      'Three training modes: Fallacy Spotting, Argument Ranking, and Vote Calibration. Each session gives you 5 reps. Train every day.',
+    icon: Scroll,
     iconColor: 'text-for-400',
     iconBg: 'bg-for-500/10',
     border: 'border-for-500/20',
-    badge: 'Training',
+    badge: 'Daily',
     badgeColor: 'bg-for-500/10 text-for-400 border-for-500/30',
-    refresh: 'always',
-    difficulty: 'medium',
+    refresh: 'daily',
+    difficulty: 'hard',
     timeEstimate: '5 min',
   },
   {
     id: 'manifesto',
     href: '/manifesto',
     title: 'Civic Manifesto',
-    tagline: 'AI-generated political archetype',
+    tagline: 'AI writes your civic platform',
     description:
-      'Based on your voting history, Claude crafts a personalized civic manifesto defining your political identity.',
-    icon: Gavel,
-    iconColor: 'text-gold',
-    iconBg: 'bg-gold/10',
-    border: 'border-gold/20',
-    badge: 'AI',
-    badgeColor: 'bg-gold/10 text-gold border-gold/30',
+      'Answer five questions about your civic priorities. Claude synthesises your answers into a polished personal manifesto you can publish and share.',
+    icon: Megaphone,
+    iconColor: 'text-for-300',
+    iconBg: 'bg-for-600/15',
+    border: 'border-for-600/20',
+    badge: 'AI Tool',
+    badgeColor: 'bg-for-600/15 text-for-300 border-for-500/30',
     refresh: 'always',
     difficulty: 'easy',
-    timeEstimate: '1 min',
+    timeEstimate: '5 min',
   },
   {
     id: 'compass',
     href: '/compass',
     title: 'Civic Compass',
-    tagline: 'Your political radar chart',
+    tagline: 'Your political co-ordinates',
     description:
-      'A category-by-category radar chart showing where you stand across Economics, Politics, Technology, and more.',
-    icon: Activity,
-    iconColor: 'text-for-400',
-    iconBg: 'bg-for-500/10',
-    border: 'border-for-500/20',
-    badge: 'Analytics',
-    badgeColor: 'bg-for-500/10 text-for-400 border-for-500/30',
+      'Your vote history mapped onto a 2D political compass. See where you sit on the Liberty–Authority and Left–Right axes. Updates as you vote.',
+    icon: Compass,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+    border: 'border-gold/20',
+    badge: 'Profile',
+    badgeColor: 'bg-gold/10 text-gold border-gold/30',
     refresh: 'always',
     difficulty: 'easy',
-    timeEstimate: '1 min',
+    timeEstimate: '2 min',
   },
   {
     id: 'connections',
     href: '/connections',
     title: 'Civic Connections',
-    tagline: 'Group 4 civic terms that share a bond',
+    tagline: 'Group civic terms into four categories',
     description:
-      'Sixteen civic terms, four hidden categories. Find the groups before you run out of guesses. Yellow is easiest, purple is hardest.',
+      'Sixteen civic terms arranged in a grid. Find the four groups of four that share a hidden common thread. One new puzzle each day.',
     icon: Layers,
     iconColor: 'text-purple',
     iconBg: 'bg-purple/10',
@@ -481,50 +497,50 @@ const GAMES: GameDef[] = [
     badge: 'Daily',
     badgeColor: 'bg-purple/10 text-purple border-purple/30',
     refresh: 'daily',
-    difficulty: 'hard',
-    timeEstimate: '3 min',
+    difficulty: 'medium',
+    timeEstimate: '4 min',
   },
   {
     id: 'cloze',
     href: '/cloze',
     title: 'Civic Cloze',
-    tagline: 'Fill in the missing word from a real law',
+    tagline: 'Fill in the blank from real laws',
     description:
-      'Five real platform laws and debate statements — each with one key word blanked out. Pick the correct missing word from four options.',
-    icon: Scroll,
-    iconColor: 'text-gold',
-    iconBg: 'bg-gold/10',
-    border: 'border-gold/20',
+      'A real established law with one key word blanked out. Five words to choose from. How well do you know the letter of the law?',
+    icon: BookOpen,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+    border: 'border-emerald/20',
     badge: 'Daily',
-    badgeColor: 'bg-gold/10 text-gold border-gold/30',
+    badgeColor: 'bg-emerald/10 text-emerald border-emerald/30',
     refresh: 'daily',
-    difficulty: 'medium',
-    timeEstimate: '2 min',
+    difficulty: 'hard',
+    timeEstimate: '3 min',
   },
   {
     id: 'crossword',
     href: '/crossword',
     title: 'Civic Crossword',
-    tagline: 'Daily mini-crossword with civic clues',
+    tagline: 'Daily civic vocabulary grid',
     description:
-      'Fill in the grid using clues drawn from platform debates, laws, and community concepts. A new puzzle every day.',
+      'A small crossword built from civic and political vocabulary. Clues drawn from real platform debates and established laws. New grid each day.',
     icon: Hash,
-    iconColor: 'text-purple',
-    iconBg: 'bg-purple/10',
-    border: 'border-purple/20',
+    iconColor: 'text-for-300',
+    iconBg: 'bg-for-600/15',
+    border: 'border-for-600/20',
     badge: 'Daily',
-    badgeColor: 'bg-purple/10 text-purple border-purple/30',
+    badgeColor: 'bg-for-600/15 text-for-300 border-for-500/30',
     refresh: 'daily',
-    difficulty: 'medium',
-    timeEstimate: '3 min',
+    difficulty: 'hard',
+    timeEstimate: '5 min',
   },
   {
     id: 'myth',
     href: '/myth',
     title: 'Law or Myth',
-    tagline: 'Did the Lobby pass it — or myth?',
+    tagline: 'Did this actually become law?',
     description:
-      'Five statements from the Codex. For each, decide: did the community vote it into law, or did it fail? Test your civic knowledge.',
+      'Five civic statements per day: did the community vote each one into law or was it rejected? Binary choice. Score up to 100 points.',
     icon: Gavel,
     iconColor: 'text-gold',
     iconBg: 'bg-gold/10',
@@ -586,9 +602,26 @@ const GAMES: GameDef[] = [
     difficulty: 'hard',
     timeEstimate: '3 min',
   },
+  {
+    id: 'civic-rank',
+    href: '/civic-rank',
+    title: 'Civic Rank',
+    tagline: 'Sort 4 laws by community support',
+    description:
+      'Five rounds, four laws each. Arrange them from highest % voted FOR to lowest. Same laws every day — score how many you place correctly.',
+    icon: ArrowDownUp,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+    border: 'border-gold/20',
+    badge: 'Daily',
+    badgeColor: 'bg-gold/10 text-gold border-gold/30',
+    refresh: 'daily',
+    difficulty: 'medium',
+    timeEstimate: '3 min',
+  },
 ]
 
-// ─── Difficulty badge ─────────────────────────────────────────────────────────────────────────────
+// ─── Difficulty badge ─────────────────────────────────────────────────────────────────
 
 const DIFF_STYLE = {
   easy: 'text-emerald border-emerald/30 bg-emerald/10',
@@ -596,7 +629,7 @@ const DIFF_STYLE = {
   hard: 'text-against-400 border-against-500/30 bg-against-500/10',
 } as const
 
-// ─── Score display ───────────────────────────────────────────────────────────────────────────
+// ─── Score display ──────────────────────────────────────────────────────────────────────────────
 
 function ScorePill({ label, value, color }: { label: string; value: string; color: string }) {
   return (
@@ -607,7 +640,7 @@ function ScorePill({ label, value, color }: { label: string; value: string; colo
   )
 }
 
-// ─── Game card ─────────────────────────────────────────────────────────────────────────────
+// ─── Game card ───────────────────────────────────────────────────────────────────────────────
 
 interface GameCardProps {
   game: GameDef
@@ -659,50 +692,43 @@ function GameCard({ game, done, score, highScore }: GameCardProps) {
                 {game.badge}
               </span>
             </div>
-            <p className="text-xs text-surface-500 font-medium">{game.tagline}</p>
+            <p className="text-xs text-surface-500 leading-snug">{game.tagline}</p>
           </div>
         </div>
 
         {/* Description */}
-        <p className="text-xs text-surface-500 leading-relaxed line-clamp-2">{game.description}</p>
+        <p className="text-xs text-surface-400 leading-relaxed">{game.description}</p>
 
-        {/* Footer */}
-        <div className="flex items-center justify-between gap-2">
+        {/* Footer row */}
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className={cn('text-[10px] font-semibold border rounded-full px-2 py-px', DIFF_STYLE[game.difficulty])}>
+            <span className={cn(
+              'text-[10px] font-mono font-bold border rounded-full px-2 py-0.5',
+              DIFF_STYLE[game.difficulty]
+            )}>
               {game.difficulty}
             </span>
-            <span className="flex items-center gap-1 text-[10px] text-surface-500">
+            <div className="flex items-center gap-1 text-[10px] font-mono text-surface-500">
               <Clock className="h-3 w-3" />
               {game.timeEstimate}
-            </span>
+            </div>
           </div>
 
-          {/* Score display */}
-          {score != null && (
-            <span className="text-[11px] font-mono font-bold text-gold">{score}</span>
+          {/* Score or arrow */}
+          {score ? (
+            <span className="text-xs font-mono font-bold text-gold">{score}</span>
+          ) : highScore != null && highScore > 0 ? (
+            <span className="text-xs font-mono font-bold text-against-400">{highScore} best</span>
+          ) : (
+            <ArrowRight className="h-4 w-4 text-surface-500 group-hover:text-surface-300 transition-colors" />
           )}
-          {highScore != null && highScore > 0 && (
-            <span className="flex items-center gap-1 text-[11px] font-mono font-bold text-gold">
-              <Trophy className="h-3 w-3" />
-              {highScore}
-            </span>
-          )}
-
-          <span className={cn(
-            'text-xs font-semibold flex items-center gap-1 transition-colors',
-            isDone ? 'text-emerald' : 'text-surface-500 group-hover:text-white',
-          )}>
-            {isDone ? 'Done' : 'Play'}
-            <ArrowRight className="h-3 w-3" />
-          </span>
         </div>
       </Link>
     </motion.div>
   )
 }
 
-// ─── Section header ────────────────────────────────────────────────────────────────────────
+// ─── Section header ──────────────────────────────────────────────────────────────────────────────
 
 function SectionHeader({
   icon: Icon,
@@ -730,7 +756,7 @@ function SectionHeader({
   )
 }
 
-// ─── Page ────────────────────────────────────────────────────────────────────────────────
+// ─── Page ───────────────────────────────────────────────────────────────────────────────────
 
 export default function ArcadePage() {
   const [records, setRecords] = useState<ArcadeRecord | null>(null)
@@ -743,7 +769,8 @@ export default function ArcadePage() {
   const weeklyGames = GAMES.filter((g) => g.refresh === 'weekly')
   const alwaysGames = GAMES.filter((g) => g.refresh === 'always')
 
-  const dailyDone = (records?.triviaDone ? 1 : 0) + (records?.wordleDone ? 1 : 0) + (records?.connectionsDone ? 1 : 0) + (records?.clozeDone ? 1 : 0) + (records?.crosswordDone ? 1 : 0) + (records?.mythDone ? 1 : 0)
+  const civicRankDoneToday = records?.civicRankDate === new Date().toISOString().slice(0, 10)
+  const dailyDone = (records?.triviaDone ? 1 : 0) + (records?.wordleDone ? 1 : 0) + (records?.connectionsDone ? 1 : 0) + (records?.clozeDone ? 1 : 0) + (records?.crosswordDone ? 1 : 0) + (records?.mythDone ? 1 : 0) + (civicRankDoneToday ? 1 : 0)
   const weeklyDone = records?.knowledgeDone ? 1 : 0
 
   return (
@@ -780,7 +807,7 @@ export default function ArcadePage() {
               >
                 <ScorePill
                   label="Today"
-                  value={`${dailyDone}/6`}
+                  value={`${dailyDone}/7`}
                   color={dailyDone > 0 ? 'text-gold' : 'text-surface-500'}
                 />
                 <div className="w-px h-8 bg-surface-300" />
@@ -801,6 +828,12 @@ export default function ArcadePage() {
                   value={records.gauntletBest > 0 ? `${records.gauntletBest}` : '—'}
                   color={records.gauntletBest > 0 ? 'text-against-400' : 'text-surface-500'}
                 />
+                <div className="w-px h-8 bg-surface-300" />
+                <ScorePill
+                  label="Rank"
+                  value={records.civicRankBest > 0 ? `${records.civicRankBest}/20` : '—'}
+                  color={records.civicRankBest > 0 ? 'text-gold' : 'text-surface-500'}
+                />
               </motion.div>
             )}
           </div>
@@ -815,7 +848,7 @@ export default function ArcadePage() {
               iconColor="text-gold"
               iconBg="bg-gold/10"
               title="Daily Challenges"
-              subtitle={`Resets at midnight · ${dailyDone}/6 done today`}
+              subtitle={`Resets at midnight · ${dailyDone}/7 done today`}
             />
             <div className="space-y-3">
               {dailyGames.map((game) => (
@@ -835,6 +868,8 @@ export default function ArcadePage() {
                       ? records?.crosswordDone
                       : game.id === 'myth'
                       ? records?.mythDone
+                      : game.id === 'civic-rank'
+                      ? civicRankDoneToday
                       : undefined
                   }
                   score={
@@ -852,6 +887,8 @@ export default function ArcadePage() {
                       ? records.crosswordSolved ? 'Solved!' : 'In progress'
                       : game.id === 'myth' && records?.mythScore != null
                       ? `${records.mythScore}/100`
+                      : game.id === 'civic-rank' && civicRankDoneToday && records?.civicRankBest != null
+                      ? `${records.civicRankBest}/20`
                       : null
                   }
                 />
@@ -931,40 +968,69 @@ export default function ArcadePage() {
                 { href: '/analytics', icon: BarChart2, label: 'My Stats', color: 'text-for-400', bg: 'bg-for-500/10', border: 'border-for-500/20' },
                 { href: '/compass', icon: Activity, label: 'My Compass', color: 'text-emerald', bg: 'bg-emerald/10', border: 'border-emerald/20' },
                 { href: '/wrapped', icon: Sparkles, label: 'My Wrapped', color: 'text-gold', bg: 'bg-gold/10', border: 'border-gold/20' },
-              ].map((item) => {
-                const Icon = item.icon
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={cn(
-                      'flex items-center gap-2.5 p-3 rounded-xl border transition-colors',
-                      'bg-surface-100 hover:bg-surface-200/60',
-                      item.border,
-                    )}
-                  >
-                    <div className={cn('p-1.5 rounded-lg', item.bg)}>
-                      <Icon className={cn('h-4 w-4', item.color)} />
-                    </div>
-                    <span className="text-xs font-semibold text-white">{item.label}</span>
-                  </Link>
-                )
-              })}
+              ].map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    'flex items-center gap-2.5 p-3 rounded-xl border transition-all',
+                    'bg-surface-100 hover:bg-surface-200/60',
+                    item.border,
+                  )}
+                >
+                  <div className={cn('p-1.5 rounded-lg', item.bg)}>
+                    <item.icon className={cn('h-4 w-4', item.color)} />
+                  </div>
+                  <span className="text-xs font-semibold text-surface-200">{item.label}</span>
+                </Link>
+              ))}
             </div>
           </section>
 
-          {/* ── Footer tip ── */}
-          <div className="flex items-start gap-3 p-4 rounded-xl bg-surface-200/40 border border-surface-300/40">
-            <ThumbsUp className="h-4 w-4 text-for-400 flex-shrink-0 mt-0.5" />
-            <p className="text-xs text-surface-500 leading-relaxed">
-              Every game uses real platform data — real topics, real arguments, real votes. Your scores reflect
-              genuine civic knowledge, not trivia.
-            </p>
-          </div>
+          {/* ── All games grid ── */}
+          <section className="pb-8">
+            <SectionHeader
+              icon={Vote}
+              iconColor="text-purple"
+              iconBg="bg-purple/10"
+              title="More Civic Activities"
+              subtitle="Everything else on the platform"
+            />
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                { href: '/debate', icon: Gavel, label: 'Debates', color: 'text-purple', bg: 'bg-purple/10', border: 'border-purple/20' },
+                { href: '/floor', icon: Scale, label: 'The Floor', color: 'text-for-400', bg: 'bg-for-500/10', border: 'border-for-500/20' },
+                { href: '/crossfire', icon: Swords, label: 'Crossfire', color: 'text-against-400', bg: 'bg-against-500/10', border: 'border-against-500/20' },
+                { href: '/predictions', icon: Target, label: 'Predictions', color: 'text-purple', bg: 'bg-purple/10', border: 'border-purple/20' },
+                { href: '/battleground', icon: Zap, label: 'Battleground', color: 'text-against-400', bg: 'bg-against-500/10', border: 'border-against-500/20' },
+                { href: '/tally', icon: BarChart2, label: 'Tally Board', color: 'text-gold', bg: 'bg-gold/10', border: 'border-gold/20' },
+                { href: '/moments', icon: Sparkles, label: 'Moments', color: 'text-emerald', bg: 'bg-emerald/10', border: 'border-emerald/20' },
+                { href: '/bingo', icon: Award, label: 'Civic Bingo', color: 'text-for-400', bg: 'bg-for-500/10', border: 'border-for-500/20' },
+                { href: '/gauntlet', icon: Swords, label: 'Gauntlet', color: 'text-against-400', bg: 'bg-against-500/10', border: 'border-against-500/20' },
+                { href: '/civic-rank', icon: ArrowDownUp, label: 'Civic Rank', color: 'text-gold', bg: 'bg-gold/10', border: 'border-gold/20' },
+                { href: '/archetype', icon: Layers, label: 'Archetype', color: 'text-purple', bg: 'bg-purple/10', border: 'border-purple/20' },
+                { href: '/crossroads', icon: Scale, label: 'Crossroads', color: 'text-for-400', bg: 'bg-for-500/10', border: 'border-for-500/20' },
+              ].map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    'flex items-center gap-2.5 p-3 rounded-xl border transition-all',
+                    'bg-surface-100 hover:bg-surface-200/60',
+                    item.border,
+                  )}
+                >
+                  <div className={cn('p-1.5 rounded-lg', item.bg)}>
+                    <item.icon className={cn('h-4 w-4', item.color)} />
+                  </div>
+                  <span className="text-xs font-semibold text-surface-200">{item.label}</span>
+                </Link>
+              ))}
+            </div>
+          </section>
 
         </div>
       </main>
-
       <BottomNav />
     </div>
   )
