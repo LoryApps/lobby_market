@@ -16,6 +16,8 @@ import Link from 'next/link'
 import { Avatar } from '@/components/ui/Avatar'
 import { Button } from '@/components/ui/Button'
 import { ConfettiBurst } from '@/components/simulation/ConfettiBurst'
+import { DebateWinnerPoll } from '@/components/debate/DebateWinnerPoll'
+import { DebateSwayArc } from '@/components/debate/DebateSwayArc'
 import type {
   DebateWithTopic,
   DebateParticipantWithProfile,
@@ -250,9 +252,14 @@ export function DebateRecap({
           </div>
         </motion.div>
 
+        {/* ── Sway Arc ── */}
+        <motion.div {...fadeUp(2)}>
+          <DebateSwayArc debateId={debate.id} />
+        </motion.div>
+
         {/* ── Speakers ── */}
         <motion.div
-          {...fadeUp(2)}
+          {...fadeUp(3)}
           className="grid grid-cols-2 gap-3"
         >
           {(
@@ -326,7 +333,7 @@ export function DebateRecap({
 
         {/* ── Stats Row ── */}
         <motion.div
-          {...fadeUp(3)}
+          {...fadeUp(4)}
           className="grid grid-cols-3 gap-3"
         >
           {[
@@ -356,7 +363,7 @@ export function DebateRecap({
         {/* ── Top Arguments ── */}
         {topMessages.length > 0 && (
           <motion.div
-            {...fadeUp(4)}
+            {...fadeUp(5)}
             className="bg-surface-100 rounded-xl p-5 border border-surface-200/20"
           >
             <div className="flex items-center gap-2 mb-4">
@@ -406,7 +413,7 @@ export function DebateRecap({
         {/* ── Crowd Reactions ── */}
         {topReactions.length > 0 && (
           <motion.div
-            {...fadeUp(5)}
+            {...fadeUp(6)}
             className="bg-surface-100 rounded-xl p-5 border border-surface-200/20"
           >
             <p className="text-[10px] font-mono text-surface-500 uppercase tracking-widest mb-4">
@@ -426,9 +433,26 @@ export function DebateRecap({
           </motion.div>
         )}
 
+        {/* ── Community Winner Poll ── */}
+        <motion.div {...fadeUp(7)}>
+          <DebateWinnerPoll
+            debateId={debate.id}
+            blueName={
+              blueSpeaker?.profile?.display_name ??
+              blueSpeaker?.profile?.username ??
+              null
+            }
+            redName={
+              redSpeaker?.profile?.display_name ??
+              redSpeaker?.profile?.username ??
+              null
+            }
+          />
+        </motion.div>
+
         {/* ── CTA ── */}
         <motion.div
-          {...fadeUp(6)}
+          {...fadeUp(8)}
           className="flex gap-3 pt-2 flex-wrap"
         >
           {debate.topic_id && (
