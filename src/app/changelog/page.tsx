@@ -72,7 +72,7 @@ export const metadata: Metadata = {
   },
 }
 
-// ─── Types ─────────────────────────────────────────────────────────────────────────────────
+// ─── Types ───────────────────────────────────────────────────────────────────────────────────────────
 
 interface ChangeItem {
   icon: React.ComponentType<{ className?: string }>
@@ -92,7 +92,7 @@ interface Chapter {
   items: ChangeItem[]
 }
 
-// ─── Chapters ───────────────────────────────────────────────────────────────────────────────────
+// ─── Chapters ───────────────────────────────────────────────────────────────────────────────────────────────
 
 const CHAPTERS: Chapter[] = [
   {
@@ -555,18 +555,48 @@ const CHAPTERS: Chapter[] = [
       { icon: Gamepad2, label: 'Arcade hub: Civic Mirror shown in daily challenges with score display (x/5 majority)', href: '/arcade', color: 'text-surface-400' },
     ],
   },
+  {
+    number: 'Ch. 29',
+    title: 'Civic Odd One Out',
+    subtitle: 'Daily category-spotting challenge — four topics, three in the same category, one intruder',
+    accent: 'text-purple',
+    borderColor: 'border-purple/30',
+    bgColor: 'bg-purple/5',
+    textColor: 'text-purple',
+    items: [
+      { icon: Layers, label: 'Daily game: 4 civic topics per round — three share a policy category, one is the odd one out. Tap the intruder.', href: '/odd-one-out', color: 'text-purple' },
+      { icon: Target, label: 'Three lives system: wrong picks cost a life; lose all three and the game ends early', href: '/odd-one-out', color: 'text-against-400' },
+      { icon: Trophy, label: 'Score up to 100 pts across 5 rounds; same topics for all players each day via deterministic daily seed', href: '/odd-one-out', color: 'text-gold' },
+      { icon: Gamepad2, label: 'Arcade hub updated: Odd One Out shown in daily challenges with score display and completion ring', href: '/arcade', color: 'text-surface-400' },
+    ],
+  },
+  {
+    number: 'Ch. 30',
+    title: 'Civic Decoder',
+    subtitle: 'Daily argument-recognition challenge — read three real snippets and identify which civic topic they came from',
+    accent: 'text-purple',
+    borderColor: 'border-purple/30',
+    bgColor: 'bg-purple/5',
+    textColor: 'text-purple',
+    items: [
+      { icon: Search, label: 'Daily game: 5 rounds — each shows 3 real argument snippets (FOR or AGAINST) from a mystery topic. Pick the correct topic from 4 options.', href: '/civic-decoder', color: 'text-purple' },
+      { icon: Timer, label: '30-second countdown per round with colour-shifting timer bar (green → gold → red); auto-submits on timeout', href: '/civic-decoder', color: 'text-gold' },
+      { icon: Trophy, label: '10 pts per correct answer, 50 pts max. Decoys prefer the same policy category to keep it challenging', href: '/civic-decoder', color: 'text-gold' },
+      { icon: Gamepad2, label: 'Share result: 🟩🟥 emoji grid + score. Arcade hub tracks daily completion and score. Same puzzle for all players each day.', href: '/arcade', color: 'text-surface-400' },
+    ],
+  },
 ]
 
-// ─── Stat pills ──────────────────────────────────────────────────────────────────────────────────
+// ─── Stat pills ──────────────────────────────────────────────────────────────────────────────────────────────
 
 const STATS = [
-  { value: '28', label: 'chapters shipped' },
-  { value: '215+', label: 'features built' },
+  { value: '30', label: 'chapters shipped' },
+  { value: '220+', label: 'features built' },
   { value: '67', label: 'DB migrations' },
-  { value: '335+', label: 'API routes' },
+  { value: '340+', label: 'API routes' },
 ]
 
-// ─── Recent builds ──────────────────────────────────────────────────────────────────────────────────
+// ─── Recent builds ──────────────────────────────────────────────────────────────────────────────────────────────
 
 interface RecentBuild {
   title: string
@@ -578,6 +608,22 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Civic Decoder',
+    description: 'A daily argument-recognition puzzle. Each round shows three real argument snippets (FOR or AGAINST) from a mystery civic debate — read them and identify which topic they came from out of four options. Five rounds, 30-second timer, 50 pts max. Same puzzle for all players each day.',
+    href: '/civic-decoder',
+    icon: Search,
+    color: 'text-purple',
+    tag: 'Ch. 30',
+  },
+  {
+    title: 'Civic Odd One Out',
+    description: 'A daily category-spotting challenge. Four civic topics appear each round — three share the same policy category, one is the intruder. Tap the odd one out before your three lives run out. Five rounds, 100 pts max. Deterministic daily seed means everyone plays the same puzzle.',
+    href: '/odd-one-out',
+    icon: Layers,
+    color: 'text-purple',
+    tag: 'Ch. 29',
+  },
   {
     title: 'Civic Mirror',
     description: 'A daily self-awareness game. Five civic topics shown with vote splits hidden — tap FOR or AGAINST on gut instinct. After each vote, the community majority is instantly revealed. Score how often you\'re with the majority and receive your civic persona label.',
@@ -748,7 +794,7 @@ const RECENT_BUILDS: RecentBuild[] = [
   },
 ]
 
-// ─── Page ───────────────────────────────────────────────────────────────────────────────────
+// ─── Page ───────────────────────────────────────────────────────────────────────────────────────────────────────
 
 export default function ChangelogPage() {
   return (
@@ -870,7 +916,7 @@ export default function ChangelogPage() {
   )
 }
 
-// ─── Chapter block ──────────────────────────────────────────────────────────────────────────────────────
+// ─── Chapter block ──────────────────────────────────────────────────────────────────────────────────────────────
 
 function ChapterBlock({ chapter }: { chapter: Chapter }) {
   return (
