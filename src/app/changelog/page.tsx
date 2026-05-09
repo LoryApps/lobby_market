@@ -460,12 +460,27 @@ const CHAPTERS: Chapter[] = [
       { icon: Timer, label: 'GET /api/debates/[id]/sway endpoint returning arc data with has_data guard for sparse debates', href: '/debate', color: 'text-surface-400' },
     ],
   },
+  {
+    number: 'Ch. 23',
+    title: 'Civic Bingo',
+    subtitle: 'Weekly 5×5 bingo card — mark topics as they pass into law and win five in a row',
+    accent: 'text-for-400',
+    borderColor: 'border-for-500/30',
+    bgColor: 'bg-for-500/5',
+    textColor: 'text-for-400',
+    items: [
+      { icon: Star, label: '5×5 weekly bingo card seeded with 24 live topics — same card for all users via ISO week key', href: '/bingo', color: 'text-for-400' },
+      { icon: Gavel, label: 'Topics that reach LAW status auto-mark their square; users can manually mark any voted square', href: '/bingo', color: 'text-gold' },
+      { icon: Trophy, label: 'Win detection for all 12 possible lines (5 rows + 5 columns + 2 diagonals) with confetti burst', href: '/bingo', color: 'text-gold' },
+      { icon: Activity, label: 'Seeded deterministic shuffle (no DB writes needed) + localStorage persistence across sessions', href: '/bingo', color: 'text-surface-400' },
+    ],
+  },
 ]
 
 // ─── Stat pills ──────────────────────────────────────────────────────────────────────────
 
 const STATS = [
-  { value: '22', label: 'chapters shipped' },
+  { value: '23', label: 'chapters shipped' },
   { value: '200+', label: 'features built' },
   { value: '67', label: 'DB migrations' },
   { value: '300+', label: 'API routes' },
@@ -483,6 +498,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Civic Bingo',
+    description: 'A weekly 5×5 bingo card of civic topics. Laws that pass auto-mark your squares. Get five in a row — horizontally, vertically, or diagonally — for the BINGO. Deterministic per ISO week so every user plays the same card.',
+    href: '/bingo',
+    icon: Star,
+    color: 'text-for-400',
+    tag: 'Ch. 23',
+  },
   {
     title: 'Debate Sway Arc',
     description: 'An animated SVG line chart on every debate recap showing how audience opinion shifted at each of the 3 live checkpoints — from start through to the final sway result.',
