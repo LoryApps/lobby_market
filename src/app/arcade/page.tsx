@@ -31,9 +31,11 @@ import {
   Gamepad2,
   Hash,
   Layers,
+  Gauge,
   RefreshCw,
   Scale,
   Scroll,
+  Skull,
   Sparkles,
   Star,
   Swords,
@@ -65,6 +67,8 @@ const KEYS = {
   bingo:         'lm_bingo_',
   sprint:        'lm_sprint_best_v1',
   sprintToday:   'lm_sprint_today_v1',
+  imposter:      'lm_imposter_v1',
+  mirror:        'lm_mirror_v1',
 } as const
 
 // ─── Types ─────────────────────────────────────────────────────────────────────────────────
@@ -95,6 +99,11 @@ interface ArcadeRecord {
   bingoLines: number
   sprintBest: number
   sprintTodayScore: number | null
+  imposterDone: boolean
+  imposterCorrect: boolean | null
+  imposterStreak: number
+  mirrorDone: boolean
+  mirrorScore: number | null
 }
 
 function todayStr(): string {
@@ -138,6 +147,11 @@ function loadRecords(): ArcadeRecord {
     bingoLines: 0,
     sprintBest: 0,
     sprintTodayScore: null,
+    imposterDone: false,
+    imposterCorrect: null,
+    imposterStreak: 0,
+    mirrorDone: false,
+    mirrorScore: null,
   }
   try {
     // Trivia — daily
@@ -273,6 +287,27 @@ function loadRecords(): ArcadeRecord {
     if (sprintTodayRaw) {
       const st = JSON.parse(sprintTodayRaw)
       if (typeof st.score === 'number') def.sprintTodayScore = st.score
+    }
+
+    // Civic Imposter — daily
+    const imposterRaw = localStorage.getItem(KEYS.imposter)
+    if (imposterRaw) {
+      const im = JSON.parse(imposterRaw)
+      if (im.date === todayStr()) {
+        def.imposterDone = true
+        def.imposterCorrect = typeof im.correct === 'boolean' ? im.correct : null
+        def.imposterStreak = typeof im.streak === 'number' ? im.streak : 0
+      }
+    }
+
+    // Civic Mirror — daily
+    const mirrorRaw = localStorage.getItem(KEYS.mirror)
+    if (mirrorRaw) {
+      const mr = JSON.parse(mirrorRaw)
+      if (mr.date === todayStr()) {
+        def.mirrorDone = true
+        def.mirrorScore = typeof mr.score === 'number' ? mr.score : null
+      }
     }
   } catch {
     // best-effort
@@ -725,6 +760,40 @@ const GAMES: GameDef[] = [
     difficulty: 'medium',
     timeEstimate: '3 min',
   },
+  {
+    id: 'civic-imposter',
+    href: '/civic-imposter',
+    title: 'Civic Imposter',
+    tagline: 'Spot the fake law hiding among five real ones',
+    description:
+      'Five real established laws from the Lobby Codex — and one plausible-sounding fake. Can you identify the imposter? One guess per day. Build your detection streak.',
+    icon: Skull,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-600/10',
+    border: 'border-against-600/20',
+    badge: 'Daily',
+    badgeColor: 'bg-against-600/10 text-against-400 border-against-600/30',
+    refresh: 'daily',
+    difficulty: 'hard',
+    timeEstimate: '2 min',
+  },
+  {
+    id: 'civic-mirror',
+    href: '/civic-mirror',
+    title: 'Civic Mirror',
+    tagline: 'Vote your gut — see if you\'re with the majority',
+    description:
+      'Five real platform topics per day. Tap FOR or AGAINST on gut instinct — no splits shown. After each vote, the community majority is revealed. How aligned are you?',
+    icon: Gauge,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+    border: 'border-for-500/20',
+    badge: 'Daily',
+    badgeColor: 'bg-for-500/10 text-for-400 border-for-500/30',
+    refresh: 'daily',
+    difficulty: 'easy',
+    timeEstimate: '2 min',
+  },
 ]
 
 // ─── Difficulty badge ─────────────────────────────────────────────────────────────────
@@ -879,7 +948,9 @@ export default function ArcadePage() {
   const civicRankDoneToday = records?.civicRankDate === todayISO
   const civicTimelineDoneToday = records?.civicTimelineDate === todayISO
   const sprintDone = (records?.sprintTodayScore != null)
-  const dailyDone = (records?.triviaDone ? 1 : 0) + (records?.wordleDone ? 1 : 0) + (records?.connectionsDone ? 1 : 0) + (records?.clozeDone ? 1 : 0) + (records?.crosswordDone ? 1 : 0) + (records?.mythDone ? 1 : 0) + (civicRankDoneToday ? 1 : 0) + (civicTimelineDoneToday ? 1 : 0) + (sprintDone ? 1 : 0)
+  const imposterDoneToday = records?.imposterDone ?? false
+  const mirrorDoneToday = records?.mirrorDone ?? false
+  const dailyDone = (records?.triviaDone ? 1 : 0) + (records?.wordleDone ? 1 : 0) + (records?.connectionsDone ? 1 : 0) + (records?.clozeDone ? 1 : 0) + (records?.crosswordDone ? 1 : 0) + (records?.mythDone ? 1 : 0) + (civicRankDoneToday ? 1 : 0) + (civicTimelineDoneToday ? 1 : 0) + (sprintDone ? 1 : 0) + (imposterDoneToday ? 1 : 0) + (mirrorDoneToday ? 1 : 0)
   const weeklyDone = (records?.knowledgeDone ? 1 : 0) + (records?.bingoDone ? 1 : 0)
 
   return (
@@ -916,7 +987,7 @@ export default function ArcadePage() {
               >
                 <ScorePill
                   label="Today"
-                  value={`${dailyDone}/9`}
+                  value={`${dailyDone}/11`}
                   color={dailyDone > 0 ? 'text-gold' : 'text-surface-500'}
                 />
                 <div className="w-px h-8 bg-surface-300" />
@@ -963,7 +1034,7 @@ export default function ArcadePage() {
               iconColor="text-gold"
               iconBg="bg-gold/10"
               title="Daily Challenges"
-              subtitle={`Resets at midnight · ${dailyDone}/9 done today`}
+              subtitle={`Resets at midnight · ${dailyDone}/11 done today`}
             />
             <div className="space-y-3">
               {dailyGames.map((game) => (
@@ -989,6 +1060,10 @@ export default function ArcadePage() {
                       ? civicTimelineDoneToday
                       : game.id === 'sprint'
                       ? sprintDone
+                      : game.id === 'civic-imposter'
+                      ? imposterDoneToday
+                      : game.id === 'civic-mirror'
+                      ? mirrorDoneToday
                       : undefined
                   }
                   score={
@@ -1012,6 +1087,12 @@ export default function ArcadePage() {
                       ? `${records.civicTimelineBest}/60`
                       : game.id === 'sprint' && records?.sprintTodayScore != null
                       ? `${records.sprintTodayScore} pts`
+                      : game.id === 'civic-imposter' && imposterDoneToday
+                      ? records?.imposterCorrect
+                        ? records.imposterStreak > 1 ? `Correct · ${records.imposterStreak}🔥` : 'Correct!'
+                        : 'Fooled'
+                      : game.id === 'civic-mirror' && mirrorDoneToday && records?.mirrorScore != null
+                      ? `${records.mirrorScore}/5 majority`
                       : null
                   }
                 />
@@ -1136,6 +1217,8 @@ export default function ArcadePage() {
                 { href: '/gauntlet', icon: Swords, label: 'Gauntlet', color: 'text-against-400', bg: 'bg-against-500/10', border: 'border-against-500/20' },
                 { href: '/civic-rank', icon: ArrowDownUp, label: 'Civic Rank', color: 'text-gold', bg: 'bg-gold/10', border: 'border-gold/20' },
                 { href: '/civic-timeline', icon: CalendarClock, label: 'Civic Timeline', color: 'text-purple', bg: 'bg-purple/10', border: 'border-purple/20' },
+                { href: '/civic-imposter', icon: Skull, label: 'Civic Imposter', color: 'text-against-400', bg: 'bg-against-600/10', border: 'border-against-600/20' },
+                { href: '/civic-mirror', icon: Gauge, label: 'Civic Mirror', color: 'text-for-400', bg: 'bg-for-500/10', border: 'border-for-500/20' },
                 { href: '/archetype', icon: Layers, label: 'Archetype', color: 'text-purple', bg: 'bg-purple/10', border: 'border-purple/20' },
                 { href: '/crossroads', icon: Scale, label: 'Crossroads', color: 'text-for-400', bg: 'bg-for-500/10', border: 'border-for-500/20' },
               ].map((item) => (
