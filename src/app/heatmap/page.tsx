@@ -23,7 +23,7 @@ import { Skeleton } from '@/components/ui/Skeleton'
 import { cn } from '@/lib/utils/cn'
 import type { HeatmapCell, HeatmapResponse } from '@/app/api/stats/heatmap/route'
 
-// ─── Category icons + colors ──────────────────────────────────────────────────
+// ─── Category icons + colors ────────────────────────────────────────────
 
 const CAT_STYLE: Record<string, { color: string; dot: string }> = {
   Economics:   { color: 'text-gold',         dot: 'bg-gold' },
@@ -38,7 +38,7 @@ const CAT_STYLE: Record<string, { color: string; dot: string }> = {
   Education:   { color: 'text-purple',       dot: 'bg-purple' },
 }
 
-// ─── Status config ────────────────────────────────────────────────────────────
+// ─── Status config ─────────────────────────────────────────────────────
 
 const STATUS_CONFIG: Record<
   string,
@@ -81,7 +81,7 @@ const STATUS_CONFIG: Record<
   },
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+// ─── Helpers ─────────────────────────────────────────────────────────────
 
 function intensityClass(count: number, max: number): string {
   if (count === 0) return 'bg-surface-200/40 border-surface-300/30'
@@ -99,7 +99,7 @@ function formatVotes(n: number): string {
   return n.toString()
 }
 
-// ─── Cell tooltip ─────────────────────────────────────────────────────────────
+// ─── Cell tooltip ───────────────────────────────────────────────────────
 
 interface CellTooltipProps {
   cell: HeatmapCell
@@ -201,7 +201,7 @@ function CellTooltip({ cell, onClose, onNavigate }: CellTooltipProps) {
   )
 }
 
-// ─── Heatmap grid ─────────────────────────────────────────────────────────────
+// ─── Heatmap grid ───────────────────────────────────────────────────────
 
 interface HeatmapGridProps {
   data: HeatmapResponse
@@ -301,7 +301,7 @@ function HeatmapGrid({ data, onCellClick }: HeatmapGridProps) {
   )
 }
 
-// ─── Legend ───────────────────────────────────────────────────────────────────
+// ─── Legend ──────────────────────────────────────────────────────────────
 
 function Legend({ maxCount }: { maxCount: number }) {
   const steps = [
@@ -328,7 +328,7 @@ function Legend({ maxCount }: { maxCount: number }) {
   )
 }
 
-// ─── Summary row ──────────────────────────────────────────────────────────────
+// ─── Summary row ──────────────────────────────────────────────────────────
 
 interface SummaryRowProps {
   data: HeatmapResponse
@@ -382,24 +382,21 @@ function HeatmapSkeleton() {
   return (
     <div className="animate-pulse">
       <div className="rounded-2xl bg-surface-100 border border-surface-300 p-5 overflow-hidden">
-        {/* Column headers */}
         <div className="grid gap-1.5 mb-1.5" style={{ gridTemplateColumns: '140px repeat(5, 1fr)' }}>
           <div />
           {Array.from({ length: cols }).map((_, i) => (
             <Skeleton key={i} className="h-10 rounded-lg" />
           ))}
         </div>
-        {/* Rows */}
         {Array.from({ length: rows }).map((_, r) => (
           <div key={r} className="grid gap-1.5 mb-1.5 items-center" style={{ gridTemplateColumns: '140px repeat(5, 1fr)' }}>
             <Skeleton className="h-4 w-20" />
             {Array.from({ length: cols }).map((_, c) => (
-              <Skeleton key={c} className="h-14 rounded-lg opacity-80" style={{ opacity: 1 - (r * cols + c) * 0.005 }} />
+              <Skeleton key={c} className="h-14 rounded-lg" />
             ))}
           </div>
         ))}
       </div>
-      {/* Summary row */}
       <div className="grid grid-cols-5 gap-2 mt-4">
         {Array.from({ length: cols }).map((_, i) => (
           <Skeleton key={i} className="h-20 rounded-xl" />
@@ -409,7 +406,7 @@ function HeatmapSkeleton() {
   )
 }
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
+// ─── Page ────────────────────────────────────────────────────────────────────
 
 export default function HeatmapPage() {
   const router = useRouter()

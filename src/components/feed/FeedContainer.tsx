@@ -23,7 +23,7 @@ import { ErrorBoundary } from '@/components/ui/ErrorBoundary'
 import { cn } from '@/lib/utils/cn'
 import type { TopicWithAuthor } from '@/lib/supabase/types'
 
-// ─── Suggested user types ─────────────────────────────────────────────────────
+// ─── Suggested user types ───────────────────────────────────────────────
 
 interface SuggestedFeedUser {
   id: string
@@ -199,7 +199,7 @@ function FollowingEmptyState({ followingCount }: { followingCount: number }) {
   )
 }
 
-// ─── For You empty states ─────────────────────────────────────────────────────
+// ─── For You empty states ─────────────────────────────────────────────
 
 function ForYouEmptyState({
   hasPreferences,
@@ -292,7 +292,7 @@ function ForYouEmptyState({
   )
 }
 
-// ─── My Tags empty state ──────────────────────────────────────────────────────
+// ─── My Tags empty state ────────────────────────────────────────────
 
 interface RecommendedTag {
   tag: string
@@ -418,10 +418,10 @@ function MyTagsEmptyState() {
   )
 }
 
-// ─── Keyboard shortcuts help overlay ─────────────────────────────────────────
+// ─── Keyboard shortcuts help overlay ─────────────────────────────────────────────
 
 
-// ─── End-of-feed rich state ───────────────────────────────────────────────────
+// ─── End-of-feed rich state ─────────────────────────────────────────────
 
 function EndOfFeed({
   topicCount,
@@ -531,7 +531,7 @@ function EndOfFeed({
   )
 }
 
-// ─── Main feed container ──────────────────────────────────────────────────────
+// ─── Main feed container ──────────────────────────────────────────────
 
 export function FeedContainer() {
   const { topics, isLoading, hasMore, feedMode, followingCount, hasPreferences, preferenceSource, fetchNextPage, updateTopic, prependTopic, setFeedMode } = useFeedStore()
@@ -602,7 +602,7 @@ export function FeedContainer() {
     }
   }, [])
 
-  // ── Show pending new topics: prepend + scroll to top ──────────────────────
+  // ── Show pending new topics: prepend + scroll to top ────────────────────
   function showPendingTopics() {
     if (pendingNew.length === 0) return
     // Prepend in reverse so the most-recent ends up first
