@@ -70,7 +70,7 @@ export const metadata: Metadata = {
   },
 }
 
-// ─── Types ─────────────────────────────────────────────────────────────────────────────
+// ─── Types ─────────────────────────────────────────────────────────────────────────────────
 
 interface ChangeItem {
   icon: React.ComponentType<{ className?: string }>
@@ -90,7 +90,7 @@ interface Chapter {
   items: ChangeItem[]
 }
 
-// ─── Chapters ─────────────────────────────────────────────────────────────────────────────────
+// ─── Chapters ────────────────────────────────────────────────────────────────────────────────────
 
 const CHAPTERS: Chapter[] = [
   {
@@ -494,17 +494,18 @@ const CHAPTERS: Chapter[] = [
   },
   {
     number: 'Ch. 25',
-    title: 'Civic Rank',
-    subtitle: 'Daily law-sorting challenge — arrange 4 laws by community support across 5 rounds',
+    title: 'Civic Rank + Civic Sprint',
+    subtitle: 'Daily law-sorting game + 10-round closed-topic prediction challenge',
     accent: 'text-gold',
     borderColor: 'border-gold/30',
     bgColor: 'bg-gold/5',
     textColor: 'text-gold',
     items: [
-      { icon: ArrowDownUp, label: 'Daily sorting game: 5 rounds of 4 laws each — arrange from highest % FOR to lowest', href: '/civic-rank', color: 'text-gold' },
-      { icon: Timer, label: '25-second countdown per round with colour-shifting timer bar', href: '/civic-rank', color: 'text-against-400' },
-      { icon: Trophy, label: 'Score = correctly-positioned laws out of 20 (max); same laws for every player each day', href: '/civic-rank', color: 'text-gold' },
-      { icon: BarChart2, label: 'Reveal phase shows correct order with actual FOR% bars on each law card', href: '/civic-rank', color: 'text-surface-400' },
+      { icon: ArrowDownUp, label: 'Civic Rank: daily sorting game — 5 rounds of 4 laws each, arrange from highest % FOR to lowest', href: '/civic-rank', color: 'text-gold' },
+      { icon: Timer, label: 'Civic Sprint: 10-round prediction game — guess law or failed on closed topics, 15 seconds per round', href: '/sprint', color: 'text-gold' },
+      { icon: Zap, label: 'Sprint speed bonus: up to +5 pts for fast correct calls; correct = +10, wrong = 0. Max 150 pts.', href: '/sprint', color: 'text-gold' },
+      { icon: Star, label: 'Civic Bingo added to Arcade hub with weekly win-line tracking and completion status', href: '/arcade', color: 'text-for-400' },
+      { icon: Gamepad2, label: 'Arcade hub now tracks 8 daily + 2 weekly games; progress strip shows Sprint best and Rank best', href: '/arcade', color: 'text-surface-400' },
     ],
   },
   {
@@ -522,30 +523,15 @@ const CHAPTERS: Chapter[] = [
       { icon: BarChart2, label: 'Reveal phase shows correct chronological order with establishment dates for each law', href: '/civic-timeline', color: 'text-surface-400' },
     ],
   },
-  {
-    number: 'Ch. 27',
-    title: 'Civic Imposter',
-    subtitle: 'Spot the fake law hiding among 5 real Codex laws — daily detection challenge',
-    accent: 'text-against-400',
-    borderColor: 'border-against-500/30',
-    bgColor: 'bg-against-500/5',
-    textColor: 'text-against-400',
-    items: [
-      { icon: Search, label: 'Daily game: 6 law statements — 5 real, 1 fake — read carefully and tap the imposter', href: '/civic-imposter', color: 'text-against-400' },
-      { icon: Scale, label: '31 pre-written plausible fake laws rotating daily — no two days the same', href: '/civic-imposter', color: 'text-for-400' },
-      { icon: Zap, label: 'Streak tracking: build a consecutive-day run of correct detections', href: '/civic-imposter', color: 'text-gold' },
-      { icon: Gamepad2, label: 'Fully integrated into Civic Arcade hub with completion tracking and daily progress counter', href: '/arcade', color: 'text-purple' },
-    ],
-  },
 ]
 
 // ─── Stat pills ──────────────────────────────────────────────────────────────────────────────────────
 
 const STATS = [
-  { value: '27', label: 'chapters shipped' },
-  { value: '200+', label: 'features built' },
+  { value: '26', label: 'chapters shipped' },
+  { value: '215+', label: 'features built' },
   { value: '67', label: 'DB migrations' },
-  { value: '330+', label: 'API routes' },
+  { value: '335+', label: 'API routes' },
 ]
 
 // ─── Recent builds ─────────────────────────────────────────────────────────────────────────────────────────
@@ -561,20 +547,20 @@ interface RecentBuild {
 
 const RECENT_BUILDS: RecentBuild[] = [
   {
-    title: 'Civic Imposter',
-    description: 'A daily fake-law detection game. Six law statements appear — five are real established laws from the Codex, one is a plausible-sounding fake. Read carefully and tap the imposter. Build a streak of consecutive correct detections. 31 rotating fake laws ensure fresh challenges every day.',
-    href: '/civic-imposter',
-    icon: Search,
-    color: 'text-against-400',
-    tag: 'Ch. 27',
-  },
-  {
     title: 'Civic Timeline',
     description: 'A daily chronology challenge. Three rounds, five established laws each. Arrange them from oldest to newest — by when the community passed them into law. Tests historical civic knowledge with a 60-second countdown and reveal showing actual establishment dates.',
     href: '/civic-timeline',
     icon: CalendarClock,
     color: 'text-purple',
     tag: 'Ch. 26',
+  },
+  {
+    title: 'Civic Sprint',
+    description: 'A daily 10-round prediction game. Closed topics are shown without their outcome — guess whether each became law or failed. Race the 15-second timer for speed bonuses. Best score persists; new set of topics each day.',
+    href: '/sprint',
+    icon: Timer,
+    color: 'text-gold',
+    tag: 'Ch. 25',
   },
   {
     title: 'Civic Rank',
@@ -714,7 +700,7 @@ const RECENT_BUILDS: RecentBuild[] = [
   },
 ]
 
-// ─── Page ─────────────────────────────────────────────────────────────────────────────────────────
+// ─── Page ───────────────────────────────────────────────────────────────────────────────────────
 
 export default function ChangelogPage() {
   return (
