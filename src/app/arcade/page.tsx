@@ -34,6 +34,7 @@ import {
   Gauge,
   RefreshCw,
   Scale,
+  Search,
   Scroll,
   Skull,
   Sparkles,
@@ -70,9 +71,10 @@ const KEYS = {
   imposter:      'lm_imposter_v1',
   mirror:        'lm_mirror_v1',
   oddOneOut:     'lm_odd_one_out',
+  decoder:       'lm_decoder_v1',
 } as const
 
-// ─── Types ──────────────────────────────────────────────────────────────────────────────────────
+// ─── Types ──────────────────────────────────────────────────────────────────────────────────────────────
 
 interface ArcadeRecord {
   triviaScore: number | null
@@ -107,6 +109,8 @@ interface ArcadeRecord {
   mirrorScore: number | null
   oddOneOutDone: boolean
   oddOneOutScore: number | null
+  decoderDone: boolean
+  decoderScore: number | null
 }
 
 function todayStr(): string {
@@ -157,6 +161,8 @@ function loadRecords(): ArcadeRecord {
     mirrorScore: null,
     oddOneOutDone: false,
     oddOneOutScore: null,
+    decoderDone: false,
+    decoderScore: null,
   }
   try {
     // Trivia — daily
@@ -324,13 +330,23 @@ function loadRecords(): ArcadeRecord {
         def.oddOneOutScore = typeof od.score === 'number' ? od.score : null
       }
     }
+
+    // Civic Decoder — daily
+    const decoderRaw = localStorage.getItem(KEYS.decoder)
+    if (decoderRaw) {
+      const dc = JSON.parse(decoderRaw)
+      if (dc.date === todayStr()) {
+        def.decoderDone = true
+        def.decoderScore = typeof dc.score === 'number' ? dc.score : null
+      }
+    }
   } catch {
     // best-effort
   }
   return def
 }
 
-// ─── Game definitions ────────────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Game definitions ────────────────────────────────────────────────────────────────────────────────────────────────
 
 interface GameDef {
   id: string
@@ -826,9 +842,26 @@ const GAMES: GameDef[] = [
     difficulty: 'medium',
     timeEstimate: '3 min',
   },
+  {
+    id: 'civic-decoder',
+    href: '/civic-decoder',
+    title: 'Civic Decoder',
+    tagline: 'Identify the topic from three real arguments',
+    description:
+      'Three real arguments from a mystery civic debate — read them and identify which topic they came from. Five rounds, 30-second timer per round. 10 pts per correct answer, 50 pts max.',
+    icon: Search,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+    border: 'border-purple/20',
+    badge: 'Daily',
+    badgeColor: 'bg-purple/10 text-purple border-purple/30',
+    refresh: 'daily',
+    difficulty: 'hard',
+    timeEstimate: '3 min',
+  },
 ]
 
-// ─── Difficulty badge ──────────────────────────────────────────────────────────────────────────────────────
+// ─── Difficulty badge ──────────────────────────────────────────────────────────────────────────────────────────────────────
 
 const DIFF_STYLE = {
   easy: 'text-emerald border-emerald/30 bg-emerald/10',
@@ -836,7 +869,7 @@ const DIFF_STYLE = {
   hard: 'text-against-400 border-against-500/30 bg-against-500/10',
 } as const
 
-// ─── Score display ──────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Score display ──────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 function ScorePill({ label, value, color }: { label: string; value: string; color: string }) {
   return (
@@ -847,7 +880,7 @@ function ScorePill({ label, value, color }: { label: string; value: string; colo
   )
 }
 
-// ─── Game card ───────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Game card ───────────────────────────────────────────────────────────────────────────────────────────────────────
 
 interface GameCardProps {
   game: GameDef
@@ -935,7 +968,7 @@ function GameCard({ game, done, score, highScore }: GameCardProps) {
   )
 }
 
-// ─── Section header ──────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Section header ────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 function SectionHeader({
   icon: Icon,
@@ -963,7 +996,7 @@ function SectionHeader({
   )
 }
 
-// ─── Page ───────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Page ───────────────────────────────────────────────────────────────────────────────────────────────────────
 
 export default function ArcadePage() {
   const [records, setRecords] = useState<ArcadeRecord | null>(null)
@@ -982,7 +1015,8 @@ export default function ArcadePage() {
   const sprintDone = (records?.sprintTodayScore != null)
   const imposterDoneToday = records?.imposterDone ?? false
   const mirrorDoneToday = records?.mirrorDone ?? false
-  const dailyDone = (records?.triviaDone ? 1 : 0) + (records?.wordleDone ? 1 : 0) + (records?.connectionsDone ? 1 : 0) + (records?.clozeDone ? 1 : 0) + (records?.crosswordDone ? 1 : 0) + (records?.mythDone ? 1 : 0) + (civicRankDoneToday ? 1 : 0) + (civicTimelineDoneToday ? 1 : 0) + (sprintDone ? 1 : 0) + (imposterDoneToday ? 1 : 0) + (mirrorDoneToday ? 1 : 0)
+  const decoderDoneToday = records?.decoderDone ?? false
+  const dailyDone = (records?.triviaDone ? 1 : 0) + (records?.wordleDone ? 1 : 0) + (records?.connectionsDone ? 1 : 0) + (records?.clozeDone ? 1 : 0) + (records?.crosswordDone ? 1 : 0) + (records?.mythDone ? 1 : 0) + (civicRankDoneToday ? 1 : 0) + (civicTimelineDoneToday ? 1 : 0) + (sprintDone ? 1 : 0) + (imposterDoneToday ? 1 : 0) + (mirrorDoneToday ? 1 : 0) + (decoderDoneToday ? 1 : 0)
   const weeklyDone = (records?.knowledgeDone ? 1 : 0) + (records?.bingoDone ? 1 : 0)
 
   return (
@@ -1019,7 +1053,7 @@ export default function ArcadePage() {
               >
                 <ScorePill
                   label="Today"
-                  value={`${dailyDone}/11`}
+                  value={`${dailyDone}/12`}
                   color={dailyDone > 0 ? 'text-gold' : 'text-surface-500'}
                 />
                 <div className="w-px h-8 bg-surface-300" />
@@ -1066,7 +1100,7 @@ export default function ArcadePage() {
               iconColor="text-gold"
               iconBg="bg-gold/10"
               title="Daily Challenges"
-              subtitle={`Resets at midnight · ${dailyDone}/11 done today`}
+              subtitle={`Resets at midnight · ${dailyDone}/12 done today`}
             />
             <div className="space-y-3">
               {dailyGames.map((game) => (
@@ -1098,6 +1132,8 @@ export default function ArcadePage() {
                       ? mirrorDoneToday
                       : game.id === 'odd-one-out'
                       ? records?.oddOneOutDone
+                      : game.id === 'civic-decoder'
+                      ? decoderDoneToday
                       : undefined
                   }
                   score={
@@ -1129,6 +1165,8 @@ export default function ArcadePage() {
                       ? `${records.mirrorScore}/5 majority`
                       : game.id === 'odd-one-out' && records?.oddOneOutDone && records.oddOneOutScore != null
                       ? `${records.oddOneOutScore}/100`
+                      : game.id === 'civic-decoder' && decoderDoneToday && records?.decoderScore != null
+                      ? `${records.decoderScore}/50`
                       : null
                   }
                 />
@@ -1256,6 +1294,7 @@ export default function ArcadePage() {
                 { href: '/civic-imposter', icon: Skull, label: 'Civic Imposter', color: 'text-against-400', bg: 'bg-against-600/10', border: 'border-against-600/20' },
                 { href: '/civic-mirror', icon: Gauge, label: 'Civic Mirror', color: 'text-for-400', bg: 'bg-for-500/10', border: 'border-for-500/20' },
                 { href: '/odd-one-out', icon: Layers, label: 'Odd One Out', color: 'text-purple', bg: 'bg-purple/10', border: 'border-purple/20' },
+                { href: '/civic-decoder', icon: Search, label: 'Civic Decoder', color: 'text-purple', bg: 'bg-purple/10', border: 'border-purple/20' },
                 { href: '/archetype', icon: Layers, label: 'Archetype', color: 'text-purple', bg: 'bg-purple/10', border: 'border-purple/20' },
                 { href: '/crossroads', icon: Scale, label: 'Crossroads', color: 'text-for-400', bg: 'bg-for-500/10', border: 'border-for-500/20' },
               ].map((item) => (
