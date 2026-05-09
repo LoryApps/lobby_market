@@ -88,7 +88,7 @@ interface Chapter {
   items: ChangeItem[]
 }
 
-// ─── Chapters ──────────────────────────────────────────────────────────────────
+// ─── Chapters ───────────────────────────────────────────────────────────────────
 
 const CHAPTERS: Chapter[] = [
   {
@@ -412,22 +412,66 @@ const CHAPTERS: Chapter[] = [
       { icon: Gavel, label: 'Civic Lawmakers Leaderboard — top citizens ranked by laws they helped pass', href: '/leaderboard/lawmakers', color: 'text-for-400' },
       { icon: Trophy, label: 'Podium view for top 3 co-authors with law count and contribution rate', href: '/leaderboard/lawmakers', color: 'text-gold' },
       { icon: TrendingUp, label: 'Contribution rate — % of FOR votes that became law per user', href: '/leaderboard/lawmakers', color: 'text-emerald' },
-      { icon: Scale, label: 'Signature laws — each legislator\'s most impactful co-authored laws', href: '/leaderboard/lawmakers', color: 'text-gold' },
+      { icon: Scale, label: "Signature laws — each legislator's most impactful co-authored laws", href: '/leaderboard/lawmakers', color: 'text-gold' },
       { icon: Activity, label: 'Period filters — All Time, Last 90 Days, Last 30 Days', href: '/leaderboard/lawmakers', color: 'text-for-300' },
+    ],
+  },
+  {
+    number: 'Ch. 20',
+    title: 'Debate Scheduling Hub',
+    subtitle: 'Upcoming debate RSVP on the dashboard and a flexible scheduling API',
+    accent: 'text-purple',
+    borderColor: 'border-purple/30',
+    bgColor: 'bg-purple/5',
+    textColor: 'text-purple',
+    items: [
+      { icon: Bell, label: "Upcoming Debates card on /dashboard — RSVP'd debates for the next 7 days", href: '/dashboard', color: 'text-purple' },
+      { icon: Timer, label: 'Flexible window_hours param on /api/me/upcoming-rsvps (default 2h, max 7d)', href: '/dashboard', color: 'text-for-400' },
+      { icon: Mic, label: 'Debate countdown banners with live RSVP state on the main feed', href: '/', color: 'text-against-400' },
+    ],
+  },
+  {
+    number: 'Ch. 21',
+    title: 'Debate Winner Poll',
+    subtitle: 'Community vote on who argued better — independent of the underlying topic stance',
+    accent: 'text-gold',
+    borderColor: 'border-gold/30',
+    bgColor: 'bg-gold/5',
+    textColor: 'text-gold',
+    items: [
+      { icon: Vote, label: '"Who argued better?" poll on every debate recap — FOR side, AGAINST side, or Tie', href: '/debate', color: 'text-gold' },
+      { icon: Trophy, label: 'Animated result bars reveal after voting with per-option win percentages', href: '/debate', color: 'text-gold' },
+      { icon: Users, label: 'Live voter count with sign-in prompt for guests', href: '/debate', color: 'text-for-400' },
+      { icon: Activity, label: 'API endpoint /api/debates/[id]/winner-poll with one-vote-per-user enforcement', href: '/debate', color: 'text-surface-400' },
+    ],
+  },
+  {
+    number: 'Ch. 22',
+    title: 'Debate Sway Arc',
+    subtitle: 'Checkpoint-by-checkpoint audience opinion arc on every debate recap',
+    accent: 'text-purple',
+    borderColor: 'border-purple/30',
+    bgColor: 'bg-purple/5',
+    textColor: 'text-purple',
+    items: [
+      { icon: TrendingUp, label: 'Animated SVG line chart showing FOR vs AGAINST sentiment at each of the 3 live checkpoints', href: '/debate', color: 'text-purple' },
+      { icon: Activity, label: 'Smooth cubic-bezier curve with framer-motion pathLength animation — draws itself on load', href: '/debate', color: 'text-for-400' },
+      { icon: BarChart2, label: 'Per-checkpoint vote tallies (blue and red count at each round) with percentage labels', href: '/debate', color: 'text-emerald' },
+      { icon: Timer, label: 'GET /api/debates/[id]/sway endpoint returning arc data with has_data guard for sparse debates', href: '/debate', color: 'text-surface-400' },
     ],
   },
 ]
 
-// ─── Stat pills ────────────────────────────────────────────────────────────────────
+// ─── Stat pills ──────────────────────────────────────────────────────────────────────────
 
 const STATS = [
-  { value: '19', label: 'chapters shipped' },
+  { value: '22', label: 'chapters shipped' },
   { value: '200+', label: 'features built' },
-  { value: '66', label: 'DB migrations' },
+  { value: '67', label: 'DB migrations' },
   { value: '300+', label: 'API routes' },
 ]
 
-// ─── Recent builds ─────────────────────────────────────────────────────────────────
+// ─── Recent builds ─────────────────────────────────────────────────────────────────────────
 
 interface RecentBuild {
   title: string
@@ -439,6 +483,30 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Debate Sway Arc',
+    description: 'An animated SVG line chart on every debate recap showing how audience opinion shifted at each of the 3 live checkpoints — from start through to the final sway result.',
+    href: '/debate',
+    icon: TrendingUp,
+    color: 'text-purple',
+    tag: 'Ch. 22',
+  },
+  {
+    title: 'Debate Winner Poll',
+    description: 'After any debate ends, the community can vote on who argued better — FOR side, AGAINST side, or Tie. Results animate in with per-option win percentages.',
+    href: '/debate',
+    icon: Vote,
+    color: 'text-gold',
+    tag: 'Ch. 21',
+  },
+  {
+    title: 'Debate Scheduling Hub',
+    description: 'RSVPd debates surface on the personal dashboard for the next 7 days. The flexible /api/me/upcoming-rsvps endpoint supports custom window sizes up to 7 days ahead.',
+    href: '/dashboard',
+    icon: Bell,
+    color: 'text-purple',
+    tag: 'Ch. 20',
+  },
   {
     title: 'Civic Lawmakers Leaderboard',
     description: 'Every winning FOR vote earns civic co-authorship credit. See who helped the most topics become law — with podium, contribution rate bars, and signature laws.',
@@ -529,7 +597,7 @@ const RECENT_BUILDS: RecentBuild[] = [
   },
 ]
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
+// ─── Page ─────────────────────────────────────────────────────────────────────────────
 
 export default function ChangelogPage() {
   return (
@@ -651,7 +719,7 @@ export default function ChangelogPage() {
   )
 }
 
-// ─── Chapter block ─────────────────────────────────────────────────────────────────
+// ─── Chapter block ──────────────────────────────────────────────────────────────────────────
 
 function ChapterBlock({ chapter }: { chapter: Chapter }) {
   return (
