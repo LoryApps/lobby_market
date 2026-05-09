@@ -35,6 +35,7 @@ import {
   RefreshCw,
   Scale,
   Scroll,
+  Search,
   Sparkles,
   Star,
   Swords,
@@ -50,18 +51,19 @@ import { cn } from '@/lib/utils/cn'
 // ─── localStorage key constants (must match game pages exactly) ──────────────────────────────────────────
 
 const KEYS = {
-  trivia:       'lm_trivia_result',
-  blitz:        'lm_blitz_high_score_v1',
-  knowledgeTest:'lm_knowledge_test_v1',
-  duelPicks:    'lm_duel_picks_v1',
-  wordle:       'lm_wordle_v1',
-  connections:  'lm_connections_v1',
-  cloze:        'lm_cloze_v1',
-  crossword:    'lm_crossword_v1',
-  myth:         'lm_myth_result',
-  gauntlet:      'lm_gauntlet_best_v1',
-  civicRank:     'lm_civic_rank_v1',
-  civicTimeline: 'lm_civic_timeline_v1',
+  trivia:         'lm_trivia_result',
+  blitz:          'lm_blitz_high_score_v1',
+  knowledgeTest:  'lm_knowledge_test_v1',
+  duelPicks:      'lm_duel_picks_v1',
+  wordle:         'lm_wordle_v1',
+  connections:    'lm_connections_v1',
+  cloze:          'lm_cloze_v1',
+  crossword:      'lm_crossword_v1',
+  myth:           'lm_myth_result',
+  gauntlet:       'lm_gauntlet_best_v1',
+  civicRank:      'lm_civic_rank_v1',
+  civicTimeline:  'lm_civic_timeline_v1',
+  civicImposter:  'lm_imposter_v1',
 } as const
 
 // ─── Types ─────────────────────────────────────────────────────────────────────────────────
@@ -88,6 +90,9 @@ interface ArcadeRecord {
   civicRankDate: string | null
   civicTimelineBest: number
   civicTimelineDate: string | null
+  imposterDone: boolean
+  imposterCorrect: boolean
+  imposterStreak: number
 }
 
 function todayStr(): string {
@@ -127,6 +132,9 @@ function loadRecords(): ArcadeRecord {
     civicRankDate: null,
     civicTimelineBest: 0,
     civicTimelineDate: null,
+    imposterDone: false,
+    imposterCorrect: false,
+    imposterStreak: 0,
   }
   try {
     // Trivia — daily
@@ -233,6 +241,17 @@ function loadRecords(): ArcadeRecord {
       if (typeof tl.score === 'number') {
         def.civicTimelineBest = tl.score
         def.civicTimelineDate = tl.date ?? null
+      }
+    }
+
+    // Civic Imposter — daily
+    const impRaw = localStorage.getItem(KEYS.civicImposter)
+    if (impRaw) {
+      const imp = JSON.parse(impRaw)
+      if (imp.date === todayStr()) {
+        def.imposterDone = true
+        def.imposterCorrect = !!imp.correct
+        def.imposterStreak = typeof imp.streak === 'number' ? imp.streak : 0
       }
     }
   } catch {
@@ -652,6 +671,23 @@ const GAMES: GameDef[] = [
     difficulty: 'hard',
     timeEstimate: '4 min',
   },
+  {
+    id: 'civic-imposter',
+    href: '/civic-imposter',
+    title: 'Civic Imposter',
+    tagline: 'Spot the fake law hiding in the Codex',
+    description:
+      'Six law statements — five are real established laws, one is a plausible fake. Read carefully and tap the imposter. One guess per day. Build your detection streak.',
+    icon: Search,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-500/10',
+    border: 'border-against-500/20',
+    badge: 'Daily',
+    badgeColor: 'bg-against-600/10 text-against-400 border-against-600/30',
+    refresh: 'daily',
+    difficulty: 'medium',
+    timeEstimate: '2 min',
+  },
 ]
 
 // ─── Difficulty badge ─────────────────────────────────────────────────────────────────
@@ -805,7 +841,7 @@ export default function ArcadePage() {
   const todayISO = new Date().toISOString().slice(0, 10)
   const civicRankDoneToday = records?.civicRankDate === todayISO
   const civicTimelineDoneToday = records?.civicTimelineDate === todayISO
-  const dailyDone = (records?.triviaDone ? 1 : 0) + (records?.wordleDone ? 1 : 0) + (records?.connectionsDone ? 1 : 0) + (records?.clozeDone ? 1 : 0) + (records?.crosswordDone ? 1 : 0) + (records?.mythDone ? 1 : 0) + (civicRankDoneToday ? 1 : 0) + (civicTimelineDoneToday ? 1 : 0)
+  const dailyDone = (records?.triviaDone ? 1 : 0) + (records?.wordleDone ? 1 : 0) + (records?.connectionsDone ? 1 : 0) + (records?.clozeDone ? 1 : 0) + (records?.crosswordDone ? 1 : 0) + (records?.mythDone ? 1 : 0) + (civicRankDoneToday ? 1 : 0) + (civicTimelineDoneToday ? 1 : 0) + (records?.imposterDone ? 1 : 0)
   const weeklyDone = records?.knowledgeDone ? 1 : 0
 
   return (
@@ -842,7 +878,7 @@ export default function ArcadePage() {
               >
                 <ScorePill
                   label="Today"
-                  value={`${dailyDone}/8`}
+                  value={`${dailyDone}/9`}
                   color={dailyDone > 0 ? 'text-gold' : 'text-surface-500'}
                 />
                 <div className="w-px h-8 bg-surface-300" />
@@ -889,7 +925,7 @@ export default function ArcadePage() {
               iconColor="text-gold"
               iconBg="bg-gold/10"
               title="Daily Challenges"
-              subtitle={`Resets at midnight · ${dailyDone}/8 done today`}
+              subtitle={`Resets at midnight · ${dailyDone}/9 done today`}
             />
             <div className="space-y-3">
               {dailyGames.map((game) => (
@@ -913,6 +949,8 @@ export default function ArcadePage() {
                       ? civicRankDoneToday
                       : game.id === 'civic-timeline'
                       ? civicTimelineDoneToday
+                      : game.id === 'civic-imposter'
+                      ? records?.imposterDone
                       : undefined
                   }
                   score={
@@ -934,6 +972,10 @@ export default function ArcadePage() {
                       ? `${records.civicRankBest}/20`
                       : game.id === 'civic-timeline' && civicTimelineDoneToday && records?.civicTimelineBest != null
                       ? `${records.civicTimelineBest}/60`
+                      : game.id === 'civic-imposter' && records?.imposterDone
+                      ? records.imposterCorrect
+                        ? records.imposterStreak > 1 ? `Found · ${records.imposterStreak} streak` : 'Found!'
+                        : 'Fooled'
                       : null
                   }
                 />
@@ -1056,6 +1098,7 @@ export default function ArcadePage() {
                 { href: '/civic-timeline', icon: CalendarClock, label: 'Civic Timeline', color: 'text-purple', bg: 'bg-purple/10', border: 'border-purple/20' },
                 { href: '/archetype', icon: Layers, label: 'Archetype', color: 'text-purple', bg: 'bg-purple/10', border: 'border-purple/20' },
                 { href: '/crossroads', icon: Scale, label: 'Crossroads', color: 'text-for-400', bg: 'bg-for-500/10', border: 'border-for-500/20' },
+                { href: '/civic-imposter', icon: Search, label: 'Civic Imposter', color: 'text-against-400', bg: 'bg-against-500/10', border: 'border-against-500/20' },
               ].map((item) => (
                 <Link
                   key={item.href}
