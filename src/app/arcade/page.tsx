@@ -19,6 +19,8 @@ import {
   BarChart2,
   BookOpen,
   Calendar,
+  CalendarClock,
+  Compass,
   GitCompare,
   CheckCircle2,
   Circle,
@@ -29,6 +31,7 @@ import {
   Gamepad2,
   Hash,
   Layers,
+  Megaphone,
   RefreshCw,
   Scale,
   Scroll,
@@ -37,8 +40,6 @@ import {
   Swords,
   Target,
   ThumbsUp,
-  Timer,
-  Trophy,
   Vote,
   Zap,
 } from 'lucide-react'
@@ -58,8 +59,9 @@ const KEYS = {
   cloze:        'lm_cloze_v1',
   crossword:    'lm_crossword_v1',
   myth:         'lm_myth_result',
-  gauntlet:     'lm_gauntlet_best_v1',
-  civicRank:    'lm_civic_rank_v1',
+  gauntlet:      'lm_gauntlet_best_v1',
+  civicRank:     'lm_civic_rank_v1',
+  civicTimeline: 'lm_civic_timeline_v1',
 } as const
 
 // ─── Types ─────────────────────────────────────────────────────────────────────────────────
@@ -84,6 +86,8 @@ interface ArcadeRecord {
   gauntletBest: number
   civicRankBest: number
   civicRankDate: string | null
+  civicTimelineBest: number
+  civicTimelineDate: string | null
 }
 
 function todayStr(): string {
@@ -121,6 +125,8 @@ function loadRecords(): ArcadeRecord {
     gauntletBest: 0,
     civicRankBest: 0,
     civicRankDate: null,
+    civicTimelineBest: 0,
+    civicTimelineDate: null,
   }
   try {
     // Trivia — daily
@@ -217,6 +223,16 @@ function loadRecords(): ArcadeRecord {
       if (typeof rk.score === 'number') {
         def.civicRankBest = rk.score
         def.civicRankDate = rk.date ?? null
+      }
+    }
+
+    // Civic Timeline — daily
+    const tlRaw = localStorage.getItem(KEYS.civicTimeline)
+    if (tlRaw) {
+      const tl = JSON.parse(tlRaw)
+      if (typeof tl.score === 'number') {
+        def.civicTimelineBest = tl.score
+        def.civicTimelineDate = tl.date ?? null
       }
     }
   } catch {
@@ -619,6 +635,23 @@ const GAMES: GameDef[] = [
     difficulty: 'medium',
     timeEstimate: '3 min',
   },
+  {
+    id: 'civic-timeline',
+    href: '/civic-timeline',
+    title: 'Civic Timeline',
+    tagline: 'Arrange 5 laws in chronological order',
+    description:
+      'Three rounds, five laws each. Sort them from oldest established to newest — by when the community passed them into law. 60 seconds per round.',
+    icon: CalendarClock,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+    border: 'border-purple/20',
+    badge: 'Daily',
+    badgeColor: 'bg-purple/10 text-purple border-purple/30',
+    refresh: 'daily',
+    difficulty: 'hard',
+    timeEstimate: '4 min',
+  },
 ]
 
 // ─── Difficulty badge ─────────────────────────────────────────────────────────────────
@@ -769,8 +802,10 @@ export default function ArcadePage() {
   const weeklyGames = GAMES.filter((g) => g.refresh === 'weekly')
   const alwaysGames = GAMES.filter((g) => g.refresh === 'always')
 
-  const civicRankDoneToday = records?.civicRankDate === new Date().toISOString().slice(0, 10)
-  const dailyDone = (records?.triviaDone ? 1 : 0) + (records?.wordleDone ? 1 : 0) + (records?.connectionsDone ? 1 : 0) + (records?.clozeDone ? 1 : 0) + (records?.crosswordDone ? 1 : 0) + (records?.mythDone ? 1 : 0) + (civicRankDoneToday ? 1 : 0)
+  const todayISO = new Date().toISOString().slice(0, 10)
+  const civicRankDoneToday = records?.civicRankDate === todayISO
+  const civicTimelineDoneToday = records?.civicTimelineDate === todayISO
+  const dailyDone = (records?.triviaDone ? 1 : 0) + (records?.wordleDone ? 1 : 0) + (records?.connectionsDone ? 1 : 0) + (records?.clozeDone ? 1 : 0) + (records?.crosswordDone ? 1 : 0) + (records?.mythDone ? 1 : 0) + (civicRankDoneToday ? 1 : 0) + (civicTimelineDoneToday ? 1 : 0)
   const weeklyDone = records?.knowledgeDone ? 1 : 0
 
   return (
@@ -807,7 +842,7 @@ export default function ArcadePage() {
               >
                 <ScorePill
                   label="Today"
-                  value={`${dailyDone}/7`}
+                  value={`${dailyDone}/8`}
                   color={dailyDone > 0 ? 'text-gold' : 'text-surface-500'}
                 />
                 <div className="w-px h-8 bg-surface-300" />
@@ -834,6 +869,12 @@ export default function ArcadePage() {
                   value={records.civicRankBest > 0 ? `${records.civicRankBest}/20` : '—'}
                   color={records.civicRankBest > 0 ? 'text-gold' : 'text-surface-500'}
                 />
+                <div className="w-px h-8 bg-surface-300" />
+                <ScorePill
+                  label="Timeline"
+                  value={records.civicTimelineBest > 0 ? `${records.civicTimelineBest}/60` : '—'}
+                  color={records.civicTimelineBest > 0 ? 'text-purple' : 'text-surface-500'}
+                />
               </motion.div>
             )}
           </div>
@@ -848,7 +889,7 @@ export default function ArcadePage() {
               iconColor="text-gold"
               iconBg="bg-gold/10"
               title="Daily Challenges"
-              subtitle={`Resets at midnight · ${dailyDone}/7 done today`}
+              subtitle={`Resets at midnight · ${dailyDone}/8 done today`}
             />
             <div className="space-y-3">
               {dailyGames.map((game) => (
@@ -870,6 +911,8 @@ export default function ArcadePage() {
                       ? records?.mythDone
                       : game.id === 'civic-rank'
                       ? civicRankDoneToday
+                      : game.id === 'civic-timeline'
+                      ? civicTimelineDoneToday
                       : undefined
                   }
                   score={
@@ -889,6 +932,8 @@ export default function ArcadePage() {
                       ? `${records.mythScore}/100`
                       : game.id === 'civic-rank' && civicRankDoneToday && records?.civicRankBest != null
                       ? `${records.civicRankBest}/20`
+                      : game.id === 'civic-timeline' && civicTimelineDoneToday && records?.civicTimelineBest != null
+                      ? `${records.civicTimelineBest}/60`
                       : null
                   }
                 />
@@ -1008,6 +1053,7 @@ export default function ArcadePage() {
                 { href: '/bingo', icon: Award, label: 'Civic Bingo', color: 'text-for-400', bg: 'bg-for-500/10', border: 'border-for-500/20' },
                 { href: '/gauntlet', icon: Swords, label: 'Gauntlet', color: 'text-against-400', bg: 'bg-against-500/10', border: 'border-against-500/20' },
                 { href: '/civic-rank', icon: ArrowDownUp, label: 'Civic Rank', color: 'text-gold', bg: 'bg-gold/10', border: 'border-gold/20' },
+                { href: '/civic-timeline', icon: CalendarClock, label: 'Civic Timeline', color: 'text-purple', bg: 'bg-purple/10', border: 'border-purple/20' },
                 { href: '/archetype', icon: Layers, label: 'Archetype', color: 'text-purple', bg: 'bg-purple/10', border: 'border-purple/20' },
                 { href: '/crossroads', icon: Scale, label: 'Crossroads', color: 'text-for-400', bg: 'bg-for-500/10', border: 'border-for-500/20' },
               ].map((item) => (

@@ -8,6 +8,7 @@ import {
   BarChart2,
   Bell,
   BookOpen,
+  CalendarClock,
   Bot,
   Building2,
   CheckCircle2,
@@ -506,12 +507,27 @@ const CHAPTERS: Chapter[] = [
       { icon: BarChart2, label: 'Reveal phase shows correct order with actual FOR% bars on each law card', href: '/civic-rank', color: 'text-surface-400' },
     ],
   },
+  {
+    number: 'Ch. 26',
+    title: 'Civic Timeline',
+    subtitle: 'Daily chronology challenge — arrange 5 laws from oldest to newest across 3 rounds',
+    accent: 'text-purple',
+    borderColor: 'border-purple/30',
+    bgColor: 'bg-purple/5',
+    textColor: 'text-purple',
+    items: [
+      { icon: CalendarClock, label: 'Daily sorting game: 3 rounds of 5 laws each — arrange from oldest established to newest', href: '/civic-timeline', color: 'text-purple' },
+      { icon: Timer, label: '60-second countdown per round with colour-shifting timer bar (purple → gold → red)', href: '/civic-timeline', color: 'text-against-400' },
+      { icon: Trophy, label: 'Score 4 pts per correctly placed law — 60 pts max; same laws for every player each day', href: '/civic-timeline', color: 'text-gold' },
+      { icon: BarChart2, label: 'Reveal phase shows correct chronological order with establishment dates for each law', href: '/civic-timeline', color: 'text-surface-400' },
+    ],
+  },
 ]
 
 // ─── Stat pills ──────────────────────────────────────────────────────────────────────────────────────
 
 const STATS = [
-  { value: '25', label: 'chapters shipped' },
+  { value: '26', label: 'chapters shipped' },
   { value: '200+', label: 'features built' },
   { value: '67', label: 'DB migrations' },
   { value: '330+', label: 'API routes' },
@@ -529,6 +545,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Civic Timeline',
+    description: 'A daily chronology challenge. Three rounds, five established laws each. Arrange them from oldest to newest — by when the community passed them into law. Tests historical civic knowledge with a 60-second countdown and reveal showing actual establishment dates.',
+    href: '/civic-timeline',
+    icon: CalendarClock,
+    color: 'text-purple',
+    tag: 'Ch. 26',
+  },
   {
     title: 'Civic Rank',
     description: 'A daily law-sorting challenge. Five rounds, four established laws each. Arrange them from highest community support (% voted FOR) to lowest. Same laws for every player each day — see how well you know which laws passed with a strong mandate.',
