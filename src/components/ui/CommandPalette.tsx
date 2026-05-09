@@ -89,6 +89,7 @@ import {
   Brain,
   Mail,
   HandHeart,
+  Star,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -135,7 +136,7 @@ interface PersonResult {
 
 type PaletteItem = QuickLink | TopicResult | LawResult | PersonResult
 
-// ─── Quick-nav links shown when no query is typed ─────────────────────────────
+// ─── Quick-nav links shown when no query is typed ─────────────────────────────────
 
 const QUICK_LINKS: QuickLink[] = [
   {
@@ -1068,7 +1069,7 @@ const QUICK_LINKS: QuickLink[] = [
     iconColor: 'text-for-300',
     iconBg: 'bg-for-500/10',
   },
-  // ── Live / activity ────────────────────────────────────────────────────────
+  // ── Live / activity ────────────────────────────────────────────────
   {
     type: 'link',
     id: 'radar',
@@ -1109,7 +1110,7 @@ const QUICK_LINKS: QuickLink[] = [
     iconColor: 'text-for-300',
     iconBg: 'bg-for-500/10',
   },
-  // ── Analytics & insight ────────────────────────────────────────────────────
+  // ── Analytics & insight ────────────────────────────────────────────
   {
     type: 'link',
     id: 'drift',
@@ -1200,7 +1201,7 @@ const QUICK_LINKS: QuickLink[] = [
     iconColor: 'text-gold',
     iconBg: 'bg-gold/10',
   },
-  // ── Competition ────────────────────────────────────────────────────────────
+  // ── Competition ────────────────────────────────────────────────
   {
     type: 'link',
     id: 'elections',
@@ -1231,7 +1232,7 @@ const QUICK_LINKS: QuickLink[] = [
     iconColor: 'text-for-400',
     iconBg: 'bg-for-500/10',
   },
-  // ── Civic tools ───────────────────────────────────────────────────────────
+  // ── Civic tools ───────────────────────────────────────────────
   {
     type: 'link',
     id: 'crossroads',
@@ -1282,7 +1283,7 @@ const QUICK_LINKS: QuickLink[] = [
     iconColor: 'text-gold',
     iconBg: 'bg-gold/10',
   },
-  // ── Compare ──────────────────────────────────────────────────────────────
+  // ── Compare ──────────────────────────────────────────────────
   {
     type: 'link',
     id: 'compare',
@@ -1303,7 +1304,7 @@ const QUICK_LINKS: QuickLink[] = [
     iconColor: 'text-surface-600',
     iconBg: 'bg-surface-300/20',
   },
-  // ── Games ────────────────────────────────────────────────────────────────
+  // ── Games ──────────────────────────────────────────────────────────
   {
     type: 'link',
     id: 'connections',
@@ -1344,7 +1345,17 @@ const QUICK_LINKS: QuickLink[] = [
     iconColor: 'text-gold',
     iconBg: 'bg-gold/10',
   },
-  // ── Debate & Writing Tools ─────────────────────────────────────────────────
+  {
+    type: 'link',
+    id: 'bingo',
+    label: 'Civic Bingo',
+    sublabel: 'Weekly 5×5 bingo card — mark topics as they pass into law and get five in a row',
+    href: '/bingo',
+    icon: Star,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  // ── Debate & Writing Tools ─────────────────────────────────────────
   {
     type: 'link',
     id: 'advisor',
@@ -1405,7 +1416,7 @@ const QUICK_LINKS: QuickLink[] = [
     iconColor: 'text-against-300',
     iconBg: 'bg-against-500/10',
   },
-  // ── Analytics & Personal ───────────────────────────────────────────────────
+  // ── Analytics & Personal ─────────────────────────────────────────
   {
     type: 'link',
     id: 'mindmap',
@@ -1446,7 +1457,7 @@ const QUICK_LINKS: QuickLink[] = [
     iconColor: 'text-emerald',
     iconBg: 'bg-emerald/10',
   },
-  // ── Discovery & Research ──────────────────────────────────────────────────
+  // ── Discovery & Research ──────────────────────────────────────────
   {
     type: 'link',
     id: 'spectrum',
@@ -1666,7 +1677,7 @@ const STATUS_COLOR: Record<string, string> = {
   failed: 'text-against-400',
 }
 
-// ─── Single result row ────────────────────────────────────────────────────────
+// ─── Single result row ─────────────────────────────────────────────────────────────────
 
 function ResultRow({
   item,
@@ -1818,7 +1829,7 @@ function ResultRow({
   )
 }
 
-// ─── Section header ───────────────────────────────────────────────────────────
+// ─── Section header ─────────────────────────────────────────────────────────────────
 
 function SectionHeader({ label }: { label: string }) {
   return (
@@ -1830,7 +1841,7 @@ function SectionHeader({ label }: { label: string }) {
   )
 }
 
-// ─── The palette itself ───────────────────────────────────────────────────────
+// ─── The palette itself ───────────────────────────────────────────────────────────────
 
 interface CommandPaletteProps {
   open: boolean
@@ -2151,7 +2162,7 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
             {/* Footer */}
             <div className="flex items-center gap-4 px-4 py-2.5 border-t border-surface-300 bg-surface-50">
               <div className="flex items-center gap-1.5 text-[10px] font-mono text-surface-600">
-                <kbd className="px-1 py-0.5 rounded bg-surface-200 border border-surface-400 text-surface-500">↑↓</kbd>
+                <kbd className="px-1 py-0.5 rounded bg-surface-200 border border-surface-400 text-surface-500">⇕</kbd>
                 navigate
               </div>
               <div className="flex items-center gap-1.5 text-[10px] font-mono text-surface-600">
