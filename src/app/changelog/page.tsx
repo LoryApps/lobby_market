@@ -88,7 +88,7 @@ interface Chapter {
   items: ChangeItem[]
 }
 
-// ─── Chapters ─────────────────────────────────────────────────────────────────
+// ─── Chapters ──────────────────────────────────────────────────────────────────
 
 const CHAPTERS: Chapter[] = [
   {
@@ -400,18 +400,34 @@ const CHAPTERS: Chapter[] = [
       { icon: Swords, label: 'Civic Rivals & Twins — discover your biggest civic opponents and closest allies', href: '/rivals', color: 'text-against-400' },
     ],
   },
+  {
+    number: 'Ch. 19',
+    title: 'Civic Lawmakers',
+    subtitle: 'Who helped shape the law? Ranked by co-authored laws via winning FOR votes',
+    accent: 'text-for-400',
+    borderColor: 'border-for-500/30',
+    bgColor: 'bg-for-500/5',
+    textColor: 'text-for-300',
+    items: [
+      { icon: Gavel, label: 'Civic Lawmakers Leaderboard — top citizens ranked by laws they helped pass', href: '/leaderboard/lawmakers', color: 'text-for-400' },
+      { icon: Trophy, label: 'Podium view for top 3 co-authors with law count and contribution rate', href: '/leaderboard/lawmakers', color: 'text-gold' },
+      { icon: TrendingUp, label: 'Contribution rate — % of FOR votes that became law per user', href: '/leaderboard/lawmakers', color: 'text-emerald' },
+      { icon: Scale, label: 'Signature laws — each legislator\'s most impactful co-authored laws', href: '/leaderboard/lawmakers', color: 'text-gold' },
+      { icon: Activity, label: 'Period filters — All Time, Last 90 Days, Last 30 Days', href: '/leaderboard/lawmakers', color: 'text-for-300' },
+    ],
+  },
 ]
 
-// ─── Stat pills ───────────────────────────────────────────────────────────────
+// ─── Stat pills ────────────────────────────────────────────────────────────────────
 
 const STATS = [
-  { value: '18', label: 'chapters shipped' },
+  { value: '19', label: 'chapters shipped' },
   { value: '200+', label: 'features built' },
   { value: '66', label: 'DB migrations' },
   { value: '300+', label: 'API routes' },
 ]
 
-// ─── Recent builds ────────────────────────────────────────────────────────────
+// ─── Recent builds ─────────────────────────────────────────────────────────────────
 
 interface RecentBuild {
   title: string
@@ -423,6 +439,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Civic Lawmakers Leaderboard',
+    description: 'Every winning FOR vote earns civic co-authorship credit. See who helped the most topics become law — with podium, contribution rate bars, and signature laws.',
+    href: '/leaderboard/lawmakers',
+    icon: Gavel,
+    color: 'text-for-400',
+    tag: 'Ch. 19',
+  },
   {
     title: 'Civic Rivals & Twins',
     description: 'Discover who votes most differently from you (rivals) and most similarly (twins) — your civic mirror and your ideological opposite.',
@@ -627,7 +651,7 @@ export default function ChangelogPage() {
   )
 }
 
-// ─── Chapter block ────────────────────────────────────────────────────────────
+// ─── Chapter block ─────────────────────────────────────────────────────────────────
 
 function ChapterBlock({ chapter }: { chapter: Chapter }) {
   return (
