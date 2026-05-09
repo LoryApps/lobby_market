@@ -522,12 +522,27 @@ const CHAPTERS: Chapter[] = [
       { icon: BarChart2, label: 'Reveal phase shows correct chronological order with establishment dates for each law', href: '/civic-timeline', color: 'text-surface-400' },
     ],
   },
+  {
+    number: 'Ch. 27',
+    title: 'Civic Imposter',
+    subtitle: 'Spot the fake law hiding among 5 real Codex laws — daily detection challenge',
+    accent: 'text-against-400',
+    borderColor: 'border-against-500/30',
+    bgColor: 'bg-against-500/5',
+    textColor: 'text-against-400',
+    items: [
+      { icon: Search, label: 'Daily game: 6 law statements — 5 real, 1 fake — read carefully and tap the imposter', href: '/civic-imposter', color: 'text-against-400' },
+      { icon: Scale, label: '31 pre-written plausible fake laws rotating daily — no two days the same', href: '/civic-imposter', color: 'text-for-400' },
+      { icon: Zap, label: 'Streak tracking: build a consecutive-day run of correct detections', href: '/civic-imposter', color: 'text-gold' },
+      { icon: Gamepad2, label: 'Fully integrated into Civic Arcade hub with completion tracking and daily progress counter', href: '/arcade', color: 'text-purple' },
+    ],
+  },
 ]
 
 // ─── Stat pills ──────────────────────────────────────────────────────────────────────────────────────
 
 const STATS = [
-  { value: '26', label: 'chapters shipped' },
+  { value: '27', label: 'chapters shipped' },
   { value: '200+', label: 'features built' },
   { value: '67', label: 'DB migrations' },
   { value: '330+', label: 'API routes' },
@@ -545,6 +560,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Civic Imposter',
+    description: 'A daily fake-law detection game. Six law statements appear — five are real established laws from the Codex, one is a plausible-sounding fake. Read carefully and tap the imposter. Build a streak of consecutive correct detections. 31 rotating fake laws ensure fresh challenges every day.',
+    href: '/civic-imposter',
+    icon: Search,
+    color: 'text-against-400',
+    tag: 'Ch. 27',
+  },
   {
     title: 'Civic Timeline',
     description: 'A daily chronology challenge. Three rounds, five established laws each. Arrange them from oldest to newest — by when the community passed them into law. Tests historical civic knowledge with a 60-second countdown and reveal showing actual establishment dates.',
