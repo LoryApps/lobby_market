@@ -45,7 +45,7 @@ import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { cn } from '@/lib/utils/cn'
 
-// ─── localStorage key constants (must match game pages exactly) ───────────────
+// ─── localStorage key constants (must match game pages exactly) ─────────────────────
 
 const KEYS = {
   trivia:       'lm_trivia_result',
@@ -57,9 +57,10 @@ const KEYS = {
   cloze:        'lm_cloze_v1',
   crossword:    'lm_crossword_v1',
   myth:         'lm_myth_result',
+  gauntlet:     'lm_gauntlet_best_v1',
 } as const
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+// ─── Types ─────────────────────────────────────────────────────────────────────────────
 
 interface ArcadeRecord {
   triviaScore: number | null
@@ -78,6 +79,7 @@ interface ArcadeRecord {
   crosswordSolved: boolean
   mythDone: boolean
   mythScore: number | null
+  gauntletBest: number
 }
 
 function todayStr(): string {
@@ -112,6 +114,7 @@ function loadRecords(): ArcadeRecord {
     crosswordSolved: false,
     mythDone: false,
     mythScore: null,
+    gauntletBest: 0,
   }
   try {
     // Trivia — daily
@@ -193,13 +196,20 @@ function loadRecords(): ArcadeRecord {
         def.mythScore = typeof m.score === 'number' ? m.score : null
       }
     }
+
+    // Gauntlet — always, best streak
+    const gauntletRaw = localStorage.getItem(KEYS.gauntlet)
+    if (gauntletRaw) {
+      const g = parseInt(gauntletRaw, 10)
+      if (!isNaN(g)) def.gauntletBest = g
+    }
   } catch {
     // best-effort
   }
   return def
 }
 
-// ─── Game definitions ─────────────────────────────────────────────────────────
+// ─── Game definitions ────────────────────────────────────────────────────────────────────────
 
 interface GameDef {
   id: string
@@ -559,9 +569,26 @@ const GAMES: GameDef[] = [
     difficulty: 'easy',
     timeEstimate: '5 min',
   },
+  {
+    id: 'gauntlet',
+    href: '/gauntlet',
+    title: 'Civic Gauntlet',
+    tagline: 'Sudden-death survival — pick the majority side',
+    description:
+      'Topics escalate from easy majorities to near-deadlocks. Pick the community\'s winning side each round. One wrong answer ends your run.',
+    icon: Swords,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-600/10',
+    border: 'border-against-600/20',
+    badge: 'Survival',
+    badgeColor: 'bg-against-600/10 text-against-400 border-against-600/30',
+    refresh: 'always',
+    difficulty: 'hard',
+    timeEstimate: '3 min',
+  },
 ]
 
-// ─── Difficulty badge ─────────────────────────────────────────────────────────
+// ─── Difficulty badge ─────────────────────────────────────────────────────────────────────────────
 
 const DIFF_STYLE = {
   easy: 'text-emerald border-emerald/30 bg-emerald/10',
@@ -569,7 +596,7 @@ const DIFF_STYLE = {
   hard: 'text-against-400 border-against-500/30 bg-against-500/10',
 } as const
 
-// ─── Score display ────────────────────────────────────────────────────────────
+// ─── Score display ───────────────────────────────────────────────────────────────────────────
 
 function ScorePill({ label, value, color }: { label: string; value: string; color: string }) {
   return (
@@ -580,7 +607,7 @@ function ScorePill({ label, value, color }: { label: string; value: string; colo
   )
 }
 
-// ─── Game card ────────────────────────────────────────────────────────────────
+// ─── Game card ─────────────────────────────────────────────────────────────────────────────
 
 interface GameCardProps {
   game: GameDef
@@ -675,7 +702,7 @@ function GameCard({ game, done, score, highScore }: GameCardProps) {
   )
 }
 
-// ─── Section header ───────────────────────────────────────────────────────────
+// ─── Section header ────────────────────────────────────────────────────────────────────────
 
 function SectionHeader({
   icon: Icon,
@@ -703,7 +730,7 @@ function SectionHeader({
   )
 }
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
+// ─── Page ────────────────────────────────────────────────────────────────────────────────
 
 export default function ArcadePage() {
   const [records, setRecords] = useState<ArcadeRecord | null>(null)
@@ -770,9 +797,9 @@ export default function ArcadePage() {
                 />
                 <div className="w-px h-8 bg-surface-300" />
                 <ScorePill
-                  label="Trivia best"
-                  value={records.triviaScore != null ? `${records.triviaScore}/125` : '—'}
-                  color={records.triviaScore != null ? 'text-gold' : 'text-surface-500'}
+                  label="Gauntlet"
+                  value={records.gauntletBest > 0 ? `${records.gauntletBest}` : '—'}
+                  color={records.gauntletBest > 0 ? 'text-against-400' : 'text-surface-500'}
                 />
               </motion.div>
             )}
@@ -878,7 +905,9 @@ export default function ArcadePage() {
                   highScore={
                     game.id === 'blitz' && records?.blitzHighScore != null
                       ? records.blitzHighScore
-                      : null
+                      : game.id === 'gauntlet' && records?.gauntletBest != null
+                        ? records.gauntletBest
+                        : null
                   }
                 />
               ))}
