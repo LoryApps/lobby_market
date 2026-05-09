@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import {
   Activity,
+  ArrowDownUp,
   ArrowRight,
   Award,
   BarChart2,
@@ -490,12 +491,27 @@ const CHAPTERS: Chapter[] = [
       { icon: Activity, label: '3-second countdown before first round, full round log on death screen, share-result button', href: '/gauntlet', color: 'text-surface-400' },
     ],
   },
+  {
+    number: 'Ch. 25',
+    title: 'Civic Rank',
+    subtitle: 'Daily law-sorting challenge — arrange 4 laws by community support across 5 rounds',
+    accent: 'text-gold',
+    borderColor: 'border-gold/30',
+    bgColor: 'bg-gold/5',
+    textColor: 'text-gold',
+    items: [
+      { icon: ArrowDownUp, label: 'Daily sorting game: 5 rounds of 4 laws each — arrange from highest % FOR to lowest', href: '/civic-rank', color: 'text-gold' },
+      { icon: Timer, label: '25-second countdown per round with colour-shifting timer bar', href: '/civic-rank', color: 'text-against-400' },
+      { icon: Trophy, label: 'Score = correctly-positioned laws out of 20 (max); same laws for every player each day', href: '/civic-rank', color: 'text-gold' },
+      { icon: BarChart2, label: 'Reveal phase shows correct order with actual FOR% bars on each law card', href: '/civic-rank', color: 'text-surface-400' },
+    ],
+  },
 ]
 
 // ─── Stat pills ──────────────────────────────────────────────────────────────────────────────────────
 
 const STATS = [
-  { value: '24', label: 'chapters shipped' },
+  { value: '25', label: 'chapters shipped' },
   { value: '200+', label: 'features built' },
   { value: '67', label: 'DB migrations' },
   { value: '330+', label: 'API routes' },
@@ -513,6 +529,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Civic Rank',
+    description: 'A daily law-sorting challenge. Five rounds, four established laws each. Arrange them from highest community support (% voted FOR) to lowest. Same laws for every player each day — see how well you know which laws passed with a strong mandate.',
+    href: '/civic-rank',
+    icon: ArrowDownUp,
+    color: 'text-gold',
+    tag: 'Ch. 25',
+  },
   {
     title: 'Civic Gauntlet',
     description: 'A sudden-death survival game. Topics arrive sorted from easy majorities to near-deadlocks. Pick the community\'s winning side each round — one wrong answer ends your run. Beat your best streak.',
