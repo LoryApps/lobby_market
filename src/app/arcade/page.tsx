@@ -31,16 +31,15 @@ import {
   Gamepad2,
   Hash,
   Layers,
-  Megaphone,
   RefreshCw,
   Scale,
   Scroll,
-  Search,
   Sparkles,
   Star,
   Swords,
   Target,
   ThumbsUp,
+  Timer,
   Vote,
   Zap,
 } from 'lucide-react'
@@ -51,19 +50,21 @@ import { cn } from '@/lib/utils/cn'
 // ─── localStorage key constants (must match game pages exactly) ──────────────────────────────────────────
 
 const KEYS = {
-  trivia:         'lm_trivia_result',
-  blitz:          'lm_blitz_high_score_v1',
-  knowledgeTest:  'lm_knowledge_test_v1',
-  duelPicks:      'lm_duel_picks_v1',
-  wordle:         'lm_wordle_v1',
-  connections:    'lm_connections_v1',
-  cloze:          'lm_cloze_v1',
-  crossword:      'lm_crossword_v1',
-  myth:           'lm_myth_result',
-  gauntlet:       'lm_gauntlet_best_v1',
-  civicRank:      'lm_civic_rank_v1',
-  civicTimeline:  'lm_civic_timeline_v1',
-  civicImposter:  'lm_imposter_v1',
+  trivia:       'lm_trivia_result',
+  blitz:        'lm_blitz_high_score_v1',
+  knowledgeTest:'lm_knowledge_test_v1',
+  duelPicks:    'lm_duel_picks_v1',
+  wordle:       'lm_wordle_v1',
+  connections:  'lm_connections_v1',
+  cloze:        'lm_cloze_v1',
+  crossword:    'lm_crossword_v1',
+  myth:          'lm_myth_result',
+  gauntlet:      'lm_gauntlet_best_v1',
+  civicRank:     'lm_civic_rank_v1',
+  civicTimeline: 'lm_civic_timeline_v1',
+  bingo:         'lm_bingo_',
+  sprint:        'lm_sprint_best_v1',
+  sprintToday:   'lm_sprint_today_v1',
 } as const
 
 // ─── Types ─────────────────────────────────────────────────────────────────────────────────
@@ -90,9 +91,10 @@ interface ArcadeRecord {
   civicRankDate: string | null
   civicTimelineBest: number
   civicTimelineDate: string | null
-  imposterDone: boolean
-  imposterCorrect: boolean
-  imposterStreak: number
+  bingoDone: boolean
+  bingoLines: number
+  sprintBest: number
+  sprintTodayScore: number | null
 }
 
 function todayStr(): string {
@@ -132,9 +134,10 @@ function loadRecords(): ArcadeRecord {
     civicRankDate: null,
     civicTimelineBest: 0,
     civicTimelineDate: null,
-    imposterDone: false,
-    imposterCorrect: false,
-    imposterStreak: 0,
+    bingoDone: false,
+    bingoLines: 0,
+    sprintBest: 0,
+    sprintTodayScore: null,
   }
   try {
     // Trivia — daily
@@ -244,15 +247,32 @@ function loadRecords(): ArcadeRecord {
       }
     }
 
-    // Civic Imposter — daily
-    const impRaw = localStorage.getItem(KEYS.civicImposter)
-    if (impRaw) {
-      const imp = JSON.parse(impRaw)
-      if (imp.date === todayStr()) {
-        def.imposterDone = true
-        def.imposterCorrect = !!imp.correct
-        def.imposterStreak = typeof imp.streak === 'number' ? imp.streak : 0
-      }
+    // Bingo — weekly, check for any win lines this week
+    const bingoWeekKey = `${KEYS.bingo}${currentWeekKey()}`
+    const bingoRaw = localStorage.getItem(bingoWeekKey)
+    if (bingoRaw) {
+      const marks: number[] = JSON.parse(bingoRaw)
+      const marksSet = new Set(marks)
+      const WIN_LINES = [
+        [0,1,2,3,4],[5,6,7,8,9],[10,11,12,13,14],[15,16,17,18,19],[20,21,22,23,24],
+        [0,5,10,15,20],[1,6,11,16,21],[2,7,12,17,22],[3,8,13,18,23],[4,9,14,19,24],
+        [0,6,12,18,24],[4,8,12,16,20],
+      ]
+      const lines = WIN_LINES.filter((line) => line.every((pos) => marksSet.has(pos))).length
+      def.bingoLines = lines
+      def.bingoDone = lines > 0
+    }
+
+    // Sprint — all-time best + today
+    const sprintRaw = localStorage.getItem(KEYS.sprint)
+    if (sprintRaw) {
+      const s = parseInt(sprintRaw, 10)
+      if (!isNaN(s)) def.sprintBest = s
+    }
+    const sprintTodayRaw = localStorage.getItem(KEYS.sprintToday)
+    if (sprintTodayRaw) {
+      const st = JSON.parse(sprintTodayRaw)
+      if (typeof st.score === 'number') def.sprintTodayScore = st.score
     }
   } catch {
     // best-effort
@@ -491,7 +511,7 @@ const GAMES: GameDef[] = [
     tagline: 'AI writes your civic platform',
     description:
       'Answer five questions about your civic priorities. Claude synthesises your answers into a polished personal manifesto you can publish and share.',
-    icon: Megaphone,
+    icon: Sparkles,
     iconColor: 'text-for-300',
     iconBg: 'bg-for-600/15',
     border: 'border-for-600/20',
@@ -672,21 +692,38 @@ const GAMES: GameDef[] = [
     timeEstimate: '4 min',
   },
   {
-    id: 'civic-imposter',
-    href: '/civic-imposter',
-    title: 'Civic Imposter',
-    tagline: 'Spot the fake law hiding in the Codex',
+    id: 'bingo',
+    href: '/bingo',
+    title: 'Civic Bingo',
+    tagline: 'Weekly 5×5 board — mark topics as they become law',
     description:
-      'Six law statements — five are real established laws, one is a plausible fake. Read carefully and tap the imposter. One guess per day. Build your detection streak.',
-    icon: Search,
-    iconColor: 'text-against-400',
-    iconBg: 'bg-against-500/10',
-    border: 'border-against-500/20',
+      'A new bingo card every week using live platform topics. Laws that pass auto-mark your squares. Get five in a row — horizontally, vertically, or diagonally — for the BINGO.',
+    icon: Star,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+    border: 'border-for-500/20',
+    badge: 'Weekly',
+    badgeColor: 'bg-for-500/10 text-for-400 border-for-500/30',
+    refresh: 'weekly',
+    difficulty: 'easy',
+    timeEstimate: '5 min',
+  },
+  {
+    id: 'sprint',
+    href: '/sprint',
+    title: 'Civic Sprint',
+    tagline: 'Predict law vs. fail on 10 closed topics',
+    description:
+      'Ten closed debates — no outcome visible. Guess whether each became law or failed to pass. Race the 15-second clock for speed bonuses. Max 150 points.',
+    icon: Timer,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+    border: 'border-gold/20',
     badge: 'Daily',
-    badgeColor: 'bg-against-600/10 text-against-400 border-against-600/30',
+    badgeColor: 'bg-gold/10 text-gold border-gold/30',
     refresh: 'daily',
     difficulty: 'medium',
-    timeEstimate: '2 min',
+    timeEstimate: '3 min',
   },
 ]
 
@@ -841,8 +878,9 @@ export default function ArcadePage() {
   const todayISO = new Date().toISOString().slice(0, 10)
   const civicRankDoneToday = records?.civicRankDate === todayISO
   const civicTimelineDoneToday = records?.civicTimelineDate === todayISO
-  const dailyDone = (records?.triviaDone ? 1 : 0) + (records?.wordleDone ? 1 : 0) + (records?.connectionsDone ? 1 : 0) + (records?.clozeDone ? 1 : 0) + (records?.crosswordDone ? 1 : 0) + (records?.mythDone ? 1 : 0) + (civicRankDoneToday ? 1 : 0) + (civicTimelineDoneToday ? 1 : 0) + (records?.imposterDone ? 1 : 0)
-  const weeklyDone = records?.knowledgeDone ? 1 : 0
+  const sprintDone = (records?.sprintTodayScore != null)
+  const dailyDone = (records?.triviaDone ? 1 : 0) + (records?.wordleDone ? 1 : 0) + (records?.connectionsDone ? 1 : 0) + (records?.clozeDone ? 1 : 0) + (records?.crosswordDone ? 1 : 0) + (records?.mythDone ? 1 : 0) + (civicRankDoneToday ? 1 : 0) + (civicTimelineDoneToday ? 1 : 0) + (sprintDone ? 1 : 0)
+  const weeklyDone = (records?.knowledgeDone ? 1 : 0) + (records?.bingoDone ? 1 : 0)
 
   return (
     <div className="relative flex flex-col min-h-screen bg-surface-50">
@@ -889,9 +927,9 @@ export default function ArcadePage() {
                 />
                 <div className="w-px h-8 bg-surface-300" />
                 <ScorePill
-                  label="Blitz best"
-                  value={records.blitzHighScore > 0 ? String(records.blitzHighScore) : '—'}
-                  color={records.blitzHighScore > 0 ? 'text-against-400' : 'text-surface-500'}
+                  label="Sprint"
+                  value={records.sprintBest > 0 ? `${records.sprintBest}` : '—'}
+                  color={records.sprintBest > 0 ? 'text-gold' : 'text-surface-500'}
                 />
                 <div className="w-px h-8 bg-surface-300" />
                 <ScorePill
@@ -949,8 +987,8 @@ export default function ArcadePage() {
                       ? civicRankDoneToday
                       : game.id === 'civic-timeline'
                       ? civicTimelineDoneToday
-                      : game.id === 'civic-imposter'
-                      ? records?.imposterDone
+                      : game.id === 'sprint'
+                      ? sprintDone
                       : undefined
                   }
                   score={
@@ -972,10 +1010,8 @@ export default function ArcadePage() {
                       ? `${records.civicRankBest}/20`
                       : game.id === 'civic-timeline' && civicTimelineDoneToday && records?.civicTimelineBest != null
                       ? `${records.civicTimelineBest}/60`
-                      : game.id === 'civic-imposter' && records?.imposterDone
-                      ? records.imposterCorrect
-                        ? records.imposterStreak > 1 ? `Found · ${records.imposterStreak} streak` : 'Found!'
-                        : 'Fooled'
+                      : game.id === 'sprint' && records?.sprintTodayScore != null
+                      ? `${records.sprintTodayScore} pts`
                       : null
                   }
                 />
@@ -1000,11 +1036,15 @@ export default function ArcadePage() {
                   done={
                     game.id === 'knowledge-test'
                       ? records?.knowledgeDone
+                      : game.id === 'bingo'
+                      ? records?.bingoDone
                       : undefined
                   }
                   score={
                     game.id === 'knowledge-test' && records?.knowledgeScore != null
                       ? `${records.knowledgeScore}%`
+                      : game.id === 'bingo' && records?.bingoLines != null && records.bingoLines > 0
+                      ? `${records.bingoLines} line${records.bingoLines !== 1 ? 's' : ''}`
                       : null
                   }
                 />
@@ -1098,7 +1138,6 @@ export default function ArcadePage() {
                 { href: '/civic-timeline', icon: CalendarClock, label: 'Civic Timeline', color: 'text-purple', bg: 'bg-purple/10', border: 'border-purple/20' },
                 { href: '/archetype', icon: Layers, label: 'Archetype', color: 'text-purple', bg: 'bg-purple/10', border: 'border-purple/20' },
                 { href: '/crossroads', icon: Scale, label: 'Crossroads', color: 'text-for-400', bg: 'bg-for-500/10', border: 'border-for-500/20' },
-                { href: '/civic-imposter', icon: Search, label: 'Civic Imposter', color: 'text-against-400', bg: 'bg-against-500/10', border: 'border-against-500/20' },
               ].map((item) => (
                 <Link
                   key={item.href}
