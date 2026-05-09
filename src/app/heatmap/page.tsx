@@ -11,7 +11,6 @@ import {
   Gavel,
   Globe,
   Info,
-  Loader2,
   RefreshCw,
   Scale,
   ThumbsDown,
@@ -20,6 +19,7 @@ import {
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
+import { Skeleton } from '@/components/ui/Skeleton'
 import { cn } from '@/lib/utils/cn'
 import type { HeatmapCell, HeatmapResponse } from '@/app/api/stats/heatmap/route'
 
@@ -374,6 +374,41 @@ function SummaryRow({ data }: SummaryRowProps) {
   )
 }
 
+// ─── Loading skeleton ─────────────────────────────────────────────────────────
+
+function HeatmapSkeleton() {
+  const cols = 5
+  const rows = 10
+  return (
+    <div className="animate-pulse">
+      <div className="rounded-2xl bg-surface-100 border border-surface-300 p-5 overflow-hidden">
+        {/* Column headers */}
+        <div className="grid gap-1.5 mb-1.5" style={{ gridTemplateColumns: '140px repeat(5, 1fr)' }}>
+          <div />
+          {Array.from({ length: cols }).map((_, i) => (
+            <Skeleton key={i} className="h-10 rounded-lg" />
+          ))}
+        </div>
+        {/* Rows */}
+        {Array.from({ length: rows }).map((_, r) => (
+          <div key={r} className="grid gap-1.5 mb-1.5 items-center" style={{ gridTemplateColumns: '140px repeat(5, 1fr)' }}>
+            <Skeleton className="h-4 w-20" />
+            {Array.from({ length: cols }).map((_, c) => (
+              <Skeleton key={c} className="h-14 rounded-lg opacity-80" style={{ opacity: 1 - (r * cols + c) * 0.005 }} />
+            ))}
+          </div>
+        ))}
+      </div>
+      {/* Summary row */}
+      <div className="grid grid-cols-5 gap-2 mt-4">
+        {Array.from({ length: cols }).map((_, i) => (
+          <Skeleton key={i} className="h-20 rounded-xl" />
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function HeatmapPage() {
@@ -462,10 +497,7 @@ export default function HeatmapPage() {
 
         {/* Content */}
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-24 gap-3">
-            <Loader2 className="h-8 w-8 text-for-500 animate-spin" />
-            <p className="text-sm font-mono text-surface-500">Building heatmap…</p>
-          </div>
+          <HeatmapSkeleton />
         ) : error ? (
           <div className="rounded-2xl bg-surface-100 border border-surface-300 p-8 text-center">
             <p className="text-sm font-mono text-against-400 mb-3">{error}</p>

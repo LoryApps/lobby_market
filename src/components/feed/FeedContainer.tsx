@@ -16,6 +16,7 @@ import { SetupChecklist } from '@/components/feed/SetupChecklist'
 import { FeedInsightStrip } from '@/components/feed/FeedInsightStrip'
 import { FeedFilters } from '@/components/feed/FeedFilters'
 import { LivePlatformBanner } from '@/components/feed/LivePlatformBanner'
+import { DebateCountdownBanner } from '@/components/debate/DebateCountdownBanner'
 import { PulseDot } from '@/components/simulation/PulseDot'
 import { Avatar } from '@/components/ui/Avatar'
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary'
@@ -733,6 +734,7 @@ export function FeedContainer() {
           </AnimatePresence>
           <FeedFilters />
           <LivePlatformBanner />
+          <DebateCountdownBanner />
         </div>
       </div>
 
