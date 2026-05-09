@@ -18,6 +18,7 @@ import {
   Bookmark,
   CheckCircle2,
   ChevronRight,
+  Clock,
   Coins,
   Crown,
   Flame,
@@ -29,6 +30,7 @@ import {
   Scale,
   Sparkles,
   Star,
+  Swords,
   Target,
   ThumbsDown,
   ThumbsUp,
@@ -46,6 +48,7 @@ import type {
   DashboardPrediction,
   DashboardWatchedTopic,
 } from '@/app/api/dashboard/route'
+import type { UpcomingRsvpDebate } from '@/app/api/me/upcoming-rsvps/route'
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -121,6 +124,75 @@ const TIER_BAR: Record<number, string> = {
   3: 'bg-gray-400',
   4: 'bg-gold',
   5: 'bg-purple',
+}
+
+const DEBATE_TYPE_LABEL: Record<string, string> = {
+  oxford: 'Oxford',
+  town_hall: 'Town Hall',
+  rapid_fire: 'Rapid Fire',
+  panel: 'Panel',
+  quick: 'Quick',
+  grand: 'Grand',
+  tribunal: 'Tribunal',
+}
+
+function timeUntilShort(iso: string): string {
+  const diff = new Date(iso).getTime() - Date.now()
+  if (diff <= 0) return 'now'
+  const m = Math.floor(diff / 60_000)
+  const h = Math.floor(m / 60)
+  const d = Math.floor(h / 24)
+  if (m < 60) return `in ${m}m`
+  if (h < 24) return `in ${h}h ${m % 60}m`
+  return `in ${d}d`
+}
+
+// ─── Upcoming debate row ──────────────────────────────────────────────────────
+
+function UpcomingDebateRow({ debate }: { debate: UpcomingRsvpDebate }) {
+  const isLive = debate.status === 'live'
+  return (
+    <Link
+      href={`/debate/${debate.id}`}
+      className="flex items-center gap-3 p-3 rounded-xl bg-surface-200/60 border border-surface-300/60 hover:border-surface-400/60 transition-colors group"
+    >
+      <div
+        className={cn(
+          'flex-shrink-0 flex items-center justify-center h-8 w-8 rounded-lg',
+          isLive ? 'bg-against-600/20 text-against-400' : 'bg-purple/15 text-purple'
+        )}
+      >
+        {isLive ? <Mic className="h-3.5 w-3.5" /> : <Swords className="h-3.5 w-3.5" />}
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-xs text-white font-medium truncate">{debate.title}</p>
+        <div className="flex items-center gap-2 mt-0.5">
+          <span className="text-[10px] font-mono text-surface-500">
+            {DEBATE_TYPE_LABEL[debate.type] ?? debate.type}
+          </span>
+          {debate.topic_category && (
+            <span className={cn('text-[10px] font-mono', CAT_COLOR[debate.topic_category] ?? 'text-surface-500')}>
+              {debate.topic_category}
+            </span>
+          )}
+        </div>
+      </div>
+      <div className="flex-shrink-0 text-right">
+        {isLive ? (
+          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-against-600/25 text-against-300 text-[10px] font-mono font-bold tracking-wider">
+            <span className="h-1.5 w-1.5 rounded-full bg-against-400 animate-pulse inline-block" />
+            Live
+          </span>
+        ) : (
+          <span className="flex items-center gap-1 text-[10px] font-mono text-purple">
+            <Clock className="h-2.5 w-2.5" />
+            {timeUntilShort(debate.scheduled_at)}
+          </span>
+        )}
+      </div>
+      <ChevronRight className="h-3.5 w-3.5 text-surface-500 group-hover:text-surface-300 transition-colors flex-shrink-0" />
+    </Link>
+  )
 }
 
 // ─── Loading skeleton ─────────────────────────────────────────────────────────
@@ -289,6 +361,7 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [upcomingDebates, setUpcomingDebates] = useState<UpcomingRsvpDebate[]>([])
 
   const load = useCallback(async (refresh = false) => {
     if (refresh) setRefreshing(true)
@@ -311,6 +384,16 @@ export default function DashboardPage() {
   }, [])
 
   useEffect(() => { load() }, [load])
+
+  // Fetch upcoming RSVPd debates independently (7-day window)
+  useEffect(() => {
+    let active = true
+    fetch('/api/me/upcoming-rsvps?window_hours=168&limit=5')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (active && d) setUpcomingDebates(d.debates ?? []) })
+      .catch(() => {})
+    return () => { active = false }
+  }, [])
 
   const QUICK_ACTIONS = [
     { href: '/', icon: Vote, label: 'Vote', color: 'text-for-400', bg: 'bg-for-500/10', border: 'border-for-500/20' },
@@ -544,6 +627,29 @@ export default function DashboardPage() {
                   </p>
                 </Link>
               </div>
+
+              {/* ── Upcoming Debates ─────────────────────────────────────── */}
+              {upcomingDebates.length > 0 && (
+                <div className="rounded-2xl bg-surface-100 border border-surface-300 p-5">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <Swords className="h-4 w-4 text-purple" />
+                      <h3 className="text-sm font-mono font-semibold text-white">Your Debates</h3>
+                    </div>
+                    <Link
+                      href="/debate"
+                      className="text-[10px] font-mono text-surface-500 hover:text-white flex items-center gap-1 transition-colors"
+                    >
+                      All <ChevronRight className="h-3 w-3" />
+                    </Link>
+                  </div>
+                  <div className="space-y-2">
+                    {upcomingDebates.map((debate) => (
+                      <UpcomingDebateRow key={debate.id} debate={debate} />
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* ── Active Predictions ───────────────────────────────────── */}
               {data.predictions.length > 0 && (

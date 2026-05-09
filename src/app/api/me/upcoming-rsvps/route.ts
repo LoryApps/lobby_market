@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
 export const dynamic = 'force-dynamic'
@@ -19,10 +19,13 @@ export interface UpcomingRsvpsResponse {
   debates: UpcomingRsvpDebate[]
 }
 
-// Window: debates starting within the next 2 hours
-const WINDOW_MS = 2 * 60 * 60 * 1000
-
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url)
+  const rawHours = Number(searchParams.get('window_hours') ?? '2')
+  const windowHours = Math.min(Math.max(1, Number.isFinite(rawHours) ? rawHours : 2), 168)
+  const rawLimit = Number(searchParams.get('limit') ?? '3')
+  const limit = Math.min(Math.max(1, Number.isFinite(rawLimit) ? rawLimit : 3), 10)
+  const windowMs = windowHours * 60 * 60 * 1000
   const supabase = await createClient()
 
   const {
@@ -34,7 +37,7 @@ export async function GET() {
   }
 
   const now = new Date()
-  const windowEnd = new Date(now.getTime() + WINDOW_MS)
+  const windowEnd = new Date(now.getTime() + windowMs)
 
   // Fetch RSVPs for debates starting within the window that are scheduled or live
   const { data: rsvps, error } = await supabase
@@ -55,7 +58,7 @@ export async function GET() {
     .in('status', ['scheduled', 'live'])
     .lte('scheduled_at', windowEnd.toISOString())
     .order('scheduled_at', { ascending: true })
-    .limit(3)
+    .limit(limit)
 
   if (debatesError || !debates || debates.length === 0) {
     return NextResponse.json({ debates: [] })
