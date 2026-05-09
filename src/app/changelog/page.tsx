@@ -68,7 +68,7 @@ export const metadata: Metadata = {
   },
 }
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+// ─── Types ─────────────────────────────────────────────────────────────────────────────
 
 interface ChangeItem {
   icon: React.ComponentType<{ className?: string }>
@@ -88,7 +88,7 @@ interface Chapter {
   items: ChangeItem[]
 }
 
-// ─── Chapters ───────────────────────────────────────────────────────────────────
+// ─── Chapters ─────────────────────────────────────────────────────────────────────────────────
 
 const CHAPTERS: Chapter[] = [
   {
@@ -475,18 +475,33 @@ const CHAPTERS: Chapter[] = [
       { icon: Activity, label: 'Seeded deterministic shuffle (no DB writes needed) + localStorage persistence across sessions', href: '/bingo', color: 'text-surface-400' },
     ],
   },
+  {
+    number: 'Ch. 24',
+    title: 'Civic Gauntlet',
+    subtitle: 'Sudden-death survival — pick the majority side each round or be eliminated',
+    accent: 'text-against-400',
+    borderColor: 'border-against-500/30',
+    bgColor: 'bg-against-500/5',
+    textColor: 'text-against-400',
+    items: [
+      { icon: Swords, label: 'Sudden-death survival game: topics ordered easy → hard (strong majorities first, deadlocks last)', href: '/gauntlet', color: 'text-against-400' },
+      { icon: Timer, label: '10-second countdown per round with colour-shifting timer bar (green → gold → red under pressure)', href: '/gauntlet', color: 'text-gold' },
+      { icon: Trophy, label: 'Best-streak saved to localStorage; displayed on the Arcade hub alongside Blitz high score', href: '/arcade', color: 'text-gold' },
+      { icon: Activity, label: '3-second countdown before first round, full round log on death screen, share-result button', href: '/gauntlet', color: 'text-surface-400' },
+    ],
+  },
 ]
 
-// ─── Stat pills ──────────────────────────────────────────────────────────────────────────
+// ─── Stat pills ──────────────────────────────────────────────────────────────────────────────────────
 
 const STATS = [
-  { value: '23', label: 'chapters shipped' },
+  { value: '24', label: 'chapters shipped' },
   { value: '200+', label: 'features built' },
   { value: '67', label: 'DB migrations' },
-  { value: '300+', label: 'API routes' },
+  { value: '330+', label: 'API routes' },
 ]
 
-// ─── Recent builds ─────────────────────────────────────────────────────────────────────────
+// ─── Recent builds ─────────────────────────────────────────────────────────────────────────────────────────
 
 interface RecentBuild {
   title: string
@@ -498,6 +513,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Civic Gauntlet',
+    description: 'A sudden-death survival game. Topics arrive sorted from easy majorities to near-deadlocks. Pick the community\'s winning side each round — one wrong answer ends your run. Beat your best streak.',
+    href: '/gauntlet',
+    icon: Swords,
+    color: 'text-against-400',
+    tag: 'Ch. 24',
+  },
   {
     title: 'Civic Bingo',
     description: 'A weekly 5×5 bingo card of civic topics. Laws that pass auto-mark your squares. Get five in a row — horizontally, vertically, or diagonally — for the BINGO. Deterministic per ISO week so every user plays the same card.',
@@ -620,7 +643,7 @@ const RECENT_BUILDS: RecentBuild[] = [
   },
 ]
 
-// ─── Page ─────────────────────────────────────────────────────────────────────────────
+// ─── Page ─────────────────────────────────────────────────────────────────────────────────────────
 
 export default function ChangelogPage() {
   return (
@@ -742,7 +765,7 @@ export default function ChangelogPage() {
   )
 }
 
-// ─── Chapter block ──────────────────────────────────────────────────────────────────────────
+// ─── Chapter block ──────────────────────────────────────────────────────────────────────────────────────────
 
 function ChapterBlock({ chapter }: { chapter: Chapter }) {
   return (
