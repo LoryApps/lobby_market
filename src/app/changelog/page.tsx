@@ -74,7 +74,7 @@ export const metadata: Metadata = {
   },
 }
 
-// ─── Types ───────────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Types ────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 interface ChangeItem {
   icon: React.ComponentType<{ className?: string }>
@@ -94,7 +94,7 @@ interface Chapter {
   items: ChangeItem[]
 }
 
-// ─── Chapters ──────────────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Chapters ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 const CHAPTERS: Chapter[] = [
   {
@@ -647,18 +647,33 @@ const CHAPTERS: Chapter[] = [
       { icon: Trophy, label: 'New /top-arguments leaderboard: filter by grade, side (FOR/AGAINST), and time period. Ranked by AI score then upvotes.', href: '/top-arguments', color: 'text-gold' },
     ],
   },
+  {
+    number: 'Ch. 35',
+    title: 'AI Debate Assist',
+    subtitle: 'Inline AI response suggestions — 3 strategic angles for countering any argument',
+    accent: 'text-purple',
+    borderColor: 'border-purple/30',
+    bgColor: 'bg-purple/5',
+    textColor: 'text-purple',
+    items: [
+      { icon: Bot, label: '"How to respond" button appears on every opposing argument card. One click generates 3 AI response strategies for the other side.', href: '/', color: 'text-purple' },
+      { icon: MessageSquare, label: 'Three distinct angles: Challenge the premise (counter), Introduce new evidence (extend), Reframe the stakes (reinforce) — each with a copyable opening sentence.', href: '/', color: 'text-for-400' },
+      { icon: Sparkles, label: 'Powered by Claude Haiku — fast, focused, and grounded in the specific topic and argument context. Gracefully degrades when AI is unavailable.', href: '/', color: 'text-against-400' },
+      { icon: Target, label: 'Lazy-loaded: suggestions only fetch when requested. Cached per session so re-opening the panel is instant. Logged-in users only.', href: '/', color: 'text-surface-400' },
+    ],
+  },
 ]
 
-// ─── Stat pills ────────────────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Stat pills ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 const STATS = [
-  { value: '34', label: 'chapters shipped' },
-  { value: '239+', label: 'features built' },
+  { value: '35', label: 'chapters shipped' },
+  { value: '245+', label: 'features built' },
   { value: '68', label: 'DB migrations' },
-  { value: '346+', label: 'API routes' },
+  { value: '350+', label: 'API routes' },
 ]
 
-// ─── Recent builds ──────────────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Recent builds ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 interface RecentBuild {
   title: string
@@ -670,6 +685,13 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'AI Debate Assist',
+    description: 'Inline response suggestion panel on every opposing argument card. Click "How to respond" to get 3 AI-generated strategic angles — Challenge the premise, Introduce new evidence, Reframe the stakes — each with a copyable opening sentence to spark your own argument.',
+    icon: Bot,
+    color: 'text-purple',
+    tag: 'Ch. 35',
+  },
   {
     title: 'Argument Hall of Fame',
     description: 'AI critique grades (A–F, 1–10) now persist to argument records. Grade badges appear on all argument cards. Draft-to-grade flow: critique before submitting — grade auto-attached on post. New /top-arguments leaderboard ranked by AI score then upvotes.',
@@ -888,7 +910,7 @@ const RECENT_BUILDS: RecentBuild[] = [
   },
 ]
 
-// ─── Page ────────────────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Page ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 export default function ChangelogPage() {
   return (
@@ -1010,7 +1032,7 @@ export default function ChangelogPage() {
   )
 }
 
-// ─── Chapter block ──────────────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Chapter block ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 function ChapterBlock({ chapter }: { chapter: Chapter }) {
   return (
