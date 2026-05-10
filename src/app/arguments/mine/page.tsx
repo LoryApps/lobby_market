@@ -9,10 +9,13 @@ import {
   Award,
   BarChart2,
   BookOpen,
+  Brain,
   ChevronRight,
   ExternalLink,
   MessageSquare,
   RefreshCw,
+  Sparkles,
+  Star,
   ThumbsDown,
   ThumbsUp,
   TrendingUp,
@@ -24,7 +27,14 @@ import { Badge } from '@/components/ui/Badge'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { cn } from '@/lib/utils/cn'
-import type { MineResponse, MineArgument, CategoryStat, WeekBucket } from '@/app/api/arguments/mine/route'
+import type {
+  MineResponse,
+  MineArgument,
+  CategoryStat,
+  WeekBucket,
+  GradeDistribution,
+  GradeKey,
+} from '@/app/api/arguments/mine/route'
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -52,6 +62,33 @@ const STATUS_LABEL: Record<string, string> = {
 const STATUS_BADGE: Record<string, 'proposed' | 'active' | 'law' | 'failed'> = {
   proposed: 'proposed', active: 'active', voting: 'active',
   law: 'law', failed: 'failed', continued: 'proposed', archived: 'proposed',
+}
+
+// ─── Grade config ─────────────────────────────────────────────────────────────
+
+const GRADE_CONFIG: Record<GradeKey, { color: string; bg: string; border: string; bar: string }> = {
+  A: { color: 'text-emerald',    bg: 'bg-emerald/15',    border: 'border-emerald/30',    bar: 'bg-emerald' },
+  B: { color: 'text-for-400',   bg: 'bg-for-500/15',    border: 'border-for-500/30',    bar: 'bg-for-500' },
+  C: { color: 'text-gold',      bg: 'bg-gold/15',       border: 'border-gold/30',       bar: 'bg-gold' },
+  D: { color: 'text-against-400', bg: 'bg-against-500/15', border: 'border-against-500/30', bar: 'bg-against-500' },
+  F: { color: 'text-surface-500', bg: 'bg-surface-300/40', border: 'border-surface-400/30', bar: 'bg-surface-400' },
+}
+
+function GradeBadge({ grade }: { grade: string | null }) {
+  if (!grade) return null
+  const cfg = GRADE_CONFIG[grade as GradeKey]
+  if (!cfg) return null
+  return (
+    <span
+      className={cn(
+        'inline-flex items-center justify-center h-5 w-5 rounded text-[11px] font-mono font-bold border shrink-0',
+        cfg.color, cfg.bg, cfg.border
+      )}
+      aria-label={`AI grade ${grade}`}
+    >
+      {grade}
+    </span>
+  )
 }
 
 // ─── Weekly Sparkline (SVG) ───────────────────────────────────────────────────
@@ -86,7 +123,6 @@ function WeeklyChart({ buckets }: { buckets: WeekBucket[] }) {
                   isHigh ? 'fill-for-500' : b.count > 0 ? 'fill-for-700/60' : 'fill-surface-300/40'
                 )}
               />
-              {/* Show week label for first and last */}
               {(i === 0 || i === buckets.length - 1) && (
                 <text
                   x={x + barW / 2}
@@ -106,11 +142,110 @@ function WeeklyChart({ buckets }: { buckets: WeekBucket[] }) {
   )
 }
 
+// ─── Grade Distribution Panel ─────────────────────────────────────────────────
+
+function GradeDistributionPanel({
+  distribution,
+  gradedCount,
+  avgScore,
+}: {
+  distribution: GradeDistribution[]
+  gradedCount: number
+  avgScore: number | null
+}) {
+  if (gradedCount === 0) return null
+  const maxCount = Math.max(...distribution.map((d) => d.count), 1)
+
+  function scoreToGrade(score: number): GradeKey {
+    if (score >= 9) return 'A'
+    if (score >= 7) return 'B'
+    if (score >= 5) return 'C'
+    if (score >= 3) return 'D'
+    return 'F'
+  }
+
+  const avgGradeKey = avgScore !== null ? scoreToGrade(avgScore) : null
+  const avgGradeCfg = avgGradeKey ? GRADE_CONFIG[avgGradeKey] : null
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.05 }}
+      className="rounded-xl border border-surface-300 bg-surface-100 p-4"
+    >
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <Brain className="h-4 w-4 text-purple" aria-hidden />
+          <h2 className="text-xs font-mono text-surface-400 uppercase tracking-wider">
+            AI Grade Profile
+          </h2>
+        </div>
+        {avgScore !== null && avgGradeCfg && (
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-mono text-surface-500">{avgScore.toFixed(1)}/10 avg</span>
+            <span
+              className={cn(
+                'inline-flex items-center justify-center h-6 w-6 rounded-lg text-sm font-mono font-bold border',
+                avgGradeCfg.color, avgGradeCfg.bg, avgGradeCfg.border
+              )}
+            >
+              {avgGradeKey}
+            </span>
+          </div>
+        )}
+      </div>
+
+      <div className="space-y-2">
+        {distribution.map((d) => {
+          const cfg = GRADE_CONFIG[d.grade]
+          return (
+            <div key={d.grade} className="flex items-center gap-3">
+              <span className={cn('w-4 text-center text-xs font-mono font-bold shrink-0', cfg.color)}>
+                {d.grade}
+              </span>
+              <div className="flex-1 h-2.5 rounded-full bg-surface-300/40 overflow-hidden">
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${maxCount > 0 ? (d.count / maxCount) * 100 : 0}%` }}
+                  transition={{ duration: 0.5, ease: 'easeOut', delay: 0.1 }}
+                  className={cn('h-full rounded-full', cfg.bar)}
+                />
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0 w-14 justify-end">
+                <span className="text-xs font-mono text-white font-medium">{d.count}</span>
+                {d.count > 0 && (
+                  <span className="text-[10px] font-mono text-surface-500">({d.pct}%)</span>
+                )}
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      <p className="mt-3 text-[10px] font-mono text-surface-500">
+        Based on {gradedCount} AI-graded argument{gradedCount !== 1 ? 's' : ''} ·{' '}
+        <Link href="/coach" className="text-purple hover:text-purple/80 transition-colors">
+          improve with AI coach
+        </Link>
+      </p>
+    </motion.div>
+  )
+}
+
 // ─── Category Bar ─────────────────────────────────────────────────────────────
 
 function CategoryRow({ stat, total }: { stat: CategoryStat; total: number }) {
   const pct = total > 0 ? Math.round((stat.total / total) * 100) : 0
   const forPct = stat.total > 0 ? Math.round((stat.forCount / stat.total) * 100) : 50
+
+  function scoreToGrade(score: number): GradeKey {
+    if (score >= 9) return 'A'
+    if (score >= 7) return 'B'
+    if (score >= 5) return 'C'
+    if (score >= 3) return 'D'
+    return 'F'
+  }
 
   return (
     <div className="flex items-center gap-3">
@@ -118,7 +253,6 @@ function CategoryRow({ stat, total }: { stat: CategoryStat; total: number }) {
         <span className="text-xs font-mono text-surface-400 truncate block">{stat.category}</span>
       </div>
       <div className="flex-1 h-2 rounded-full bg-surface-300/40 overflow-hidden">
-        {/* Split bar: FOR (blue) | AGAINST (red) */}
         <div className="h-full flex">
           <div
             className="h-full rounded-l-full bg-for-600/70 transition-all"
@@ -130,9 +264,12 @@ function CategoryRow({ stat, total }: { stat: CategoryStat; total: number }) {
           />
         </div>
       </div>
-      <div className="w-14 shrink-0 text-right">
+      <div className="flex items-center gap-1.5 shrink-0 w-20 justify-end">
         <span className="text-xs font-mono text-white font-medium">{stat.total}</span>
-        <span className="text-xs font-mono text-surface-500"> ({pct}%)</span>
+        <span className="text-xs font-mono text-surface-500">({pct}%)</span>
+        {stat.avgGrade !== null && (
+          <GradeBadge grade={scoreToGrade(stat.avgGrade)} />
+        )}
       </div>
     </div>
   )
@@ -165,7 +302,7 @@ function ArgRow({ arg }: { arg: MineArgument }) {
       </p>
 
       {/* Footer */}
-      <div className="flex items-center gap-3 mt-0.5">
+      <div className="flex items-center gap-3 mt-0.5 flex-wrap">
         {/* Side pill */}
         <span
           className={cn(
@@ -180,6 +317,17 @@ function ArgRow({ arg }: { arg: MineArgument }) {
             : <ThumbsDown className="h-2.5 w-2.5" aria-hidden />}
           {arg.side === 'blue' ? 'FOR' : 'AGAINST'}
         </span>
+
+        {/* AI Grade */}
+        {arg.ai_grade && (
+          <span className="inline-flex items-center gap-1 text-xs font-mono">
+            <Brain className="h-3 w-3 text-purple" aria-hidden />
+            <GradeBadge grade={arg.ai_grade} />
+            {arg.ai_score && (
+              <span className="text-surface-500">{arg.ai_score}/10</span>
+            )}
+          </span>
+        )}
 
         {/* Upvotes */}
         <span className="inline-flex items-center gap-1 text-xs font-mono text-surface-400">
@@ -238,11 +386,13 @@ function ArgSkeleton() {
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
+type TabId = 'top' | 'recent' | 'graded' | 'all'
+
 export default function MyArgumentsPage() {
   const [data, setData] = useState<MineResponse | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState<'top' | 'recent' | 'all'>('top')
+  const [activeTab, setActiveTab] = useState<TabId>('top')
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -264,14 +414,25 @@ export default function MyArgumentsPage() {
 
   useEffect(() => { load() }, [load])
 
-  // Which argument list to show
   const displayArgs: MineArgument[] = data
     ? activeTab === 'top'
       ? data.topUpvoted
       : activeTab === 'recent'
       ? data.recentArgs
+      : activeTab === 'graded'
+      ? data.topGraded
       : data.arguments
     : []
+
+  const tabs: { id: TabId; label: string }[] = [
+    { id: 'top',    label: 'Top Voted' },
+    { id: 'recent', label: 'Recent' },
+    ...(data?.gradedCount && data.gradedCount > 0
+      ? [{ id: 'graded' as TabId, label: `Top Graded (${data.gradedCount})` }]
+      : []
+    ),
+    { id: 'all',    label: `All (${data?.totalArguments ?? 0})` },
+  ]
 
   return (
     <div className="min-h-screen bg-surface-50">
@@ -291,7 +452,7 @@ export default function MyArgumentsPage() {
           <div className="flex-1 min-w-0">
             <h1 className="font-mono text-xl font-bold text-white">My Arguments</h1>
             <p className="text-xs font-mono text-surface-500 mt-0.5">
-              Personal argument analytics &amp; history
+              Personal argument analytics &amp; grade history
             </p>
           </div>
           <button
@@ -319,7 +480,16 @@ export default function MyArgumentsPage() {
             {[
               { label: 'Total Written', value: data.totalArguments.toLocaleString(), icon: BarChart2, color: 'text-for-400', bg: 'bg-for-500/10', border: 'border-for-500/30' },
               { label: 'Total Upvotes', value: data.totalUpvotes.toLocaleString(), icon: TrendingUp, color: 'text-gold', bg: 'bg-gold/10', border: 'border-gold/30' },
-              { label: 'Avg Upvotes', value: data.avgUpvotes.toLocaleString(), icon: Award, color: 'text-purple', bg: 'bg-purple/10', border: 'border-purple/30' },
+              {
+                label: 'Avg AI Score',
+                value: data.avgAiScore !== null
+                  ? `${data.avgAiScore}/10`
+                  : data.gradedCount === 0 ? 'Not graded' : `${data.avgUpvotes}`,
+                icon: data.gradedCount > 0 ? Brain : Award,
+                color: data.gradedCount > 0 ? 'text-purple' : 'text-purple',
+                bg: 'bg-purple/10',
+                border: 'border-purple/30',
+              },
               { label: 'Cited', value: `${data.sourcedCount}/${data.totalArguments}`, icon: BookOpen, color: 'text-emerald', bg: 'bg-emerald/10', border: 'border-emerald/30' },
             ].map(({ label, value, icon: Icon, color, bg, border }) => (
               <div key={label} className={cn('rounded-xl border p-4', bg, border, 'bg-surface-100')}>
@@ -332,6 +502,39 @@ export default function MyArgumentsPage() {
             ))}
           </div>
         ) : null}
+
+        {/* ── Grade distribution ───────────────────────────────────────────── */}
+        {!loading && data && data.gradedCount > 0 && (
+          <GradeDistributionPanel
+            distribution={data.gradeDistribution}
+            gradedCount={data.gradedCount}
+            avgScore={data.avgAiScore}
+          />
+        )}
+
+        {/* ── No grades nudge ───────────────────────────────────────────────── */}
+        {!loading && data && data.totalArguments > 0 && data.gradedCount === 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="rounded-xl border border-purple/30 bg-purple/5 p-4 flex items-start gap-3"
+          >
+            <Sparkles className="h-4 w-4 text-purple mt-0.5 shrink-0" aria-hidden />
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-mono text-white font-semibold">Get AI grades on your arguments</p>
+              <p className="text-xs font-mono text-surface-500 mt-0.5">
+                Run an AI critique on any argument to get a grade (A–F) and unlock your grade profile.
+              </p>
+            </div>
+            <Link
+              href="/coach"
+              className="inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-mono font-medium bg-purple/80 hover:bg-purple text-white transition-colors shrink-0"
+            >
+              <Star className="h-3 w-3" aria-hidden />
+              Coach
+            </Link>
+          </motion.div>
+        )}
 
         {/* ── FOR vs AGAINST bar ───────────────────────────────────────────── */}
         {!loading && data && data.totalArguments > 0 && (
@@ -408,7 +611,8 @@ export default function MyArgumentsPage() {
               ))}
             </div>
             <p className="mt-3 text-[10px] font-mono text-surface-500">
-              Bar colour: <span className="text-for-400">blue = FOR</span> / <span className="text-against-400">red = AGAINST</span>
+              Bar: <span className="text-for-400">blue = FOR</span> / <span className="text-against-400">red = AGAINST</span>
+              {data.gradedCount > 0 && <> · Letter = avg AI grade</>}
             </p>
           </motion.div>
         )}
@@ -422,25 +626,23 @@ export default function MyArgumentsPage() {
             className="space-y-3"
           >
             {/* Tabs */}
-            <div className="flex items-center gap-1 rounded-xl bg-surface-200 p-1 w-fit">
-              {([
-                { id: 'top', label: 'Top Voted' },
-                { id: 'recent', label: 'Recent' },
-                { id: 'all', label: `All (${data.totalArguments})` },
-              ] as const).map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={cn(
-                    'px-3 py-1.5 rounded-lg text-xs font-mono transition-all',
-                    activeTab === tab.id
-                      ? 'bg-surface-50 text-white shadow-sm'
-                      : 'text-surface-500 hover:text-surface-400',
-                  )}
-                >
-                  {tab.label}
-                </button>
-              ))}
+            <div className="flex items-center gap-1 flex-wrap">
+              <div className="flex items-center gap-1 rounded-xl bg-surface-200 p-1">
+                {tabs.map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={cn(
+                      'px-3 py-1.5 rounded-lg text-xs font-mono transition-all whitespace-nowrap',
+                      activeTab === tab.id
+                        ? 'bg-surface-50 text-white shadow-sm'
+                        : 'text-surface-500 hover:text-surface-400',
+                    )}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* List */}
@@ -453,12 +655,22 @@ export default function MyArgumentsPage() {
                 transition={{ duration: 0.15 }}
                 className="space-y-2"
               >
-                {displayArgs.length === 0 ? (
+                {activeTab === 'graded' && displayArgs.length === 0 ? (
+                  <EmptyState
+                    icon={Brain}
+                    iconColor="text-purple"
+                    iconBg="bg-purple/10"
+                    iconBorder="border-purple/30"
+                    title="No graded arguments yet"
+                    description="Run an AI critique on any argument to earn a grade."
+                    actions={[{ label: 'Try Argument Coach', href: '/coach' }]}
+                  />
+                ) : displayArgs.length === 0 ? (
                   <EmptyState
                     icon={MessageSquare}
                     title="No arguments yet"
                     description="Write your first argument on any active topic."
-                    action={{ label: 'Browse Topics', href: '/' }}
+                    actions={[{ label: 'Browse Topics', href: '/' }]}
                   />
                 ) : (
                   displayArgs.map((arg) => <ArgRow key={arg.id} arg={arg} />)
@@ -466,7 +678,7 @@ export default function MyArgumentsPage() {
               </motion.div>
             </AnimatePresence>
 
-            {/* Browse all link (when not already showing all) */}
+            {/* Browse all link */}
             {activeTab !== 'all' && data.totalArguments > 5 && (
               <Link
                 href="/arguments"
@@ -492,22 +704,22 @@ export default function MyArgumentsPage() {
             icon={MessageSquare}
             title="No arguments yet"
             description="Start making your voice heard. Pick a topic, choose a side, and write your case."
-            action={{ label: 'Browse Active Debates', href: '/' }}
+            actions={[{ label: 'Browse Active Debates', href: '/' }]}
           />
         )}
 
-        {/* ── CTA: browse full arguments page ─────────────────────────────── */}
+        {/* ── CTA ─────────────────────────────────────────────────────────── */}
         {!loading && data && data.totalArguments > 0 && (
           <div className="flex flex-col sm:flex-row gap-3">
             <Link
-              href="/arguments"
+              href="/top-arguments"
               className={cn(
                 'flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-mono font-medium',
                 'bg-surface-200 text-surface-400 hover:bg-surface-300 hover:text-white border border-surface-300 transition-all',
               )}
             >
               <BarChart2 className="h-4 w-4" aria-hidden />
-              Top Arguments on Platform
+              Platform Top Arguments
             </Link>
             <Link
               href="/"

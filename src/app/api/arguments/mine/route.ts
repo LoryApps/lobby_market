@@ -17,6 +17,8 @@ export interface MineArgument {
   topic_statement: string
   topic_category: string | null
   topic_status: string
+  ai_score: number | null
+  ai_grade: string | null
 }
 
 export interface WeekBucket {
@@ -30,6 +32,15 @@ export interface CategoryStat {
   againstCount: number
   total: number
   totalUpvotes: number
+  avgGrade: number | null
+}
+
+export type GradeKey = 'A' | 'B' | 'C' | 'D' | 'F'
+
+export interface GradeDistribution {
+  grade: GradeKey
+  count: number
+  pct: number
 }
 
 export interface MineResponse {
@@ -42,8 +53,12 @@ export interface MineResponse {
   againstCount: number
   topUpvoted: MineArgument[]   // top 5 by upvotes
   recentArgs: MineArgument[]   // most recent 5
+  topGraded: MineArgument[]    // top 5 by ai_score
   categoryStats: CategoryStat[]
   weeklyBuckets: WeekBucket[]  // last 12 weeks
+  gradedCount: number
+  avgAiScore: number | null
+  gradeDistribution: GradeDistribution[]
 }
 
 // ─── Route ───────────────────────────────────────────────────────────────────
@@ -56,10 +71,10 @@ export async function GET() {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  // 1. Fetch all arguments by this user
+  // 1. Fetch all arguments by this user (including AI grade data)
   const { data: rawArgs, error } = await supabase
     .from('topic_arguments')
-    .select('id, topic_id, side, content, upvotes, source_url, created_at')
+    .select('id, topic_id, side, content, upvotes, source_url, created_at, ai_score, ai_grade')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
 
@@ -80,8 +95,12 @@ export async function GET() {
       againstCount: 0,
       topUpvoted: [],
       recentArgs: [],
+      topGraded: [],
       categoryStats: [],
       weeklyBuckets: [],
+      gradedCount: 0,
+      avgAiScore: null,
+      gradeDistribution: [],
     } satisfies MineResponse)
   }
 
@@ -110,18 +129,21 @@ export async function GET() {
   // 4. Assemble enriched args
   const enriched: MineArgument[] = args.map((a) => {
     const topic = topicMap.get(a.topic_id)
+    const raw = a as { source_url?: string | null; ai_score?: number | null; ai_grade?: string | null }
     return {
       id: a.id,
       topic_id: a.topic_id,
       side: a.side as 'blue' | 'red',
       content: a.content,
       upvotes: a.upvotes,
-      source_url: (a as { source_url?: string | null }).source_url ?? null,
+      source_url: raw.source_url ?? null,
       created_at: a.created_at,
       reply_count: replyCountMap.get(a.id) ?? 0,
       topic_statement: topic?.statement ?? 'Unknown topic',
       topic_category: topic?.category ?? null,
       topic_status: topic?.status ?? 'unknown',
+      ai_score: raw.ai_score ?? null,
+      ai_grade: raw.ai_grade ?? null,
     }
   })
 
@@ -140,8 +162,33 @@ export async function GET() {
   // 7. Recent (already sorted desc by created_at)
   const recentArgs = enriched.slice(0, 5)
 
-  // 8. Category stats
-  const catMap = new Map<string, CategoryStat>()
+  // 8. Top by AI grade
+  const topGraded = [...enriched]
+    .filter((a) => a.ai_score !== null)
+    .sort((a, b) => (b.ai_score ?? 0) - (a.ai_score ?? 0))
+    .slice(0, 5)
+
+  // 9. Grade analytics
+  const gradedArgs = enriched.filter((a) => a.ai_score !== null && a.ai_grade !== null)
+  const gradedCount = gradedArgs.length
+  const avgAiScore = gradedCount > 0
+    ? Math.round((gradedArgs.reduce((s, a) => s + (a.ai_score ?? 0), 0) / gradedCount) * 10) / 10
+    : null
+
+  const gradeOrder: GradeKey[] = ['A', 'B', 'C', 'D', 'F']
+  const gradeCounts: Record<GradeKey, number> = { A: 0, B: 0, C: 0, D: 0, F: 0 }
+  for (const a of gradedArgs) {
+    const g = a.ai_grade as GradeKey
+    if (g in gradeCounts) gradeCounts[g]++
+  }
+  const gradeDistribution: GradeDistribution[] = gradeOrder.map((grade) => ({
+    grade,
+    count: gradeCounts[grade],
+    pct: gradedCount > 0 ? Math.round((gradeCounts[grade] / gradedCount) * 100) : 0,
+  }))
+
+  // 10. Category stats (with avg grade per category)
+  const catMap = new Map<string, CategoryStat & { scoreSum: number; scoreCount: number }>()
   for (const a of enriched) {
     const cat = a.topic_category ?? 'Other'
     const existing = catMap.get(cat) ?? {
@@ -150,14 +197,28 @@ export async function GET() {
       againstCount: 0,
       total: 0,
       totalUpvotes: 0,
+      avgGrade: null,
+      scoreSum: 0,
+      scoreCount: 0,
     }
     existing.total++
     existing.totalUpvotes += a.upvotes
     if (a.side === 'blue') existing.forCount++
     else existing.againstCount++
+    if (a.ai_score !== null) {
+      existing.scoreSum += a.ai_score
+      existing.scoreCount++
+    }
     catMap.set(cat, existing)
   }
-  const categoryStats = Array.from(catMap.values()).sort((a, b) => b.total - a.total)
+  const categoryStats: CategoryStat[] = Array.from(catMap.values())
+    .map(({ scoreSum, scoreCount, ...rest }) => ({
+      ...rest,
+      avgGrade: scoreCount > 0
+        ? Math.round((scoreSum / scoreCount) * 10) / 10
+        : null,
+    }))
+    .sort((a, b) => b.total - a.total)
 
   // 9. Weekly buckets — last 12 weeks
   const now = new Date()
@@ -195,7 +256,11 @@ export async function GET() {
     againstCount,
     topUpvoted,
     recentArgs,
+    topGraded,
     categoryStats,
     weeklyBuckets,
+    gradedCount,
+    avgAiScore,
+    gradeDistribution,
   } satisfies MineResponse)
 }
