@@ -56,6 +56,7 @@ import { renderWithMentions } from '@/lib/utils/mentions'
 import { LinkPreviewCard } from '@/components/ui/LinkPreviewCard'
 import { InlineCritiquePanel, CritiqueButton } from '@/components/topic/InlineCritiquePanel'
 import { ArgumentResponseSuggest } from '@/components/topic/ArgumentResponseSuggest'
+import { ArgumentReactionBar } from '@/components/topic/ArgumentReactionBar'
 import type { CritiqueResponse } from '@/app/api/arguments/critique/route'
 import type { TopicArgumentWithAuthor, ArgumentReplyWithAuthor } from '@/lib/supabase/types'
 
@@ -596,6 +597,13 @@ function ArgumentCard({
           <MessageSquare className="h-3 w-3" aria-hidden />
           {showReplies ? 'Hide replies' : 'Reply'}
         </button>
+
+        {/* Argument reactions — emoji feedback bar */}
+        <ArgumentReactionBar
+          topicId={topicId}
+          argumentId={arg.id}
+          canReact={!!currentUserId && !isOwn}
+        />
 
         {/* AI response suggestions — only for other users' arguments */}
         {currentUserId && !isOwn && (
