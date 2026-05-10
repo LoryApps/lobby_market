@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   ArrowRight,
+  Brain,
   ChevronDown,
   ChevronUp,
   Flame,
@@ -26,8 +27,6 @@ import { EmptyState } from '@/components/ui/EmptyState'
 import { cn } from '@/lib/utils/cn'
 import { renderWithMentions } from '@/lib/utils/mentions'
 import type { TopArgument, TopArgumentsResponse } from '@/app/api/arguments/top/route'
-
-// ─── Config ───────────────────────────────────────────────────────────────────
 
 const PERIODS = [
   { id: 'all', label: 'All Time' },
@@ -81,8 +80,6 @@ const STATUS_LABEL: Record<string, string> = {
   failed: 'Failed',
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
 function relativeTime(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime()
   const m = Math.floor(diff / 60_000)
@@ -101,8 +98,6 @@ function truncate(text: string, max: number): string {
   if (text.length <= max) return text
   return text.slice(0, max - 1) + '…'
 }
-
-// ─── Skeleton ─────────────────────────────────────────────────────────────────
 
 function ArgumentSkeleton() {
   return (
@@ -133,8 +128,6 @@ function ArgumentSkeletons() {
   )
 }
 
-// ─── Empty state ──────────────────────────────────────────────────────────────
-
 function ArgumentsEmptyState({ onReset }: { onReset: () => void }) {
   return (
     <EmptyState
@@ -145,8 +138,6 @@ function ArgumentsEmptyState({ onReset }: { onReset: () => void }) {
     />
   )
 }
-
-// ─── Argument card ────────────────────────────────────────────────────────────
 
 function ArgumentCard({ arg, rank }: { arg: TopArgument; rank: number }) {
   const [expanded, setExpanded] = useState(false)
@@ -171,7 +162,6 @@ function ArgumentCard({ arg, rank }: { arg: TopArgument; rank: number }) {
           : 'border-against-500/25 hover:border-against-500/40'
       )}
     >
-      {/* Side stripe */}
       <div
         className={cn(
           'absolute left-0 top-4 bottom-4 w-0.5 rounded-full',
@@ -179,7 +169,6 @@ function ArgumentCard({ arg, rank }: { arg: TopArgument; rank: number }) {
         )}
       />
 
-      {/* Header row */}
       <div className="flex items-center gap-2 pl-3">
         {arg.author ? (
           <Link
@@ -187,11 +176,7 @@ function ArgumentCard({ arg, rank }: { arg: TopArgument; rank: number }) {
             className="flex items-center gap-2 min-w-0 flex-1"
             onClick={(e) => e.stopPropagation()}
           >
-            <Avatar
-              src={arg.author.avatar_url}
-              fallback={authorName}
-              size="xs"
-            />
+            <Avatar src={arg.author.avatar_url} fallback={authorName} size="xs" />
             <span className="text-xs font-mono font-semibold text-surface-400 hover:text-white transition-colors truncate">
               @{arg.author.username}
             </span>
@@ -203,28 +188,21 @@ function ArgumentCard({ arg, rank }: { arg: TopArgument; rank: number }) {
           </div>
         )}
 
-        {/* Upvotes */}
         <div
           className={cn(
             'flex items-center gap-1 flex-shrink-0 text-xs font-mono font-semibold',
             isFor ? 'text-for-400' : 'text-against-400'
           )}
         >
-          {isFor ? (
-            <ThumbsUp className="h-3 w-3" />
-          ) : (
-            <ThumbsDown className="h-3 w-3" />
-          )}
+          {isFor ? <ThumbsUp className="h-3 w-3" /> : <ThumbsDown className="h-3 w-3" />}
           {arg.upvotes.toLocaleString()}
         </div>
 
-        {/* Time */}
         <span className="text-[10px] font-mono text-surface-500 flex-shrink-0">
           {relativeTime(arg.created_at)}
         </span>
       </div>
 
-      {/* Content */}
       <div className="pl-3">
         <p className="text-sm text-surface-700 leading-relaxed">
           {renderWithMentions(displayContent)}
@@ -247,7 +225,6 @@ function ArgumentCard({ arg, rank }: { arg: TopArgument; rank: number }) {
         )}
       </div>
 
-      {/* Topic footer */}
       {arg.topic && (
         <div className="pl-3 flex items-start gap-2">
           <div
@@ -258,11 +235,7 @@ function ArgumentCard({ arg, rank }: { arg: TopArgument; rank: number }) {
                 : 'bg-against-500/10 text-against-400 border-against-500/20'
             )}
           >
-            {isFor ? (
-              <ThumbsUp className="h-2.5 w-2.5" />
-            ) : (
-              <ThumbsDown className="h-2.5 w-2.5" />
-            )}
+            {isFor ? <ThumbsUp className="h-2.5 w-2.5" /> : <ThumbsDown className="h-2.5 w-2.5" />}
             {isFor ? 'FOR' : 'AGAINST'}
           </div>
 
@@ -278,9 +251,7 @@ function ArgumentCard({ arg, rank }: { arg: TopArgument; rank: number }) {
 
           <div className="flex-shrink-0 flex items-center gap-1.5">
             {arg.topic.category && (
-              <span className="text-[10px] font-mono text-surface-500">
-                {arg.topic.category}
-              </span>
+              <span className="text-[10px] font-mono text-surface-500">{arg.topic.category}</span>
             )}
             <Badge variant={badgeVariant} className="text-[9px] px-1.5 py-0.5">
               {STATUS_LABEL[topicStatus] ?? topicStatus}
@@ -299,8 +270,6 @@ function ArgumentCard({ arg, rank }: { arg: TopArgument; rank: number }) {
   )
 }
 
-// ─── Category pill ────────────────────────────────────────────────────────────
-
 const CATEGORY_COLORS: Record<string, string> = {
   Economics: 'text-gold border-gold/30 bg-gold/10 data-[active=true]:bg-gold/20 data-[active=true]:border-gold/50',
   Politics: 'text-for-400 border-for-500/30 bg-for-500/10 data-[active=true]:bg-for-500/20 data-[active=true]:border-for-500/50',
@@ -313,8 +282,6 @@ const CATEGORY_COLORS: Record<string, string> = {
   Environment: 'text-emerald border-emerald/30 bg-emerald/10 data-[active=true]:bg-emerald/20 data-[active=true]:border-emerald/50',
   Education: 'text-for-300 border-for-400/30 bg-for-400/10 data-[active=true]:bg-for-400/20 data-[active=true]:border-for-400/50',
 }
-
-// ─── Main page ────────────────────────────────────────────────────────────────
 
 export default function ArgumentsPage() {
   const [period, setPeriod] = useState<Period>('all')
@@ -365,7 +332,6 @@ export default function ArgumentsPage() {
     [period, side, category, status]
   )
 
-  // Re-fetch from scratch when filters change
   useEffect(() => {
     setOffset(0)
     fetchArgs(0, true)
@@ -386,7 +352,6 @@ export default function ArgumentsPage() {
       <TopBar />
 
       <main className="max-w-3xl mx-auto px-4 pt-20 pb-24 md:pb-8">
-        {/* Page header */}
         <div className="mb-6">
           <div className="flex items-center gap-3 mb-1">
             <div className="h-8 w-8 rounded-lg bg-purple/20 border border-purple/30 flex items-center justify-center">
@@ -413,13 +378,18 @@ export default function ArgumentsPage() {
                 <Flame className="h-3 w-3" aria-hidden />
                 Trending
               </Link>
+              <Link
+                href="/arguments/top-scored"
+                className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-purple/10 border border-purple/30 text-[11px] font-mono font-semibold text-purple hover:bg-purple/20 transition-colors flex-shrink-0"
+              >
+                <Brain className="h-3 w-3" aria-hidden />
+                Best Quality
+              </Link>
             </div>
           </div>
         </div>
 
-        {/* Filters */}
         <div className="space-y-3 mb-6">
-          {/* Period + Side row */}
           <div className="flex flex-wrap gap-2">
             {PERIODS.map((p) => (
               <button
@@ -458,7 +428,6 @@ export default function ArgumentsPage() {
             ))}
           </div>
 
-          {/* Category pills */}
           <div className="flex flex-wrap gap-1.5">
             <button
               onClick={() => setCategory('')}
@@ -487,7 +456,6 @@ export default function ArgumentsPage() {
             ))}
           </div>
 
-          {/* Status pills */}
           <div className="flex flex-wrap gap-1.5">
             {STATUS_OPTIONS.map((opt) => (
               <button
@@ -510,7 +478,6 @@ export default function ArgumentsPage() {
           </div>
         </div>
 
-        {/* Result count */}
         {!loading && (
           <div className="flex items-center justify-between mb-4">
             <p className="text-[11px] font-mono text-surface-500">
@@ -531,38 +498,21 @@ export default function ArgumentsPage() {
           </div>
         )}
 
-        {/* Content */}
         <AnimatePresence mode="wait">
           {loading ? (
-            <motion.div
-              key="skeleton"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
+            <motion.div key="skeleton" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
               <ArgumentSkeletons />
             </motion.div>
           ) : args.length === 0 ? (
-            <motion.div
-              key="empty"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
+            <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
               <ArgumentsEmptyState onReset={resetFilters} />
             </motion.div>
           ) : (
-            <motion.div
-              key="list"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="space-y-3"
-            >
+            <motion.div key="list" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3">
               {args.map((arg, i) => (
                 <ArgumentCard key={arg.id} arg={arg} rank={i} />
               ))}
 
-              {/* Load more */}
               {hasMore && (
                 <div className="pt-2 flex justify-center">
                   <button
@@ -575,17 +525,12 @@ export default function ArgumentsPage() {
                       'disabled:opacity-50 disabled:cursor-not-allowed'
                     )}
                   >
-                    {loadingMore ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <ChevronDown className="h-4 w-4" />
-                    )}
+                    {loadingMore ? <Loader2 className="h-4 w-4 animate-spin" /> : <ChevronDown className="h-4 w-4" />}
                     {loadingMore ? 'Loading…' : 'Load more'}
                   </button>
                 </div>
               )}
 
-              {/* Stat footer */}
               {!hasMore && args.length > 0 && (
                 <div className="pt-6 pb-2 text-center">
                   <div className="inline-flex items-center gap-2 text-[11px] font-mono text-surface-500">
