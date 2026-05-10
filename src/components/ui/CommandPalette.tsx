@@ -98,7 +98,7 @@ import {
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
 
-// ─── Types ───────────────────────────────────────────────────────────────────────────────────────
+// ─── Types ───────────────────────────────────────────────────────────────────────────────────────────────────
 
 interface QuickLink {
   type: 'link'
@@ -140,7 +140,7 @@ interface PersonResult {
 
 type PaletteItem = QuickLink | TopicResult | LawResult | PersonResult
 
-// ─── Quick-nav links shown when no query is typed ──────────────────────────────────────────────────────────────────────────────
+// ─── Quick-nav links shown when no query is typed ────────────────────────────────────────────────────────────────────────────────────────────────
 
 const QUICK_LINKS: QuickLink[] = [
   { type: 'link', id: 'feed', label: 'Feed', sublabel: 'Live topic feed', href: '/', icon: Flame, iconColor: 'text-against-400', iconBg: 'bg-against-500/10' },
@@ -269,7 +269,7 @@ const QUICK_LINKS: QuickLink[] = [
   { type: 'link', id: 'civic-timeline', label: 'Civic Timeline', sublabel: 'Daily chronology challenge — arrange 5 laws from oldest to newest across 3 rounds', href: '/civic-timeline', icon: CalendarClock, iconColor: 'text-purple', iconBg: 'bg-purple/10' },
   { type: 'link', id: 'sprint', label: 'Civic Sprint', sublabel: '10-round prediction game — guess whether each closed topic became law or failed, race the clock for speed bonuses', href: '/sprint', icon: Timer, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
   { type: 'link', id: 'civic-imposter', label: 'Civic Imposter', sublabel: 'Daily fake-law detection — spot the one imposter hiding among five real Lobby Codex laws', href: '/civic-imposter', icon: Skull, iconColor: 'text-against-400', iconBg: 'bg-against-600/10' },
-  { type: 'link', id: 'civic-mirror', label: 'Civic Mirror', sublabel: "Daily gut-check: vote FOR or AGAINST on 5 topics — see if you're with the majority or a contrarian outlier", href: '/civic-mirror', icon: Gauge, iconColor: 'text-for-400', iconBg: 'bg-for-500/10' },
+  { type: 'link', id: 'civic-mirror', label: 'Civic Mirror', sublabel: 'Daily gut-check: vote FOR or AGAINST on 5 topics — see if you\'re with the majority or a contrarian outlier', href: '/civic-mirror', icon: Gauge, iconColor: 'text-for-400', iconBg: 'bg-for-500/10' },
   { type: 'link', id: 'civic-decoder', label: 'Civic Decoder', sublabel: 'Read 3 real arguments from a mystery civic debate and identify which topic they came from — 5 rounds, 50 pts max', href: '/civic-decoder', icon: Search, iconColor: 'text-purple', iconBg: 'bg-purple/10' },
   { type: 'link', id: 'civic-recall', label: 'Civic Recall', sublabel: 'Memorise 6 civic topics in 15 seconds — then spot them in a grid of 12. Daily flash-memory challenge, 60 pts max', href: '/civic-recall', icon: Brain, iconColor: 'text-emerald', iconBg: 'bg-emerald/10' },
   { type: 'link', id: 'civic-verdict', label: 'Civic Verdict', sublabel: 'Read FOR and AGAINST arguments from mystery debates — render your verdict. Match the crowd for 10 pts per round, 50 max', href: '/civic-verdict', icon: Gavel, iconColor: 'text-against-400', iconBg: 'bg-against-500/10' },
@@ -322,7 +322,7 @@ const STATUS_COLOR: Record<string, string> = {
   failed: 'text-against-400',
 }
 
-// ─── Single result row ────────────────────────────────────────────────────────────────────────────────────
+// ─── Single result row ───────────────────────────────────────────────────────────────────────────────────────────────────────
 
 function ResultRow({
   item,
@@ -474,7 +474,7 @@ function ResultRow({
   )
 }
 
-// ─── Section header ────────────────────────────────────────────────────────────────────────────────────
+// ─── Section header ────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 function SectionHeader({ label }: { label: string }) {
   return (
@@ -486,7 +486,7 @@ function SectionHeader({ label }: { label: string }) {
   )
 }
 
-// ─── The palette itself ──────────────────────────────────────────────────────────────────────────────────────
+// ─── The palette itself ────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 interface CommandPaletteProps {
   open: boolean
