@@ -8,6 +8,7 @@ import {
   BarChart2,
   Bell,
   BookOpen,
+  Brain,
   CalendarClock,
   Bot,
   Building2,
@@ -72,7 +73,7 @@ export const metadata: Metadata = {
   },
 }
 
-// ─── Types ───────────────────────────────────────────────────────────────────────────────────────────
+// ─── Types ───────────────────────────────────────────────────────────────────────────────────────────────
 
 interface ChangeItem {
   icon: React.ComponentType<{ className?: string }>
@@ -92,7 +93,7 @@ interface Chapter {
   items: ChangeItem[]
 }
 
-// ─── Chapters ───────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Chapters ──────────────────────────────────────────────────────────────────────────────────────────────
 
 const CHAPTERS: Chapter[] = [
   {
@@ -585,18 +586,48 @@ const CHAPTERS: Chapter[] = [
       { icon: Gamepad2, label: 'Share result: 🟩🟥 emoji grid + score. Arcade hub tracks daily completion and score. Same puzzle for all players each day.', href: '/arcade', color: 'text-surface-400' },
     ],
   },
+  {
+    number: 'Ch. 31',
+    title: 'Civic Recall',
+    subtitle: 'Daily flash-memory challenge — study 6 civic topics for 15 seconds then find them in a grid of 12',
+    accent: 'text-emerald',
+    borderColor: 'border-emerald/30',
+    bgColor: 'bg-emerald/5',
+    textColor: 'text-emerald',
+    items: [
+      { icon: Brain, label: 'Study phase: 6 target topics flash on screen for 15 seconds — category, status, vote split all visible. Memorise them.', href: '/civic-recall', color: 'text-emerald' },
+      { icon: Search, label: 'Recall phase: 12 topics appear in random order (6 targets + 6 decoys). Select exactly the 6 you studied.', href: '/civic-recall', color: 'text-for-400' },
+      { icon: Trophy, label: '10 pts per correct pick, −5 pts per wrong pick, min 0. Max 60 pts. Deterministic daily seed for shared puzzles.', href: '/civic-recall', color: 'text-gold' },
+      { icon: Gamepad2, label: 'Arcade hub tracks daily completion and score. Share result as emoji grid + score.', href: '/arcade', color: 'text-surface-400' },
+    ],
+  },
+  {
+    number: 'Ch. 32',
+    title: 'Civic Verdict',
+    subtitle: 'Daily jury game — read FOR and AGAINST arguments and render your verdict on 5 mystery debates',
+    accent: 'text-against-400',
+    borderColor: 'border-against-500/30',
+    bgColor: 'bg-against-500/5',
+    textColor: 'text-against-400',
+    items: [
+      { icon: Gavel, label: 'Daily game: 5 mystery debates. Each round shows one real FOR argument and one real AGAINST argument — topic statement hidden.', href: '/civic-verdict', color: 'text-against-400' },
+      { icon: Scale, label: 'Vote FOR or AGAINST based purely on argument quality. After your pick, the topic is revealed along with the platform\'s actual vote split.', href: '/civic-verdict', color: 'text-for-400' },
+      { icon: Trophy, label: '10 pts when your verdict matches the majority. Max 50 pts. Letter grade S–D on completion. Daily lock with share snippet.', href: '/civic-verdict', color: 'text-gold' },
+      { icon: Gamepad2, label: 'Arcade hub tracks daily completion and score (0–50). Results link directly to each debate for deeper engagement.', href: '/arcade', color: 'text-surface-400' },
+    ],
+  },
 ]
 
 // ─── Stat pills ──────────────────────────────────────────────────────────────────────────────────────────────
 
 const STATS = [
-  { value: '30', label: 'chapters shipped' },
-  { value: '220+', label: 'features built' },
+  { value: '32', label: 'chapters shipped' },
+  { value: '230+', label: 'features built' },
   { value: '67', label: 'DB migrations' },
-  { value: '340+', label: 'API routes' },
+  { value: '342+', label: 'API routes' },
 ]
 
-// ─── Recent builds ──────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Recent builds ────────────────────────────────────────────────────────────────────────────────────────────
 
 interface RecentBuild {
   title: string
@@ -608,6 +639,22 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Civic Verdict',
+    description: 'A daily jury game. Five mystery debates — each round reveals one real FOR argument and one real AGAINST argument, topic hidden. Render your verdict based on argument quality alone. Score 10 pts when you match the platform\'s majority. 50 pts max, letter grade S–D, shareable result snippet.',
+    href: '/civic-verdict',
+    icon: Gavel,
+    color: 'text-against-400',
+    tag: 'Ch. 32',
+  },
+  {
+    title: 'Civic Recall',
+    description: 'A daily flash-memory challenge. Six civic topics appear for 15 seconds — study them carefully. Then identify those exact six from a grid of twelve (including six look-alike decoys). 10 pts per correct pick, −5 per wrong. Max 60 pts. Deterministic daily seed for shared puzzles across all players.',
+    href: '/civic-recall',
+    icon: Brain,
+    color: 'text-emerald',
+    tag: 'Ch. 31',
+  },
   {
     title: 'Civic Decoder',
     description: 'A daily argument-recognition puzzle. Each round shows three real argument snippets (FOR or AGAINST) from a mystery civic debate — read them and identify which topic they came from out of four options. Five rounds, 30-second timer, 50 pts max. Same puzzle for all players each day.',
@@ -916,7 +963,7 @@ export default function ChangelogPage() {
   )
 }
 
-// ─── Chapter block ──────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Chapter block ────────────────────────────────────────────────────────────────────────────────────────────
 
 function ChapterBlock({ chapter }: { chapter: Chapter }) {
   return (
