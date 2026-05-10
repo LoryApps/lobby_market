@@ -38,6 +38,7 @@ import {
   Search,
   Gauge,
   Shield,
+  ShieldCheck,
   Skull,
   Sliders,
   Sparkles,
@@ -74,7 +75,7 @@ export const metadata: Metadata = {
   },
 }
 
-// ─── Types ────────────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Types ────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 interface ChangeItem {
   icon: React.ComponentType<{ className?: string }>
@@ -94,7 +95,7 @@ interface Chapter {
   items: ChangeItem[]
 }
 
-// ─── Chapters ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Chapters ────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 const CHAPTERS: Chapter[] = [
   {
@@ -677,18 +678,33 @@ const CHAPTERS: Chapter[] = [
       { icon: Target, label: 'Quality-edge callout when one side holds a ≥1pt advantage. Links to /top-arguments. Gracefully hidden until grades exist.', href: '/top-arguments', color: 'text-surface-400' },
     ],
   },
+  {
+    number: 'Ch. 37',
+    title: 'Topic Quality Advisor',
+    subtitle: 'AI-powered quality assessment inline in the topic creation flow',
+    accent: 'text-gold',
+    borderColor: 'border-gold/30',
+    bgColor: 'bg-gold/5',
+    textColor: 'text-gold',
+    items: [
+      { icon: ShieldCheck, label: 'New "Check" button in the topic creation form triggers an AI quality assessment of the draft statement before posting.', href: '/topic/create', color: 'text-gold' },
+      { icon: BarChart2, label: 'Five scored dimensions: Clarity, Binary Feasibility, Scope, Debate Potential, Civic Impact — each with a progress bar and one-line feedback.', href: '/topic/create', color: 'text-for-400' },
+      { icon: Sparkles, label: 'Tier badge (Excellent / Good / Needs Work / Poor) with an overall score out of 10 and a punchy one-sentence summary.', href: '/topic/create', color: 'text-emerald' },
+      { icon: Target, label: 'When score < 8, Claude proposes a sharper rewrite. One click applies it directly to the statement field. Gracefully degrades when AI is unavailable.', href: '/topic/create', color: 'text-surface-400' },
+    ],
+  },
 ]
 
-// ─── Stat pills ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Stat pills ────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 const STATS = [
-  { value: '36', label: 'chapters shipped' },
-  { value: '250+', label: 'features built' },
+  { value: '37', label: 'chapters shipped' },
+  { value: '255+', label: 'features built' },
   { value: '68', label: 'DB migrations' },
-  { value: '355+', label: 'API routes' },
+  { value: '356+', label: 'API routes' },
 ]
 
-// ─── Recent builds ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Recent builds ────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 interface RecentBuild {
   title: string
@@ -700,6 +716,13 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Topic Quality Advisor',
+    description: "A new \"Check\" button in the topic creation form triggers an inline AI assessment of the draft statement. Five civic dimensions are scored (Clarity, Binary Feasibility, Scope, Debate Potential, Civic Impact), combined into an overall tier badge (Excellent / Good / Needs Work / Poor). When the score is below 8, Claude proposes a sharper rewrite — one click applies it directly to the statement field.",
+    icon: ShieldCheck,
+    color: 'text-gold',
+    tag: 'Ch. 37',
+  },
   {
     title: 'Debate Quality Panel',
     description: "Every topic's Arguments tab now shows a Debate Quality panel: AI grade distribution (A–F) for FOR and AGAINST arguments side-by-side, a three-column score summary, stacked bar charts, and a quality-edge callout when one side holds a measurable argumentation advantage.",
@@ -932,7 +955,7 @@ const RECENT_BUILDS: RecentBuild[] = [
   },
 ]
 
-// ─── Page ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Page ────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 export default function ChangelogPage() {
   return (
@@ -1054,7 +1077,7 @@ export default function ChangelogPage() {
   )
 }
 
-// ─── Chapter block ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Chapter block ──────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 function ChapterBlock({ chapter }: { chapter: Chapter }) {
   return (
