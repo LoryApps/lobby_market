@@ -74,7 +74,7 @@ export const metadata: Metadata = {
   },
 }
 
-// ─── Types ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Types ───────────────────────────────────────────────────────────────────────────────────────────────────────
 
 interface ChangeItem {
   icon: React.ComponentType<{ className?: string }>
@@ -94,7 +94,7 @@ interface Chapter {
   items: ChangeItem[]
 }
 
-// ─── Chapters ──────────────────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Chapters ──────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 const CHAPTERS: Chapter[] = [
   {
@@ -632,18 +632,33 @@ const CHAPTERS: Chapter[] = [
       { icon: Trophy, label: 'Grade S–F on completion (S = 90+). Animated reveal bars, shareable emoji result snippet, daily localStorage lock.', href: '/gauge', color: 'text-gold' },
     ],
   },
+  {
+    number: 'Ch. 34',
+    title: 'Argument Hall of Fame',
+    subtitle: 'Persistent AI grades on arguments — A through F, visible to all',
+    accent: 'text-purple',
+    borderColor: 'border-purple/30',
+    bgColor: 'bg-purple/5',
+    textColor: 'text-purple',
+    items: [
+      { icon: Award, label: 'AI critique grades (A/B/C/D/F) and numeric scores (1–10) now persist to the argument permanently after the author runs a critique.', href: '/top-arguments', color: 'text-purple' },
+      { icon: MessageSquare, label: 'Grade badge appears on argument cards — colour-coded (emerald A → red F) — giving instant quality signals to readers.', href: '/top-arguments', color: 'text-purple' },
+      { icon: TrendingUp, label: 'Draft-to-grade flow: run critique before submitting, then submit — grade is auto-attached to the new argument record.', href: '/top-arguments', color: 'text-purple' },
+      { icon: Trophy, label: 'New /top-arguments leaderboard: filter by grade, side (FOR/AGAINST), and time period. Ranked by AI score then upvotes.', href: '/top-arguments', color: 'text-gold' },
+    ],
+  },
 ]
 
-// ─── Stat pills ──────────────────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Stat pills ────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 const STATS = [
-  { value: '33', label: 'chapters shipped' },
-  { value: '235+', label: 'features built' },
-  { value: '67', label: 'DB migrations' },
-  { value: '345+', label: 'API routes' },
+  { value: '34', label: 'chapters shipped' },
+  { value: '239+', label: 'features built' },
+  { value: '68', label: 'DB migrations' },
+  { value: '346+', label: 'API routes' },
 ]
 
-// ─── Recent builds ──────────────────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Recent builds ──────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 interface RecentBuild {
   title: string
@@ -655,6 +670,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Argument Hall of Fame',
+    description: 'AI critique grades (A–F, 1–10) now persist to argument records. Grade badges appear on all argument cards. Draft-to-grade flow: critique before submitting — grade auto-attached on post. New /top-arguments leaderboard ranked by AI score then upvotes.',
+    href: '/top-arguments',
+    icon: Award,
+    color: 'text-purple',
+    tag: 'Ch. 34',
+  },
   {
     title: 'Civic Gauge',
     description: 'Daily estimation game — outcome known, percentage hidden. Guess the exact FOR% on 5 resolved debates with a drag slider. Precision scoring, seeded daily questions, S–F grade.',
@@ -865,7 +888,7 @@ const RECENT_BUILDS: RecentBuild[] = [
   },
 ]
 
-// ─── Page ──────────────────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Page ────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 export default function ChangelogPage() {
   return (
