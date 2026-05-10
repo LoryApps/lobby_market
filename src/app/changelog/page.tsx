@@ -738,15 +738,30 @@ const CHAPTERS: Chapter[] = [
       { icon: Sparkles, label: 'Grade badges appear inline on every argument row — no need to open individual arguments to see their quality signal. Nudge prompts coach users who have zero graded arguments.', href: '/arguments/mine', color: 'text-gold' },
     ],
   },
+  {
+    number: 'Ch. 41',
+    title: 'Argument Grade Spotlight',
+    subtitle: 'AI quality signals on every argument detail page — grade, score, percentile, and source citations',
+    accent: 'text-purple',
+    borderColor: 'border-purple/30',
+    bgColor: 'bg-purple/5',
+    textColor: 'text-purple',
+    items: [
+      { icon: Brain, label: 'AI grade panel on /arguments/[id]: large letter grade (A–F), numeric score bar, and label (Exceptional / Strong / Adequate / Weak / Poor) — visible on every argument permalink.', href: '/arguments', color: 'text-purple' },
+      { icon: BarChart2, label: 'Platform percentile: "Scores better than X% of all graded arguments" — instantly shows how the argument ranks against the entire platform\'s graded corpus.', href: '/arguments', color: 'text-for-400' },
+      { icon: Star, label: 'Grade badge inline next to the FOR/AGAINST side label at the top of the page — grade visible at a glance before reading the full argument.', href: '/arguments', color: 'text-emerald' },
+      { icon: Sparkles, label: 'Source citation card: when an argument includes a source URL, a dedicated "Supporting evidence" card shows the domain and links to the source. Ungraded arguments show a Coach nudge CTA.', href: '/arguments', color: 'text-gold' },
+    ],
+  },
 ]
 
 // ─── Stat pills ────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 const STATS = [
-  { value: '40', label: 'chapters shipped' },
-  { value: '270+', label: 'features built' },
+  { value: '41', label: 'chapters shipped' },
+  { value: '275+', label: 'features built' },
   { value: '68', label: 'DB migrations' },
-  { value: '370+', label: 'API routes' },
+  { value: '375+', label: 'API routes' },
 ]
 
 // ─── Recent builds ────────────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -761,6 +776,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Argument Grade Spotlight',
+    description: 'Every argument permalink (/arguments/[id]) now shows the AI quality grade prominently: large letter grade, numeric score bar with colour-coded fill, and a percentile ("better than X% of all graded arguments"). Source citation cards surface evidence links. Ungraded arguments get a Coach nudge CTA. Grade and score are now fetched and displayed across all metadata too.',
+    href: '/arguments',
+    icon: Brain,
+    color: 'text-purple',
+    tag: 'Ch. 41',
+  },
   {
     title: 'My Argument Grade Profile',
     description: 'Grade distribution panel on /arguments/mine: A–F bar chart showing how your arguments score across the AI quality spectrum, with your overall average score and grade. New "Top Graded" tab, grade badges on every argument row, and per-category average grade in the breakdown — all backed by the persisted ai_score/ai_grade columns.',
