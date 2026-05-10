@@ -38,7 +38,7 @@ import { Skeleton } from '@/components/ui/Skeleton'
 import { cn } from '@/lib/utils/cn'
 import type { VerdictPayload, VerdictTopic } from '@/app/api/civic-verdict/route'
 
-// ─── Constants ────────────────────────────────────────────────────────────────
+// ─── Constants ────────────────────────────────────────────────────────────────────
 
 const STORAGE_KEY = 'lm_verdict_v1'
 const TOTAL_ROUNDS = 5
@@ -48,7 +48,7 @@ const MAX_SCORE = TOTAL_ROUNDS * PTS_PER_CORRECT
 type Phase = 'loading' | 'intro' | 'playing' | 'result'
 type Pick = 'for' | 'against' | null
 
-// ─── Storage ──────────────────────────────────────────────────────────────────
+// ─── Storage ────────────────────────────────────────────────────────────────────
 
 interface StoredResult {
   date: string
@@ -78,7 +78,7 @@ function saveResult(r: StoredResult) {
   } catch {}
 }
 
-// ─── Share text ───────────────────────────────────────────────────────────────
+// ─── Share text ───────────────────────────────────────────────────────────────────
 
 function buildShareText(score: number, picks: ('for' | 'against')[], topics: VerdictTopic[]): string {
   const grade =
@@ -95,7 +95,7 @@ function buildShareText(score: number, picks: ('for' | 'against')[], topics: Ver
   return `Civic Verdict — ${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}\nScore: ${score}/${MAX_SCORE} (Grade ${grade})\n${verdictLine}\nlobby.market/civic-verdict`
 }
 
-// ─── Components ───────────────────────────────────────────────────────────────
+// ─── Components ───────────────────────────────────────────────────────────────────
 
 function ProgressDots({ current, picks, topics }: { current: number; picks: Pick[]; topics: VerdictTopic[] }) {
   return (
@@ -198,7 +198,7 @@ function ArgumentCard({
   )
 }
 
-// ─── Round screen ─────────────────────────────────────────────────────────────
+// ─── Round screen ───────────────────────────────────────────────────────────────────
 
 function RoundScreen({
   topic,
@@ -345,7 +345,7 @@ function RoundScreen({
   )
 }
 
-// ─── Result screen ────────────────────────────────────────────────────────────
+// ─── Result screen ──────────────────────────────────────────────────────────────────
 
 function ResultScreen({
   topics,
@@ -491,7 +491,7 @@ function ResultScreen({
   )
 }
 
-// ─── Main component ───────────────────────────────────────────────────────────
+// ─── Main component ───────────────────────────────────────────────────────────────────
 
 export function VerdictClient() {
   const [phase, setPhase] = useState<Phase>('loading')
@@ -637,7 +637,7 @@ export function VerdictClient() {
                   {[
                     { icon: Scale, text: 'Each round shows one FOR and one AGAINST argument from a mystery debate.' },
                     { icon: Gavel, text: 'Read both arguments and pick which side you think is more compelling.' },
-                    { icon: Trophy, text: `Earn ${PTS_PER_CORRECT} pts when your verdict matches the platform's actual majority.` },
+                    { icon: Trophy, text: `Earn ${PTS_PER_CORRECT} pts when your verdict matches the platform\'s actual majority.` },
                     { icon: Zap, text: `5 rounds. Max ${MAX_SCORE} pts. Results lock in at midnight.` },
                   ].map(({ icon: Icon, text }, i) => (
                     <li key={i} className="flex items-start gap-3">
