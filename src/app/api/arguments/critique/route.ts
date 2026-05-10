@@ -11,6 +11,7 @@ export interface CritiqueRequest {
   category: string | null
   side: 'for' | 'against'
   argument_text: string
+  argument_id?: string | null
 }
 
 export interface CritiqueDimension {
@@ -52,7 +53,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
   }
 
-  const { topic_statement, category, side, argument_text } = body
+  const { topic_statement, category, side, argument_text, argument_id } = body
 
   if (!topic_statement || !side || !argument_text?.trim()) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
@@ -124,6 +125,18 @@ Be honest and constructive. Match the grade to the score: 9-10=A, 7-8=B, 5-6=C, 
       !Array.isArray(parsed.suggestions)
     ) {
       throw new Error('Invalid response shape')
+    }
+
+    // Persist the score/grade back to the argument row (best-effort; non-blocking)
+    if (argument_id && typeof argument_id === 'string') {
+      supabase
+        .from('topic_arguments')
+        .update({ ai_score: parsed.score, ai_grade: parsed.grade })
+        .eq('id', argument_id)
+        .eq('user_id', user.id)
+        .then(({ error }) => {
+          if (error) console.error('[critique] score persist error:', error.message)
+        })
     }
 
     return NextResponse.json(parsed satisfies CritiqueResponse)

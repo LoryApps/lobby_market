@@ -1255,6 +1255,8 @@ export type Database = {
           content: string;
           upvotes: number;
           source_url: string | null;
+          ai_score: number | null;
+          ai_grade: string | null;
           created_at: string;
         };
         Insert: {
@@ -1265,6 +1267,8 @@ export type Database = {
           content: string;
           upvotes?: number;
           source_url?: string | null;
+          ai_score?: number | null;
+          ai_grade?: string | null;
           created_at?: string;
         };
         Update: {
@@ -1275,6 +1279,8 @@ export type Database = {
           content?: string;
           upvotes?: number;
           source_url?: string | null;
+          ai_score?: number | null;
+          ai_grade?: string | null;
           created_at?: string;
         };
         Relationships: [];
@@ -2107,6 +2113,8 @@ export interface TopicArgument {
   content: string;
   upvotes: number;
   source_url: string | null;
+  ai_score: number | null;
+  ai_grade: string | null;
   created_at: string;
 }
 
