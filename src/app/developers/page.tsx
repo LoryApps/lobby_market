@@ -353,21 +353,38 @@ export default function DevelopersPage() {
             topics. It follows the RSS 2.0 standard and is compatible with any feed reader.
           </p>
 
-          <EndpointPill method="GET" path="/api/rss" />
+          <div className="space-y-3 mb-6">
+            <EndpointPill method="GET" path="/api/rss" />
+            <EndpointPill method="GET" path="/api/rss/laws" />
+            <EndpointPill method="GET" path="/api/rss/debates" />
+            <EndpointPill method="GET" path="/api/rss/category/{slug}" />
+          </div>
 
           <CodeBlock
-            lang="xml"
-            label="Feed URL"
-            code="https://lobby.market/api/rss"
+            lang="bash"
+            label="Available feeds"
+            code={`# Combined feed (laws + active topics)
+https://lobby.market/api/rss
+
+# Laws only
+https://lobby.market/api/rss/laws
+
+# Live & upcoming debates
+https://lobby.market/api/rss/debates
+
+# Category feeds (replace {slug} with lowercase category)
+# Valid slugs: economics, politics, technology, science,
+#              ethics, philosophy, culture, health, environment, education
+https://lobby.market/api/rss/category/{slug}`}
           />
 
           <div className="mt-4 rounded-xl border border-surface-300 bg-surface-100 p-4 font-mono text-xs text-surface-500 space-y-1">
             <p><span className="text-white">Format:</span> RSS 2.0 with full item descriptions and category tags.</p>
-            <p><span className="text-white">Update frequency:</span> Revalidated every 5 minutes at the CDN.</p>
-            <p><span className="text-white">Items included:</span> Established laws + active/voting topics ordered by establishment date.</p>
+            <p><span className="text-white">Update frequency:</span> Main feed revalidates every 5 min; laws every 10 min; debates every 2 min.</p>
+            <p><span className="text-white">Items included:</span> Established laws and active/voting topics, ordered by date.</p>
           </div>
 
-          <div className="mt-4 flex items-center gap-3">
+          <div className="mt-4 flex items-center gap-3 flex-wrap">
             <Link
               href="/api/rss"
               target="_blank"
@@ -380,8 +397,19 @@ export default function DevelopersPage() {
               )}
             >
               <Rss className="h-4 w-4" />
-              Open RSS Feed
+              Open Main Feed
               <ExternalLink className="h-3 w-3 opacity-60" />
+            </Link>
+            <Link
+              href="/feeds"
+              className={cn(
+                'inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-mono',
+                'bg-surface-200 border border-surface-300 text-surface-400',
+                'hover:text-white hover:border-surface-400 transition-colors',
+                'focus:outline-none focus-visible:ring-2 focus-visible:ring-surface-500'
+              )}
+            >
+              Browse all feeds →
             </Link>
           </div>
         </section>

@@ -32,7 +32,7 @@ import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { cn } from '@/lib/utils/cn'
 
-// ─── Types ───────────────────────────────────────────────────────────────────────────────
+// ─── Types ────────────────────────────────────────────────────────────────────
 
 interface FeedEntry {
   title: string
@@ -46,7 +46,7 @@ interface FeedEntry {
   tagColor?: string
 }
 
-// ─── Feed definitions ──────────────────────────────────────────────────────────────────────────
+// ─── Feed definitions ─────────────────────────────────────────────────────────
 
 const BASE = 'https://lobby.market'
 
@@ -179,7 +179,7 @@ const CATEGORY_FEEDS: FeedEntry[] = [
   },
 ]
 
-// ─── CopyButton ──────────────────────────────────────────────────────────────────────────────
+// ─── CopyButton ───────────────────────────────────────────────────────────────
 
 function CopyButton({ url }: { url: string }) {
   const [copied, setCopied] = useState(false)
@@ -212,7 +212,7 @@ function CopyButton({ url }: { url: string }) {
   )
 }
 
-// ─── FeedCard ───────────────────────────────────────────────────────────────────────────────
+// ─── FeedCard ─────────────────────────────────────────────────────────────────
 
 function FeedCard({ feed }: { feed: FeedEntry }) {
   return (
@@ -266,7 +266,7 @@ function FeedCard({ feed }: { feed: FeedEntry }) {
   )
 }
 
-// ─── Section header ───────────────────────────────────────────────────────────────────────────
+// ─── Section header ───────────────────────────────────────────────────────────
 
 function SectionHeader({ title, description }: { title: string; description: string }) {
   return (
@@ -277,7 +277,7 @@ function SectionHeader({ title, description }: { title: string; description: str
   )
 }
 
-// ─── Page ───────────────────────────────────────────────────────────────────────────────
+// ─── Page ─────────────────────────────────────────────────────────────────────
 
 export function FeedsClient() {
   return (
