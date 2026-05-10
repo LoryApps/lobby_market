@@ -458,7 +458,11 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
               <TopicSynthesisPanel topicId={topic.id} className="mb-6" />
               {/* Spotlight: top FOR + AGAINST argument preview */}
               <ArgumentSpotlight topicId={topic.id} className="mb-6" />
-              <ArgumentThread topicId={topic.id} />
+              <ArgumentThread
+                topicId={topic.id}
+                topicStatement={topic.statement}
+                topicCategory={topic.category ?? null}
+              />
             </>
           </ErrorBoundary>
         ) : (
