@@ -53,6 +53,8 @@ import {
 import { cn } from '@/lib/utils/cn'
 import { renderWithMentions } from '@/lib/utils/mentions'
 import { LinkPreviewCard } from '@/components/ui/LinkPreviewCard'
+import { InlineCritiquePanel, CritiqueButton } from '@/components/topic/InlineCritiquePanel'
+import type { CritiqueResponse } from '@/app/api/arguments/critique/route'
 import type { TopicArgumentWithAuthor, ArgumentReplyWithAuthor } from '@/lib/supabase/types'
 
 // Extract the first https URL from argument content (for link preview)
@@ -83,6 +85,8 @@ function relativeTime(date: string): string {
 
 interface ArgumentThreadProps {
   topicId: string
+  topicStatement?: string
+  topicCategory?: string | null
 }
 
 type SortMode = 'top' | 'new'
@@ -743,9 +747,13 @@ function clearDraft(topicId: string) {
 
 function PostArgumentForm({
   topicId,
+  topicStatement,
+  topicCategory,
   onPosted,
 }: {
   topicId: string
+  topicStatement?: string
+  topicCategory?: string | null
   onPosted: (arg: TopicArgumentWithAuthor) => void
 }) {
   const [side, setSide] = useState<'blue' | 'red' | null>(null)
@@ -762,6 +770,12 @@ function PostArgumentForm({
   const [aiStartersLoading, setAiStartersLoading] = useState(false)
   const [aiStarters, setAiStarters] = useState<{ text: string; angle: string }[]>([])
   const [aiUnavailable, setAiUnavailable] = useState(false)
+
+  // AI critique state
+  const [critiqueOpen, setCritiqueOpen] = useState(false)
+  const [critiqueLoading, setCritiqueLoading] = useState(false)
+  const [critiqueResult, setCritiqueResult] = useState<CritiqueResponse | null>(null)
+  const [critiqueUnavailable, setCritiqueUnavailable] = useState(false)
 
   // @mention autocomplete state
   const [mentionQuery, setMentionQuery] = useState<string | null>(null)
@@ -853,6 +867,34 @@ function PostArgumentForm({
       setAiStarters([])
     } finally {
       setAiStartersLoading(false)
+    }
+  }
+
+  async function fetchCritique() {
+    if (!side || critiqueLoading) return
+    setCritiqueLoading(true)
+    setCritiqueOpen(true)
+    setCritiqueResult(null)
+    setCritiqueUnavailable(false)
+    try {
+      const res = await fetch('/api/arguments/critique', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          topic_statement: topicStatement ?? topicId,
+          category: topicCategory ?? null,
+          side: side === 'blue' ? 'for' : 'against',
+          argument_text: content.trim(),
+        }),
+      })
+      if (!res.ok) throw new Error('Failed')
+      const data = (await res.json()) as CritiqueResponse
+      if (data.unavailable) { setCritiqueUnavailable(true); return }
+      setCritiqueResult(data)
+    } catch {
+      setCritiqueResult(null)
+    } finally {
+      setCritiqueLoading(false)
     }
   }
 
@@ -1075,6 +1117,33 @@ function PostArgumentForm({
         </div>
       )}
 
+      {/* AI Critique — shown when the draft is long enough to evaluate */}
+      {side && content.trim().length >= MIN_CHARS && topicStatement && (
+        <div className="space-y-2">
+          <CritiqueButton
+            side={side}
+            loading={critiqueLoading}
+            hasResult={!!critiqueResult}
+            onClick={() => {
+              if (critiqueOpen && !critiqueLoading) {
+                setCritiqueOpen(false)
+              } else {
+                void fetchCritique()
+              }
+            }}
+          />
+          {critiqueOpen && (
+            <InlineCritiquePanel
+              loading={critiqueLoading}
+              critique={critiqueResult}
+              unavailable={critiqueUnavailable}
+              side={side}
+              onClose={() => setCritiqueOpen(false)}
+            />
+          )}
+        </div>
+      )}
+
       {/* AI Starter — shown when side is selected and content is empty */}
       {side && !content.trim() && (
         <div className="space-y-2">
@@ -1284,7 +1353,7 @@ function SideColumn({
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
-export function ArgumentThread({ topicId }: ArgumentThreadProps) {
+export function ArgumentThread({ topicId, topicStatement, topicCategory }: ArgumentThreadProps) {
   const [args, setArgs] = useState<TopicArgumentWithAuthor[]>([])
   const [myArgumentId, setMyArgumentId] = useState<string | null>(null)
   const [currentUserId, setCurrentUserId] = useState<string | null>(null)
@@ -1588,7 +1657,12 @@ export function ArgumentThread({ topicId }: ArgumentThreadProps) {
               Cancel
             </button>
           </div>
-          <PostArgumentForm topicId={topicId} onPosted={handlePosted} />
+          <PostArgumentForm
+            topicId={topicId}
+            topicStatement={topicStatement}
+            topicCategory={topicCategory}
+            onPosted={handlePosted}
+          />
         </div>
       )}
 
