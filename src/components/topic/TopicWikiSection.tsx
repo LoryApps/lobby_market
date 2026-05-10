@@ -43,7 +43,7 @@ function getWikilinkContext(
   cursorPos: number
 ): { query: string; startPos: number } | null {
   const before = text.slice(0, cursorPos)
-  const match = before.match(/\[\[([^\][]*)$/)
+  const match = before.match(/\[\[([^\][]*)/)
   if (!match) return null
   const startPos = before.length - match[0].length
   return { query: match[1], startPos }
@@ -447,7 +447,7 @@ export function TopicWikiSection({
     } finally {
       setSaving(false)
     }
-  }, [topicId, draft, saving, onUpdate])
+  }, [topicId, draft, saving, onUpdate, autoSaveKey])
 
   // Insert a [[wikilink]] — replaces `[[query` with `[Statement](/topic/id)`
   const handleWikilinkSelect = useCallback(
@@ -647,7 +647,7 @@ export function TopicWikiSection({
             <div className="h-4 w-px bg-surface-400/40 mx-0.5" aria-hidden />
             <button
               type="button"
-              title="Link to related topic  ([[)"
+              title="Link to related topic  ([["
               aria-label="Insert topic wikilink"
               onMouseDown={(e) => {
                 e.preventDefault()

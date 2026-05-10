@@ -275,7 +275,8 @@ export default function BattlegroundPage() {
       data.topic.recent_votes.map((v) => `${v.voter_username}-${v.voted_at}`)
     )
     setPrevVoteIds(ids)
-  }, [data?.topic?.id]) // only reset on topic change
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data?.topic?.id]) // only reset on topic change, not on every vote update
 
   const handleTopicSwitch = useCallback((topicId: string) => {
     setSelectedTopicId(topicId)

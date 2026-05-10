@@ -334,13 +334,18 @@ export function InfluenceGraph({ nodes: rawNodes, edges: rawEdges, className }: 
       canvas.removeEventListener('click', onClick)
       canvas.removeEventListener('wheel', onWheel)
     }
+    // hoverNode is read inside the draw loop via closure; the sim-restart
+    // effect below propagates redraws when hover changes, so it's safe to
+    // omit it here.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rawNodes, rawEdges, router])
 
-  // Redraw when hover changes
+  // Redraw when hover changes — hoverNode?.id is the only part that matters
   useEffect(() => {
     const sim = simRef.current
     if (sim) sim.alpha(0.01).restart()
-  }, [hoverNode])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hoverNode?.id])
 
   return (
     <div ref={containerRef} className={className} style={{ position: 'relative' }}>
