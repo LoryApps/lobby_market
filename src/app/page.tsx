@@ -5,6 +5,7 @@ import { BottomNav } from '@/components/layout/BottomNav'
 import { TrendingTicker } from '@/components/feed/TrendingTicker'
 import { FeedAtmosphere } from '@/components/simulation/FeedAtmosphere'
 import { LobbyRail } from '@/components/feed/LobbyRail'
+import { CivicAlertBanner } from '@/components/feed/CivicAlertBanner'
 
 export const metadata: Metadata = {
   title: 'Lobby Market — The People\'s Consensus Engine',
@@ -32,6 +33,7 @@ export default function Home() {
       <FeedAtmosphere />
       <TopBar />
       <TrendingTicker />
+      <CivicAlertBanner />
       <main className="flex-1 overflow-hidden">
         <FeedContainer />
       </main>
