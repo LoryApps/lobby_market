@@ -51,7 +51,7 @@ import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { cn } from '@/lib/utils/cn'
 
-// ─── localStorage key constants (must match game pages exactly) ──────────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── localStorage key constants (must match game pages exactly) ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 const KEYS = {
   trivia:       'lm_trivia_result',
@@ -77,7 +77,7 @@ const KEYS = {
   verdict:       'lm_verdict_v1',
 } as const
 
-// ─── Types ──────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Types ──────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 interface ArcadeRecord {
   triviaScore: number | null
@@ -377,7 +377,7 @@ function loadRecords(): ArcadeRecord {
   return def
 }
 
-// ─── Game definitions ────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Game definitions ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 interface GameDef {
   id: string
@@ -926,7 +926,7 @@ const GAMES: GameDef[] = [
   },
 ]
 
-// ─── Difficulty badge ──────────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Difficulty badge ──────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 const DIFF_STYLE = {
   easy: 'text-emerald border-emerald/30 bg-emerald/10',
@@ -934,7 +934,7 @@ const DIFF_STYLE = {
   hard: 'text-against-400 border-against-500/30 bg-against-500/10',
 } as const
 
-// ─── Score display ──────────────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Score display ──────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 function ScorePill({ label, value, color }: { label: string; value: string; color: string }) {
   return (
@@ -945,7 +945,7 @@ function ScorePill({ label, value, color }: { label: string; value: string; colo
   )
 }
 
-// ─── Game card ───────────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Game card ───────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 interface GameCardProps {
   game: GameDef
@@ -1061,7 +1061,7 @@ function SectionHeader({
   )
 }
 
-// ─── Page ───────────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Page ──────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 export default function ArcadePage() {
   const [records, setRecords] = useState<ArcadeRecord | null>(null)
