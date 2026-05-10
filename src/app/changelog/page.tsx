@@ -753,15 +753,30 @@ const CHAPTERS: Chapter[] = [
       { icon: Sparkles, label: 'Source citation card: when an argument includes a source URL, a dedicated "Supporting evidence" card shows the domain and links to the source. Ungraded arguments show a Coach nudge CTA.', href: '/arguments', color: 'text-gold' },
     ],
   },
+  {
+    number: 'Ch. 42',
+    title: 'Quality Sort for Arguments',
+    subtitle: 'A third sort mode — powered by AI grades — surfaces the most rigorous arguments first on every topic page',
+    accent: 'text-purple',
+    borderColor: 'border-purple/30',
+    bgColor: 'bg-purple/5',
+    textColor: 'text-purple',
+    items: [
+      { icon: Brain, label: 'New "Quality" sort button on every topic\'s argument thread — cycles Top → New → Quality. When active, arguments are ranked by AI score (1–10) descending, then by upvotes — putting the best-evidenced, clearest arguments at the top.', color: 'text-purple' },
+      { icon: ArrowDownUp, label: 'Server-side quality ordering: the arguments API (/api/topics/[id]/arguments) now accepts ?sort=quality, ordering by ai_score DESC NULLS LAST. Switching to Quality mode triggers a fresh server fetch so topics with >50 arguments surface the right top-50 by score.', color: 'text-for-400' },
+      { icon: TrendingUp, label: 'Arguments without AI grades gracefully fall to the bottom of Quality mode, ranked by upvotes among themselves — so the sort never hides ungraded content, it just promotes scored ones.', color: 'text-emerald' },
+      { icon: Sparkles, label: 'Quality mode button uses a distinct purple accent (Brain icon) to make it visually distinct from Top (upvote icon) and New (live ping dot) — the sort state is unmistakable at a glance.', color: 'text-gold' },
+    ],
+  },
 ]
 
 // ─── Stat pills ────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 const STATS = [
-  { value: '41', label: 'chapters shipped' },
-  { value: '275+', label: 'features built' },
+  { value: '42', label: 'chapters shipped' },
+  { value: '280+', label: 'features built' },
   { value: '68', label: 'DB migrations' },
-  { value: '375+', label: 'API routes' },
+  { value: '376+', label: 'API routes' },
 ]
 
 // ─── Recent builds ────────────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -776,6 +791,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Quality Sort for Arguments',
+    description: 'Every topic argument thread now has a third sort mode: Quality (Brain icon, purple). Clicking the sort button cycles Top → New → Quality. In Quality mode, arguments with the highest AI scores surface first — backed by a new ?sort=quality server endpoint that orders by ai_score DESC NULLS LAST. Ungraded arguments fall to the end, ranked by upvotes.',
+    href: '/topic',
+    icon: Brain,
+    color: 'text-purple',
+    tag: 'Ch. 42',
+  },
   {
     title: 'Argument Grade Spotlight',
     description: 'Every argument permalink (/arguments/[id]) now shows the AI quality grade prominently: large letter grade, numeric score bar with colour-coded fill, and a percentile ("better than X% of all graded arguments"). Source citation cards surface evidence links. Ungraded arguments get a Coach nudge CTA. Grade and score are now fetched and displayed across all metadata too.',
