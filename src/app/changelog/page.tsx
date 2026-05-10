@@ -693,15 +693,60 @@ const CHAPTERS: Chapter[] = [
       { icon: Target, label: 'When score < 8, Claude proposes a sharper rewrite. One click applies it directly to the statement field. Gracefully degrades when AI is unavailable.', href: '/topic/create', color: 'text-surface-400' },
     ],
   },
+  {
+    number: 'Ch. 38',
+    title: 'RSS Feeds Hub',
+    subtitle: 'Machine-readable feeds for laws, debates, and every category',
+    accent: 'text-for-400',
+    borderColor: 'border-for-500/30',
+    bgColor: 'bg-for-500/5',
+    textColor: 'text-for-400',
+    items: [
+      { icon: Radio, label: 'New /feeds hub listing every available RSS feed in one scannable page — laws, active topics, all 10 civic categories, and live debates.', href: '/feeds', color: 'text-for-400' },
+      { icon: Zap, label: 'Category-specific RSS feeds: subscribe to just Economics, Climate, Technology, or any of the 10 civic policy areas.', href: '/feeds', color: 'text-for-400' },
+      { icon: Mic, label: 'Debate RSS feed: every scheduled and live debate as an Atom-compatible feed item with start time, format, and topic statement.', href: '/feeds', color: 'text-purple' },
+      { icon: Gavel, label: 'Laws feed: every topic that crossed the threshold and became established law — title, FOR%, vote count, and establishment date.', href: '/feeds', color: 'text-gold' },
+    ],
+  },
+  {
+    number: 'Ch. 39',
+    title: 'Argument Quality Leaderboard',
+    subtitle: 'Platform-wide ranking by AI grade — the best debate minds on the Lobby',
+    accent: 'text-purple',
+    borderColor: 'border-purple/30',
+    bgColor: 'bg-purple/5',
+    textColor: 'text-purple',
+    items: [
+      { icon: Trophy, label: 'New /top-arguments page: platform-wide list of AI-graded arguments. Filter by grade (A–F), side (FOR/AGAINST), and time period. Ranked by AI score then community upvotes.', href: '/top-arguments', color: 'text-purple' },
+      { icon: Crown, label: 'New /leaderboard/grades tab: rank debaters by average AI argument grade. Three views — By Grade (avg score), By Volume (most graded args), and Platform (aggregate grade distribution by category).', href: '/leaderboard/grades', color: 'text-gold' },
+      { icon: Award, label: 'Grade badges (A/B/C/D/F) now appear on all argument cards across the platform — colour-coded emerald → red for instant quality signals at a glance.', color: 'text-emerald' },
+      { icon: Bot, label: '"How to respond" button on opposing argument cards: one click generates 3 AI response strategies — challenge the premise, introduce new evidence, reframe the stakes — each with a copyable opening line.', color: 'text-for-400' },
+    ],
+  },
+  {
+    number: 'Ch. 40',
+    title: 'My Argument Grade Profile',
+    subtitle: 'Personal AI grade analytics — see your debate quality at a glance',
+    accent: 'text-emerald',
+    borderColor: 'border-emerald/30',
+    bgColor: 'bg-emerald/5',
+    textColor: 'text-emerald',
+    items: [
+      { icon: Brain, label: 'Grade distribution panel on /arguments/mine: A–F bar chart showing how your arguments score across the AI quality spectrum, with your overall average score and grade.', href: '/arguments/mine', color: 'text-purple' },
+      { icon: Star, label: 'New "Top Graded" tab in My Arguments — sorted by AI score so you can instantly find your strongest work and understand what makes it grade well.', href: '/arguments/mine', color: 'text-emerald' },
+      { icon: BarChart2, label: 'Category breakdown now shows average AI grade per category — see whether you argue Economics better than Climate, or FOR better than AGAINST.', href: '/arguments/mine', color: 'text-for-400' },
+      { icon: Sparkles, label: 'Grade badges appear inline on every argument row — no need to open individual arguments to see their quality signal. Nudge prompts coach users who have zero graded arguments.', href: '/arguments/mine', color: 'text-gold' },
+    ],
+  },
 ]
 
 // ─── Stat pills ────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 const STATS = [
-  { value: '37', label: 'chapters shipped' },
-  { value: '255+', label: 'features built' },
+  { value: '40', label: 'chapters shipped' },
+  { value: '270+', label: 'features built' },
   { value: '68', label: 'DB migrations' },
-  { value: '356+', label: 'API routes' },
+  { value: '370+', label: 'API routes' },
 ]
 
 // ─── Recent builds ────────────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -716,6 +761,30 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'My Argument Grade Profile',
+    description: 'Grade distribution panel on /arguments/mine: A–F bar chart showing how your arguments score across the AI quality spectrum, with your overall average score and grade. New "Top Graded" tab, grade badges on every argument row, and per-category average grade in the breakdown — all backed by the persisted ai_score/ai_grade columns.',
+    href: '/arguments/mine',
+    icon: Brain,
+    color: 'text-emerald',
+    tag: 'Ch. 40',
+  },
+  {
+    title: 'Argument Quality Leaderboard',
+    description: 'Platform-wide /top-arguments page ranks all AI-graded arguments by score, with grade/side/period filters. New /leaderboard/grades tab ranks debaters by average AI grade. Grade badges (A–F, colour-coded) now appear on all argument cards across the platform.',
+    href: '/top-arguments',
+    icon: Trophy,
+    color: 'text-purple',
+    tag: 'Ch. 39',
+  },
+  {
+    title: 'RSS Feeds Hub',
+    description: 'New /feeds hub aggregates every Lobby Market RSS feed: established laws, active topics, live debates, and category-specific feeds for all 10 civic policy areas. Subscribe from any RSS reader or podcast app.',
+    href: '/feeds',
+    icon: Radio,
+    color: 'text-for-400',
+    tag: 'Ch. 38',
+  },
   {
     title: 'Topic Quality Advisor',
     description: "A new \"Check\" button in the topic creation form triggers an inline AI assessment of the draft statement. Five civic dimensions are scored (Clarity, Binary Feasibility, Scope, Debate Potential, Civic Impact), combined into an overall tier badge (Excellent / Good / Needs Work / Poor). When the score is below 8, Claude proposes a sharper rewrite — one click applies it directly to the statement field.",
