@@ -54,6 +54,7 @@ import { cn } from '@/lib/utils/cn'
 import { renderWithMentions } from '@/lib/utils/mentions'
 import { LinkPreviewCard } from '@/components/ui/LinkPreviewCard'
 import { InlineCritiquePanel, CritiqueButton } from '@/components/topic/InlineCritiquePanel'
+import { ArgumentResponseSuggest } from '@/components/topic/ArgumentResponseSuggest'
 import type { CritiqueResponse } from '@/app/api/arguments/critique/route'
 import type { TopicArgumentWithAuthor, ArgumentReplyWithAuthor } from '@/lib/supabase/types'
 
@@ -126,7 +127,7 @@ function ArgumentThreadSkeleton() {
   )
 }
 
-// ─── Reply panel ─────────────────────────────────────────────────────────────────
+// ─── Reply panel ──────────────────────────────────────────────────────────────────────────
 
 function ReplyPanel({
   topicId,
@@ -408,7 +409,7 @@ function ReplyPanel({
   )
 }
 
-// ─── Single argument card ───────────────────────────────────────────────────────────────
+// ─── Single argument card ────────────────────────────────────────────────────────────────────────
 
 function ArgumentCard({
   arg,
@@ -594,6 +595,14 @@ function ArgumentCard({
           <MessageSquare className="h-3 w-3" aria-hidden />
           {showReplies ? 'Hide replies' : 'Reply'}
         </button>
+
+        {/* AI response suggestions — only for other users' arguments */}
+        {currentUserId && !isOwn && (
+          <ArgumentResponseSuggest
+            argumentId={arg.id}
+            argumentSide={arg.side as 'blue' | 'red'}
+          />
+        )}
       </div>
 
       {/* Right: upvote + tip column */}
@@ -720,9 +729,9 @@ function ArgumentCard({
   )
 }
 
-// ─── Post form ──────────────────────────────────────────────────────────────────
+// ─── Post form ────────────────────────────────────────────────────────────────────────────
 
-// ─── Draft persistence helpers ────────────────────────────────────────────────
+// ─── Draft persistence helpers ─────────────────────────────────────────────────────────────────────
 
 function draftKey(topicId: string) {
   return `lm_arg_draft_${topicId}`
@@ -1338,7 +1347,7 @@ function PostArgumentForm({
   )
 }
 
-// ─── Side column ─────────────────────────────────────────────────────────────────
+// ─── Side column ─────────────────────────────────────────────────────────────────────────────
 
 function SideColumn({
   side,
@@ -1388,7 +1397,7 @@ function SideColumn({
   )
 }
 
-// ─── Main component ──────────────────────────────────────────────────────────────
+// ─── Main component ──────────────────────────────────────────────────────────────────────────
 
 export function ArgumentThread({ topicId, topicStatement, topicCategory }: ArgumentThreadProps) {
   const [args, setArgs] = useState<TopicArgumentWithAuthor[]>([])
