@@ -39,6 +39,7 @@ import {
   Gauge,
   Shield,
   Skull,
+  Sliders,
   Sparkles,
   Star,
   Swords,
@@ -616,15 +617,30 @@ const CHAPTERS: Chapter[] = [
       { icon: Gamepad2, label: 'Arcade hub tracks daily completion and score (0–50). Results link directly to each debate for deeper engagement.', href: '/arcade', color: 'text-surface-400' },
     ],
   },
+  {
+    number: 'Ch. 33',
+    title: 'Civic Gauge',
+    subtitle: 'Daily estimation game — outcome known, percentage hidden',
+    accent: 'text-gold',
+    borderColor: 'border-gold/30',
+    bgColor: 'bg-gold/5',
+    textColor: 'text-gold',
+    items: [
+      { icon: Sliders, label: 'Daily game: 5 resolved debates — Law or Failed status shown, exact FOR% hidden. Drag a slider to guess the percentage.', href: '/gauge', color: 'text-gold' },
+      { icon: Target, label: 'Precision scoring: ≤5% off = 20 pts, ≤10% = 15 pts, ≤20% = 10 pts, ≤30% = 5 pts, else 0. Max 100 pts per session.', href: '/gauge', color: 'text-gold' },
+      { icon: Sparkles, label: 'Seeded daily shuffle — all players get the same 5 questions each day from the law + failed pool (≥10 votes).', href: '/gauge', color: 'text-gold' },
+      { icon: Trophy, label: 'Grade S–F on completion (S = 90+). Animated reveal bars, shareable emoji result snippet, daily localStorage lock.', href: '/gauge', color: 'text-gold' },
+    ],
+  },
 ]
 
 // ─── Stat pills ──────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 const STATS = [
-  { value: '32', label: 'chapters shipped' },
-  { value: '230+', label: 'features built' },
+  { value: '33', label: 'chapters shipped' },
+  { value: '235+', label: 'features built' },
   { value: '67', label: 'DB migrations' },
-  { value: '342+', label: 'API routes' },
+  { value: '345+', label: 'API routes' },
 ]
 
 // ─── Recent builds ──────────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -639,6 +655,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Civic Gauge',
+    description: 'Daily estimation game — outcome known, percentage hidden. Guess the exact FOR% on 5 resolved debates with a drag slider. Precision scoring, seeded daily questions, S–F grade.',
+    href: '/gauge',
+    icon: Sliders,
+    color: 'text-gold',
+    tag: 'Ch. 33',
+  },
   {
     title: 'Civic Verdict',
     description: 'A daily jury game. Five mystery debates — each round reveals one real FOR argument and one real AGAINST argument, topic hidden. Render your verdict based on argument quality alone. Score 10 pts when you match the platform\'s majority. 50 pts max, letter grade S–D, shareable result snippet.',
