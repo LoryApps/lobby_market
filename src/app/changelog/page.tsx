@@ -63,8 +63,7 @@ export const metadata: Metadata = {
     'The full feature history of Lobby Market — every debate system, civic tool, and community feature built into the platform.',
   openGraph: {
     title: 'Changelog · Lobby Market',
-    description:
-      "From the first vote to the full civic engine — every feature we've shipped.",
+    description: "From the first vote to the full civic engine — every feature we've shipped.",
     type: 'website',
     siteName: 'Lobby Market',
   },
@@ -74,8 +73,6 @@ export const metadata: Metadata = {
     description: "The complete history of Lobby Market's features.",
   },
 }
-
-// ─── Types ────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 interface ChangeItem {
   icon: React.ComponentType<{ className?: string }>
@@ -94,8 +91,6 @@ interface Chapter {
   textColor: string
   items: ChangeItem[]
 }
-
-// ─── Chapters ────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 const CHAPTERS: Chapter[] = [
   {
@@ -546,7 +541,7 @@ const CHAPTERS: Chapter[] = [
   {
     number: 'Ch. 28',
     title: 'Civic Mirror',
-    subtitle: 'Daily gut-check — vote FOR or AGAINST on 5 topics, then see if you\'re with the majority or a contrarian outlier',
+    subtitle: "Daily gut-check — vote FOR or AGAINST on 5 topics, then see if you're with the majority or a contrarian outlier",
     accent: 'text-for-400',
     borderColor: 'border-for-500/30',
     bgColor: 'bg-for-500/5',
@@ -613,7 +608,7 @@ const CHAPTERS: Chapter[] = [
     textColor: 'text-against-400',
     items: [
       { icon: Gavel, label: 'Daily game: 5 mystery debates. Each round shows one real FOR argument and one real AGAINST argument — topic statement hidden.', href: '/civic-verdict', color: 'text-against-400' },
-      { icon: Scale, label: 'Vote FOR or AGAINST based purely on argument quality. After your pick, the topic is revealed along with the platform\'s actual vote split.', href: '/civic-verdict', color: 'text-for-400' },
+      { icon: Scale, label: "Vote FOR or AGAINST based purely on argument quality. After your pick, the topic is revealed along with the platform's actual vote split.", href: '/civic-verdict', color: 'text-for-400' },
       { icon: Trophy, label: '10 pts when your verdict matches the majority. Max 50 pts. Letter grade S–D on completion. Daily lock with share snippet.', href: '/civic-verdict', color: 'text-gold' },
       { icon: Gamepad2, label: 'Arcade hub tracks daily completion and score (0–50). Results link directly to each debate for deeper engagement.', href: '/arcade', color: 'text-surface-400' },
     ],
@@ -748,7 +743,7 @@ const CHAPTERS: Chapter[] = [
     textColor: 'text-purple',
     items: [
       { icon: Brain, label: 'AI grade panel on /arguments/[id]: large letter grade (A–F), numeric score bar, and label (Exceptional / Strong / Adequate / Weak / Poor) — visible on every argument permalink.', href: '/arguments', color: 'text-purple' },
-      { icon: BarChart2, label: 'Platform percentile: "Scores better than X% of all graded arguments" — instantly shows how the argument ranks against the entire platform\'s graded corpus.', href: '/arguments', color: 'text-for-400' },
+      { icon: BarChart2, label: "Platform percentile: \"Scores better than X% of all graded arguments\" — instantly shows how the argument ranks against the entire platform's graded corpus.", href: '/arguments', color: 'text-for-400' },
       { icon: Star, label: 'Grade badge inline next to the FOR/AGAINST side label at the top of the page — grade visible at a glance before reading the full argument.', href: '/arguments', color: 'text-emerald' },
       { icon: Sparkles, label: 'Source citation card: when an argument includes a source URL, a dedicated "Supporting evidence" card shows the domain and links to the source. Ungraded arguments show a Coach nudge CTA.', href: '/arguments', color: 'text-gold' },
     ],
@@ -762,24 +757,35 @@ const CHAPTERS: Chapter[] = [
     bgColor: 'bg-purple/5',
     textColor: 'text-purple',
     items: [
-      { icon: Brain, label: 'New "Quality" sort button on every topic\'s argument thread — cycles Top → New → Quality. When active, arguments are ranked by AI score (1–10) descending, then by upvotes — putting the best-evidenced, clearest arguments at the top.', color: 'text-purple' },
+      { icon: Brain, label: "New \"Quality\" sort button on every topic's argument thread — cycles Top → New → Quality. When active, arguments are ranked by AI score (1–10) descending, then by upvotes — putting the best-evidenced, clearest arguments at the top.", color: 'text-purple' },
       { icon: ArrowDownUp, label: 'Server-side quality ordering: the arguments API (/api/topics/[id]/arguments) now accepts ?sort=quality, ordering by ai_score DESC NULLS LAST. Switching to Quality mode triggers a fresh server fetch so topics with >50 arguments surface the right top-50 by score.', color: 'text-for-400' },
       { icon: TrendingUp, label: 'Arguments without AI grades gracefully fall to the bottom of Quality mode, ranked by upvotes among themselves — so the sort never hides ungraded content, it just promotes scored ones.', color: 'text-emerald' },
       { icon: Sparkles, label: 'Quality mode button uses a distinct purple accent (Brain icon) to make it visually distinct from Top (upvote icon) and New (live ping dot) — the sort state is unmistakable at a glance.', color: 'text-gold' },
     ],
   },
+  {
+    number: 'Ch. 43',
+    title: 'Best Arguments Showcase',
+    subtitle: "A dedicated quality showcase page — the platform's highest AI-scored arguments ranked, filtered, and celebrated",
+    accent: 'text-gold',
+    borderColor: 'border-gold/30',
+    bgColor: 'bg-gold/5',
+    textColor: 'text-gold',
+    items: [
+      { icon: Trophy, label: 'New /arguments/top-scored page: "Best Arguments" — a ranked digest of every AI-graded argument on the platform, ordered by quality score (1–10) descending. Filterable by period (This Week / Month / All Time), grade (A / B / C), and side (FOR / AGAINST).', href: '/arguments/top-scored', color: 'text-gold' },
+      { icon: Brain, label: 'Grade-coloured cards with distinct accents: gold for A (Exceptional), emerald for B (Strong), blue for C (Adequate), grey for D, red for F. Each card shows a live score bar (score/10), rank number with podium colouring (#1 gold, #2 silver, #3 bronze).', href: '/arguments/top-scored', color: 'text-purple' },
+      { icon: Star, label: 'Argument cards include: grade badge, score bar, side pill (FOR / AGAINST), full author row with avatar, content preview (260 chars), upvote count, source link indicator, and topic context with status badge and statement truncated to 45 chars.', href: '/arguments/top-scored', color: 'text-emerald' },
+      { icon: Sparkles, label: 'Paginated load-more (25 per page) with remaining count, content-shaped skeleton loading state, empty state with CTAs, and a "Best Quality" shortcut link added to the main /arguments hub nav strip next to Daily Pick and Trending.', href: '/arguments/top-scored', color: 'text-for-400' },
+    ],
+  },
 ]
-
-// ─── Stat pills ────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 const STATS = [
-  { value: '42', label: 'chapters shipped' },
-  { value: '280+', label: 'features built' },
+  { value: '43', label: 'chapters shipped' },
+  { value: '285+', label: 'features built' },
   { value: '68', label: 'DB migrations' },
-  { value: '376+', label: 'API routes' },
+  { value: '377+', label: 'API routes' },
 ]
-
-// ─── Recent builds ────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 interface RecentBuild {
   title: string
@@ -791,6 +797,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Best Arguments Showcase',
+    description: "New /arguments/top-scored page surfaces the platform's highest AI-graded arguments in a ranked digest. Filterable by period (week / month / all-time), grade (A / B / C), and side (FOR / AGAINST). Each card shows grade badge with colour-coded accents (gold A, emerald B, blue C), score bar, rank number with podium colouring, author, upvote count, and topic link. Paginated with 25-per-page load-more.",
+    href: '/arguments/top-scored',
+    icon: Trophy,
+    color: 'text-gold',
+    tag: 'Ch. 43',
+  },
   {
     title: 'Quality Sort for Arguments',
     description: 'Every topic argument thread now has a third sort mode: Quality (Brain icon, purple). Clicking the sort button cycles Top → New → Quality. In Quality mode, arguments with the highest AI scores surface first — backed by a new ?sort=quality server endpoint that orders by ai_score DESC NULLS LAST. Ungraded arguments fall to the end, ranked by upvotes.',
@@ -833,7 +847,7 @@ const RECENT_BUILDS: RecentBuild[] = [
   },
   {
     title: 'Topic Quality Advisor',
-    description: "A new \"Check\" button in the topic creation form triggers an inline AI assessment of the draft statement. Five civic dimensions are scored (Clarity, Binary Feasibility, Scope, Debate Potential, Civic Impact), combined into an overall tier badge (Excellent / Good / Needs Work / Poor). When the score is below 8, Claude proposes a sharper rewrite — one click applies it directly to the statement field.",
+    description: 'A new "Check" button in the topic creation form triggers an inline AI assessment of the draft statement. Five civic dimensions are scored (Clarity, Binary Feasibility, Scope, Debate Potential, Civic Impact), combined into an overall tier badge (Excellent / Good / Needs Work / Poor). When the score is below 8, Claude proposes a sharper rewrite — one click applies it directly to the statement field.',
     icon: ShieldCheck,
     color: 'text-gold',
     tag: 'Ch. 37',
@@ -870,7 +884,7 @@ const RECENT_BUILDS: RecentBuild[] = [
   },
   {
     title: 'Civic Verdict',
-    description: 'A daily jury game. Five mystery debates — each round reveals one real FOR argument and one real AGAINST argument, topic hidden. Render your verdict based on argument quality alone. Score 10 pts when you match the platform\'s majority. 50 pts max, letter grade S–D, shareable result snippet.',
+    description: "A daily jury game. Five mystery debates — each round reveals one real FOR argument and one real AGAINST argument, topic hidden. Render your verdict based on argument quality alone. Score 10 pts when you match the platform's majority. 50 pts max, letter grade S–D, shareable result snippet.",
     href: '/civic-verdict',
     icon: Gavel,
     color: 'text-against-400',
@@ -902,7 +916,7 @@ const RECENT_BUILDS: RecentBuild[] = [
   },
   {
     title: 'Civic Mirror',
-    description: 'A daily self-awareness game. Five civic topics shown with vote splits hidden — tap FOR or AGAINST on gut instinct. After each vote, the community majority is instantly revealed. Score how often you\'re with the majority and receive your civic persona label.',
+    description: "A daily self-awareness game. Five civic topics shown with vote splits hidden — tap FOR or AGAINST on gut instinct. After each vote, the community majority is instantly revealed. Score how often you're with the majority and receive your civic persona label.",
     href: '/civic-mirror',
     icon: Gauge,
     color: 'text-for-400',
@@ -942,7 +956,7 @@ const RECENT_BUILDS: RecentBuild[] = [
   },
   {
     title: 'Civic Gauntlet',
-    description: 'A sudden-death survival game. Topics arrive sorted from easy majorities to near-deadlocks. Pick the community\'s winning side each round — one wrong answer ends your run. Beat your best streak.',
+    description: "A sudden-death survival game. Topics arrive sorted from easy majorities to near-deadlocks. Pick the community's winning side each round — one wrong answer ends your run. Beat your best streak.",
     href: '/gauntlet',
     icon: Swords,
     color: 'text-against-400',
@@ -1006,7 +1020,7 @@ const RECENT_BUILDS: RecentBuild[] = [
   },
   {
     title: 'Perspective Swap',
-    description: "Confront the strongest honest case for the opposing side. A civic anti-echo-chamber tool — not to change your mind, but to understand it.",
+    description: 'Confront the strongest honest case for the opposing side. A civic anti-echo-chamber tool — not to change your mind, but to understand it.',
     href: '/perspective',
     icon: Scale,
     color: 'text-for-400',
@@ -1070,16 +1084,12 @@ const RECENT_BUILDS: RecentBuild[] = [
   },
 ]
 
-// ─── Page ────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-
 export default function ChangelogPage() {
   return (
     <div className="min-h-screen bg-surface-50">
       <TopBar />
 
       <main className="max-w-3xl mx-auto px-4 py-10 pb-28">
-
-        {/* Header */}
         <div className="mb-12">
           <div className="flex items-center gap-2 mb-4">
             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-for-500/10 border border-for-500/20 text-for-400 text-xs font-mono">
@@ -1087,21 +1097,13 @@ export default function ChangelogPage() {
               Active development
             </span>
           </div>
-          <h1 className="font-mono text-4xl font-bold text-white mb-3 leading-tight">
-            Platform Changelog
-          </h1>
+          <h1 className="font-mono text-4xl font-bold text-white mb-3 leading-tight">Platform Changelog</h1>
           <p className="text-surface-500 font-mono text-base leading-relaxed max-w-xl">
-            Every feature ever shipped to Lobby Market — the civic consensus
-            engine built chapter by chapter.
+            Every feature ever shipped to Lobby Market — the civic consensus engine built chapter by chapter.
           </p>
-
-          {/* Stats row */}
           <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-3">
             {STATS.map((s) => (
-              <div
-                key={s.label}
-                className="rounded-xl border border-surface-300 bg-surface-100 px-4 py-3"
-              >
+              <div key={s.label} className="rounded-xl border border-surface-300 bg-surface-100 px-4 py-3">
                 <div className="font-mono text-2xl font-bold text-white">{s.value}</div>
                 <div className="text-[11px] font-mono text-surface-500 mt-0.5">{s.label}</div>
               </div>
@@ -1109,13 +1111,10 @@ export default function ChangelogPage() {
           </div>
         </div>
 
-        {/* Recently shipped */}
         <section className="mb-14">
           <div className="flex items-center gap-2 mb-5">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald animate-pulse" aria-hidden="true" />
-            <h2 className="font-mono text-sm font-semibold text-emerald uppercase tracking-widest">
-              Recently shipped
-            </h2>
+            <h2 className="font-mono text-sm font-semibold text-emerald uppercase tracking-widest">Recently shipped</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {RECENT_BUILDS.map((build) => {
@@ -1136,19 +1135,14 @@ export default function ChangelogPage() {
                 </div>
               )
               return build.href ? (
-                <Link key={build.title} href={build.href} className="contents">
-                  {inner}
-                </Link>
+                <Link key={build.title} href={build.href} className="contents">{inner}</Link>
               ) : inner
             })}
           </div>
         </section>
 
-        {/* Timeline */}
         <div className="relative">
-          {/* Vertical line */}
           <div className="absolute left-[18px] top-0 bottom-0 w-px bg-surface-300" aria-hidden="true" />
-
           <div className="space-y-10">
             {CHAPTERS.map((chapter) => (
               <ChapterBlock key={chapter.number} chapter={chapter} />
@@ -1156,17 +1150,11 @@ export default function ChangelogPage() {
           </div>
         </div>
 
-        {/* Footer CTA */}
         <div className="mt-16 rounded-2xl border border-for-500/20 bg-for-500/5 px-6 py-8 text-center">
-          <div className="font-mono text-xs text-for-400 uppercase tracking-widest mb-2">
-            The build continues
-          </div>
-          <h2 className="font-mono text-xl font-bold text-white mb-3">
-            Join the debate
-          </h2>
+          <div className="font-mono text-xs text-for-400 uppercase tracking-widest mb-2">The build continues</div>
+          <h2 className="font-mono text-xl font-bold text-white mb-3">Join the debate</h2>
           <p className="text-sm text-surface-500 font-mono mb-6 max-w-sm mx-auto">
-            Every vote, argument, and law matters. Help shape consensus on the
-            topics that define our time.
+            Every vote, argument, and law matters. Help shape consensus on the topics that define our time.
           </p>
           <div className="flex items-center justify-center gap-3 flex-wrap">
             <Link
@@ -1184,7 +1172,6 @@ export default function ChangelogPage() {
             </Link>
           </div>
         </div>
-
       </main>
 
       <BottomNav />
@@ -1192,16 +1179,12 @@ export default function ChangelogPage() {
   )
 }
 
-// ─── Chapter block ──────────────────────────────────────────────────────────────────────────────────────────────────────────────
-
 function ChapterBlock({ chapter }: { chapter: Chapter }) {
   return (
     <div className="relative pl-12">
-      {/* Timeline dot */}
       <div
         className={cn(
-          'absolute left-0 top-1 h-9 w-9 rounded-full border-2 flex items-center justify-center',
-          'bg-surface-100',
+          'absolute left-0 top-1 h-9 w-9 rounded-full border-2 flex items-center justify-center bg-surface-100',
           chapter.borderColor,
         )}
         aria-hidden="true"
@@ -1210,23 +1193,14 @@ function ChapterBlock({ chapter }: { chapter: Chapter }) {
           {chapter.number.replace('Ch. ', '')}
         </span>
       </div>
-
-      {/* Card */}
       <div className={cn('rounded-2xl border p-5', chapter.borderColor, chapter.bgColor)}>
-        {/* Header */}
         <div className="mb-4">
           <div className={cn('text-[10px] font-mono font-semibold uppercase tracking-widest mb-1', chapter.textColor)}>
             {chapter.number}
           </div>
-          <h2 className="font-mono text-lg font-bold text-white leading-tight">
-            {chapter.title}
-          </h2>
-          <p className="text-sm text-surface-500 font-mono mt-0.5">
-            {chapter.subtitle}
-          </p>
+          <h2 className="font-mono text-lg font-bold text-white leading-tight">{chapter.title}</h2>
+          <p className="text-sm text-surface-500 font-mono mt-0.5">{chapter.subtitle}</p>
         </div>
-
-        {/* Feature list */}
         <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           {chapter.items.map((item) => {
             const Icon = item.icon
@@ -1244,9 +1218,7 @@ function ChapterBlock({ chapter }: { chapter: Chapter }) {
               </li>
             )
             return item.href ? (
-              <Link key={item.label} href={item.href} className="contents">
-                {inner}
-              </Link>
+              <Link key={item.label} href={item.href} className="contents">{inner}</Link>
             ) : inner
           })}
         </ul>
