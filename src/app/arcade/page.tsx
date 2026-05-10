@@ -18,6 +18,7 @@ import {
   Award,
   BarChart2,
   BookOpen,
+  Brain,
   Calendar,
   CalendarClock,
   Compass,
@@ -72,6 +73,8 @@ const KEYS = {
   mirror:        'lm_mirror_v1',
   oddOneOut:     'lm_odd_one_out',
   decoder:       'lm_decoder_v1',
+  recall:        'lm_recall_v1',
+  verdict:       'lm_verdict_v1',
 } as const
 
 // ─── Types ──────────────────────────────────────────────────────────────────────────────────────────────
@@ -111,6 +114,10 @@ interface ArcadeRecord {
   oddOneOutScore: number | null
   decoderDone: boolean
   decoderScore: number | null
+  recallDone: boolean
+  recallScore: number | null
+  verdictDone: boolean
+  verdictScore: number | null
 }
 
 function todayStr(): string {
@@ -163,6 +170,10 @@ function loadRecords(): ArcadeRecord {
     oddOneOutScore: null,
     decoderDone: false,
     decoderScore: null,
+    recallDone: false,
+    recallScore: null,
+    verdictDone: false,
+    verdictScore: null,
   }
   try {
     // Trivia — daily
@@ -338,6 +349,26 @@ function loadRecords(): ArcadeRecord {
       if (dc.date === todayStr()) {
         def.decoderDone = true
         def.decoderScore = typeof dc.score === 'number' ? dc.score : null
+      }
+    }
+
+    // Civic Recall — daily
+    const recallRaw = localStorage.getItem(KEYS.recall)
+    if (recallRaw) {
+      const rc = JSON.parse(recallRaw)
+      if (rc.date === todayStr()) {
+        def.recallDone = true
+        def.recallScore = typeof rc.score === 'number' ? rc.score : null
+      }
+    }
+
+    // Civic Verdict — daily
+    const verdictRaw = localStorage.getItem(KEYS.verdict)
+    if (verdictRaw) {
+      const vd = JSON.parse(verdictRaw)
+      if (vd.date === todayStr()) {
+        def.verdictDone = true
+        def.verdictScore = typeof vd.score === 'number' ? vd.score : null
       }
     }
   } catch {
@@ -859,6 +890,40 @@ const GAMES: GameDef[] = [
     difficulty: 'hard',
     timeEstimate: '3 min',
   },
+  {
+    id: 'civic-recall',
+    href: '/civic-recall',
+    title: 'Civic Recall',
+    tagline: 'Memorise 6 topics — then find them in a grid of 12',
+    description:
+      'Six civic debates flash before you for 15 seconds. Commit them to memory. Then identify those exact 6 from a grid of 12 — including 6 look-alike decoys. Max 60 pts.',
+    icon: Brain,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+    border: 'border-emerald/20',
+    badge: 'Daily',
+    badgeColor: 'bg-emerald/10 text-emerald border-emerald/30',
+    refresh: 'daily',
+    difficulty: 'hard',
+    timeEstimate: '2 min',
+  },
+  {
+    id: 'civic-verdict',
+    href: '/civic-verdict',
+    title: 'Civic Verdict',
+    tagline: 'Read the arguments — render your verdict',
+    description:
+      'Five mystery debates. Each round shows one FOR and one AGAINST argument. Pick the side you find more compelling. Score 10 pts when your verdict matches the platform majority. Max 50 pts.',
+    icon: Gavel,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-600/10',
+    border: 'border-against-600/20',
+    badge: 'Daily',
+    badgeColor: 'bg-against-600/10 text-against-400 border-against-600/30',
+    refresh: 'daily',
+    difficulty: 'medium',
+    timeEstimate: '4 min',
+  },
 ]
 
 // ─── Difficulty badge ──────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -1016,7 +1081,9 @@ export default function ArcadePage() {
   const imposterDoneToday = records?.imposterDone ?? false
   const mirrorDoneToday = records?.mirrorDone ?? false
   const decoderDoneToday = records?.decoderDone ?? false
-  const dailyDone = (records?.triviaDone ? 1 : 0) + (records?.wordleDone ? 1 : 0) + (records?.connectionsDone ? 1 : 0) + (records?.clozeDone ? 1 : 0) + (records?.crosswordDone ? 1 : 0) + (records?.mythDone ? 1 : 0) + (civicRankDoneToday ? 1 : 0) + (civicTimelineDoneToday ? 1 : 0) + (sprintDone ? 1 : 0) + (imposterDoneToday ? 1 : 0) + (mirrorDoneToday ? 1 : 0) + (decoderDoneToday ? 1 : 0)
+  const recallDoneToday = records?.recallDone ?? false
+  const verdictDoneToday = records?.verdictDone ?? false
+  const dailyDone = (records?.triviaDone ? 1 : 0) + (records?.wordleDone ? 1 : 0) + (records?.connectionsDone ? 1 : 0) + (records?.clozeDone ? 1 : 0) + (records?.crosswordDone ? 1 : 0) + (records?.mythDone ? 1 : 0) + (civicRankDoneToday ? 1 : 0) + (civicTimelineDoneToday ? 1 : 0) + (sprintDone ? 1 : 0) + (imposterDoneToday ? 1 : 0) + (mirrorDoneToday ? 1 : 0) + (decoderDoneToday ? 1 : 0) + (recallDoneToday ? 1 : 0) + (verdictDoneToday ? 1 : 0)
   const weeklyDone = (records?.knowledgeDone ? 1 : 0) + (records?.bingoDone ? 1 : 0)
 
   return (
@@ -1053,7 +1120,7 @@ export default function ArcadePage() {
               >
                 <ScorePill
                   label="Today"
-                  value={`${dailyDone}/12`}
+                  value={`${dailyDone}/14`}
                   color={dailyDone > 0 ? 'text-gold' : 'text-surface-500'}
                 />
                 <div className="w-px h-8 bg-surface-300" />
@@ -1100,7 +1167,7 @@ export default function ArcadePage() {
               iconColor="text-gold"
               iconBg="bg-gold/10"
               title="Daily Challenges"
-              subtitle={`Resets at midnight · ${dailyDone}/12 done today`}
+              subtitle={`Resets at midnight · ${dailyDone}/14 done today`}
             />
             <div className="space-y-3">
               {dailyGames.map((game) => (
@@ -1134,6 +1201,10 @@ export default function ArcadePage() {
                       ? records?.oddOneOutDone
                       : game.id === 'civic-decoder'
                       ? decoderDoneToday
+                      : game.id === 'civic-recall'
+                      ? recallDoneToday
+                      : game.id === 'civic-verdict'
+                      ? verdictDoneToday
                       : undefined
                   }
                   score={
@@ -1167,6 +1238,10 @@ export default function ArcadePage() {
                       ? `${records.oddOneOutScore}/100`
                       : game.id === 'civic-decoder' && decoderDoneToday && records?.decoderScore != null
                       ? `${records.decoderScore}/50`
+                      : game.id === 'civic-recall' && recallDoneToday && records?.recallScore != null
+                      ? `${records.recallScore}/60`
+                      : game.id === 'civic-verdict' && verdictDoneToday && records?.verdictScore != null
+                      ? `${records.verdictScore}/50`
                       : null
                   }
                 />
