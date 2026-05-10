@@ -15,6 +15,7 @@ import {
   Loader2,
   Scale,
   Save,
+  ShieldCheck,
   Sparkles,
   Wand2,
   X,
@@ -22,11 +23,13 @@ import {
   FileText,
 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
+import { TopicQualityAdvisor } from '@/components/topic/TopicQualityAdvisor'
 import { cn } from '@/lib/utils/cn'
 import type { SuggestResponse } from '@/app/api/topics/suggest/route'
 import type { CategorizeResponse } from '@/app/api/topics/categorize/route'
+import type { QualityCheckResponse } from '@/app/api/topics/quality-check/route'
 
-// ─── Constants ────────────────────────────────────────────────────────────────
+// ─── Constants ────────────────────────────────────────────────────────────────────
 
 const CATEGORIES = [
   'Politics',
@@ -58,7 +61,7 @@ interface SimilarTopic {
   total_votes: number
 }
 
-// ─── Status helpers ───────────────────────────────────────────────────────────
+// ─── Status helpers ─────────────────────────────────────────────────────────────
 
 const STATUS_LABEL: Record<string, string> = {
   proposed: 'Proposed',
@@ -86,7 +89,7 @@ function StatusIcon({ status }: { status: string }) {
   }
 }
 
-// ─── Similar Topic Card ───────────────────────────────────────────────────────
+// ─── Similar Topic Card ─────────────────────────────────────────────────────
 
 function SimilarTopicCard({ topic }: { topic: SimilarTopic }) {
   const forPct = Math.round(topic.blue_pct ?? 50)
@@ -155,7 +158,7 @@ function SimilarTopicCard({ topic }: { topic: SimilarTopic }) {
   )
 }
 
-// ─── Similar Topics Panel ─────────────────────────────────────────────────────
+// ─── Similar Topics Panel ───────────────────────────────────────────────
 
 function SimilarTopicsPanel({
   topics,
@@ -230,7 +233,7 @@ function SimilarTopicsPanel({
   )
 }
 
-// ─── AI Statement Suggestions ────────────────────────────────────────────────
+// ─── AI Statement Suggestions ────────────────────────────────────────────
 
 function AIStatementSuggestions({
   suggestions,
@@ -315,7 +318,7 @@ function AIStatementSuggestions({
   )
 }
 
-// ─── Writing tips ─────────────────────────────────────────────────────────────
+// ─── Writing tips ──────────────────────────────────────────────────────────────
 
 function WritingTips() {
   const [open, setOpen] = useState(false)
@@ -372,7 +375,7 @@ function WritingTips() {
   )
 }
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
+// ─── Page ───────────────────────────────────────────────────────────────────────
 
 export default function CreateTopicPage() {
   const router = useRouter()
@@ -403,12 +406,18 @@ export default function CreateTopicPage() {
   const [autoFillApplied, setAutoFillApplied] = useState(false)
   const autoFillTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
+  // Topic quality check state
+  const [qualityLoading, setQualityLoading] = useState(false)
+  const [qualityResult, setQualityResult] = useState<QualityCheckResponse | null>(null)
+  const [qualityUnavailable, setQualityUnavailable] = useState(false)
+  const [qualityOpen, setQualityOpen] = useState(false)
+
   const charCount = statement.length
   const isOverLimit = charCount > MAX_CHARS
   const descCount = description.length
   const DESC_MAX = 2000
 
-  // ── Similar topic search ─────────────────────────────────────────────────
+  // ── Similar topic search ─────────────────────────────────────────────────────────────
 
   const searchSimilar = useCallback(async (q: string) => {
     if (q.length < 10) {
@@ -461,7 +470,7 @@ export default function CreateTopicPage() {
     }
   }, [statement, searchSimilar])
 
-  // ── AI suggestions ───────────────────────────────────────────────────────
+  // ── AI suggestions ───────────────────────────────────────────────────────────────
 
   const fetchAiSuggestions = useCallback(async () => {
     const q = statement.trim()
@@ -519,9 +528,41 @@ export default function CreateTopicPage() {
     }
   }, [statement, description, autoFillLoading])
 
-  // ── Form handling ────────────────────────────────────────────────────────
+  // ── AI quality check ───────────────────────────────────────────────────────────────
 
-  // ── Draft restore on mount ───────────────────────────────────────────────
+  const fetchQualityCheck = useCallback(async () => {
+    const q = statement.trim()
+    if (q.length < 10 || qualityLoading) return
+    setQualityLoading(true)
+    setQualityOpen(true)
+    setQualityResult(null)
+    try {
+      const res = await fetch('/api/topics/quality-check', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ statement: q, category: category || null }),
+      })
+      if (!res.ok) {
+        if (res.status === 401) return
+        setQualityUnavailable(true)
+        return
+      }
+      const data = (await res.json()) as QualityCheckResponse
+      if (data.unavailable) {
+        setQualityUnavailable(true)
+        return
+      }
+      setQualityResult(data)
+    } catch {
+      setQualityUnavailable(true)
+    } finally {
+      setQualityLoading(false)
+    }
+  }, [statement, category, qualityLoading])
+
+  // ── Form handling ──────────────────────────────────────────────────────────────
+
+  // ── Draft restore on mount ─────────────────────────────────────────────────────
   useEffect(() => {
     try {
       const raw = localStorage.getItem(DRAFT_KEY)
@@ -541,7 +582,7 @@ export default function CreateTopicPage() {
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ── Auto-save draft ──────────────────────────────────────────────────────
+  // ── Auto-save draft ───────────────────────────────────────────────────────────
   useEffect(() => {
     if (draftSaveRef.current) clearTimeout(draftSaveRef.current)
     if (!statement.trim() && !description.trim()) return
@@ -770,6 +811,31 @@ export default function CreateTopicPage() {
                     Suggest
                   </button>
                 )}
+                {/* AI quality check button */}
+                {!qualityUnavailable && statement.trim().length >= 15 && (
+                  <button
+                    type="button"
+                    onClick={fetchQualityCheck}
+                    disabled={qualityLoading}
+                    title="AI quality score for this topic statement"
+                    className={cn(
+                      'flex items-center gap-1.5 text-xs font-mono rounded-lg px-2.5 py-1 border transition-all',
+                      qualityLoading
+                        ? 'border-gold/30 bg-gold/5 text-gold/60 cursor-wait'
+                        : qualityOpen
+                        ? 'border-gold/60 bg-gold/15 text-gold'
+                        : 'border-gold/40 bg-gold/10 text-gold hover:bg-gold/20 hover:border-gold/60'
+                    )}
+                    aria-label="Check topic quality with AI"
+                  >
+                    {qualityLoading ? (
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                    ) : (
+                      <ShieldCheck className="h-3 w-3" />
+                    )}
+                    Check
+                  </button>
+                )}
                 <span
                   className={cn(
                     'text-xs font-mono',
@@ -812,6 +878,27 @@ export default function CreateTopicPage() {
               }}
             />
           )}
+
+          {/* Topic quality advisor panel */}
+          <AnimatePresence>
+            {qualityOpen && (
+              <TopicQualityAdvisor
+                key="quality-advisor"
+                loading={qualityLoading}
+                result={qualityResult}
+                unavailable={qualityUnavailable}
+                onClose={() => {
+                  setQualityOpen(false)
+                  setQualityResult(null)
+                }}
+                onApplyImprovement={(improved) => {
+                  setStatement(improved)
+                  setQualityOpen(false)
+                  setQualityResult(null)
+                }}
+              />
+            )}
+          </AnimatePresence>
 
           {/* AI auto-fill success toast */}
           <AnimatePresence>
