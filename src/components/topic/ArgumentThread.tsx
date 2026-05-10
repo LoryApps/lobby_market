@@ -92,7 +92,7 @@ interface ArgumentThreadProps {
 type SortMode = 'top' | 'new'
 type MobileTab = 'all' | 'for' | 'against'
 
-// ─── Skeleton loading cards ───────────────────────────────────────────────────
+// ─── Skeleton loading cards ─────────────────────────────────────────────────────
 
 function ArgumentSkeleton() {
   return (
@@ -126,7 +126,7 @@ function ArgumentThreadSkeleton() {
   )
 }
 
-// ─── Reply panel ──────────────────────────────────────────────────────────────
+// ─── Reply panel ─────────────────────────────────────────────────────────────────
 
 function ReplyPanel({
   topicId,
@@ -408,7 +408,7 @@ function ReplyPanel({
   )
 }
 
-// ─── Single argument card ─────────────────────────────────────────────────────
+// ─── Single argument card ───────────────────────────────────────────────────────────────
 
 function ArgumentCard({
   arg,
@@ -525,6 +525,21 @@ function ArgumentCard({
           </span>
           {isOwn && (
             <span className="text-[10px] text-surface-500 font-mono">· you</span>
+          )}
+          {arg.ai_grade && (
+            <span
+              title={`AI quality grade: ${arg.ai_grade} (score ${arg.ai_score ?? '?'}/10)`}
+              className={cn(
+                'inline-flex items-center justify-center h-4 w-4 rounded text-[9px] font-bold font-mono flex-shrink-0',
+                arg.ai_grade === 'A' && 'bg-emerald/20 text-emerald',
+                arg.ai_grade === 'B' && 'bg-for-500/20 text-for-300',
+                arg.ai_grade === 'C' && 'bg-gold/20 text-gold',
+                arg.ai_grade === 'D' && 'bg-against-500/20 text-against-300',
+                arg.ai_grade === 'F' && 'bg-against-600/20 text-against-400',
+              )}
+            >
+              {arg.ai_grade}
+            </span>
           )}
           <span className="text-[10px] text-surface-600 ml-auto flex-shrink-0">
             {relativeTime(arg.created_at)}
@@ -705,7 +720,7 @@ function ArgumentCard({
   )
 }
 
-// ─── Post form ────────────────────────────────────────────────────────────────
+// ─── Post form ──────────────────────────────────────────────────────────────────
 
 // ─── Draft persistence helpers ────────────────────────────────────────────────
 
@@ -928,13 +943,35 @@ function PostArgumentForm({
         return
       }
 
+      const newArg = json.argument as TopicArgumentWithAuthor
       clearDraft(topicId)
-      onPosted(json.argument as TopicArgumentWithAuthor)
+
+      // If the user ran a critique before submitting, persist that grade to the new argument
+      if (critiqueResult && newArg.id) {
+        fetch('/api/arguments/critique', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            topic_statement: topicStatement ?? topicId,
+            category: topicCategory ?? null,
+            side: newArg.side === 'blue' ? 'for' : 'against',
+            argument_text: newArg.content,
+            argument_id: newArg.id,
+          }),
+        }).catch(() => {})
+        // Optimistically attach the cached grade to the new argument object
+        newArg.ai_score = critiqueResult.score
+        newArg.ai_grade = critiqueResult.grade
+      }
+
+      onPosted(newArg)
       setContent('')
       setSide(null)
       setSourceUrl('')
       setSourceUrlError(null)
       setMentionQuery(null)
+      setCritiqueResult(null)
+      setCritiqueOpen(false)
     } catch {
       setError('Network error — please try again')
     } finally {
@@ -1301,7 +1338,7 @@ function PostArgumentForm({
   )
 }
 
-// ─── Side column ──────────────────────────────────────────────────────────────
+// ─── Side column ─────────────────────────────────────────────────────────────────
 
 function SideColumn({
   side,
@@ -1351,7 +1388,7 @@ function SideColumn({
   )
 }
 
-// ─── Main component ───────────────────────────────────────────────────────────
+// ─── Main component ──────────────────────────────────────────────────────────────
 
 export function ArgumentThread({ topicId, topicStatement, topicCategory }: ArgumentThreadProps) {
   const [args, setArgs] = useState<TopicArgumentWithAuthor[]>([])
