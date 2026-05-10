@@ -24,6 +24,7 @@ import {
   Clock,
   Crown,
   Flame,
+  Gauge,
   Gavel,
   Gamepad2,
   Hash,
@@ -57,6 +58,7 @@ const KEYS = {
   cloze:        'lm_cloze_v1',
   crossword:    'lm_crossword_v1',
   myth:         'lm_myth_result',
+  gauge:        'lm_gauge_v1',
 } as const
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -78,6 +80,8 @@ interface ArcadeRecord {
   crosswordSolved: boolean
   mythDone: boolean
   mythScore: number | null
+  gaugeDone: boolean
+  gaugeScore: number | null
 }
 
 function todayStr(): string {
@@ -112,6 +116,8 @@ function loadRecords(): ArcadeRecord {
     crosswordSolved: false,
     mythDone: false,
     mythScore: null,
+    gaugeDone: false,
+    gaugeScore: null,
   }
   try {
     // Trivia — daily
@@ -191,6 +197,16 @@ function loadRecords(): ArcadeRecord {
       if (m.date === todayStr() && m.gameOver) {
         def.mythDone = true
         def.mythScore = typeof m.score === 'number' ? m.score : null
+      }
+    }
+
+    // Civic Gauge — daily
+    const gaugeRaw = localStorage.getItem(KEYS.gauge)
+    if (gaugeRaw) {
+      const gv = JSON.parse(gaugeRaw)
+      if (gv.date === todayStr()) {
+        def.gaugeDone = true
+        def.gaugeScore = typeof gv.score === 'number' ? gv.score : null
       }
     }
   } catch {
@@ -526,6 +542,23 @@ const GAMES: GameDef[] = [
     timeEstimate: '3 min',
   },
   {
+    id: 'gauge',
+    href: '/gauge',
+    title: 'Civic Gauge',
+    tagline: 'Estimate the exact FOR% on 5 resolved debates',
+    description:
+      'Outcome known (Law or Failed) — percentage hidden. Drag the slider to guess what % voted FOR. Closer guesses score higher. Max 100 pts.',
+    icon: Gauge,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+    border: 'border-gold/20',
+    badge: 'Daily',
+    badgeColor: 'bg-gold/10 text-gold border-gold/30',
+    refresh: 'daily',
+    difficulty: 'hard',
+    timeEstimate: '3 min',
+  },
+  {
     id: 'match',
     href: '/match',
     title: 'Civic Match',
@@ -716,7 +749,7 @@ export default function ArcadePage() {
   const weeklyGames = GAMES.filter((g) => g.refresh === 'weekly')
   const alwaysGames = GAMES.filter((g) => g.refresh === 'always')
 
-  const dailyDone = (records?.triviaDone ? 1 : 0) + (records?.wordleDone ? 1 : 0) + (records?.connectionsDone ? 1 : 0) + (records?.clozeDone ? 1 : 0) + (records?.crosswordDone ? 1 : 0) + (records?.mythDone ? 1 : 0)
+  const dailyDone = (records?.triviaDone ? 1 : 0) + (records?.wordleDone ? 1 : 0) + (records?.connectionsDone ? 1 : 0) + (records?.clozeDone ? 1 : 0) + (records?.crosswordDone ? 1 : 0) + (records?.mythDone ? 1 : 0) + (records?.gaugeDone ? 1 : 0)
   const weeklyDone = records?.knowledgeDone ? 1 : 0
 
   return (
@@ -753,7 +786,7 @@ export default function ArcadePage() {
               >
                 <ScorePill
                   label="Today"
-                  value={`${dailyDone}/6`}
+                  value={`${dailyDone}/7`}
                   color={dailyDone > 0 ? 'text-gold' : 'text-surface-500'}
                 />
                 <div className="w-px h-8 bg-surface-300" />
@@ -788,7 +821,7 @@ export default function ArcadePage() {
               iconColor="text-gold"
               iconBg="bg-gold/10"
               title="Daily Challenges"
-              subtitle={`Resets at midnight · ${dailyDone}/6 done today`}
+              subtitle={`Resets at midnight · ${dailyDone}/7 done today`}
             />
             <div className="space-y-3">
               {dailyGames.map((game) => (
@@ -808,6 +841,8 @@ export default function ArcadePage() {
                       ? records?.crosswordDone
                       : game.id === 'myth'
                       ? records?.mythDone
+                      : game.id === 'gauge'
+                      ? records?.gaugeDone
                       : undefined
                   }
                   score={
@@ -825,6 +860,8 @@ export default function ArcadePage() {
                       ? records.crosswordSolved ? 'Solved!' : 'In progress'
                       : game.id === 'myth' && records?.mythScore != null
                       ? `${records.mythScore}/100`
+                      : game.id === 'gauge' && records?.gaugeScore != null
+                      ? `${records.gaugeScore}/100`
                       : null
                   }
                 />

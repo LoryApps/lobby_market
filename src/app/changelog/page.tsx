@@ -18,6 +18,7 @@ import {
   FlaskConical,
   Flame,
   Gamepad2,
+  Gauge,
   Gavel,
   GitBranch,
   Globe,
@@ -400,15 +401,32 @@ const CHAPTERS: Chapter[] = [
       { icon: Swords, label: 'Civic Rivals & Twins — discover your biggest civic opponents and closest allies', href: '/rivals', color: 'text-against-400' },
     ],
   },
+  {
+    number: 'Ch. 19',
+    title: 'Civic Gauge',
+    subtitle: 'Daily estimation game: outcome known, percentage hidden',
+    accent: 'text-gold',
+    borderColor: 'border-gold/30',
+    bgColor: 'bg-gold/5',
+    textColor: 'text-gold',
+    items: [
+      { icon: Gauge, label: 'Civic Gauge — estimate the exact FOR% on 5 resolved debates, max 100 pts', href: '/gauge', color: 'text-gold' },
+      { icon: Gavel, label: 'Law + Failed pool — only topics with known outcomes and 10+ votes qualify', href: '/gauge', color: 'text-gold' },
+      { icon: Target, label: 'Precision scoring — ≤5% = 20 pts, ≤10% = 15 pts, ≤20% = 10 pts, ≤30% = 5 pts', href: '/gauge', color: 'text-gold' },
+      { icon: Sparkles, label: 'Daily seed — everyone gets the same 5 questions each day', href: '/gauge', color: 'text-gold' },
+      { icon: Trophy, label: 'Grade S–F — earn S for 90+/100, daily localStorage persistence', href: '/gauge', color: 'text-gold' },
+      { icon: Activity, label: 'Reveal animation — animated FOR% bar + guess bar after each round', href: '/gauge', color: 'text-gold' },
+    ],
+  },
 ]
 
 // ─── Stat pills ───────────────────────────────────────────────────────────────
 
 const STATS = [
-  { value: '18', label: 'chapters shipped' },
-  { value: '200+', label: 'features built' },
+  { value: '19', label: 'chapters shipped' },
+  { value: '205+', label: 'features built' },
   { value: '66', label: 'DB migrations' },
-  { value: '300+', label: 'API routes' },
+  { value: '305+', label: 'API routes' },
 ]
 
 // ─── Recent builds ────────────────────────────────────────────────────────────
@@ -423,6 +441,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Civic Gauge',
+    description: 'Daily estimation game — outcome known, percentage hidden. Guess the exact FOR% on 5 resolved debates. Precision scoring, daily seed, S–F grade.',
+    href: '/gauge',
+    icon: Gauge,
+    color: 'text-gold',
+    tag: 'Ch. 19',
+  },
   {
     title: 'Civic Rivals & Twins',
     description: 'Discover who votes most differently from you (rivals) and most similarly (twins) — your civic mirror and your ideological opposite.',
