@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import type { TopicArgument, TopicArgumentWithAuthor, Profile } from '@/lib/supabase/types'
 
-// GET /api/topics/[id]/arguments
+// GET /api/topics/[id]/arguments?sort=top|new|quality
 // Returns the arguments for a topic, enriched with author info and the
 // authenticated user's upvote status.
 export async function GET(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: { id: string } }
 ) {
   const supabase = await createClient()
@@ -15,14 +15,31 @@ export async function GET(
     data: { user },
   } = await supabase.auth.getUser()
 
-  // Fetch arguments ordered by upvotes desc, then created_at
-  const { data: args, error } = await supabase
+  const sort = req.nextUrl.searchParams.get('sort') ?? 'top'
+
+  // Build the query with the appropriate server-side ordering
+  let query = supabase
     .from('topic_arguments')
     .select('*')
     .eq('topic_id', params.id)
-    .order('upvotes', { ascending: false })
-    .order('created_at', { ascending: false })
     .limit(50)
+
+  if (sort === 'new') {
+    query = query.order('created_at', { ascending: false })
+  } else if (sort === 'quality') {
+    // ai_score DESC NULLS LAST, then upvotes, then newest
+    query = query
+      .order('ai_score', { ascending: false, nullsFirst: false })
+      .order('upvotes', { ascending: false })
+      .order('created_at', { ascending: false })
+  } else {
+    // top (default): upvotes desc, then newest
+    query = query
+      .order('upvotes', { ascending: false })
+      .order('created_at', { ascending: false })
+  }
+
+  const { data: args, error } = await query
 
   if (error) {
     return NextResponse.json({ error: 'Failed to fetch arguments' }, { status: 500 })
