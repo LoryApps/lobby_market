@@ -21,6 +21,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import {
   ArrowUpDown,
   Bookmark,
+  Brain,
   ChevronUp,
   Check,
   Copy,
@@ -90,7 +91,7 @@ interface ArgumentThreadProps {
   topicCategory?: string | null
 }
 
-type SortMode = 'top' | 'new'
+type SortMode = 'top' | 'new' | 'quality'
 type MobileTab = 'all' | 'for' | 'against'
 
 // ─── Skeleton loading cards ─────────────────────────────────────────────────────
@@ -1412,6 +1413,7 @@ export function ArgumentThread({ topicId, topicStatement, topicCategory }: Argum
   const currentUserIdRef = useRef<string | null>(null)
   const loadedArgIdsRef = useRef<Set<string>>(new Set())
   const sortModeRef = useRef<SortMode>('top')
+  // quality sort doesn't need special realtime handling — treat like 'top'
 
   // Get current user id for self-detection
   useEffect(() => {
@@ -1425,7 +1427,9 @@ export function ArgumentThread({ topicId, topicStatement, topicCategory }: Argum
 
   const loadArguments = useCallback(async () => {
     try {
-      const res = await fetch(`/api/topics/${topicId}/arguments`)
+      const sort = sortModeRef.current
+      const url = `/api/topics/${topicId}/arguments${sort !== 'top' ? `?sort=${sort}` : ''}`
+      const res = await fetch(url)
       if (!res.ok) return
       const json = await res.json()
       const newArgs: TopicArgumentWithAuthor[] = json.arguments ?? []
@@ -1442,7 +1446,12 @@ export function ArgumentThread({ topicId, topicStatement, topicCategory }: Argum
   // Keep sortModeRef in sync so the realtime callback can read current value
   useEffect(() => {
     sortModeRef.current = sortMode
-  }, [sortMode])
+    // Refetch from server when switching to quality mode so we get the right
+    // top-50 ordered by ai_score (not just upvotes).
+    if (sortMode === 'quality') {
+      loadArguments()
+    }
+  }, [sortMode, loadArguments])
 
   useEffect(() => {
     loadArguments()
@@ -1564,6 +1573,14 @@ export function ArgumentThread({ topicId, topicStatement, topicCategory }: Argum
     if (sortMode === 'new') {
       return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     }
+    if (sortMode === 'quality') {
+      // Arguments with AI scores first (desc), then fall back to upvotes
+      const aScore = a.ai_score ?? -1
+      const bScore = b.ai_score ?? -1
+      if (bScore !== aScore) return bScore - aScore
+      if (b.upvotes !== a.upvotes) return b.upvotes - a.upvotes
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    }
     // top: by upvotes desc, then newest
     if (b.upvotes !== a.upvotes) return b.upvotes - a.upvotes
     return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
@@ -1640,30 +1657,42 @@ export function ArgumentThread({ topicId, topicStatement, topicCategory }: Argum
         </div>
 
         <div className="flex items-center gap-2 flex-shrink-0">
-          {/* Sort toggle */}
+          {/* Sort toggle — cycles Top → New → Quality */}
           {args.length > 1 && (
             <button
               type="button"
-              onClick={() => setSortMode((m) => (m === 'top' ? 'new' : 'top'))}
-              aria-label={`Sort by ${sortMode === 'top' ? 'newest' : 'top'}`}
+              onClick={() =>
+                setSortMode((m) =>
+                  m === 'top' ? 'new' : m === 'new' ? 'quality' : 'top'
+                )
+              }
+              aria-label={`Sort by ${sortMode === 'top' ? 'newest' : sortMode === 'new' ? 'AI quality' : 'top votes'}`}
               className={cn(
-                'flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-mono font-medium',
-                'bg-surface-200 border border-surface-300 text-surface-400',
-                'hover:bg-surface-300 hover:text-white transition-colors'
+                'flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-mono font-medium transition-colors',
+                sortMode === 'quality'
+                  ? 'bg-purple/15 border border-purple/40 text-purple hover:bg-purple/25'
+                  : 'bg-surface-200 border border-surface-300 text-surface-400 hover:bg-surface-300 hover:text-white'
               )}
             >
-              {sortMode === 'top' ? (
+              {sortMode === 'top' && (
                 <>
                   <TrendingUp className="h-3 w-3" aria-hidden />
                   Top
                 </>
-              ) : (
+              )}
+              {sortMode === 'new' && (
                 <>
                   <span className="relative flex h-2 w-2 flex-shrink-0" aria-hidden>
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-for-400 opacity-60" />
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-for-500" />
                   </span>
                   New
+                </>
+              )}
+              {sortMode === 'quality' && (
+                <>
+                  <Brain className="h-3 w-3" aria-hidden />
+                  Quality
                 </>
               )}
               <ArrowUpDown className="h-3 w-3 text-surface-500" aria-hidden />
