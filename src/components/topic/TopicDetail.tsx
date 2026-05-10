@@ -75,6 +75,7 @@ import { FollowingVotesPanel } from '@/components/topic/FollowingVotesPanel'
 import { TopicChat } from '@/components/topic/TopicChat'
 import { TopicEvidencePanel } from '@/components/topic/TopicEvidencePanel'
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary'
+import { ArgumentQualityPanel } from '@/components/topic/ArgumentQualityPanel'
 
 const SIGNAL_ICONS_DETAIL: Record<string, typeof Flame> = {
   ending_soon:     Clock,
@@ -458,6 +459,8 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
               <TopicSynthesisPanel topicId={topic.id} className="mb-6" />
               {/* Spotlight: top FOR + AGAINST argument preview */}
               <ArgumentSpotlight topicId={topic.id} className="mb-6" />
+              {/* Argument quality distribution — AI grade breakdown per side */}
+              <ArgumentQualityPanel topicId={topic.id} className="mb-6" />
               <ArgumentThread
                 topicId={topic.id}
                 topicStatement={topic.statement}

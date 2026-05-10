@@ -662,15 +662,30 @@ const CHAPTERS: Chapter[] = [
       { icon: Target, label: 'Lazy-loaded: suggestions only fetch when requested. Cached per session so re-opening the panel is instant. Logged-in users only.', href: '/', color: 'text-surface-400' },
     ],
   },
+  {
+    number: 'Ch. 36',
+    title: 'Debate Quality Panel',
+    subtitle: 'Per-topic argument quality heatmap — AI grade distribution for FOR vs AGAINST',
+    accent: 'text-emerald',
+    borderColor: 'border-emerald/30',
+    bgColor: 'bg-emerald/5',
+    textColor: 'text-emerald',
+    items: [
+      { icon: BarChart2, label: 'New "Debate Quality" collapsible panel in the Arguments tab — shows grade distribution (A–F) for each side.', href: '/', color: 'text-emerald' },
+      { icon: Award, label: 'Three-column score summary: FOR avg · Overall avg · AGAINST avg — instantly shows which side has stronger arguments.', href: '/', color: 'text-for-400' },
+      { icon: Sparkles, label: 'Stacked grade bars visualise the distribution at a glance — emerald for A, blue for B, gold for C, red for D/F.', href: '/', color: 'text-gold' },
+      { icon: Target, label: 'Quality-edge callout when one side holds a ≥1pt advantage. Links to /top-arguments. Gracefully hidden until grades exist.', href: '/top-arguments', color: 'text-surface-400' },
+    ],
+  },
 ]
 
 // ─── Stat pills ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 const STATS = [
-  { value: '35', label: 'chapters shipped' },
-  { value: '245+', label: 'features built' },
+  { value: '36', label: 'chapters shipped' },
+  { value: '250+', label: 'features built' },
   { value: '68', label: 'DB migrations' },
-  { value: '350+', label: 'API routes' },
+  { value: '355+', label: 'API routes' },
 ]
 
 // ─── Recent builds ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -685,6 +700,13 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Debate Quality Panel',
+    description: "Every topic's Arguments tab now shows a Debate Quality panel: AI grade distribution (A–F) for FOR and AGAINST arguments side-by-side, a three-column score summary, stacked bar charts, and a quality-edge callout when one side holds a measurable argumentation advantage.",
+    icon: BarChart2,
+    color: 'text-emerald',
+    tag: 'Ch. 36',
+  },
   {
     title: 'AI Debate Assist',
     description: 'Inline response suggestion panel on every opposing argument card. Click "How to respond" to get 3 AI-generated strategic angles — Challenge the premise, Introduce new evidence, Reframe the stakes — each with a copyable opening sentence to spark your own argument.',
