@@ -38,6 +38,7 @@ import {
   Search,
   Scroll,
   Skull,
+  Sliders,
   Sparkles,
   Star,
   Swords,
@@ -75,6 +76,7 @@ const KEYS = {
   decoder:       'lm_decoder_v1',
   recall:        'lm_recall_v1',
   verdict:       'lm_verdict_v1',
+  gauge:         'lm_gauge_v1',
 } as const
 
 // ─── Types ──────────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -118,6 +120,8 @@ interface ArcadeRecord {
   recallScore: number | null
   verdictDone: boolean
   verdictScore: number | null
+  gaugeDone: boolean
+  gaugeScore: number | null
 }
 
 function todayStr(): string {
@@ -174,6 +178,8 @@ function loadRecords(): ArcadeRecord {
     recallScore: null,
     verdictDone: false,
     verdictScore: null,
+    gaugeDone: false,
+    gaugeScore: null,
   }
   try {
     // Trivia — daily
@@ -369,6 +375,16 @@ function loadRecords(): ArcadeRecord {
       if (vd.date === todayStr()) {
         def.verdictDone = true
         def.verdictScore = typeof vd.score === 'number' ? vd.score : null
+      }
+    }
+
+    // Civic Gauge — daily
+    const gaugeRaw = localStorage.getItem(KEYS.gauge)
+    if (gaugeRaw) {
+      const gv = JSON.parse(gaugeRaw)
+      if (gv.date === todayStr()) {
+        def.gaugeDone = true
+        def.gaugeScore = typeof gv.score === 'number' ? gv.score : null
       }
     }
   } catch {
@@ -924,6 +940,23 @@ const GAMES: GameDef[] = [
     difficulty: 'medium',
     timeEstimate: '4 min',
   },
+  {
+    id: 'gauge',
+    href: '/gauge',
+    title: 'Civic Gauge',
+    tagline: 'Estimate the exact FOR% on 5 resolved debates',
+    description:
+      'Outcome known (Law or Failed) — percentage hidden. Drag the slider to guess what % voted FOR. Closer guesses score higher. Max 100 pts.',
+    icon: Sliders,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+    border: 'border-gold/20',
+    badge: 'Daily',
+    badgeColor: 'bg-gold/10 text-gold border-gold/30',
+    refresh: 'daily',
+    difficulty: 'hard',
+    timeEstimate: '3 min',
+  },
 ]
 
 // ─── Difficulty badge ──────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -1083,7 +1116,8 @@ export default function ArcadePage() {
   const decoderDoneToday = records?.decoderDone ?? false
   const recallDoneToday = records?.recallDone ?? false
   const verdictDoneToday = records?.verdictDone ?? false
-  const dailyDone = (records?.triviaDone ? 1 : 0) + (records?.wordleDone ? 1 : 0) + (records?.connectionsDone ? 1 : 0) + (records?.clozeDone ? 1 : 0) + (records?.crosswordDone ? 1 : 0) + (records?.mythDone ? 1 : 0) + (civicRankDoneToday ? 1 : 0) + (civicTimelineDoneToday ? 1 : 0) + (sprintDone ? 1 : 0) + (imposterDoneToday ? 1 : 0) + (mirrorDoneToday ? 1 : 0) + (decoderDoneToday ? 1 : 0) + (recallDoneToday ? 1 : 0) + (verdictDoneToday ? 1 : 0)
+  const gaugeDoneToday = records?.gaugeDone ?? false
+  const dailyDone = (records?.triviaDone ? 1 : 0) + (records?.wordleDone ? 1 : 0) + (records?.connectionsDone ? 1 : 0) + (records?.clozeDone ? 1 : 0) + (records?.crosswordDone ? 1 : 0) + (records?.mythDone ? 1 : 0) + (civicRankDoneToday ? 1 : 0) + (civicTimelineDoneToday ? 1 : 0) + (sprintDone ? 1 : 0) + (imposterDoneToday ? 1 : 0) + (mirrorDoneToday ? 1 : 0) + (decoderDoneToday ? 1 : 0) + (recallDoneToday ? 1 : 0) + (verdictDoneToday ? 1 : 0) + (gaugeDoneToday ? 1 : 0)
   const weeklyDone = (records?.knowledgeDone ? 1 : 0) + (records?.bingoDone ? 1 : 0)
 
   return (
@@ -1120,7 +1154,7 @@ export default function ArcadePage() {
               >
                 <ScorePill
                   label="Today"
-                  value={`${dailyDone}/14`}
+                  value={`${dailyDone}/15`}
                   color={dailyDone > 0 ? 'text-gold' : 'text-surface-500'}
                 />
                 <div className="w-px h-8 bg-surface-300" />
@@ -1167,7 +1201,7 @@ export default function ArcadePage() {
               iconColor="text-gold"
               iconBg="bg-gold/10"
               title="Daily Challenges"
-              subtitle={`Resets at midnight · ${dailyDone}/14 done today`}
+              subtitle={`Resets at midnight · ${dailyDone}/15 done today`}
             />
             <div className="space-y-3">
               {dailyGames.map((game) => (
@@ -1205,6 +1239,8 @@ export default function ArcadePage() {
                       ? recallDoneToday
                       : game.id === 'civic-verdict'
                       ? verdictDoneToday
+                      : game.id === 'gauge'
+                      ? gaugeDoneToday
                       : undefined
                   }
                   score={
@@ -1242,6 +1278,8 @@ export default function ArcadePage() {
                       ? `${records.recallScore}/60`
                       : game.id === 'civic-verdict' && verdictDoneToday && records?.verdictScore != null
                       ? `${records.verdictScore}/50`
+                      : game.id === 'gauge' && gaugeDoneToday && records?.gaugeScore != null
+                      ? `${records.gaugeScore}/100`
                       : null
                   }
                 />
