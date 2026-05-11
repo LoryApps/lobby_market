@@ -447,6 +447,13 @@ export default function ArgumentsPage() {
                 Archetypes
               </Link>
               <Link
+                href="/arguments/discussions"
+                className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-purple/10 border border-purple/30 text-[11px] font-mono font-semibold text-purple hover:bg-purple/20 transition-colors flex-shrink-0"
+              >
+                <MessageSquare className="h-3 w-3" aria-hidden />
+                Discussions
+              </Link>
+              <Link
                 href="/word-cloud"
                 className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 text-[11px] font-mono font-semibold text-surface-400 hover:text-white hover:border-surface-400 transition-colors flex-shrink-0"
               >
