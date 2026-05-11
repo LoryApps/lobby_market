@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Activity, BarChart2, Bell, BookOpen, Calendar, Cloud, Coins, Compass, Crown, FileText, Fingerprint, Flame, FlaskConical, Gamepad2, Gavel, GitBranch, HelpCircle, History, Hourglass, LayoutGrid, Layers, ListChecks, LogOut, Mail, MessageSquare, Mic, Network, Quote, Radio, Scale, Scroll, Search, Plus, Settings, Shield, Skull, Sparkles, Star, Swords, Target, Timer, TrendingUp, Trophy, User, Zap, ArrowUpRight, Globe, Users } from 'lucide-react'
+import { Activity, BarChart2, Bell, BookOpen, Calendar, Cloud, Coins, Compass, Crown, FileText, Fingerprint, Flame, FlaskConical, Gamepad2, Gavel, GitBranch, HelpCircle, History, Hourglass, LayoutGrid, Layers, ListChecks, LogOut, Mail, MessageSquare, Network, Quote, Radio, Scale, Scroll, Search, Plus, Settings, Shield, Skull, Sparkles, Star, Swords, Target, Timer, TrendingUp, Trophy, User, Zap, ArrowUpRight, Globe, Users } from 'lucide-react'
 import { NotificationBell } from '@/components/profile/NotificationBell'
 import { MessagesButton } from '@/components/profile/MessagesButton'
 import { Avatar } from '@/components/ui/Avatar'
