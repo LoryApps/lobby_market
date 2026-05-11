@@ -519,6 +519,7 @@ export default function ContestedArgumentsPage() {
               { href: '/arguments/reactions', label: 'Reactions' },
               { href: '/arguments/foryou', label: 'For You' },
               { href: '/arguments/daily', label: 'Daily' },
+              { href: '/arguments/authors', label: 'Authors' },
             ].map((link) => (
               <Link
                 key={link.href}

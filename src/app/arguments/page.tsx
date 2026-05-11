@@ -18,6 +18,7 @@ import {
   Trophy,
   ThumbsUp,
   TrendingUp,
+  Users,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -399,6 +400,13 @@ export default function ArgumentsPage() {
               >
                 <Swords className="h-3 w-3" aria-hidden />
                 Contested
+              </Link>
+              <Link
+                href="/arguments/authors"
+                className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-gold/10 border border-gold/30 text-[11px] font-mono font-semibold text-gold hover:bg-gold/20 transition-colors flex-shrink-0"
+              >
+                <Users className="h-3 w-3" aria-hidden />
+                Authors
               </Link>
             </div>
           </div>
