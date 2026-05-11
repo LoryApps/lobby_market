@@ -862,13 +862,27 @@ const CHAPTERS: Chapter[] = [
       { icon: Brain, label: 'New argument_faceoff_votes table (migration 00070) + /api/arguments/faceoff GET/POST endpoints. Category filter, daily progress bar (10/day), animated win-rate bars revealed after voting.', href: '/arguments/faceoff', color: 'text-emerald' },
     ],
   },
+  {
+    number: 'Ch. 50',
+    title: 'Argument DNA',
+    subtitle: 'Your rhetorical fingerprint — six style dimensions reveal HOW you argue, not just what you say',
+    accent: 'text-for-400',
+    borderColor: 'border-for-500/30',
+    bgColor: 'bg-for-500/5',
+    textColor: 'text-for-300',
+    items: [
+      { icon: Brain, label: 'New /arguments/dna page analyses your argument texts across six rhetorical dimensions: Empirical, Moral, Economic, Social, Visionary, Pragmatic. An interactive SVG radar chart shows your profile vs. the platform average.', href: '/arguments/dna', color: 'text-for-400' },
+      { icon: Sparkles, label: 'Eight civic archetypes assigned based on your dominant style and side balance: The Empiricist, Moralist, Economist, Humanist, Visionary, Pragmatist, Contrarian, or Advocate — each with a unique description and visual accent.', href: '/arguments/dna', color: 'text-purple' },
+      { icon: BarChart2, label: 'Full breakdown: writing length, word count, longest argument streak, AI grade distribution, reaction totals, per-category FOR/AGAINST balance. Powered by new /api/arguments/dna endpoint — no new migration needed, reads existing tables.', href: '/arguments/dna', color: 'text-emerald' },
+    ],
+  },
 ]
 
 const STATS = [
-  { value: '49', label: 'chapters shipped' },
-  { value: '300+', label: 'features built' },
+  { value: '50', label: 'chapters shipped' },
+  { value: '310+', label: 'features built' },
   { value: '70', label: 'DB migrations' },
-  { value: '390+', label: 'API routes' },
+  { value: '395+', label: 'API routes' },
 ]
 
 interface RecentBuild {
@@ -881,6 +895,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Argument DNA — Rhetorical Fingerprint',
+    description: "New /arguments/dna page reveals HOW you argue, not just what you say. Six style dimensions (Empirical, Moral, Economic, Social, Visionary, Pragmatic) are scored from your argument texts, compared to the platform average via an SVG radar chart, and combined with side balance to assign one of eight civic archetypes: The Empiricist, Moralist, Economist, Humanist, Visionary, Pragmatist, Contrarian, or Advocate. Backed by /api/arguments/dna — no new migration needed.",
+    href: '/arguments/dna',
+    icon: Brain,
+    color: 'text-for-400',
+    tag: 'Ch. 50',
+  },
   {
     title: 'Argument Arena — Head-to-Head',
     description: 'New /arguments/faceoff page pits two real arguments from different topics against each other. Vote on which makes the more compelling case — judging rhetoric, not topic preference. Up to 10 matchups per day, category filter, Arena Champions leaderboard, win-rate bars revealed after each vote. Backed by migration 00070 + /api/arguments/faceoff endpoints.',
