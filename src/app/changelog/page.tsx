@@ -934,6 +934,20 @@ const CHAPTERS: Chapter[] = [
     ],
   },
   {
+    number: 'Ch. 56',
+    title: 'Topic Synthesis Page',
+    subtitle: 'Dedicated full-screen synthesis for every topic — common ground, core tensions, and nuanced AI position',
+    accent: 'text-purple',
+    borderColor: 'border-purple/30',
+    bgColor: 'bg-purple/5',
+    textColor: 'text-purple',
+    items: [
+      { icon: GitBranch, label: 'New /topic/[id]/synthesis page gives every topic a dedicated, SEO-indexable synthesis board — distinct from the inline panel in the Arguments tab. Shows topic statement, vote split, and the full AI synthesis.', href: undefined, color: 'text-purple' },
+      { icon: Scale, label: 'Three synthesis sections prominently laid out: Common Ground (shared values, emerald), Core Tensions (fundamental conflict, red), and Synthesis (nuanced position acknowledging both sides, purple).', href: undefined, color: 'text-emerald' },
+      { icon: Layers, label: 'Explainer cards below the synthesis describe what each section means. "Open full synthesis →" link added to the Argument Synthesis panel in TopicDetail. All synthesis pages added to sitemap (daily changeFrequency). No new migration needed.', href: undefined, color: 'text-for-400' },
+    ],
+  },
+  {
     number: 'Ch. 55',
     title: 'Topic Evidence Board',
     subtitle: 'Dedicated full-screen evidence page for every topic — submit, vote, and analyse community-sourced citations',
@@ -950,8 +964,8 @@ const CHAPTERS: Chapter[] = [
 ]
 
 const STATS = [
-  { value: '55', label: 'chapters shipped' },
-  { value: '325+', label: 'features built' },
+  { value: '56', label: 'chapters shipped' },
+  { value: '328+', label: 'features built' },
   { value: '70', label: 'DB migrations' },
   { value: '400+', label: 'API routes' },
 ]
@@ -966,6 +980,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Topic Synthesis Page',
+    description: 'New /topic/[id]/synthesis page gives every debate a dedicated, SEO-indexable synthesis board. Shows the topic statement and vote split, then the full AI synthesis: Common Ground (shared values both sides hold), Core Tensions (the fundamental value conflict), and Synthesis (a nuanced position acknowledging both sets of concerns). Explainer cards below describe each section. "Open full synthesis →" link added to the Argument Synthesis panel in TopicDetail. All synthesis pages added to sitemap (daily changeFrequency).',
+    href: undefined,
+    icon: GitBranch,
+    color: 'text-purple',
+    tag: 'Ch. 56',
+  },
   {
     title: 'Topic Evidence Board',
     description: 'New /topic/[id]/evidence page gives every debate a dedicated, SEO-indexable, shareable Evidence Board — outside the topic tab view. Shows topic statement and vote split up top, then the full community evidence list (sorted by upvotes), AI analysis (quality/balance scores, strongest FOR/AGAINST, key claim, missing perspective), and inline submission form. "Open full board →" link added to the Evidence tab in TopicDetail. All evidence pages added to sitemap.',
