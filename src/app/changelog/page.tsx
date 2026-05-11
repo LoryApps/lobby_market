@@ -934,6 +934,20 @@ const CHAPTERS: Chapter[] = [
     ],
   },
   {
+    number: 'Ch. 60',
+    title: 'Topic Prediction Market',
+    subtitle: 'Per-topic prediction market — community consensus gauge, confidence distribution, predictor profiles, and inline stake form',
+    accent: 'text-purple',
+    borderColor: 'border-purple/30',
+    bgColor: 'bg-purple/5',
+    textColor: 'text-purple',
+    items: [
+      { icon: Target, label: 'New /topic/[id]/predictions page shows the crowd\'s aggregate forecast for every debate — large consensus gauge displaying % predicting law vs. fail, with colour coding (emerald = likely law, gold = contested, red = likely fail).', href: undefined, color: 'text-purple' },
+      { icon: BarChart2, label: 'Confidence distribution histogram shows how many predictors chose each confidence bucket (51–60%, 61–70%, 71–80%, 81–90%, 91–100%) broken down by law vs. fail — giving a richer picture than a single aggregate.', href: undefined, color: 'text-for-400' },
+      { icon: Users, label: 'Predictor list with avatar, role badge, confidence score, reasoning quote, and resolved accuracy badge. Filter tabs: All / Law / Fail / With Reasoning. Inline prediction form lets users stake and update their forecast. "Prediction market" link added to TopicDetail sub-page nav.', href: undefined, color: 'text-emerald' },
+    ],
+  },
+  {
     number: 'Ch. 57',
     title: 'Discourse Quality Report',
     subtitle: 'Dedicated full-screen argument quality report for every topic — grade distribution, per-side rigour, and grade rubric',
@@ -1008,6 +1022,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Topic Prediction Market',
+    description: 'New /topic/[id]/predictions page gives every debate a dedicated prediction market view. Shows the community consensus gauge (% predicting law vs. fail), a confidence-distribution histogram, individual predictor profiles with reasoning quotes, and a prediction form to make or update your own stake. Stats row displays total predictors, avg confidence for each side, and outcome. "Prediction market" link added to the sub-page nav in TopicDetail. Backed by new POST+GET /api/topics/[id]/predictions endpoint. No new migration needed — builds on the existing topic_predictions and topic_prediction_stats tables (00015 + 00044).',
+    href: undefined,
+    icon: Target,
+    color: 'text-purple',
+    tag: 'Ch. 60',
+  },
   {
     title: '"What\'s at Stake" Context Page',
     description: 'New /topic/[id]/context page gives every debate a dedicated, SEO-indexable "What\'s at Stake" brief powered by Claude. Five structured sections — Background (what the real-world issue is and why it\'s contested), If FOR Wins (real-world implications), If AGAINST Wins (real-world implications), Core Tension (the fundamental value trade-off), and Real-World Examples (when available). Topics with no cached context show a generate button (auth-gated). Context is cached in topic_contexts and served instantly on repeat visits. "Open full context →" link added below the inline TopicContextPanel in TopicDetail. All context pages added to sitemap (weekly changeFrequency).',
