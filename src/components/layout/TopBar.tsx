@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Activity, BarChart2, Bell, BookOpen, Calendar, Cloud, Coins, Compass, Crown, FileText, Fingerprint, Flame, FlaskConical, Gamepad2, Gavel, GitBranch, HelpCircle, History, Hourglass, LayoutGrid, Layers, ListChecks, LogOut, Mail, MessageSquare, Network, Quote, Radio, Scale, Scroll, Search, Plus, Settings, Shield, Skull, Sparkles, Star, Swords, Target, Timer, TrendingUp, Trophy, User, Zap, ArrowUpRight, Globe, Users } from 'lucide-react'
+import { Activity, BarChart2, Bell, BookOpen, Calendar, Cloud, Coins, Compass, Crown, FileText, Fingerprint, Flame, FlaskConical, Gamepad2, Gavel, GitBranch, HelpCircle, History, Hourglass, LayoutGrid, Layers, ListChecks, LogOut, Mail, MessageSquare, Mic, Network, Quote, Radio, Scale, Scroll, Search, Plus, Settings, Shield, Skull, Sparkles, Star, Swords, Target, Timer, TrendingUp, Trophy, User, Zap, ArrowUpRight, Globe, Users } from 'lucide-react'
 import { NotificationBell } from '@/components/profile/NotificationBell'
 import { MessagesButton } from '@/components/profile/MessagesButton'
 import { Avatar } from '@/components/ui/Avatar'
@@ -270,6 +270,15 @@ export function TopBar() {
               >
                 <Trophy className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />
                 Argument of the Day
+              </Link>
+              <Link
+                href="/arguments/contested"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
+              >
+                <Swords className="h-3.5 w-3.5 flex-shrink-0 text-purple" aria-hidden="true" />
+                Most Contested
               </Link>
               <Link
                 href="/arguments/mine"

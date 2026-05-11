@@ -13,6 +13,7 @@ import {
   MessageSquare,
   RefreshCw,
   Scale,
+  Swords,
   ThumbsDown,
   Trophy,
   ThumbsUp,
@@ -391,6 +392,13 @@ export default function ArgumentsPage() {
               >
                 <span aria-hidden="true" className="text-[11px]">💡</span>
                 Reactions
+              </Link>
+              <Link
+                href="/arguments/contested"
+                className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-purple/10 border border-purple/30 text-[11px] font-mono font-semibold text-purple hover:bg-purple/20 transition-colors flex-shrink-0"
+              >
+                <Swords className="h-3 w-3" aria-hidden />
+                Contested
               </Link>
             </div>
           </div>
