@@ -20,6 +20,7 @@ import {
   Trophy,
   ThumbsUp,
   TrendingUp,
+  Type,
   Users,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
@@ -444,6 +445,13 @@ export default function ArgumentsPage() {
               >
                 <Sparkles className="h-3 w-3" aria-hidden />
                 Archetypes
+              </Link>
+              <Link
+                href="/word-cloud"
+                className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 text-[11px] font-mono font-semibold text-surface-400 hover:text-white hover:border-surface-400 transition-colors flex-shrink-0"
+              >
+                <Type className="h-3 w-3" aria-hidden />
+                Lexicon
               </Link>
             </div>
           </div>
