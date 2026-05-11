@@ -14,6 +14,7 @@ import {
   MessageSquare,
   RefreshCw,
   Scale,
+  Sparkles,
   Swords,
   ThumbsDown,
   Trophy,
@@ -436,6 +437,13 @@ export default function ArgumentsPage() {
               >
                 <Brain className="h-3 w-3" aria-hidden />
                 My DNA
+              </Link>
+              <Link
+                href="/arguments/archetypes"
+                className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-purple/10 border border-purple/30 text-[11px] font-mono font-semibold text-purple hover:bg-purple/20 transition-colors flex-shrink-0"
+              >
+                <Sparkles className="h-3 w-3" aria-hidden />
+                Archetypes
               </Link>
             </div>
           </div>
