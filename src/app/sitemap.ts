@@ -216,6 +216,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         changeFrequency: 'daily' as const,
         priority: 0.55,
       },
+      {
+        url: `${BASE_URL}/topic/${topic.id}/quality`,
+        lastModified: new Date(topic.updated_at),
+        changeFrequency: 'daily' as const,
+        priority: 0.5,
+      },
     ])
 
     // Wiki pages for topics that have descriptions

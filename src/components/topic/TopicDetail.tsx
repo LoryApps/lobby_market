@@ -484,7 +484,18 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
               {/* Spotlight: top FOR + AGAINST argument preview */}
               <ArgumentSpotlight topicId={topic.id} className="mb-6" />
               {/* Argument quality distribution — AI grade breakdown per side */}
-              <ArgumentQualityPanel topicId={topic.id} className="mb-6" />
+              <div className="mb-6 space-y-1.5">
+                <ArgumentQualityPanel topicId={topic.id} />
+                <div className="flex justify-end">
+                  <Link
+                    href={`/topic/${topic.id}/quality`}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald/10 border border-emerald/30 text-[11px] font-mono font-semibold text-emerald hover:bg-emerald/20 transition-colors"
+                  >
+                    <ArrowUpRight className="h-3 w-3" />
+                    Open full quality report
+                  </Link>
+                </div>
+              </div>
               <ArgumentThread
                 topicId={topic.id}
                 topicStatement={topic.statement}
