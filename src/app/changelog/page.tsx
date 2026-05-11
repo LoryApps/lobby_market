@@ -806,13 +806,41 @@ const CHAPTERS: Chapter[] = [
       { icon: Brain, label: 'New /api/arguments/contested route fetches candidate arguments, joins reply counts from argument_replies, needs_evidence reactions from argument_reactions, and enriches with topic/profile data. "Contested" shortcut link added to main /arguments hub nav and TopBar menu.', href: '/arguments/contested', color: 'text-emerald' },
     ],
   },
+  {
+    number: 'Ch. 46',
+    title: 'Argument Authors Leaderboard',
+    subtitle: 'Recognising the most prolific and highest-quality argument writers on the platform',
+    accent: 'text-gold',
+    borderColor: 'border-gold/30',
+    bgColor: 'bg-gold/5',
+    textColor: 'text-gold',
+    items: [
+      { icon: Trophy, label: 'New /arguments/authors page ranks the top argument writers by total arguments, average AI grade, and total upvotes received. Podium display for the top 3 with gold/silver/bronze crowns.', href: '/arguments/authors', color: 'text-gold' },
+      { icon: Users, label: 'Each author card shows total arguments, avg AI grade badge, total upvotes, best argument grade, and a link to their profile. Filterable by time period (week / month / all time) and category.', href: '/arguments/authors', color: 'text-for-400' },
+      { icon: Brain, label: 'Powered by /api/arguments/authors — joins topic_arguments with profiles and argument_reactions, computes weighted author scores, and surfaces authors who combine volume with quality.', href: '/arguments/authors', color: 'text-emerald' },
+    ],
+  },
+  {
+    number: 'Ch. 47',
+    title: 'Opposing Voices',
+    subtitle: "The strongest arguments challenging your positions — curated counterarguments for every topic you've voted on",
+    accent: 'text-against-400',
+    borderColor: 'border-against-500/30',
+    bgColor: 'bg-against-500/5',
+    textColor: 'text-against-300',
+    items: [
+      { icon: Scale, label: 'New /arguments/opposing page surfaces the best-quality arguments on the OPPOSING side of every topic you\'ve voted on. Sorted by AI quality score — see the strongest case against your position first.', href: '/arguments/opposing', color: 'text-against-400' },
+      { icon: Brain, label: 'Each card shows the opposing argument with AI grade badge, your vote on that topic, author info, upvotes, and a "Respond" CTA linking to the topic\'s argument thread.', href: '/arguments/opposing', color: 'text-purple' },
+      { icon: MessageSquare, label: 'New /api/arguments/opposing endpoint joins user votes with topic_arguments, filters to the opposing side per topic, ranks by ai_score and upvotes. Added as "Counter-Arguments" link in the /arguments hub nav strip.', href: '/arguments/opposing', color: 'text-for-400' },
+    ],
+  },
 ]
 
 const STATS = [
-  { value: '45', label: 'chapters shipped' },
-  { value: '290+', label: 'features built' },
+  { value: '47', label: 'chapters shipped' },
+  { value: '295+', label: 'features built' },
   { value: '69', label: 'DB migrations' },
-  { value: '380+', label: 'API routes' },
+  { value: '385+', label: 'API routes' },
 ]
 
 interface RecentBuild {
@@ -825,6 +853,22 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Opposing Voices',
+    description: "New /arguments/opposing page surfaces the strongest arguments against your votes. For every topic you've voted on, it finds the best-quality argument on the opposing side, ranked by AI score. Shows grade badge, your vote, author, upvotes, and a Respond CTA. New /api/arguments/opposing endpoint. Added as Counter-Arguments link in the /arguments hub.",
+    href: '/arguments/opposing',
+    icon: Scale,
+    color: 'text-against-400',
+    tag: 'Ch. 47',
+  },
+  {
+    title: 'Argument Authors Leaderboard',
+    description: 'New /arguments/authors page ranks the top argument writers by volume, average AI grade, and total upvotes. Podium for the top 3, per-author stats (grade badge, best argument, profile link), time + category filters, and a new /api/arguments/authors backend.',
+    href: '/arguments/authors',
+    icon: Trophy,
+    color: 'text-gold',
+    tag: 'Ch. 46',
+  },
   {
     title: 'Most Contested Arguments',
     description: 'New /arguments/contested page surfaces the most scrutinized arguments on both sides. A custom Contest Score (upvotes × (1 + replies) × (1 + needs_evidence × 0.5)) identifies arguments that attracted strong approval and heavy pushback simultaneously. Filterable by look-back window and category. Animated contest intensity bar, reply count, and needs-source tally on each card.',
