@@ -934,6 +934,20 @@ const CHAPTERS: Chapter[] = [
     ],
   },
   {
+    number: 'Ch. 57',
+    title: 'Discourse Quality Report',
+    subtitle: 'Dedicated full-screen argument quality report for every topic — grade distribution, per-side rigour, and grade rubric',
+    accent: 'text-emerald',
+    borderColor: 'border-emerald/30',
+    bgColor: 'bg-emerald/5',
+    textColor: 'text-emerald',
+    items: [
+      { icon: Award, label: 'New /topic/[id]/quality page gives every topic a dedicated, SEO-indexable Discourse Quality Report — distinct from the inline ArgumentQualityPanel in the Arguments tab. Shows topic header, vote split, and the full AI grade analysis.', href: undefined, color: 'text-emerald' },
+      { icon: BarChart2, label: 'Displays overall quality tier (Excellent/Good/Mixed/Poor/Ungraded), average AI score, graded argument percentage, side-by-side FOR vs AGAINST grade distribution bars, and the top-graded argument from each side.', href: undefined, color: 'text-for-400' },
+      { icon: CheckCircle2, label: 'Grade rubric section explains A–F criteria. Three context callouts explain Graded %, Avg Score, and Balance. "Open full quality report →" link added to ArgumentQualityPanel in TopicDetail. All quality pages added to sitemap. No new migration needed.', href: undefined, color: 'text-purple' },
+    ],
+  },
+  {
     number: 'Ch. 56',
     title: 'Topic Synthesis Page',
     subtitle: 'Dedicated full-screen synthesis for every topic — common ground, core tensions, and nuanced AI position',
@@ -964,8 +978,8 @@ const CHAPTERS: Chapter[] = [
 ]
 
 const STATS = [
-  { value: '56', label: 'chapters shipped' },
-  { value: '328+', label: 'features built' },
+  { value: '57', label: 'chapters shipped' },
+  { value: '331+', label: 'features built' },
   { value: '70', label: 'DB migrations' },
   { value: '400+', label: 'API routes' },
 ]
@@ -980,6 +994,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Discourse Quality Report',
+    description: 'New /topic/[id]/quality page gives every debate a dedicated, SEO-indexable Discourse Quality Report. Shows the topic header and vote split, then the full AI grade analysis: overall quality tier, average score, graded % of arguments, side-by-side FOR vs AGAINST grade distribution bars, and top-graded argument from each side. A grade rubric explains A–F criteria. "Open full quality report →" link added to the ArgumentQualityPanel in TopicDetail.',
+    href: undefined,
+    icon: Award,
+    color: 'text-emerald',
+    tag: 'Ch. 57',
+  },
   {
     title: 'Topic Synthesis Page',
     description: 'New /topic/[id]/synthesis page gives every debate a dedicated, SEO-indexable synthesis board. Shows the topic statement and vote split, then the full AI synthesis: Common Ground (shared values both sides hold), Core Tensions (the fundamental value conflict), and Synthesis (a nuanced position acknowledging both sets of concerns). Explainer cards below describe each section. "Open full synthesis →" link added to the Argument Synthesis panel in TopicDetail. All synthesis pages added to sitemap (daily changeFrequency).',
