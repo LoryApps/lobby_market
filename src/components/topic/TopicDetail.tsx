@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
   ArrowLeft,
+  ArrowUpRight,
   BarChart2,
   BookOpen,
   Calendar,
@@ -438,7 +439,18 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
           </ErrorBoundary>
         ) : activeTab === 'evidence' ? (
           <ErrorBoundary size="md" label="Couldn't load evidence board">
-            <TopicEvidencePanel topicId={topic.id} />
+            <div className="space-y-3">
+              <div className="flex justify-end">
+                <Link
+                  href={`/topic/${topic.id}/evidence`}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-purple/10 border border-purple/30 text-[11px] font-mono font-semibold text-purple hover:bg-purple/20 transition-colors"
+                >
+                  <ArrowUpRight className="h-3 w-3" />
+                  Open full board
+                </Link>
+              </div>
+              <TopicEvidencePanel topicId={topic.id} />
+            </div>
           </ErrorBoundary>
         ) : activeTab === 'bounties' ? (
           <ErrorBoundary size="md" label="Couldn't load bounties">
@@ -842,7 +854,7 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
         )}
       </div>
 
-      {/* ── Mobile sticky "Cast your vote" CTA ────────────────────────────── */}
+      {/* ── Mobile sticky "Cast your vote" CTA ─────────────────────────────────────── */}
       {/* Visible only on mobile, only when the topic is votable and unvoted. */}
       <AnimatePresence>
         {isVotable && !hasVoted(topic.id) && (
