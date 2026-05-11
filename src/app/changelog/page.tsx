@@ -876,13 +876,27 @@ const CHAPTERS: Chapter[] = [
       { icon: BarChart2, label: 'Full breakdown: writing length, word count, longest argument streak, AI grade distribution, reaction totals, per-category FOR/AGAINST balance. Powered by new /api/arguments/dna endpoint — no new migration needed, reads existing tables.', href: '/arguments/dna', color: 'text-emerald' },
     ],
   },
+  {
+    number: 'Ch. 51',
+    title: 'Archetype Leaderboard',
+    subtitle: 'Platform-wide breakdown of all 8 rhetorical archetypes — who argues best, who argues most, and where each style dominates',
+    accent: 'text-purple',
+    borderColor: 'border-purple/30',
+    bgColor: 'bg-purple/5',
+    textColor: 'text-purple',
+    items: [
+      { icon: Sparkles, label: 'New /arguments/archetypes page shows all 8 rhetorical archetypes (from the DNA system) with platform-wide stats: user count, avg quality score, A-grade rate, avg upvotes, and top argument categories per archetype.', href: '/arguments/archetypes', color: 'text-purple' },
+      { icon: Users, label: 'Top 3 users per archetype ranked by argument volume + AI grade. Each user card shows argument count, avg score bar, best upvote count, and links to their profile. Auto-expands your own archetype on load.', href: '/arguments/archetypes', color: 'text-for-400' },
+      { icon: BarChart2, label: 'Four sort modes: Most Users, Best Quality, Most Arguments, A-Grade Rate. Your rank within your archetype shown inline. Powered by new /api/arguments/archetypes endpoint — no new migration needed.', href: '/arguments/archetypes', color: 'text-emerald' },
+    ],
+  },
 ]
 
 const STATS = [
-  { value: '50', label: 'chapters shipped' },
-  { value: '310+', label: 'features built' },
+  { value: '51', label: 'chapters shipped' },
+  { value: '315+', label: 'features built' },
   { value: '70', label: 'DB migrations' },
-  { value: '395+', label: 'API routes' },
+  { value: '396+', label: 'API routes' },
 ]
 
 interface RecentBuild {
@@ -895,6 +909,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Archetype Leaderboard — Rhetorical Styles Platform-Wide',
+    description: 'New /arguments/archetypes page surfaces platform-wide stats for all 8 rhetorical archetypes from the DNA system. Each archetype card shows user count, avg quality score, A-grade rate, avg upvotes, and the top 3 arguers in that style. Sortable by Most Users, Best Quality, Most Arguments, or A-Grade Rate. Your rank within your archetype shown inline. Powered by /api/arguments/archetypes — no new migration needed.',
+    href: '/arguments/archetypes',
+    icon: Sparkles,
+    color: 'text-purple',
+    tag: 'Ch. 51',
+  },
   {
     title: 'Argument DNA — Rhetorical Fingerprint',
     description: "New /arguments/dna page reveals HOW you argue, not just what you say. Six style dimensions (Empirical, Moral, Economic, Social, Visionary, Pragmatic) are scored from your argument texts, compared to the platform average via an SVG radar chart, and combined with side balance to assign one of eight civic archetypes: The Empiricist, Moralist, Economist, Humanist, Visionary, Pragmatist, Contrarian, or Advocate. Backed by /api/arguments/dna — no new migration needed.",
