@@ -502,7 +502,7 @@ export default function WordCloudPage() {
                 >
                   <p className="text-[11px] font-mono text-surface-600 leading-relaxed mt-3 max-w-xl">
                     Word size reflects frequency — larger words appear more often across arguments.
-                    Faded words appear occasionally; bright words are the backbone of that side{"'"s vocabulary.
+                    Faded words appear occasionally; bright words are the backbone of that side{"'"}s vocabulary.
                     Click any word to search arguments containing it.
                     Stop words and numbers are excluded. The &ldquo;Common Ground&rdquo; section shows words used heavily by both sides.
                   </p>

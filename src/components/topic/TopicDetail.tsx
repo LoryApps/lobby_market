@@ -15,6 +15,7 @@ import {
   Globe,
   Info,
   Lightbulb,
+  List,
   Megaphone,
   MessageCircle,
   MessageSquare,
@@ -521,6 +522,13 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
                     >
                       <ScrollText className="h-3.5 w-3.5" />
                       Transcript
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/arguments`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-for-400 hover:text-for-300 transition-colors"
+                    >
+                      <List className="h-3.5 w-3.5" />
+                      Browse arguments
                     </Link>
                     <Link
                       href={`/topic/${topic.id}/argument-graph`}
