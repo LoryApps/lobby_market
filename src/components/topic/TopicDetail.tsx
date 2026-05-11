@@ -21,6 +21,7 @@ import {
   MessageCircle,
   MessageSquare,
   MonitorPlay,
+  Network,
   Newspaper,
   Scale,
   ScrollText,
@@ -579,6 +580,13 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
                       Word cloud
                     </Link>
                     <Link
+                      href={`/topic/${topic.id}/connections`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-emerald hover:text-emerald/80 transition-colors"
+                    >
+                      <Network className="h-3.5 w-3.5" />
+                      Connections
+                    </Link>
+                    <Link
                       href={`/topic/${topic.id}/stats`}
                       className="inline-flex items-center gap-1.5 text-xs font-mono text-gold hover:text-gold/80 transition-colors"
                     >
@@ -863,6 +871,17 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
               <RelatedTopics topicId={topic.id} className="mt-8" />
             </ErrorBoundary>
 
+            {/* Connections hub link */}
+            <div className="mt-4 flex justify-end">
+              <Link
+                href={`/topic/${topic.id}/connections`}
+                className="inline-flex items-center gap-1.5 text-[11px] font-mono text-emerald hover:text-emerald/80 transition-colors"
+              >
+                <Network className="h-3 w-3" />
+                Open full connections →
+              </Link>
+            </div>
+
             {/* Top argument contributors — ranked by upvotes received */}
             <ErrorBoundary size="sm" label="Couldn't load contributors" className="mt-6">
               <ArgumentContributors topicId={topic.id} className="mt-6" />
@@ -876,7 +895,7 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
         )}
       </div>
 
-      {/* ── Mobile sticky "Cast your vote" CTA ─────────────────────────────────────── */}
+      {/* ── Mobile sticky "Cast your vote" CTA ─────────────────────────────────────────────── */}
       {/* Visible only on mobile, only when the topic is votable and unvoted. */}
       <AnimatePresence>
         {isVotable && !hasVoted(topic.id) && (
@@ -916,7 +935,7 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
         )}
       </AnimatePresence>
 
-      {/* ── Vote Sheet ────────────────────────────────────────────────────── */}
+      {/* ── Vote Sheet ───────────────────────────────────────────────────────────────── */}
       <VoteSheet
         open={voteSheetOpen}
         onClose={() => setVoteSheetOpen(false)}
