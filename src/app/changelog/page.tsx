@@ -978,8 +978,8 @@ const CHAPTERS: Chapter[] = [
 ]
 
 const STATS = [
-  { value: '57', label: 'chapters shipped' },
-  { value: '331+', label: 'features built' },
+  { value: '58', label: 'chapters shipped' },
+  { value: '334+', label: 'features built' },
   { value: '70', label: 'DB migrations' },
   { value: '400+', label: 'API routes' },
 ]
@@ -994,6 +994,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Topic Connections Hub',
+    description: 'New /topic/[id]/connections page gives every debate a dedicated, SEO-indexable Connections Hub — surfacing all the relationships a topic has within the Lobby ecosystem. Three sections: Related Debates (topics sharing tags or category, using existing tag-overlap API), Civic Links (outgoing and incoming wiki wikilinks between topics), and Coalition Positions (how organised groups have officially declared FOR, AGAINST, or NEUTRAL). "Connections" link added to the topic sub-page nav in TopicDetail, and "Open full connections →" button added near the inline Related Topics section. All connections pages added to sitemap.',
+    href: undefined,
+    icon: Network,
+    color: 'text-emerald',
+    tag: 'Ch. 58',
+  },
   {
     title: 'Discourse Quality Report',
     description: 'New /topic/[id]/quality page gives every debate a dedicated, SEO-indexable Discourse Quality Report. Shows the topic header and vote split, then the full AI grade analysis: overall quality tier, average score, graded % of arguments, side-by-side FOR vs AGAINST grade distribution bars, and top-graded argument from each side. A grade rubric explains A–F criteria. "Open full quality report →" link added to the ArgumentQualityPanel in TopicDetail.',
