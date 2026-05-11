@@ -778,13 +778,41 @@ const CHAPTERS: Chapter[] = [
       { icon: Sparkles, label: 'Paginated load-more (25 per page) with remaining count, content-shaped skeleton loading state, empty state with CTAs, and a "Best Quality" shortcut link added to the main /arguments hub nav strip next to Daily Pick and Trending.', href: '/arguments/top-scored', color: 'text-for-400' },
     ],
   },
+  {
+    number: 'Ch. 44',
+    title: 'Argument Reactions Leaderboard',
+    subtitle: 'A curated showcase of the most-reacted arguments — insightful, compelling, balanced, and needs-evidence',
+    accent: 'text-gold',
+    borderColor: 'border-gold/30',
+    bgColor: 'bg-gold/5',
+    textColor: 'text-gold',
+    items: [
+      { icon: Sparkles, label: 'New /arguments/reactions page — the Argument Reactions Leaderboard surfaces the community\'s most-reacted arguments grouped by reaction type: 💡 Insightful (shifted thinking), 🔥 Compelling (strongest points), ⚖️ Balanced (fairest takes), 🔍 Needs Source (skepticism).', href: '/arguments/reactions', color: 'text-gold' },
+      { icon: Star, label: 'Filterable by reaction type and time period (This week / This month / All time). Ranked by total reaction count with author, topic context, grade badge, upvotes, and reaction count displayed on each card.', href: '/arguments/reactions', color: 'text-purple' },
+      { icon: Trophy, label: '"Reactions" shortcut link added to the main /arguments hub nav strip. The reactions leaderboard is powered by a new /api/arguments/reactions route that aggregates reaction counts with a weighted algorithm favoring rarer reaction types.', href: '/arguments/reactions', color: 'text-emerald' },
+    ],
+  },
+  {
+    number: 'Ch. 45',
+    title: 'Most Contested Arguments',
+    subtitle: 'The arguments the Lobby refuses to let slide — high engagement, heavy reply threads, community demands for evidence',
+    accent: 'text-purple',
+    borderColor: 'border-purple/30',
+    bgColor: 'bg-purple/5',
+    textColor: 'text-purple',
+    items: [
+      { icon: Swords, label: 'New /arguments/contested page surfaces the most scrutinized arguments on both sides of the debate. A custom Contest Score (upvotes × (1 + reply_count) × (1 + needs_evidence × 0.5)) identifies arguments that attracted both strong approval and heavy community pushback.', href: '/arguments/contested', color: 'text-purple' },
+      { icon: MessageSquare, label: 'Cards show contest intensity bar (animated), upvote count, reply count, and "needs source" reaction tally. Filterable by look-back window (7 days / 30 days / all time) and topic category. Split FOR / AGAINST columns with grade badges for AI-scored arguments.', href: '/arguments/contested', color: 'text-for-400' },
+      { icon: Brain, label: 'New /api/arguments/contested route fetches candidate arguments, joins reply counts from argument_replies, needs_evidence reactions from argument_reactions, and enriches with topic/profile data. "Contested" shortcut link added to main /arguments hub nav and TopBar menu.', href: '/arguments/contested', color: 'text-emerald' },
+    ],
+  },
 ]
 
 const STATS = [
-  { value: '43', label: 'chapters shipped' },
-  { value: '285+', label: 'features built' },
-  { value: '68', label: 'DB migrations' },
-  { value: '377+', label: 'API routes' },
+  { value: '45', label: 'chapters shipped' },
+  { value: '290+', label: 'features built' },
+  { value: '69', label: 'DB migrations' },
+  { value: '380+', label: 'API routes' },
 ]
 
 interface RecentBuild {
@@ -797,6 +825,22 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Most Contested Arguments',
+    description: 'New /arguments/contested page surfaces the most scrutinized arguments on both sides. A custom Contest Score (upvotes × (1 + replies) × (1 + needs_evidence × 0.5)) identifies arguments that attracted strong approval and heavy pushback simultaneously. Filterable by look-back window and category. Animated contest intensity bar, reply count, and needs-source tally on each card.',
+    href: '/arguments/contested',
+    icon: Swords,
+    color: 'text-purple',
+    tag: 'Ch. 45',
+  },
+  {
+    title: 'Argument Reactions Leaderboard',
+    description: 'New /arguments/reactions leaderboard showcases the most-reacted arguments grouped by type: 💡 Insightful, 🔥 Compelling, ⚖️ Balanced, 🔍 Needs Source. Filterable by reaction type and period (week / month / all time). Powered by a new /api/arguments/reactions route with weighted reaction scoring.',
+    href: '/arguments/reactions',
+    icon: Sparkles,
+    color: 'text-gold',
+    tag: 'Ch. 44',
+  },
   {
     title: 'Best Arguments Showcase',
     description: "New /arguments/top-scored page surfaces the platform's highest AI-graded arguments in a ranked digest. Filterable by period (week / month / all-time), grade (A / B / C), and side (FOR / AGAINST). Each card shows grade badge with colour-coded accents (gold A, emerald B, blue C), score bar, rank number with podium colouring, author, upvote count, and topic link. Paginated with 25-per-page load-more.",
