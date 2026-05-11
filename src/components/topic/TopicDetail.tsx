@@ -782,6 +782,14 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
             <ErrorBoundary size="sm" label="Couldn't load context" className="mt-6">
               <TopicContextPanel topicId={topic.id} className="mt-6" />
             </ErrorBoundary>
+            <div className="mt-2 flex justify-end">
+              <Link
+                href={`/topic/${topic.id}/context`}
+                className="inline-flex items-center gap-1 text-[11px] font-mono text-surface-500 hover:text-purple transition-colors"
+              >
+                Open full context &rarr;
+              </Link>
+            </div>
 
             {/* Topic context / wiki description — editable by author */}
             <ErrorBoundary size="sm" label="Couldn't load wiki section">
@@ -878,7 +886,7 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
                 className="inline-flex items-center gap-1.5 text-[11px] font-mono text-emerald hover:text-emerald/80 transition-colors"
               >
                 <Network className="h-3 w-3" />
-                Open full connections →
+                Open full connections &rarr;
               </Link>
             </div>
 
