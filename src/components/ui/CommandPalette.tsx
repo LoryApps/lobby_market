@@ -99,7 +99,7 @@ import {
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
 
-// ─── Types ───────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Types ──────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 interface QuickLink {
   type: 'link'
@@ -141,7 +141,7 @@ interface PersonResult {
 
 type PaletteItem = QuickLink | TopicResult | LawResult | PersonResult
 
-// ─── Quick-nav links shown when no query is typed ────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Quick-nav links shown when no query is typed ─────────────────────────────────────────────────────────────────────────────────────────
 
 const QUICK_LINKS: QuickLink[] = [
   { type: 'link', id: 'feed', label: 'Feed', sublabel: 'Live topic feed', href: '/', icon: Flame, iconColor: 'text-against-400', iconBg: 'bg-against-500/10' },
@@ -183,6 +183,7 @@ const QUICK_LINKS: QuickLink[] = [
   { type: 'link', id: 'hot-takes', label: 'Hot Takes', sublabel: "Citizens' unfiltered vote reasons — what people actually think", href: '/hot-takes', icon: MessageSquare, iconColor: 'text-against-400', iconBg: 'bg-against-900/50' },
   { type: 'link', id: 'pulse', label: 'Community Pulse', sublabel: 'Top FOR/AGAINST arguments from active debates', href: '/pulse', icon: Zap, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
   { type: 'link', id: 'arguments', label: 'Top Arguments', sublabel: 'Most-upvoted arguments ever made in the Lobby', href: '/arguments', icon: ThumbsUp, iconColor: 'text-purple', iconBg: 'bg-purple/10' },
+  { type: 'link', id: 'argument-discussions', label: 'Argument Discussions', sublabel: 'Most active reply threads — find the arguments generating the most conversation', href: '/arguments/discussions', icon: MessageSquare, iconColor: 'text-purple', iconBg: 'bg-purple/10' },
   { type: 'link', id: 'my-arguments', label: 'My Arguments', sublabel: 'Personal argument analytics — upvotes, categories, history', href: '/arguments/mine', icon: Quote, iconColor: 'text-for-400', iconBg: 'bg-for-500/10' },
   { type: 'link', id: 'opposing-voices', label: 'Opposing Voices', sublabel: 'The strongest arguments challenging your positions — best counterarguments ranked by AI quality', href: '/arguments/opposing', icon: Scale, iconColor: 'text-against-400', iconBg: 'bg-against-500/10' },
   { type: 'link', id: 'wisdom', label: 'Wisdom Feed', sublabel: "The platform's most respected voices — top arguments from Elders, Senators, and Lawmakers", href: '/wisdom', icon: Crown, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
@@ -326,7 +327,7 @@ const STATUS_COLOR: Record<string, string> = {
   failed: 'text-against-400',
 }
 
-// ─── Single result row ───────────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Single result row ──────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 function ResultRow({
   item,
@@ -478,7 +479,7 @@ function ResultRow({
   )
 }
 
-// ─── Section header ────────────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Section header ──────────────────────────────────────────────────────────────────────────────────────────────────────
 
 function SectionHeader({ label }: { label: string }) {
   return (
@@ -490,7 +491,7 @@ function SectionHeader({ label }: { label: string }) {
   )
 }
 
-// ─── The palette itself ────────────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── The palette itself ──────────────────────────────────────────────────────────────────────────────────────────────────────
 
 interface CommandPaletteProps {
   open: boolean
