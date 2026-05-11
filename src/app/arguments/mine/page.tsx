@@ -36,7 +36,7 @@ import type {
   GradeKey,
 } from '@/app/api/arguments/mine/route'
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function relativeTime(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime()
@@ -64,7 +64,7 @@ const STATUS_BADGE: Record<string, 'proposed' | 'active' | 'law' | 'failed'> = {
   law: 'law', failed: 'failed', continued: 'proposed', archived: 'proposed',
 }
 
-// ─── Grade config ─────────────────────────────────────────────────────────────
+// ─── Grade config ──────────────────────────────────────────────────────────────
 
 const GRADE_CONFIG: Record<GradeKey, { color: string; bg: string; border: string; bar: string }> = {
   A: { color: 'text-emerald',    bg: 'bg-emerald/15',    border: 'border-emerald/30',    bar: 'bg-emerald' },
@@ -142,7 +142,7 @@ function WeeklyChart({ buckets }: { buckets: WeekBucket[] }) {
   )
 }
 
-// ─── Grade Distribution Panel ─────────────────────────────────────────────────
+// ─── Grade Distribution Panel ───────────────────────────────────────────────────
 
 function GradeDistributionPanel({
   distribution,
@@ -233,7 +233,7 @@ function GradeDistributionPanel({
   )
 }
 
-// ─── Category Bar ─────────────────────────────────────────────────────────────
+// ─── Category Bar ──────────────────────────────────────────────────────────────
 
 function CategoryRow({ stat, total }: { stat: CategoryStat; total: number }) {
   const pct = total > 0 ? Math.round((stat.total / total) * 100) : 0
@@ -275,7 +275,7 @@ function CategoryRow({ stat, total }: { stat: CategoryStat; total: number }) {
   )
 }
 
-// ─── Argument Row ─────────────────────────────────────────────────────────────
+// ─── Argument Row ──────────────────────────────────────────────────────────────
 
 function ArgRow({ arg }: { arg: MineArgument }) {
   return (
@@ -359,7 +359,7 @@ function ArgRow({ arg }: { arg: MineArgument }) {
   )
 }
 
-// ─── Skeleton loaders ─────────────────────────────────────────────────────────
+// ─── Skeleton loaders ──────────────────────────────────────────────────────────────
 
 function StatsSkeleton() {
   return (
@@ -440,7 +440,7 @@ export default function MyArgumentsPage() {
 
       <main className="max-w-3xl mx-auto px-4 pt-6 pb-28 md:pb-12 space-y-6">
 
-        {/* ── Header ──────────────────────────────────────────────────────── */}
+        {/* ── Header ────────────────────────────────────────────────────── */}
         <div className="flex items-center gap-3">
           <Link
             href="/arguments"
@@ -465,14 +465,14 @@ export default function MyArgumentsPage() {
           </button>
         </div>
 
-        {/* ── Error ───────────────────────────────────────────────────────── */}
+        {/* ── Error ──────────────────────────────────────────────────────────── */}
         {error && (
           <div className="rounded-xl border border-against-500/30 bg-against-500/10 px-4 py-3 text-sm font-mono text-against-400">
             {error}
           </div>
         )}
 
-        {/* ── Stats strip ─────────────────────────────────────────────────── */}
+        {/* ── Stats strip ─────────────────────────────────────────────────────── */}
         {loading ? (
           <StatsSkeleton />
         ) : data && data.totalArguments > 0 ? (
@@ -503,7 +503,7 @@ export default function MyArgumentsPage() {
           </div>
         ) : null}
 
-        {/* ── Grade distribution ───────────────────────────────────────────── */}
+        {/* ── Grade distribution ────────────────────────────────────────────────── */}
         {!loading && data && data.gradedCount > 0 && (
           <GradeDistributionPanel
             distribution={data.gradeDistribution}
@@ -512,7 +512,7 @@ export default function MyArgumentsPage() {
           />
         )}
 
-        {/* ── No grades nudge ───────────────────────────────────────────────── */}
+        {/* ── No grades nudge ───────────────────────────────────────────────────── */}
         {!loading && data && data.totalArguments > 0 && data.gradedCount === 0 && (
           <motion.div
             initial={{ opacity: 0, y: 12 }}
@@ -536,7 +536,7 @@ export default function MyArgumentsPage() {
           </motion.div>
         )}
 
-        {/* ── FOR vs AGAINST bar ───────────────────────────────────────────── */}
+        {/* ── FOR vs AGAINST bar ────────────────────────────────────────────────── */}
         {!loading && data && data.totalArguments > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 12 }}
@@ -579,7 +579,7 @@ export default function MyArgumentsPage() {
           </motion.div>
         )}
 
-        {/* ── Weekly activity chart ────────────────────────────────────────── */}
+        {/* ── Weekly activity chart ──────────────────────────────────────────────── */}
         {!loading && data && data.weeklyBuckets.length > 0 && data.totalArguments > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 12 }}
@@ -594,7 +594,7 @@ export default function MyArgumentsPage() {
           </motion.div>
         )}
 
-        {/* ── Category breakdown ───────────────────────────────────────────── */}
+        {/* ── Category breakdown ─────────────────────────────────────────────────── */}
         {!loading && data && data.categoryStats.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 12 }}
@@ -617,7 +617,7 @@ export default function MyArgumentsPage() {
           </motion.div>
         )}
 
-        {/* ── Argument list ────────────────────────────────────────────────── */}
+        {/* ── Argument list ───────────────────────────────────────────────────────── */}
         {!loading && data && data.totalArguments > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 12 }}
@@ -691,14 +691,14 @@ export default function MyArgumentsPage() {
           </motion.div>
         )}
 
-        {/* ── Loading skeletons ────────────────────────────────────────────── */}
+        {/* ── Loading skeletons ───────────────────────────────────────────────────── */}
         {loading && (
           <div className="space-y-3">
             {Array.from({ length: 3 }).map((_, i) => <ArgSkeleton key={i} />)}
           </div>
         )}
 
-        {/* ── Empty state (no arguments at all) ───────────────────────────── */}
+        {/* ── Empty state (no arguments at all) ───────────────────────────────────── */}
         {!loading && !error && data && data.totalArguments === 0 && (
           <EmptyState
             icon={MessageSquare}
@@ -708,9 +708,19 @@ export default function MyArgumentsPage() {
           />
         )}
 
-        {/* ── CTA ─────────────────────────────────────────────────────────── */}
+        {/* ── CTA ─────────────────────────────────────────────────────────────────── */}
         {!loading && data && data.totalArguments > 0 && (
           <div className="flex flex-col sm:flex-row gap-3">
+            <Link
+              href="/arguments/dna"
+              className={cn(
+                'flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-mono font-medium',
+                'bg-for-500/10 text-for-400 hover:bg-for-500/20 border border-for-500/30 transition-all',
+              )}
+            >
+              <Brain className="h-4 w-4" aria-hidden />
+              My Argument DNA
+            </Link>
             <Link
               href="/top-arguments"
               className={cn(
