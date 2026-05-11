@@ -49,6 +49,7 @@ import {
   Timer,
   Trophy,
   TrendingUp,
+  Type,
   Users,
   Vote,
   Zap,
@@ -890,13 +891,27 @@ const CHAPTERS: Chapter[] = [
       { icon: BarChart2, label: 'Four sort modes: Most Users, Best Quality, Most Arguments, A-Grade Rate. Your rank within your archetype shown inline. Powered by new /api/arguments/archetypes endpoint — no new migration needed.', href: '/arguments/archetypes', color: 'text-emerald' },
     ],
   },
+  {
+    number: 'Ch. 52',
+    title: 'Platform Lexicon',
+    subtitle: 'A word cloud of civic language — see how the FOR and AGAINST camps frame the same debates',
+    accent: 'text-purple',
+    borderColor: 'border-purple/30',
+    bgColor: 'bg-purple/5',
+    textColor: 'text-purple',
+    items: [
+      { icon: Type, label: 'New /word-cloud page renders a split FOR (blue) vs. AGAINST (red) word cloud of the most-used words across all platform arguments. Word size reflects frequency — bigger words dominate civic language on that side.', href: '/word-cloud', color: 'text-purple' },
+      { icon: Search, label: 'Category filter (all 10 civic categories) and time window (7 days / 30 days / all-time) let you explore how language shifts across topics and time. Click any word to search arguments containing it.', href: '/word-cloud', color: 'text-for-400' },
+      { icon: BarChart2, label: '"Common Ground" section reveals words that appear heavily in BOTH sides — the shared civic vocabulary that underlies even the most contested debates. Powered by new /api/stats/word-cloud endpoint.', href: '/word-cloud', color: 'text-emerald' },
+    ],
+  },
 ]
 
 const STATS = [
-  { value: '51', label: 'chapters shipped' },
-  { value: '315+', label: 'features built' },
+  { value: '52', label: 'chapters shipped' },
+  { value: '316+', label: 'features built' },
   { value: '70', label: 'DB migrations' },
-  { value: '396+', label: 'API routes' },
+  { value: '397+', label: 'API routes' },
 ]
 
 interface RecentBuild {
@@ -909,6 +924,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Platform Lexicon — Civic Word Cloud',
+    description: 'New /word-cloud page renders a split FOR vs. AGAINST word cloud of the most-used words across all platform arguments. Filter by any of the 10 civic categories and three time windows (7d/30d/all-time). Words are sized by frequency; click any to search arguments. A "Common Ground" section reveals the shared vocabulary used by both sides. Backed by /api/stats/word-cloud — no new migration needed.',
+    href: '/word-cloud',
+    icon: Type,
+    color: 'text-purple',
+    tag: 'Ch. 52',
+  },
   {
     title: 'Archetype Leaderboard — Rhetorical Styles Platform-Wide',
     description: 'New /arguments/archetypes page surfaces platform-wide stats for all 8 rhetorical archetypes from the DNA system. Each archetype card shows user count, avg quality score, A-grade rate, avg upvotes, and the top 3 arguers in that style. Sortable by Most Users, Best Quality, Most Arguments, or A-Grade Rate. Your rank within your archetype shown inline. Powered by /api/arguments/archetypes — no new migration needed.',
