@@ -423,6 +423,13 @@ export default function ArgumentsPage() {
                 <GitBranch className="h-3 w-3" aria-hidden />
                 Themes
               </Link>
+              <Link
+                href="/arguments/faceoff"
+                className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-against-500/10 border border-against-500/30 text-[11px] font-mono font-semibold text-against-300 hover:bg-against-500/20 transition-colors flex-shrink-0"
+              >
+                <Swords className="h-3 w-3" aria-hidden />
+                Arena
+              </Link>
             </div>
           </div>
         </div>
