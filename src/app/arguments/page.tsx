@@ -392,7 +392,7 @@ export default function ArgumentsPage() {
                 href="/arguments/reactions"
                 className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-gold/10 border border-gold/30 text-[11px] font-mono font-semibold text-gold hover:bg-gold/20 transition-colors flex-shrink-0"
               >
-                <span aria-hidden="true" className="text-[11px]">💡</span>
+                <span aria-hidden="true" className="text-[11px]">&#x1F4A1;</span>
                 Reactions
               </Link>
               <Link
@@ -429,6 +429,13 @@ export default function ArgumentsPage() {
               >
                 <Swords className="h-3 w-3" aria-hidden />
                 Arena
+              </Link>
+              <Link
+                href="/arguments/dna"
+                className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-for-500/10 border border-for-500/30 text-[11px] font-mono font-semibold text-for-400 hover:bg-for-500/20 transition-colors flex-shrink-0"
+              >
+                <Brain className="h-3 w-3" aria-hidden />
+                My DNA
               </Link>
             </div>
           </div>
