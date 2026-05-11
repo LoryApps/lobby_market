@@ -905,13 +905,55 @@ const CHAPTERS: Chapter[] = [
       { icon: BarChart2, label: '"Common Ground" section reveals words that appear heavily in BOTH sides — the shared civic vocabulary that underlies even the most contested debates. Powered by new /api/stats/word-cloud endpoint.', href: '/word-cloud', color: 'text-emerald' },
     ],
   },
+  {
+    number: 'Ch. 53',
+    title: 'Topic Arguments Browser',
+    subtitle: 'A full-page dedicated view of all arguments for a single debate — richer sorting, filtering, and side-by-side comparison',
+    accent: 'text-for-400',
+    borderColor: 'border-for-500/30',
+    bgColor: 'bg-for-500/5',
+    textColor: 'text-for-400',
+    items: [
+      { icon: MessageSquare, label: 'New /topic/[id]/arguments page provides a full-screen arguments browser distinct from the inline thread on the topic page. Filters: All | FOR | AGAINST. Sort: Top Voted | AI Quality | Newest | Oldest.', href: undefined, color: 'text-for-400' },
+      { icon: Layers, label: 'Side-by-Side view (desktop) renders FOR and AGAINST columns simultaneously — see the strongest cases on each side at a glance. Single-List view remains the default on mobile.', href: undefined, color: 'text-purple' },
+      { icon: BarChart2, label: 'Argument count breakdown in header (total FOR vs AGAINST), navigation link from TopicDetail, AI grade badges, upvote counts, and reply counts all surfaced on every card. No new migration needed.', href: undefined, color: 'text-emerald' },
+    ],
+  },
+  {
+    number: 'Ch. 54',
+    title: 'Argument Discussions',
+    subtitle: 'Discover the arguments generating the most reply conversation across the whole platform',
+    accent: 'text-purple',
+    borderColor: 'border-purple/30',
+    bgColor: 'bg-purple/5',
+    textColor: 'text-purple',
+    items: [
+      { icon: MessageSquare, label: 'New /arguments/discussions page ranks arguments by reply activity rather than upvotes or velocity — making threaded conversations discoverable for the first time. Three sort modes: Most Replies, Recent Activity, Most Active (hybrid score).', href: '/arguments/discussions', color: 'text-purple' },
+      { icon: Sparkles, label: 'Filter by side (FOR/AGAINST), time window (7d / 30d / 90d / all-time), and all 10 civic categories. Each card shows reply count badge, last reply timestamp, author, AI grade, and upvote count.', href: '/arguments/discussions', color: 'text-for-400' },
+      { icon: Layers, label: '"Read thread" CTA links directly to the argument\'s full reply view at /arguments/[id]. Added to sitemap (/arguments/discussions) and command palette. Backed by new /api/arguments/discussions endpoint — no new migration needed.', href: '/arguments/discussions', color: 'text-emerald' },
+    ],
+  },
+  {
+    number: 'Ch. 55',
+    title: 'Topic Evidence Board',
+    subtitle: 'Dedicated full-screen evidence page for every topic — submit, vote, and analyse community-sourced citations',
+    accent: 'text-emerald',
+    borderColor: 'border-emerald/30',
+    bgColor: 'bg-emerald/5',
+    textColor: 'text-emerald',
+    items: [
+      { icon: BookOpen, label: 'New /topic/[id]/evidence page gives every topic a dedicated, SEO-indexable evidence board — distinct from the embedded tab. Shows the topic statement, vote split, and the full community evidence list sorted by upvotes.', href: undefined, color: 'text-emerald' },
+      { icon: Sparkles, label: 'AI evidence analysis (quality score + balance score, strongest FOR/AGAINST, key claim, missing perspective) is prominently featured. Filter by side (FOR/AGAINST/NEUTRAL). Evidence submission form inline for logged-in users.', href: undefined, color: 'text-for-400' },
+      { icon: Layers, label: 'TopicDetail Evidence tab gains an "Open full board →" link to the dedicated page. All topic evidence pages added to sitemap (hourly changeFrequency). No new migration — powered by existing topic_evidence + topic_evidence_votes tables.', href: undefined, color: 'text-purple' },
+    ],
+  },
 ]
 
 const STATS = [
-  { value: '52', label: 'chapters shipped' },
-  { value: '316+', label: 'features built' },
+  { value: '55', label: 'chapters shipped' },
+  { value: '325+', label: 'features built' },
   { value: '70', label: 'DB migrations' },
-  { value: '397+', label: 'API routes' },
+  { value: '400+', label: 'API routes' },
 ]
 
 interface RecentBuild {
@@ -924,6 +966,30 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Topic Evidence Board',
+    description: 'New /topic/[id]/evidence page gives every debate a dedicated, SEO-indexable, shareable Evidence Board — outside the topic tab view. Shows topic statement and vote split up top, then the full community evidence list (sorted by upvotes), AI analysis (quality/balance scores, strongest FOR/AGAINST, key claim, missing perspective), and inline submission form. "Open full board →" link added to the Evidence tab in TopicDetail. All evidence pages added to sitemap.',
+    href: undefined,
+    icon: BookOpen,
+    color: 'text-emerald',
+    tag: 'Ch. 55',
+  },
+  {
+    title: 'Argument Discussions Hub',
+    description: 'New /arguments/discussions page surfaces the most actively-replied arguments across the whole platform — making threaded reply conversations discoverable for the first time. Three sort modes: Most Replies, Recent Activity, Most Active. Filter by side (FOR/AGAINST), time window, and category. Each card shows reply count, last reply time, AI grade, and a "Read thread" link. Backed by new /api/arguments/discussions endpoint.',
+    href: '/arguments/discussions',
+    icon: MessageSquare,
+    color: 'text-purple',
+    tag: 'Ch. 54',
+  },
+  {
+    title: 'Topic Arguments Browser',
+    description: 'New /topic/[id]/arguments page provides a full-screen browser for all arguments on a specific topic — distinct from the inline thread. Filters by side (FOR/AGAINST) and sorts by Top Voted, AI Quality, Newest, or Oldest. Desktop shows a side-by-side split view of FOR and AGAINST simultaneously. Navigation link added to TopicDetail.',
+    href: undefined,
+    icon: Layers,
+    color: 'text-for-400',
+    tag: 'Ch. 53',
+  },
   {
     title: 'Platform Lexicon — Civic Word Cloud',
     description: 'New /word-cloud page renders a split FOR vs. AGAINST word cloud of the most-used words across all platform arguments. Filter by any of the 10 civic categories and three time windows (7d/30d/all-time). Words are sized by frequency; click any to search arguments. A "Common Ground" section reveals the shared vocabulary used by both sides. Backed by /api/stats/word-cloud — no new migration needed.',
