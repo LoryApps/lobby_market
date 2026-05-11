@@ -834,13 +834,41 @@ const CHAPTERS: Chapter[] = [
       { icon: MessageSquare, label: 'New /api/arguments/opposing endpoint joins user votes with topic_arguments, filters to the opposing side per topic, ranks by ai_score and upvotes. Added as "Counter-Arguments" link in the /arguments hub nav strip.', href: '/arguments/opposing', color: 'text-for-400' },
     ],
   },
+  {
+    number: 'Ch. 48',
+    title: 'Common Threads',
+    subtitle: 'Eight recurring civic value clusters that run through every debate — revealing the shared tensions beneath all discourse',
+    accent: 'text-purple',
+    borderColor: 'border-purple/30',
+    bgColor: 'bg-purple/5',
+    textColor: 'text-purple',
+    items: [
+      { icon: GitBranch, label: 'New /arguments/common-threads page surfaces the eight recurring civic threads (Individual Freedom, Collective Good, Economic Impact, Evidence & Data, Moral & Ethics, Role of Government, Future Generations, Inequality & Power) across all platform arguments.', href: '/arguments/common-threads', color: 'text-purple' },
+      { icon: MessageSquare, label: 'Each thread card shows argument count, topic count, and a live preview of the two strongest arguments matching that theme. Clicking a thread expands to the full ranked argument list with author, side, upvote count, and topic context.', href: '/arguments/common-threads', color: 'text-for-400' },
+      { icon: Brain, label: 'Arguments matched to themes via keyword analysis across 15 thematic signals per thread. Distinct from /discover (topic-level) — this surfaces argument-level patterns across completely different debates.', href: '/arguments/common-threads', color: 'text-emerald' },
+    ],
+  },
+  {
+    number: 'Ch. 49',
+    title: 'Argument Arena',
+    subtitle: 'Head-to-head matchups where the community decides which argument makes the more compelling case — independent of topic position',
+    accent: 'text-against-400',
+    borderColor: 'border-against-500/30',
+    bgColor: 'bg-against-500/5',
+    textColor: 'text-against-300',
+    items: [
+      { icon: Swords, label: 'New /arguments/faceoff page presents two real arguments from DIFFERENT topics side-by-side. Users vote on which makes the more compelling case — judging rhetoric, not topic preference. Up to 10 matchups per day.', href: '/arguments/faceoff', color: 'text-against-400' },
+      { icon: Trophy, label: 'Arena Champions leaderboard tracks the arguments with the most matchup wins and highest win rates — a community-curated ranking separate from upvotes and AI scores.', href: '/arguments/faceoff', color: 'text-gold' },
+      { icon: Brain, label: 'New argument_faceoff_votes table (migration 00070) + /api/arguments/faceoff GET/POST endpoints. Category filter, daily progress bar (10/day), animated win-rate bars revealed after voting.', href: '/arguments/faceoff', color: 'text-emerald' },
+    ],
+  },
 ]
 
 const STATS = [
-  { value: '47', label: 'chapters shipped' },
-  { value: '295+', label: 'features built' },
-  { value: '69', label: 'DB migrations' },
-  { value: '385+', label: 'API routes' },
+  { value: '49', label: 'chapters shipped' },
+  { value: '300+', label: 'features built' },
+  { value: '70', label: 'DB migrations' },
+  { value: '390+', label: 'API routes' },
 ]
 
 interface RecentBuild {
@@ -853,6 +881,22 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Argument Arena — Head-to-Head',
+    description: 'New /arguments/faceoff page pits two real arguments from different topics against each other. Vote on which makes the more compelling case — judging rhetoric, not topic preference. Up to 10 matchups per day, category filter, Arena Champions leaderboard, win-rate bars revealed after each vote. Backed by migration 00070 + /api/arguments/faceoff endpoints.',
+    href: '/arguments/faceoff',
+    icon: Swords,
+    color: 'text-against-400',
+    tag: 'Ch. 49',
+  },
+  {
+    title: 'Common Threads — Civic Themes',
+    description: 'New /arguments/common-threads page surfaces the eight recurring civic value clusters (Individual Freedom, Collective Good, Economic Impact, etc.) that run through every debate. Each thread card shows argument + topic count, previews the two strongest arguments, and expands to a full ranked argument list.',
+    href: '/arguments/common-threads',
+    icon: GitBranch,
+    color: 'text-purple',
+    tag: 'Ch. 48',
+  },
   {
     title: 'Opposing Voices',
     description: "New /arguments/opposing page surfaces the strongest arguments against your votes. For every topic you've voted on, it finds the best-quality argument on the opposing side, ranked by AI score. Shows grade badge, your vote, author, upvotes, and a Respond CTA. New /api/arguments/opposing endpoint. Added as Counter-Arguments link in the /arguments hub.",
