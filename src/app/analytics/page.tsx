@@ -42,7 +42,7 @@ import { cn } from '@/lib/utils/cn'
 import type { PredictionRecord } from '@/app/api/analytics/predictions/route'
 import type { KinProfile, KinResponse } from '@/app/api/analytics/kin/route'
 
-// ─── Types ────────────────────────────────────────────────────────────────────────────────────────
+// ─── Types ────────────────────────────────────────────────────────────────────────────────────────────────
 
 interface AnalyticsData {
   profile: {
@@ -80,7 +80,7 @@ interface AnalyticsData {
   }
 }
 
-// ─── Skeleton ───────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Skeleton ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 function Skeleton({ className }: { className?: string }) {
   return (
@@ -117,7 +117,7 @@ function AnalyticsSkeleton() {
   )
 }
 
-// ─── Sub-components ───────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Sub-components ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 function TodayProgressCard({
   votesUsed,
@@ -538,7 +538,7 @@ function MonthlyBars({
   )
 }
 
-// ─── Prediction history ────────────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Prediction history ────────────────────────────────────────────────────────────────────────────────────────────────────
 
 const STATUS_LABEL: Record<string, string> = {
   proposed: 'Proposed',
@@ -629,7 +629,7 @@ function PredictionRow({ pred }: { pred: PredictionRecord }) {
   )
 }
 
-// ─── Political Kin section ──────────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Political Kin section ────────────────────────────────────────────────────────────────────────────────────────
 
 function KinCard({ person, type }: { person: KinProfile; type: 'kin' | 'opposite' }) {
   const isKin = type === 'kin'
@@ -895,7 +895,7 @@ function PredictionHistorySection() {
   )
 }
 
-// ─── Main Page ──────────────────────────────────────────────────────────────────────────────────────
+// ─── Main Page ──────────────────────────────────────────────────────────────────────────────────────────
 
 export default function AnalyticsPage() {
   const router = useRouter()
@@ -1030,6 +1030,13 @@ export default function AnalyticsPage() {
             >
               <Shield className="h-3.5 w-3.5" />
               Coalition Stats
+            </Link>
+            <Link
+              href="/analytics/faceoffs"
+              className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"
+            >
+              <Swords className="h-3.5 w-3.5" />
+              Faceoff Record
             </Link>
             <Link
               href="/prescient"
