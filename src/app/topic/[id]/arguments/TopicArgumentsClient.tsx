@@ -32,6 +32,7 @@ import { createClient } from '@/lib/supabase/client'
 import { Avatar } from '@/components/ui/Avatar'
 import { Button } from '@/components/ui/Button'
 import { EmptyState } from '@/components/ui/EmptyState'
+import { ArgumentReactionPanel } from '@/components/arguments/ArgumentReactionPanel'
 import { cn } from '@/lib/utils/cn'
 import type { TopicArgumentWithAuthor } from '@/lib/supabase/types'
 
@@ -239,6 +240,16 @@ function ArgumentCard({ arg, topicId, currentUserId, onUpvote, rank }: ArgumentC
             <ExternalLink className="h-3 w-3 flex-shrink-0" />
             <span className="truncate max-w-xs">{arg.source_url}</span>
           </a>
+        )}
+
+        {/* Reactions row */}
+        {currentUserId && (
+          <ArgumentReactionPanel
+            topicId={topicId}
+            argId={arg.id}
+            compact
+            className="mb-3"
+          />
         )}
 
         {/* Footer: upvote + actions */}

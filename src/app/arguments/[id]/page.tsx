@@ -21,9 +21,11 @@ import { BottomNav } from '@/components/layout/BottomNav'
 import { Badge } from '@/components/ui/Badge'
 import { Avatar } from '@/components/ui/Avatar'
 import { SharePanel } from '@/components/ui/SharePanel'
+import { ArgumentReactionPanel } from '@/components/arguments/ArgumentReactionPanel'
 import { ArgumentRepliesClient } from './ArgumentRepliesClient'
 import { ArgumentEmbedPanel } from './ArgumentEmbedPanel'
 import { cn } from '@/lib/utils/cn'
+import type { ReactionCounts, ArgumentReactionType } from '@/components/arguments/ArgumentReactionPanel'
 
 export const dynamic = 'force-dynamic'
 
@@ -155,7 +157,7 @@ export default async function ArgumentPage({ params }: ArgumentPageProps) {
 
   if (!arg) notFound()
 
-  const [topicRes, profileRes, repliesRes, gradedRankRes, totalGradedRes] = await Promise.all([
+  const [topicRes, profileRes, repliesRes, gradedRankRes, totalGradedRes, userRes, reactionsRes] = await Promise.all([
     supabase
       .from('topics')
       .select('id, statement, category, status, blue_pct, total_votes')
@@ -183,11 +185,27 @@ export default async function ArgumentPage({ params }: ArgumentPageProps) {
           .select('id', { count: 'exact', head: true })
           .not('ai_score', 'is', null)
       : Promise.resolve({ count: null }),
+    supabase.auth.getUser(),
+    supabase
+      .from('argument_reactions')
+      .select('reaction, user_id')
+      .eq('argument_id', arg.id),
   ])
 
   const topic = topicRes.data
   const author = profileRes.data
   const replyCount = repliesRes.count ?? 0
+  const currentUser = userRes.data.user
+
+  // Aggregate reaction counts and detect current user's reaction
+  const reactionRows = reactionsRes.data ?? []
+  const initialCounts: ReactionCounts = { insightful: 0, compelling: 0, balanced: 0, needs_evidence: 0 }
+  let initialUserReaction: ArgumentReactionType | null = null
+  for (const row of reactionRows) {
+    const r = row.reaction as ArgumentReactionType
+    if (r in initialCounts) initialCounts[r]++
+    if (currentUser && row.user_id === currentUser.id) initialUserReaction = r
+  }
 
   if (!topic) notFound()
 
@@ -467,6 +485,16 @@ export default async function ArgumentPage({ params }: ArgumentPageProps) {
             <ArrowRight className="h-4 w-4 text-surface-600 group-hover:text-purple transition-colors flex-shrink-0" aria-hidden />
           </Link>
         )}
+
+        {/* Community Reactions */}
+        <ArgumentReactionPanel
+          topicId={topic.id}
+          argId={arg.id}
+          initialCounts={initialCounts}
+          initialUserReaction={initialUserReaction}
+          compact={false}
+          className="mb-6"
+        />
 
         {/* Topic context */}
         <div className="border border-surface-300 rounded-2xl overflow-hidden mb-6">
