@@ -934,6 +934,35 @@ const CHAPTERS: Chapter[] = [
     ],
   },
   {
+    number: 'Ch. 64',
+    title: 'Argument Engagement Analytics',
+    subtitle: 'Per-argument engagement metrics — upvote velocity, reaction breakdown, and topic ranking',
+    accent: 'text-for-400',
+    borderColor: 'border-for-500/30',
+    bgColor: 'bg-for-500/5',
+    textColor: 'text-for-300',
+    items: [
+      { icon: BarChart2, label: 'New /arguments/[id]/analytics page shows engagement stats for every argument: upvotes, total reactions, reply count, and age in days.', href: undefined, color: 'text-for-400' },
+      { icon: Users, label: 'Reaction breakdown panel — animated horizontal bars showing what % of reactions are 💡 Insightful, 🔥 Compelling, ⚖️ Balanced, and 🔍 Needs Source.', href: undefined, color: 'text-purple' },
+      { icon: Trophy, label: 'Topic ranking cards — shows this argument\'s rank by upvotes among all arguments on the topic and among same-side (FOR/AGAINST) arguments, with percentile indicator.', href: undefined, color: 'text-gold' },
+      { icon: Zap, label: 'Engagement score (upvotes×3 + reactions×2 + replies×1) with tier label (High Impact / Good Traction / Moderate / Early Stage). Upvote velocity in upvotes/day. "Engagement analytics" link added to argument detail page. Analytics pages added to sitemap.', href: undefined, color: 'text-emerald' },
+    ],
+  },
+  {
+    number: 'Ch. 63',
+    title: 'Argument Critique Breakdown',
+    subtitle: 'Dedicated /arguments/[id]/critique page with AI dimensional analysis, score ring, and improvement suggestions',
+    accent: 'text-purple',
+    borderColor: 'border-purple/30',
+    bgColor: 'bg-purple/5',
+    textColor: 'text-purple',
+    items: [
+      { icon: Brain, label: 'New /arguments/[id]/critique page shows a full AI dimensional critique for any argument: radial score ring with animated fill, grade label, summary verdict, and percentile rank among all graded arguments on the platform.', href: undefined, color: 'text-purple' },
+      { icon: BarChart2, label: 'Four-dimension breakdown — Clarity, Evidence, Logic, Persuasion — each with an animated progress bar, numeric score, and specific 1–2 sentence feedback from Claude. Strongest point highlighted in a dedicated card. 2–3 actionable improvement suggestions displayed.', href: undefined, color: 'text-for-400' },
+      { icon: Sparkles, label: 'Ungraded arguments show a "Generate AI Critique" CTA (on-demand, auth-gated). Already-graded arguments display their stored grade with a "Full breakdown" link from the argument detail page. New GET+POST /api/arguments/[id]/critique endpoint. Critique pages added to sitemap.', href: undefined, color: 'text-emerald' },
+    ],
+  },
+  {
     number: 'Ch. 62',
     title: 'Argument Impact Analysis',
     subtitle: 'Per-topic impact page ranking every argument by composite discourse impact score — side comparison, grade distribution, and top 5 per side',
@@ -1020,10 +1049,10 @@ const CHAPTERS: Chapter[] = [
 ]
 
 const STATS = [
-  { value: '62', label: 'chapters shipped' },
-  { value: '340+', label: 'features built' },
+  { value: '64', label: 'chapters shipped' },
+  { value: '347+', label: 'features built' },
   { value: '70', label: 'DB migrations' },
-  { value: '401+', label: 'API routes' },
+  { value: '404+', label: 'API routes' },
 ]
 
 interface RecentBuild {
@@ -1036,6 +1065,30 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Argument Engagement Analytics',
+    description: 'New /arguments/[id]/analytics page gives every argument a dedicated engagement dashboard. Shows upvote count, total reactions, reply count, and age in days. Reaction breakdown panel displays animated bars for each reaction type (💡 Insightful, 🔥 Compelling, ⚖️ Balanced, 🔍 Needs Source) with percentages. Two ranking cards show the argument\'s position by upvotes among all topic arguments and same-side (FOR/AGAINST) arguments, with percentile indicators. A composite Engagement Score (upvotes×3 + reactions×2 + replies×1) with tier labels (High Impact / Good Traction / Moderate / Early Stage) and upvote velocity in upvotes/day. "Engagement analytics" link added to /arguments/[id] detail page. New GET /api/arguments/[id]/analytics endpoint. All argument analytics pages added to sitemap.',
+    href: undefined,
+    icon: BarChart2,
+    color: 'text-for-400',
+    tag: 'Ch. 64',
+  },
+  {
+    title: 'Argument Critique Breakdown',
+    description: 'New /arguments/[id]/critique page gives every argument a dedicated AI critique centre. Shows a radial score ring with animated fill, per-dimension analysis (Clarity, Evidence, Logic, Persuasion) with bar charts and specific feedback, the argument\'s single strongest point, and 2–3 concrete improvement suggestions. Ungraded arguments can trigger a fresh Claude critique on-demand; already-graded arguments display their percentile rank ("better than X% of graded arguments"). A new GET+POST /api/arguments/[id]/critique endpoint fetches argument metadata and runs the Claude evaluation, persisting score/grade back to the argument row. "Full breakdown" and "Get AI critique" links added to the argument detail page (/arguments/[id]). All top-argument critique pages added to sitemap.',
+    href: undefined,
+    icon: Brain,
+    color: 'text-purple',
+    tag: 'Ch. 63',
+  },
+  {
+    title: 'Argument Reactions UI',
+    description: 'Emoji-style reactions (💡 Insightful, 🔥 Compelling, ⚖️ Balanced, 🔍 Needs source) added to argument cards via a new ArgumentReactionBar component. Reactions load lazily per argument, toggle optimistically, and are backed by the existing argument_reactions table (00069). New /arguments/reactions leaderboard page showcases the community\'s most-reacted arguments grouped by reaction type, with time-period and category filters. New GET+POST /api/topics/[id]/arguments/[argId]/react endpoint handles toggling, and GET /api/arguments/reactions powers the leaderboard.',
+    href: undefined,
+    icon: Activity,
+    color: 'text-against-400',
+    tag: 'Ch. 62',
+  },
   {
     title: 'Argument Impact Analysis',
     description: 'New /topic/[id]/impact page ranks every debate\'s arguments by their discourse impact — a composite score of upvotes (×3), AI quality score (×8), reply depth (×2), and citation count (×4), with grade bonuses for A/B arguments. Shows a side-by-side FOR vs. AGAINST impact comparison with a split bar, per-side stats (avg upvotes, AI score, top grade, avg impact), platform-wide grade distribution, and the top 5 highest-impact arguments per side with expandable previews, impact progress bars, and author profiles. A winning-side banner declares which camp had stronger discourse impact. "Argument impact" link added to the topic sub-page nav in TopicDetail. All impact pages added to sitemap.',
