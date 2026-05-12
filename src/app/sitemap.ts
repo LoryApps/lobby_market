@@ -49,7 +49,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/topic/categories`, changeFrequency: 'weekly', priority: 0.7 },
   { url: `${BASE_URL}/topic/graph`, changeFrequency: 'daily', priority: 0.65 },
   // Individual category pages
-  ...([
+  ...(['
     'economics', 'politics', 'technology', 'science',
     'ethics', 'philosophy', 'culture', 'health', 'environment', 'education',
   ].map((slug) => ({
@@ -59,6 +59,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   }))),
   { url: `${BASE_URL}/consensus`, changeFrequency: 'always', priority: 0.8 },
   { url: `${BASE_URL}/analytics/sentiment`, changeFrequency: 'daily', priority: 0.65 },
+  { url: `${BASE_URL}/analytics/arguments`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/calibration`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/compare`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/compare-users`, changeFrequency: 'daily', priority: 0.65 },
@@ -91,7 +92,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/changelog`, changeFrequency: 'monthly', priority: 0.55 },
   { url: `${BASE_URL}/missions`, changeFrequency: 'daily', priority: 0.8 },
   { url: `${BASE_URL}/wisdom`, changeFrequency: 'hourly', priority: 0.75 },
-  // ── Recently added pages (not previously in sitemap) ────────────────────────────────────────
+  // ── Recently added pages (not previously in sitemap) ────────────────────────────────────────────────────────
   { url: `${BASE_URL}/prompt`, changeFrequency: 'daily', priority: 0.88 },
   { url: `${BASE_URL}/prompt/archive`, changeFrequency: 'daily', priority: 0.7 },
   { url: `${BASE_URL}/crossroads`, changeFrequency: 'weekly', priority: 0.75 },
@@ -158,10 +159,10 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/karma`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/hotspot`, changeFrequency: 'always', priority: 0.8 },
   { url: `${BASE_URL}/forecasters`, changeFrequency: 'hourly', priority: 0.75 },
-  // ── Tag pages (added with tag-sentiment enhancement) ──────────────────────────────────────────────
+  // ── Tag pages (added with tag-sentiment enhancement) ───────────────────────────────────────────────────────────────────
   { url: `${BASE_URL}/tags`, changeFrequency: 'daily', priority: 0.72 },
   // Popular civic tags — static list mirrors migration 00059 civic vocabulary
-  ...([
+  ...(['
     'climate', 'tax', 'housing', 'healthcare', 'education', 'immigration',
     'economy', 'democracy', 'justice', 'technology', 'privacy', 'energy',
     'welfare', 'trade', 'defense', 'policing', 'infrastructure', 'rights',
