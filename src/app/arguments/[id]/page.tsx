@@ -26,6 +26,7 @@ import { SharePanel } from '@/components/ui/SharePanel'
 import { ArgumentReactionPanel } from '@/components/arguments/ArgumentReactionPanel'
 import { ArgumentRepliesClient } from './ArgumentRepliesClient'
 import { ArgumentEmbedPanel } from './ArgumentEmbedPanel'
+import { RelatedArgumentsPanel } from './RelatedArgumentsPanel'
 import { cn } from '@/lib/utils/cn'
 import type { ReactionCounts, ArgumentReactionType } from '@/components/arguments/ArgumentReactionPanel'
 
@@ -587,6 +588,9 @@ export default async function ArgumentPage({ params }: ArgumentPageProps) {
           <MessageSquare className="h-4 w-4" aria-hidden />
           See all arguments on this debate
         </Link>
+
+        {/* Related arguments from other topics — cross-debate discovery */}
+        <RelatedArgumentsPanel argumentId={arg.id} />
 
       </main>
       <BottomNav />
