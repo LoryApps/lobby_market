@@ -241,6 +241,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         changeFrequency: 'hourly' as const,
         priority: 0.6,
       },
+      {
+        url: `${BASE_URL}/topic/${topic.id}/impact`,
+        lastModified: new Date(topic.updated_at),
+        changeFrequency: 'daily' as const,
+        priority: 0.55,
+      },
     ])
 
     // Wiki pages for topics that have descriptions
