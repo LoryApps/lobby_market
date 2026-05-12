@@ -1047,6 +1047,13 @@ export default function AnalyticsPage() {
               Debate Stats
             </Link>
             <Link
+              href="/analytics/predictions"
+              className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"
+            >
+              <Target className="h-3.5 w-3.5" />
+              Predictions
+            </Link>
+            <Link
               href="/prescient"
               className="flex items-center gap-1 text-xs text-for-300 hover:text-for-200 transition-colors font-mono font-semibold"
             >
