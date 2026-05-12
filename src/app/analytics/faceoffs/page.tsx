@@ -83,249 +83,208 @@ const ARCHETYPE_CONFIG: Record<
   },
   contrarian: {
     label: 'The Contrarian',
-    description: "Your picks diverge from the majority 50–60% of the time. You see merit where others miss it — or you just march to your own drum.",
-    icon: Zap,
-    color: 'text-purple',
-    bg: 'bg-purple/10',
-    border: 'border-purple/30',
-  },
-  maverick: {
-    label: 'The Maverick',
-    description: "Your picks defy the majority more than 60% of the time. Independent and uncompromising — you evaluate on your own terms.",
+    description: "You diverge from the crowd 50–60% of the time. You notice value in arguments others overlook — or you just have unusual taste.",
     icon: Flame,
     color: 'text-against-400',
     bg: 'bg-against-500/10',
     border: 'border-against-500/30',
   },
+  maverick: {
+    label: 'The Maverick',
+    description: "Your picks match the majority less than 40% of the time. You march to your own beat — whether that's insight or idiosyncrasy.",
+    icon: Zap,
+    color: 'text-purple',
+    bg: 'bg-purple/10',
+    border: 'border-purple/30',
+  },
   newcomer: {
     label: 'The Newcomer',
-    description: "Judge more faceoffs to unlock your full archetype. Play at least 10 rounds in the Argument Arena to see how you compare.",
-    icon: Award,
-    color: 'text-surface-400',
-    bg: 'bg-surface-200/40',
-    border: 'border-surface-300/40',
+    description: "You're just getting started. Judge at least 10 faceoffs to unlock your archetype.",
+    icon: Circle,
+    color: 'text-surface-500',
+    bg: 'bg-surface-300/10',
+    border: 'border-surface-300/20',
   },
 }
 
-// ─── Category colours ─────────────────────────────────────────────────────────────────
-
-const CATEGORY_COLORS: Record<string, string> = {
-  Economics:   'bg-gold',
-  Politics:    'bg-for-400',
-  Technology:  'bg-purple',
-  Science:     'bg-emerald',
-  Ethics:      'bg-against-400',
-  Philosophy:  'bg-purple',
-  Culture:     'bg-for-300',
-  Health:      'bg-emerald',
-  Environment: 'bg-emerald',
-  Education:   'bg-gold',
-}
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function categoryColor(cat: string | null): string {
-  return cat ? (CATEGORY_COLORS[cat] ?? 'bg-surface-400') : 'bg-surface-400'
+  const map: Record<string, string> = {
+    Politics: 'text-for-400', Economics: 'text-gold', Technology: 'text-purple',
+    Science: 'text-emerald', Ethics: 'text-for-300', Philosophy: 'text-purple',
+    Culture: 'text-against-300', Health: 'text-emerald', Environment: 'text-emerald',
+    Education: 'text-gold',
+  }
+  return cat ? (map[cat] ?? 'text-surface-400') : 'text-surface-500'
 }
 
-// ─── Stat card ────────────────────────────────────────────────────────────────────────────
-
 function StatCard({
-  label,
-  value,
-  sub,
-  accent,
+  label, value, sub, icon: Icon, color,
 }: {
-  label: string
-  value: React.ReactNode
-  sub?: string
-  accent?: string
+  label: string; value: number | string; sub?: string; icon: typeof Trophy; color: string
 }) {
   return (
-    <div className="rounded-2xl bg-surface-100 border border-surface-300 p-4 sm:p-5 flex flex-col gap-1">
-      <p className="text-[11px] font-mono text-surface-500 uppercase tracking-widest">{label}</p>
-      <div className={cn('font-mono text-2xl font-bold', accent ?? 'text-white')}>{value}</div>
-      {sub && <p className="text-xs text-surface-500 font-mono">{sub}</p>}
+    <div className="bg-surface-100 border border-surface-300/60 rounded-xl p-4 flex flex-col gap-1">
+      <div className={cn('flex items-center gap-1.5 text-xs font-medium', color)}>
+        <Icon className="w-3.5 h-3.5 shrink-0" />
+        <span>{label}</span>
+      </div>
+      <div className="text-2xl font-bold text-white mt-0.5">
+        {typeof value === 'number' ? <AnimatedNumber value={value} /> : value}
+      </div>
+      {sub && <div className="text-[11px] text-surface-500 font-mono">{sub}</div>}
     </div>
   )
 }
-
-// ─── Loading skeleton ─────────────────────────────────────────────────────────────────────────
 
 function PageSkeleton() {
   return (
-    <div className="space-y-4 animate-pulse">
+    <div className="space-y-4">
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        {[...Array(4)].map((_, i) => (
-          <div key={i} className="rounded-2xl bg-surface-100 border border-surface-300 p-5 space-y-2">
-            <Skeleton className="h-3 w-16" />
-            <Skeleton className="h-7 w-20" />
-            <Skeleton className="h-3 w-12" />
-          </div>
-        ))}
+        {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-20 rounded-xl" />)}
       </div>
-      <Skeleton className="h-36 w-full rounded-2xl" />
-      <Skeleton className="h-40 w-full rounded-2xl" />
-      <div className="space-y-3">
-        {[...Array(4)].map((_, i) => (
-          <Skeleton key={i} className="h-24 w-full rounded-xl" />
-        ))}
+      <Skeleton className="h-24 rounded-2xl" />
+      <Skeleton className="h-40 rounded-2xl" />
+      <div className="space-y-2">
+        {[...Array(5)].map((_, i) => <Skeleton key={i} className="h-20 rounded-xl" />)}
       </div>
     </div>
   )
 }
-
-// ─── Alignment bar ────────────────────────────────────────────────────────────────────────
 
 function AlignmentBar({ rate }: { rate: number }) {
-  const color =
-    rate >= 65 ? 'bg-gold'
-    : rate >= 50 ? 'bg-for-400'
-    : rate >= 40 ? 'bg-purple'
-    : 'bg-against-400'
-
+  const pct = Math.min(100, Math.max(0, rate))
+  const color = pct >= 65 ? 'bg-gold' : pct >= 50 ? 'bg-for-500' : pct >= 40 ? 'bg-against-500' : 'bg-purple'
   return (
-    <div className="relative h-3 w-full rounded-full bg-surface-300 overflow-hidden">
-      <motion.div
-        className={cn('h-full rounded-full', color)}
-        initial={{ width: 0 }}
-        animate={{ width: `${rate}%` }}
-        transition={{ duration: 0.8, ease: 'easeOut', delay: 0.2 }}
-      />
-      {/* 50% marker */}
-      <div className="absolute top-0 bottom-0 w-px bg-white/20" style={{ left: '50%' }} />
+    <div className="flex items-center gap-3">
+      <div className="flex-1 h-2.5 rounded-full bg-surface-300 overflow-hidden">
+        <div className={cn('h-full rounded-full transition-all duration-700', color)} style={{ width: `${pct}%` }} />
+      </div>
+      <span className="text-sm font-mono font-bold text-white w-12 text-right shrink-0">{pct}%</span>
     </div>
   )
 }
-
-// ─── FOR vs AGAINST preference bar ───────────────────────────────────────────────
 
 function SideBar({ forRate }: { forRate: number }) {
-  const againstRate = 100 - forRate
+  const pct = Math.min(100, Math.max(0, forRate))
   return (
-    <div className="flex gap-1 h-3 rounded-full overflow-hidden">
-      <motion.div
-        className="bg-for-500 rounded-l-full"
-        initial={{ width: 0 }}
-        animate={{ width: `${forRate}%` }}
-        transition={{ duration: 0.7, ease: 'easeOut', delay: 0.3 }}
-      />
-      <motion.div
-        className="bg-against-500 rounded-r-full flex-1"
-        initial={{ width: 0 }}
-        animate={{ width: `${againstRate}%` }}
-        transition={{ duration: 0.7, ease: 'easeOut', delay: 0.3 }}
-      />
+    <div className="flex items-center gap-3">
+      <span className="text-xs font-mono text-for-400 w-8 text-right shrink-0">FOR</span>
+      <div className="flex-1 h-2 rounded-full bg-surface-300 overflow-hidden">
+        <div className="h-full bg-for-500 rounded-full transition-all duration-700" style={{ width: `${pct}%` }} />
+      </div>
+      <span className="text-xs font-mono text-against-400 w-12 shrink-0">AGN</span>
+      <span className="text-xs font-mono text-white w-10 text-right shrink-0">{pct}% ↑</span>
     </div>
   )
 }
 
-// ─── Recent vote row ────────────────────────────────────────────────────────────────────
-
 function VoteRow({ vote, index }: { vote: RecentFaceoffVote; index: number }) {
-  const agreed = vote.majority_agreed
-  const sideLabel = vote.winner_side === 'blue' ? 'FOR' : vote.winner_side === 'red' ? 'AGAINST' : null
+  const isFor = vote.winner_side === 'blue'
+  const sideColor = isFor ? 'text-for-400' : 'text-against-400'
+  const sideBg = isFor ? 'bg-for-500/10 border-for-500/30' : 'bg-against-500/10 border-against-500/30'
+  const agreedPct = vote.pair_total_votes > 0
+    ? Math.round((vote.pair_agreement_votes / vote.pair_total_votes) * 100)
+    : null
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 8 }}
+      initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.04 }}
-      className="flex gap-3 p-4 rounded-xl bg-surface-100 border border-surface-300 hover:border-surface-400 transition-colors"
+      className="bg-surface-100 border border-surface-300/60 rounded-xl p-3.5"
     >
-      {/* Alignment indicator */}
-      <div className="flex-shrink-0 mt-0.5">
-        {agreed === true ? (
-          <CheckCircle2 className="h-5 w-5 text-emerald" />
-        ) : agreed === false ? (
-          <XCircle className="h-5 w-5 text-against-400" />
-        ) : (
-          <Circle className="h-5 w-5 text-surface-500" />
-        )}
-      </div>
-
-      <div className="flex-1 min-w-0">
-        {/* Winner argument snippet */}
-        <p className="text-sm text-surface-200 leading-snug line-clamp-2 mb-1.5">
-          {vote.winner_content ?? 'Argument text unavailable'}
-        </p>
-
-        <div className="flex items-center gap-2 flex-wrap">
-          {/* Side badge */}
-          {sideLabel && (
-            <span
-              className={cn(
-                'inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono font-bold uppercase',
-                vote.winner_side === 'blue'
-                  ? 'bg-for-500/15 text-for-300 border border-for-500/30'
-                  : 'bg-against-500/15 text-against-300 border border-against-500/30'
-              )}
-            >
-              {vote.winner_side === 'blue' ? (
-                <ThumbsUp className="h-2.5 w-2.5" />
-              ) : (
-                <ThumbsDown className="h-2.5 w-2.5" />
-              )}
-              {sideLabel}
-            </span>
-          )}
-
-          {/* Category */}
-          {vote.topic_category && (
-            <span className="text-[11px] text-surface-500 font-mono">{vote.topic_category}</span>
-          )}
-
-          {/* Community agreement */}
-          {vote.pair_total_votes > 1 && (
-            <span className="text-[11px] text-surface-500 font-mono ml-auto">
-              {vote.pair_agreement_votes}/{vote.pair_total_votes} agreed
-            </span>
+      <div className="flex items-start gap-3">
+        <div className="mt-0.5 shrink-0">
+          {vote.majority_agreed === true ? (
+            <CheckCircle2 className="w-4 h-4 text-emerald" />
+          ) : vote.majority_agreed === false ? (
+            <XCircle className="w-4 h-4 text-against-400" />
+          ) : (
+            <Circle className="w-4 h-4 text-surface-500" />
           )}
         </div>
 
-        {/* Topic link */}
-        {vote.topic_id && vote.topic_statement && (
-          <Link
-            href={`/topic/${vote.topic_id}`}
-            className="mt-1.5 flex items-center gap-1 text-[11px] text-surface-500 hover:text-for-300 transition-colors line-clamp-1"
-          >
-            <ExternalLink className="h-3 w-3 flex-shrink-0" />
-            {vote.topic_statement}
-          </Link>
-        )}
+        <div className="flex-1 min-w-0">
+          <p className="text-xs text-white font-medium leading-snug line-clamp-2">
+            {vote.winner_content ?? 'Argument content unavailable'}
+          </p>
+
+          {vote.topic_statement && (
+            <p className="text-[11px] text-surface-500 mt-1 truncate">
+              re: {vote.topic_statement}
+            </p>
+          )}
+
+          <div className="flex flex-wrap items-center gap-2 mt-2">
+            {vote.winner_side && (
+              <span className={cn(
+                'inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-mono font-bold border',
+                sideBg, sideColor
+              )}>
+                {isFor ? <ThumbsUp className="w-2.5 h-2.5" /> : <ThumbsDown className="w-2.5 h-2.5" />}
+                {isFor ? 'FOR' : 'AGAINST'}
+              </span>
+            )}
+
+            {vote.majority_agreed !== null && (
+              <span className={cn(
+                'text-[10px] font-mono px-2 py-0.5 rounded-md border',
+                vote.majority_agreed
+                  ? 'bg-emerald/10 border-emerald/30 text-emerald'
+                  : 'bg-against-500/10 border-against-500/30 text-against-400'
+              )}>
+                {vote.majority_agreed ? 'Majority agreed' : 'Majority disagreed'}
+              </span>
+            )}
+
+            {agreedPct !== null && (
+              <span className="text-[10px] font-mono text-surface-500">
+                {agreedPct}% picked this
+              </span>
+            )}
+
+            {vote.topic_id && (
+              <Link
+                href={`/topic/${vote.topic_id}`}
+                className="inline-flex items-center gap-0.5 text-[10px] text-for-400 hover:text-for-300 font-mono"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <ExternalLink className="w-2.5 h-2.5" />
+                Topic
+              </Link>
+            )}
+          </div>
+        </div>
       </div>
     </motion.div>
   )
 }
 
-// ─── Category breakdown ───────────────────────────────────────────────────────────────────
-
 function CategoryRow({ stat, max }: { stat: CategoryStat; max: number }) {
   const pct = max > 0 ? (stat.judged / max) * 100 : 0
   const forPct = stat.judged > 0 ? Math.round((stat.for_picks / stat.judged) * 100) : 0
+  const color = categoryColor(stat.category)
 
   return (
-    <div className="space-y-1.5">
-      <div className="flex items-center justify-between gap-2">
-        <span className="text-sm font-mono text-surface-200 truncate">
-          {stat.category ?? 'Unknown'}
-        </span>
-        <div className="flex items-center gap-3 flex-shrink-0">
-          <span className="text-xs text-for-400 font-mono">{forPct}% FOR</span>
-          <span className="text-xs text-surface-500 font-mono">{stat.judged} judged</span>
-        </div>
-      </div>
-      <div className="h-2 rounded-full bg-surface-300 overflow-hidden">
-        <motion.div
-          className={cn('h-full rounded-full', categoryColor(stat.category))}
-          initial={{ width: 0 }}
-          animate={{ width: `${pct}%` }}
-          transition={{ duration: 0.6, ease: 'easeOut' }}
+    <div className="flex items-center gap-3">
+      <span className={cn('text-xs font-mono w-24 shrink-0 truncate', color)}>
+        {stat.category ?? 'Unknown'}
+      </span>
+      <div className="flex-1 h-2 rounded-full bg-surface-300 overflow-hidden">
+        <div
+          className={cn('h-full rounded-full', color.replace('text-', 'bg-'))}
+          style={{ width: `${pct}%` }}
         />
       </div>
+      <span className="text-xs font-mono text-surface-500 w-6 text-right shrink-0">{stat.judged}</span>
+      <span className="text-[10px] font-mono text-surface-600 w-12 text-right shrink-0">
+        {forPct}% FOR
+      </span>
     </div>
   )
 }
-
-// ─── Main component ────────────────────────────────────────────────────────────────────────────
 
 export default function FaceoffAnalyticsPage() {
   const router = useRouter()
@@ -406,7 +365,6 @@ export default function FaceoffAnalyticsPage() {
         {loading ? (
           <PageSkeleton />
         ) : !authed ? null : data?.total_judged === 0 ? (
-          /* ── Empty state ────────────────────────────────────────────────────────────────── */}
           <div className="space-y-6">
             <EmptyState
               icon={Swords}
@@ -425,195 +383,126 @@ export default function FaceoffAnalyticsPage() {
             </div>
           </div>
         ) : data ? (
-          <AnimatePresence mode="wait">
+          <AnimatePresence>
             <motion.div
-              key="content"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
               className="space-y-5"
             >
-              {/* ── Hero stats grid ─────────────────────────────────────────────────────────── */}
+              {/* ── Stats grid ── */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <StatCard label="Total Judged" value={data.total_judged} sub="all time" icon={Gavel} color="text-purple" />
+                <StatCard label="This Week" value={data.week_judged} sub="faceoffs" icon={Zap} color="text-for-400" />
                 <StatCard
-                  label="Total Judged"
-                  value={<AnimatedNumber value={data.total_judged} />}
-                  sub="faceoffs"
-                  accent="text-white"
+                  label="Alignment"
+                  value={data.alignment_rate !== null ? `${data.alignment_rate}%` : '—'}
+                  sub="vs majority"
+                  icon={Users}
+                  color="text-emerald"
                 />
                 <StatCard
-                  label="This Week"
-                  value={<AnimatedNumber value={data.week_judged} />}
-                  sub="faceoffs"
-                  accent="text-for-300"
-                />
-                <StatCard
-                  label="Majority Rate"
-                  value={
-                    data.alignment_rate !== null
-                      ? <><AnimatedNumber value={data.alignment_rate} />%</>
-                      : '—'
-                  }
-                  sub={data.alignment_rate !== null ? 'agree with crowd' : 'need 3+ data points'}
-                  accent={
-                    data.alignment_rate === null ? 'text-surface-400'
-                    : data.alignment_rate >= 65 ? 'text-gold'
-                    : data.alignment_rate >= 50 ? 'text-emerald'
-                    : 'text-against-300'
-                  }
-                />
-                <StatCard
-                  label="Active Days"
-                  value={<AnimatedNumber value={data.active_days} />}
-                  sub={`peak ${data.peak_daily}/day`}
-                  accent="text-purple"
+                  label="FOR Picks"
+                  value={data.for_pick_rate !== null ? `${data.for_pick_rate}%` : '—'}
+                  sub="of your wins"
+                  icon={Award}
+                  color="text-gold"
                 />
               </div>
 
-              {/* ── Archetype card ─────────────────────────────────────────────────────────── */}
+              {/* ── Archetype ── */}
               {archetypeConfig && (
-                <motion.div
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 }}
-                  className={cn(
-                    'rounded-2xl border p-5',
-                    archetypeConfig.bg,
-                    archetypeConfig.border
-                  )}
-                >
-                  <div className="flex items-start gap-4">
-                    <div
-                      className={cn(
-                        'flex items-center justify-center h-12 w-12 rounded-xl border flex-shrink-0',
-                        archetypeConfig.bg,
-                        archetypeConfig.border
-                      )}
-                    >
-                      <archetypeConfig.icon
-                        className={cn('h-6 w-6', archetypeConfig.color)}
-                      />
-                    </div>
-                    <div>
-                      <p className="text-xs font-mono text-surface-500 uppercase tracking-widest mb-0.5">
-                        Judge Archetype
-                      </p>
-                      <h2 className={cn('font-mono text-xl font-bold mb-1', archetypeConfig.color)}>
-                        {archetypeConfig.label}
-                      </h2>
-                      <p className="text-sm text-surface-400 leading-relaxed">
-                        {archetypeConfig.description}
-                      </p>
-                    </div>
+                <div className={cn(
+                  'rounded-2xl border p-4 flex items-start gap-4',
+                  archetypeConfig.bg, archetypeConfig.border
+                )}>
+                  <div className={cn(
+                    'w-12 h-12 rounded-xl flex items-center justify-center shrink-0',
+                    archetypeConfig.bg, archetypeConfig.border, 'border'
+                  )}>
+                    <archetypeConfig.icon className={cn('w-6 h-6', archetypeConfig.color)} />
                   </div>
-                </motion.div>
-              )}
-
-              {/* ── Alignment + side preference ───────────────────────────────────────────────────────── */}
-              <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.15 }}
-                className="rounded-2xl bg-surface-100 border border-surface-300 p-5 space-y-5"
-              >
-                <h3 className="font-mono text-sm font-semibold text-white flex items-center gap-2">
-                  <BarChart2 className="h-4 w-4 text-surface-500" />
-                  Judging Patterns
-                </h3>
-
-                {/* Alignment rate bar */}
-                {data.alignment_rate !== null && (
-                  <div className="space-y-2">
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs font-mono text-surface-500">Majority Alignment</span>
-                      <span className="text-xs font-mono font-semibold text-white">
-                        {data.alignment_rate}%
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className={cn('text-base font-bold', archetypeConfig.color)}>
+                        {archetypeConfig.label}
+                      </span>
+                      <span className="text-[10px] font-mono uppercase tracking-widest text-surface-500 bg-surface-200 px-2 py-0.5 rounded-full border border-surface-400/50">
+                        Judge Archetype
                       </span>
                     </div>
-                    <AlignmentBar rate={data.alignment_rate} />
-                    <div className="flex justify-between text-[10px] font-mono text-surface-600">
-                      <span>Maverick (0%)</span>
-                      <span className="text-surface-500">Consensus (50%)</span>
-                      <span>Oracle (100%)</span>
-                    </div>
-                  </div>
-                )}
-
-                {/* Side preference bar */}
-                {data.for_pick_rate !== null && (
-                  <div className="space-y-2">
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs font-mono text-surface-500">Side Preference</span>
-                      <div className="flex items-center gap-3 text-xs font-mono">
-                        <span className="text-for-400">{data.for_pick_rate}% FOR</span>
-                        <span className="text-against-400">{100 - data.for_pick_rate}% AGAINST</span>
-                      </div>
-                    </div>
-                    <SideBar forRate={data.for_pick_rate} />
-                    <p className="text-[11px] text-surface-600 font-mono">
-                      {data.for_pick_rate > 60
-                        ? 'You tend to favour FOR-side arguments in Arena matchups.'
-                        : data.for_pick_rate < 40
-                        ? 'You tend to favour AGAINST-side arguments in Arena matchups.'
-                        : 'You judge both sides roughly evenly — a balanced evaluator.'}
+                    <p className="text-xs text-surface-400 mt-1 leading-relaxed">
+                      {archetypeConfig.description}
                     </p>
                   </div>
-                )}
-              </motion.div>
+                </div>
+              )}
 
-              {/* ── Category breakdown ────────────────────────────────────────────────────────── */}
+              {/* ── Alignment bar ── */}
+              {data.alignment_rate !== null && (
+                <div className="bg-surface-100 border border-surface-300/60 rounded-2xl p-4">
+                  <h2 className="text-xs font-semibold text-surface-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                    <Users className="w-3.5 h-3.5" />
+                    Community Alignment
+                  </h2>
+                  <AlignmentBar rate={data.alignment_rate} />
+                  <p className="text-[11px] text-surface-500 mt-2">
+                    You agree with the majority on {data.alignment_rate}% of judged pairs.
+                  </p>
+                </div>
+              )}
+
+              {/* ── FOR pick rate ── */}
+              {data.for_pick_rate !== null && (
+                <div className="bg-surface-100 border border-surface-300/60 rounded-2xl p-4">
+                  <h2 className="text-xs font-semibold text-surface-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                    <Scale className="w-3.5 h-3.5" />
+                    Side Preference
+                  </h2>
+                  <SideBar forRate={data.for_pick_rate} />
+                  <p className="text-[11px] text-surface-500 mt-2">
+                    {data.for_pick_rate}% of your winning picks were FOR arguments.
+                  </p>
+                </div>
+              )}
+
+              {/* ── Category breakdown ── */}
               {data.category_breakdown.length > 0 && (
-                <motion.div
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                  className="rounded-2xl bg-surface-100 border border-surface-300 p-5 space-y-4"
-                >
-                  <h3 className="font-mono text-sm font-semibold text-white flex items-center gap-2">
-                    <Gavel className="h-4 w-4 text-surface-500" />
-                    Faceoffs by Category
-                  </h3>
-                  <div className="space-y-4">
+                <div className="bg-surface-100 border border-surface-300/60 rounded-2xl p-4">
+                  <h2 className="text-xs font-semibold text-surface-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                    <BarChart2 className="w-3.5 h-3.5" />
+                    By Category
+                  </h2>
+                  <div className="space-y-2.5">
                     {data.category_breakdown.map((stat) => (
                       <CategoryRow
                         key={stat.category ?? 'unknown'}
                         stat={stat}
-                        max={data.category_breakdown[0]?.judged ?? 1}
+                        max={data.category_breakdown[0].judged}
                       />
                     ))}
                   </div>
-                </motion.div>
+                </div>
               )}
 
-              {/* ── Recent judging history ────────────────────────────────────────────────────────────────── */}
+              {/* ── Recent votes ── */}
               {data.recent_votes.length > 0 && (
-                <motion.div
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.25 }}
-                  className="space-y-3"
-                >
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-mono text-sm font-semibold text-white flex items-center gap-2">
-                      <Users className="h-4 w-4 text-surface-500" />
-                      Recent Picks
-                    </h3>
-                    <div className="flex items-center gap-3 text-[11px] font-mono text-surface-600">
-                      <span className="flex items-center gap-1">
-                        <CheckCircle2 className="h-3 w-3 text-emerald" /> matched majority
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <XCircle className="h-3 w-3 text-against-400" /> diverged
-                      </span>
-                    </div>
+                <div>
+                  <h2 className="text-xs font-semibold text-surface-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                    <Gavel className="w-3.5 h-3.5" />
+                    Recent Picks
+                    <span className="text-surface-600 normal-case font-normal">
+                      ({data.recent_votes.length})
+                    </span>
+                  </h2>
+                  <div className="space-y-2">
+                    {data.recent_votes.map((vote, i) => (
+                      <VoteRow key={`${vote.argument_a_id}|${vote.argument_b_id}`} vote={vote} index={i} />
+                    ))}
                   </div>
-
-                  {data.recent_votes.map((vote, i) => (
-                    <VoteRow key={`${vote.argument_a_id}-${vote.argument_b_id}`} vote={vote} index={i} />
-                  ))}
-                </motion.div>
+                </div>
               )}
 
-              {/* ── CTA strip ───────────────────────────────────────────────────────────────────────── */}
+              {/* ── CTA ── */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
