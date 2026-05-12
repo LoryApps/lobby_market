@@ -26,6 +26,7 @@ import { SharePanel } from '@/components/ui/SharePanel'
 import { ArgumentReactionPanel } from '@/components/arguments/ArgumentReactionPanel'
 import { ArgumentRepliesClient } from './ArgumentRepliesClient'
 import { ArgumentEmbedPanel } from './ArgumentEmbedPanel'
+import { ArgumentSuggestPanel } from './ArgumentSuggestPanel'
 import { RelatedArgumentsPanel } from './RelatedArgumentsPanel'
 import { cn } from '@/lib/utils/cn'
 import type { ReactionCounts, ArgumentReactionType } from '@/components/arguments/ArgumentReactionPanel'
@@ -488,6 +489,9 @@ export default async function ArgumentPage({ params }: ArgumentPageProps) {
             <ArrowRight className="h-4 w-4 text-surface-600 group-hover:text-purple transition-colors flex-shrink-0" aria-hidden />
           </Link>
         )}
+
+        {/* AI Response Strategies */}
+        <ArgumentSuggestPanel argumentId={arg.id} isFor={isFor} />
 
         {/* Community Reactions */}
         <ArgumentReactionPanel
