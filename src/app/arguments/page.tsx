@@ -433,6 +433,13 @@ export default function ArgumentsPage() {
                 Arena
               </Link>
               <Link
+                href="/arguments/champions"
+                className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-gold/10 border border-gold/30 text-[11px] font-mono font-semibold text-gold hover:bg-gold/20 transition-colors flex-shrink-0"
+              >
+                <Trophy className="h-3 w-3" aria-hidden />
+                Champions
+              </Link>
+              <Link
                 href="/arguments/dna"
                 className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-for-500/10 border border-for-500/30 text-[11px] font-mono font-semibold text-for-400 hover:bg-for-500/20 transition-colors flex-shrink-0"
               >
