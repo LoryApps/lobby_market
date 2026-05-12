@@ -62,6 +62,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/consensus`, changeFrequency: 'always', priority: 0.8 },
   { url: `${BASE_URL}/analytics/sentiment`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/analytics/arguments`, changeFrequency: 'daily', priority: 0.65 },
+  { url: `${BASE_URL}/analytics/topics`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/calibration`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/compare`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/compare-users`, changeFrequency: 'daily', priority: 0.65 },
