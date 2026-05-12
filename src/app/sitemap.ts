@@ -49,14 +49,16 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/topic/categories`, changeFrequency: 'weekly', priority: 0.7 },
   { url: `${BASE_URL}/topic/graph`, changeFrequency: 'daily', priority: 0.65 },
   // Individual category pages
-  ...(['
-    'economics', 'politics', 'technology', 'science',
-    'ethics', 'philosophy', 'culture', 'health', 'environment', 'education',
-  ].map((slug) => ({
-    url: `${BASE_URL}/topic/categories/${slug}`,
-    changeFrequency: 'daily' as const,
-    priority: 0.65,
-  }))),
+  ...(
+    [
+      'economics', 'politics', 'technology', 'science',
+      'ethics', 'philosophy', 'culture', 'health', 'environment', 'education',
+    ].map((slug) => ({
+      url: `${BASE_URL}/topic/categories/${slug}`,
+      changeFrequency: 'daily' as const,
+      priority: 0.65,
+    }))
+  ),
   { url: `${BASE_URL}/consensus`, changeFrequency: 'always', priority: 0.8 },
   { url: `${BASE_URL}/analytics/sentiment`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/analytics/arguments`, changeFrequency: 'daily', priority: 0.65 },
@@ -162,16 +164,18 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   // ── Tag pages (added with tag-sentiment enhancement) ───────────────────────────────────────────────────────────────────
   { url: `${BASE_URL}/tags`, changeFrequency: 'daily', priority: 0.72 },
   // Popular civic tags — static list mirrors migration 00059 civic vocabulary
-  ...(['
-    'climate', 'tax', 'housing', 'healthcare', 'education', 'immigration',
-    'economy', 'democracy', 'justice', 'technology', 'privacy', 'energy',
-    'welfare', 'trade', 'defense', 'policing', 'infrastructure', 'rights',
-    'labor', 'environment', 'regulation', 'freedom', 'equality', 'security',
-  ].map((t) => ({
-    url: `${BASE_URL}/tags/${encodeURIComponent(t)}`,
-    changeFrequency: 'daily' as const,
-    priority: 0.65,
-  }))),
+  ...(
+    [
+      'climate', 'tax', 'housing', 'healthcare', 'education', 'immigration',
+      'economy', 'democracy', 'justice', 'technology', 'privacy', 'energy',
+      'welfare', 'trade', 'defense', 'policing', 'infrastructure', 'rights',
+      'labor', 'environment', 'regulation', 'freedom', 'equality', 'security',
+    ].map((t) => ({
+      url: `${BASE_URL}/tags/${encodeURIComponent(t)}`,
+      changeFrequency: 'daily' as const,
+      priority: 0.65,
+    }))
+  ),
   // ── Common Threads discovery ─────────────────────────────────────────────────────────────────────────────────────────────────
   { url: `${BASE_URL}/common-threads`, changeFrequency: 'hourly', priority: 0.72 },
   // ── Feeds hub ──────────────────────────────────────────────────────────────────────────────────────────────────────────────
