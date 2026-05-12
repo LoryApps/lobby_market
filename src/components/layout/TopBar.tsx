@@ -11,7 +11,7 @@ import { openCommandPalette } from '@/lib/hooks/useCommandPalette'
 import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils/cn'
 
-// ─── Mini profile type ────────────────────────────────────────────────────────────────
+// ─── Mini profile type ──────────────────────────────────────────────────────────────────────────────────────
 
 interface MiniProfile {
   username: string
@@ -22,7 +22,7 @@ interface MiniProfile {
   vote_streak: number
 }
 
-// ─── Role label helper ──────────────────────────────────────────────────────────────
+// ─── Role label helper ────────────────────────────────────────────────────────────────────────────────────────
 
 const ROLE_LABELS: Record<string, { label: string; color: string }> = {
   person: { label: 'Citizen', color: 'text-surface-500' },
@@ -244,970 +244,116 @@ export function TopBar() {
                   </div>
                 </Link>
               )}
-              <Link
-                href="/profile/me"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <User className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
-                My Profile
-              </Link>
-              <Link
-                href="/positions"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Scale className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
-                My Positions
-              </Link>
-              <Link
-                href="/arguments/daily"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Trophy className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />
-                Argument of the Day
-              </Link>
-              <Link
-                href="/arguments/contested"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Swords className="h-3.5 w-3.5 flex-shrink-0 text-purple" aria-hidden="true" />
-                Most Contested
-              </Link>
-              <Link
-                href="/arguments/opposing"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Scale className="h-3.5 w-3.5 flex-shrink-0 text-against-400" aria-hidden="true" />
-                Counter-Arguments
-              </Link>
-              <Link
-                href="/arguments/mine"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Quote className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
-                My Arguments
-              </Link>
-              <Link
-                href="/agenda"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <ListChecks className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
-                Civic Agenda
-              </Link>
-              <Link
-                href="/watchlist"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Bell className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
-                My Watchlist
-              </Link>
-              <Link
-                href="/challenge"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Flame className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
-                Daily Quorum
-              </Link>
-              <Link
-                href="/challenges"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Swords className="h-3.5 w-3.5 flex-shrink-0 text-against-300" aria-hidden="true" />
-                My Challenges
-              </Link>
-              <Link
-                href="/debate/my-record"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <BarChart2 className="h-3.5 w-3.5 flex-shrink-0 text-purple" aria-hidden="true" />
-                My Debate Record
-              </Link>
-              <Link
-                href="/duel"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Swords className="h-3.5 w-3.5 flex-shrink-0 text-against-400" aria-hidden="true" />
-                Argument Duel
-              </Link>
-              <Link
-                href="/crossfire"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Swords className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
-                The Crossfire
-              </Link>
-              <Link
-                href="/arcade"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Gamepad2 className="h-3.5 w-3.5 flex-shrink-0 text-purple" aria-hidden="true" />
-                Civic Arcade
-              </Link>
-              <Link
-                href="/rapid"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Zap className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />
-                Rapid Fire
-              </Link>
-              <Link
-                href="/blitz"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Timer className="h-3.5 w-3.5 flex-shrink-0 text-against-400" aria-hidden="true" />
-                Blitz Mode
-              </Link>
-              <Link
-                href="/archetype"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Crown className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />
-                Civic Archetype
-              </Link>
-              <Link
-                href="/quiz"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Scale className="h-3.5 w-3.5 flex-shrink-0 text-emerald" aria-hidden="true" />
-                Civic Quiz
-              </Link>
-              <Link
-                href="/trivia"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Target className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />
-                Civic Trivia
-              </Link>
-              <Link
-                href="/knowledge-test"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <BookOpen className="h-3.5 w-3.5 flex-shrink-0 text-emerald" aria-hidden="true" />
-                Knowledge Test
-              </Link>
-              <Link
-                href="/training"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Zap className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
-                Argument Training
-              </Link>
-              <Link
-                href="/predictions"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Target className="h-3.5 w-3.5 flex-shrink-0 text-purple" aria-hidden="true" />
-                Predictions
-              </Link>
-              <Link
-                href="/forecast"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <FlaskConical className="h-3.5 w-3.5 flex-shrink-0 text-purple" aria-hidden="true" />
-                Civic Forecast
-              </Link>
-              <Link
-                href="/tally"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Radio className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
-                Tally Board
-              </Link>
-              <Link
-                href="/now"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Zap className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
-                Right Now
-              </Link>
-              <Link
-                href="/vote-stream"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Activity className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
-                Vote Stream
-              </Link>
-              <Link
-                href="/capsule"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Hourglass className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />
-                Time Capsules
-              </Link>
-              <Link
-                href="/time-machine"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <History className="h-3.5 w-3.5 flex-shrink-0 text-for-300" aria-hidden="true" />
-                Time Machine
-              </Link>
-              <Link
-                href="/memories"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Calendar className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />
-                Civic Memories
-              </Link>
-              <Link
-                href="/milestones"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Trophy className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />
-                Civic Milestones
-              </Link>
-              <Link
-                href="/journal"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <BookOpen className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
-                Civic Journal
-              </Link>
-              <Link
-                href="/law/today"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Gavel className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />
-                Law of the Day
-              </Link>
-              <Link
-                href="/constitution"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <BookOpen className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />
-                Civic Constitution
-              </Link>
-              <Link
-                href="/verdicts"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Gavel className="h-3.5 w-3.5 flex-shrink-0 text-emerald" aria-hidden="true" />
-                The Verdicts
-              </Link>
-              <Link
-                href="/elections"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Users className="h-3.5 w-3.5 flex-shrink-0 text-purple" aria-hidden="true" />
-                Civic Elections
-              </Link>
-              <Link
-                href="/amendments"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <FileText className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />
-                Amendment Chamber
-              </Link>
-              <Link
-                href="/league"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Trophy className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />
-                Lobby League
-              </Link>
-              <Link
-                href="/seasons"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Crown className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />
-                Hall of Fame
-              </Link>
-              <Link
-                href="/dashboard"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Layers className="h-3.5 w-3.5 flex-shrink-0 text-for-300" aria-hidden="true" />
-                Dashboard
-              </Link>
-              <Link
-                href="/my-week"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <BarChart2 className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
-                My Week
-              </Link>
-              <Link
-                href="/weekly"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Calendar className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />
-                Weekly Roundup
-              </Link>
-              <Link
-                href="/analytics"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <BarChart2 className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
-                Analytics
-              </Link>
-              <Link
-                href="/activity-calendar"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Calendar className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
-                Activity Calendar
-              </Link>
-              <Link
-                href="/report-card"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <FileText className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
-                Report Card
-              </Link>
-              <Link
-                href="/calibration"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <FlaskConical className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
-                Calibration
-              </Link>
-              <Link
-                href="/missions"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Target className="h-3.5 w-3.5 flex-shrink-0 text-emerald" aria-hidden="true" />
-                Daily Missions
-              </Link>
-              <Link
-                href="/skill-tree"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Trophy className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />
-                Civic Skill Tree
-              </Link>
-              <Link
-                href="/impact"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Star className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />
-                Your Impact
-              </Link>
-              <Link
-                href="/compass"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Compass className="h-3.5 w-3.5 flex-shrink-0 text-purple" aria-hidden="true" />
-                Civic Compass
-              </Link>
-              <Link
-                href="/fingerprint"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Fingerprint className="h-3.5 w-3.5 flex-shrink-0 text-against-400" aria-hidden="true" />
-                Civic Fingerprint
-              </Link>
-              <Link
-                href="/recommended"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Sparkles className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
-                For You
-              </Link>
-              <Link
-                href="/today"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Calendar className="h-3.5 w-3.5 flex-shrink-0 text-for-300" aria-hidden="true" />
-                Today in the Lobby
-              </Link>
-              <Link
-                href="/newspaper"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <FileText className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />
-                The Dispatch
-              </Link>
-              <Link
-                href="/editorial"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Sparkles className="h-3.5 w-3.5 flex-shrink-0 text-purple" aria-hidden="true" />
-                AI Editorial
-              </Link>
-              <Link
-                href="/crucible"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Swords className="h-3.5 w-3.5 flex-shrink-0 text-against-400" aria-hidden="true" />
-                The Crucible
-              </Link>
-              <Link
-                href="/hotspot"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Flame className="h-3.5 w-3.5 flex-shrink-0 text-against-400" aria-hidden="true" />
-                Civic Hotspot
-              </Link>
-              <Link
-                href="/radar"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Radio className="h-3.5 w-3.5 flex-shrink-0 text-against-400" aria-hidden="true" />
-                Civic Radar
-              </Link>
-              <Link
-                href="/live"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Activity className="h-3.5 w-3.5 flex-shrink-0 text-against-400" aria-hidden="true" />
-                Live Arguments
-              </Link>
-              <Link
-                href="/hot-takes"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <MessageSquare className="h-3.5 w-3.5 flex-shrink-0 text-against-400" aria-hidden="true" />
-                Hot Takes
-              </Link>
-              <Link
-                href="/gallery"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Quote className="h-3.5 w-3.5 flex-shrink-0 text-purple" aria-hidden="true" />
-                Argument Gallery
-              </Link>
-              <Link
-                href="/ladder"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <MessageSquare className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
-                Argument Ladder
-              </Link>
-              <Link
-                href="/wisdom"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Crown className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />
-                Wisdom Feed
-              </Link>
-              <Link
-                href="/pulse"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Zap className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />
-                Community Pulse
-              </Link>
-              <Link
-                href="/reactions"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <TrendingUp className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
-                Community Signals
-              </Link>
-              <Link
-                href="/momentum"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <ArrowUpRight className="h-3.5 w-3.5 flex-shrink-0 text-against-400" aria-hidden="true" />
-                Momentum
-              </Link>
-              <Link
-                href="/race"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Swords className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
-                Civic Race
-              </Link>
-              <Link
-                href="/drift"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <TrendingUp className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
-                Opinion Drift
-              </Link>
-              <Link
-                href="/flip"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Flame className="h-3.5 w-3.5 flex-shrink-0 text-against-400" aria-hidden="true" />
-                The Big Flip
-              </Link>
-              <Link
-                href="/lens"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Sparkles className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />
-                Civic Lens
-              </Link>
-              <Link
-                href="/battleground"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Swords className="h-3.5 w-3.5 flex-shrink-0 text-against-400" aria-hidden="true" />
-                Civic Battleground
-              </Link>
-              <Link
-                href="/extremes"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Scale className="h-3.5 w-3.5 flex-shrink-0 text-yellow-400" aria-hidden="true" />
-                Civic Extremes
-              </Link>
-              <Link
-                href="/categories"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <LayoutGrid className="h-3.5 w-3.5 flex-shrink-0 text-purple" aria-hidden="true" />
-                Browse Categories
-              </Link>
-              <Link
-                href="/catchup"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Zap className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
-                Catch Up
-              </Link>
-              <Link
-                href="/activity"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Activity className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
-                Activity
-              </Link>
-              <Link
-                href="/calendar"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Calendar className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
-                Civic Calendar
-              </Link>
-              <Link
-                href="/almanac"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <BookOpen className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />
-                Civic Almanac
-              </Link>
-              <Link
-                href="/timeline"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <History className="h-3.5 w-3.5 flex-shrink-0 text-surface-500" aria-hidden="true" />
-                Civic Timeline
-              </Link>
-              <Link
-                href="/graveyard"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Skull className="h-3.5 w-3.5 flex-shrink-0 text-surface-500" aria-hidden="true" />
-                The Graveyard
-              </Link>
-              <Link
-                href="/network"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Network className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
-                Your Network
-              </Link>
-              <Link
-                href="/twins"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Users className="h-3.5 w-3.5 flex-shrink-0 text-emerald" aria-hidden="true" />
-                Vote Twins
-              </Link>
-              <Link
-                href="/arena"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Swords className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />
-                Coalition Arena
-              </Link>
-              <Link
-                href="/advisor"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Sparkles className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />
-                Civic Advisor
-              </Link>
-              <Link
-                href="/prep"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <BookOpen className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
-                Debate Prep
-              </Link>
-              <Link
-                href="/spar"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Swords className="h-3.5 w-3.5 flex-shrink-0 text-purple" aria-hidden="true" />
-                Sparring Arena
-              </Link>
-              <Link
-                href="/simulate"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <FlaskConical className="h-3.5 w-3.5 flex-shrink-0 text-purple" aria-hidden="true" />
-                Policy Simulator
-              </Link>
-              <Link
-                href="/perspective"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Network className="h-3.5 w-3.5 flex-shrink-0 text-purple" aria-hidden="true" />
-                Perspective Swap
-              </Link>
-              <Link
-                href="/letter"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Mail className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
-                Civic Letter Generator
-              </Link>
-              <Link
-                href="/checker"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Scale className="h-3.5 w-3.5 flex-shrink-0 text-emerald" aria-hidden="true" />
-                Claim Checker
-              </Link>
-              <Link
-                href="/crossroads"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Scale className="h-3.5 w-3.5 flex-shrink-0 text-purple" aria-hidden="true" />
-                Civic Crossroads
-              </Link>
-              <Link
-                href="/manifesto"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Scroll className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />
-                Civic Manifesto
-              </Link>
-              <Link
-                href="/pipeline"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <GitBranch className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
-                Legislation Pipeline
-              </Link>
-              <Link
-                href="/discover"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Globe className="h-3.5 w-3.5 flex-shrink-0 text-for-300" aria-hidden="true" />
-                Discover
-              </Link>
-              <Link
-                href="/settings"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Settings className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
-                Settings
-              </Link>
-              <Link
-                href="/stats"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <TrendingUp className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
-                State of the Lobby
-              </Link>
-              <Link
-                href="/weather"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Cloud className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
-                Civic Weather
-              </Link>
-              <Link
-                href="/heatmap"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <BarChart2 className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
-                Lobby Heatmap
-              </Link>
-              <Link
-                href="/observatory"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Globe className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
-                Civic Observatory
-              </Link>
-              <Link
-                href="/streaks"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Flame className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
-                Streak Hall
-              </Link>
-              <Link
-                href="/consensus"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Globe className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
-                Consensus Engine
-              </Link>
+              <Link href="/profile/me" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><User className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />My Profile</Link>
+              <Link href="/positions" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Scale className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />My Positions</Link>
+              <Link href="/arguments/daily" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Trophy className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />Argument of the Day</Link>
+              <Link href="/arguments/contested" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Swords className="h-3.5 w-3.5 flex-shrink-0 text-purple" aria-hidden="true" />Most Contested</Link>
+              <Link href="/arguments/opposing" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Scale className="h-3.5 w-3.5 flex-shrink-0 text-against-400" aria-hidden="true" />Counter-Arguments</Link>
+              <Link href="/arguments/mine" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Quote className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />My Arguments</Link>
+              <Link href="/agenda" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><ListChecks className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />Civic Agenda</Link>
+              <Link href="/watchlist" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Bell className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />My Watchlist</Link>
+              <Link href="/challenge" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Flame className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />Daily Quorum</Link>
+              <Link href="/challenges" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Swords className="h-3.5 w-3.5 flex-shrink-0 text-against-300" aria-hidden="true" />My Challenges</Link>
+              <Link href="/debate/my-record" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><BarChart2 className="h-3.5 w-3.5 flex-shrink-0 text-purple" aria-hidden="true" />My Debate Record</Link>
+              <Link href="/duel" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Swords className="h-3.5 w-3.5 flex-shrink-0 text-against-400" aria-hidden="true" />Argument Duel</Link>
+              <Link href="/crossfire" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Swords className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />The Crossfire</Link>
+              <Link href="/arcade" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Gamepad2 className="h-3.5 w-3.5 flex-shrink-0 text-purple" aria-hidden="true" />Civic Arcade</Link>
+              <Link href="/rapid" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Zap className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />Rapid Fire</Link>
+              <Link href="/blitz" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Timer className="h-3.5 w-3.5 flex-shrink-0 text-against-400" aria-hidden="true" />Blitz Mode</Link>
+              <Link href="/archetype" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Crown className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />Civic Archetype</Link>
+              <Link href="/quiz" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Scale className="h-3.5 w-3.5 flex-shrink-0 text-emerald" aria-hidden="true" />Civic Quiz</Link>
+              <Link href="/trivia" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Target className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />Civic Trivia</Link>
+              <Link href="/knowledge-test" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><BookOpen className="h-3.5 w-3.5 flex-shrink-0 text-emerald" aria-hidden="true" />Knowledge Test</Link>
+              <Link href="/training" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Zap className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />Argument Training</Link>
+              <Link href="/predictions" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Target className="h-3.5 w-3.5 flex-shrink-0 text-purple" aria-hidden="true" />Predictions</Link>
+              <Link href="/forecast" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><FlaskConical className="h-3.5 w-3.5 flex-shrink-0 text-purple" aria-hidden="true" />Civic Forecast</Link>
+              <Link href="/tally" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Radio className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />Tally Board</Link>
+              <Link href="/now" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Zap className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />Right Now</Link>
+              <Link href="/vote-stream" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Activity className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />Vote Stream</Link>
+              <Link href="/capsule" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Hourglass className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />Time Capsules</Link>
+              <Link href="/time-machine" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><History className="h-3.5 w-3.5 flex-shrink-0 text-for-300" aria-hidden="true" />Time Machine</Link>
+              <Link href="/memories" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Calendar className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />Civic Memories</Link>
+              <Link href="/milestones" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Trophy className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />Civic Milestones</Link>
+              <Link href="/journal" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><BookOpen className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />Civic Journal</Link>
+              <Link href="/law/today" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Gavel className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />Law of the Day</Link>
+              <Link href="/constitution" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><BookOpen className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />Civic Constitution</Link>
+              <Link href="/verdicts" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Gavel className="h-3.5 w-3.5 flex-shrink-0 text-emerald" aria-hidden="true" />The Verdicts</Link>
+              <Link href="/elections" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Users className="h-3.5 w-3.5 flex-shrink-0 text-purple" aria-hidden="true" />Civic Elections</Link>
+              <Link href="/amendments" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><FileText className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />Amendment Chamber</Link>
+              <Link href="/league" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Trophy className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />Lobby League</Link>
+              <Link href="/seasons" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Crown className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />Hall of Fame</Link>
+              <Link href="/dashboard" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Layers className="h-3.5 w-3.5 flex-shrink-0 text-for-300" aria-hidden="true" />Dashboard</Link>
+              <Link href="/my-week" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><BarChart2 className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />My Week</Link>
+              <Link href="/weekly" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Calendar className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />Weekly Roundup</Link>
+              <Link href="/analytics" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><BarChart2 className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />Analytics</Link>
+              <Link href="/activity-calendar" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Calendar className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />Activity Calendar</Link>
+              <Link href="/report-card" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><FileText className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />Report Card</Link>
+              <Link href="/calibration" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><FlaskConical className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />Calibration</Link>
+              <Link href="/missions" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Target className="h-3.5 w-3.5 flex-shrink-0 text-emerald" aria-hidden="true" />Daily Missions</Link>
+              <Link href="/skill-tree" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Trophy className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />Civic Skill Tree</Link>
+              <Link href="/impact" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Star className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />Your Impact</Link>
+              <Link href="/compass" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Compass className="h-3.5 w-3.5 flex-shrink-0 text-purple" aria-hidden="true" />Civic Compass</Link>
+              <Link href="/fingerprint" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Fingerprint className="h-3.5 w-3.5 flex-shrink-0 text-against-400" aria-hidden="true" />Civic Fingerprint</Link>
+              <Link href="/recommended" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Sparkles className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />For You</Link>
+              <Link href="/today" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Calendar className="h-3.5 w-3.5 flex-shrink-0 text-for-300" aria-hidden="true" />Today in the Lobby</Link>
+              <Link href="/newspaper" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><FileText className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />The Dispatch</Link>
+              <Link href="/editorial" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Sparkles className="h-3.5 w-3.5 flex-shrink-0 text-purple" aria-hidden="true" />AI Editorial</Link>
+              <Link href="/crucible" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Swords className="h-3.5 w-3.5 flex-shrink-0 text-against-400" aria-hidden="true" />The Crucible</Link>
+              <Link href="/hotspot" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Flame className="h-3.5 w-3.5 flex-shrink-0 text-against-400" aria-hidden="true" />Civic Hotspot</Link>
+              <Link href="/radar" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Radio className="h-3.5 w-3.5 flex-shrink-0 text-against-400" aria-hidden="true" />Civic Radar</Link>
+              <Link href="/live" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Activity className="h-3.5 w-3.5 flex-shrink-0 text-against-400" aria-hidden="true" />Live Arguments</Link>
+              <Link href="/hot-takes" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><MessageSquare className="h-3.5 w-3.5 flex-shrink-0 text-against-400" aria-hidden="true" />Hot Takes</Link>
+              <Link href="/gallery" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Quote className="h-3.5 w-3.5 flex-shrink-0 text-purple" aria-hidden="true" />Argument Gallery</Link>
+              <Link href="/ladder" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><MessageSquare className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />Argument Ladder</Link>
+              <Link href="/wisdom" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Crown className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />Wisdom Feed</Link>
+              <Link href="/pulse" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Zap className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />Community Pulse</Link>
+              <Link href="/reactions" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><TrendingUp className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />Community Signals</Link>
+              <Link href="/momentum" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><ArrowUpRight className="h-3.5 w-3.5 flex-shrink-0 text-against-400" aria-hidden="true" />Momentum</Link>
+              <Link href="/race" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Swords className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />Civic Race</Link>
+              <Link href="/drift" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><TrendingUp className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />Opinion Drift</Link>
+              <Link href="/flip" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Flame className="h-3.5 w-3.5 flex-shrink-0 text-against-400" aria-hidden="true" />The Big Flip</Link>
+              <Link href="/lens" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Sparkles className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />Civic Lens</Link>
+              <Link href="/battleground" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Swords className="h-3.5 w-3.5 flex-shrink-0 text-against-400" aria-hidden="true" />Civic Battleground</Link>
+              <Link href="/extremes" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Scale className="h-3.5 w-3.5 flex-shrink-0 text-yellow-400" aria-hidden="true" />Civic Extremes</Link>
+              <Link href="/categories" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><LayoutGrid className="h-3.5 w-3.5 flex-shrink-0 text-purple" aria-hidden="true" />Browse Categories</Link>
+              <Link href="/catchup" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Zap className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />Catch Up</Link>
+              <Link href="/activity" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Activity className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />Activity</Link>
+              <Link href="/calendar" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Calendar className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />Civic Calendar</Link>
+              <Link href="/almanac" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><BookOpen className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />Civic Almanac</Link>
+              <Link href="/timeline" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><History className="h-3.5 w-3.5 flex-shrink-0 text-surface-500" aria-hidden="true" />Civic Timeline</Link>
+              <Link href="/graveyard" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Skull className="h-3.5 w-3.5 flex-shrink-0 text-surface-500" aria-hidden="true" />The Graveyard</Link>
+              <Link href="/network" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Network className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />Your Network</Link>
+              <Link href="/twins" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Users className="h-3.5 w-3.5 flex-shrink-0 text-emerald" aria-hidden="true" />Vote Twins</Link>
+              <Link href="/arena" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Swords className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />Coalition Arena</Link>
+              <Link href="/arguments/champions" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Trophy className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />Arena Champions</Link>
+              <Link href="/advisor" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Sparkles className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />Civic Advisor</Link>
+              <Link href="/prep" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><BookOpen className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />Debate Prep</Link>
+              <Link href="/spar" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Swords className="h-3.5 w-3.5 flex-shrink-0 text-purple" aria-hidden="true" />Sparring Arena</Link>
+              <Link href="/simulate" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><FlaskConical className="h-3.5 w-3.5 flex-shrink-0 text-purple" aria-hidden="true" />Policy Simulator</Link>
+              <Link href="/perspective" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Network className="h-3.5 w-3.5 flex-shrink-0 text-purple" aria-hidden="true" />Perspective Swap</Link>
+              <Link href="/letter" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Mail className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />Civic Letter Generator</Link>
+              <Link href="/checker" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Scale className="h-3.5 w-3.5 flex-shrink-0 text-emerald" aria-hidden="true" />Claim Checker</Link>
+              <Link href="/crossroads" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Scale className="h-3.5 w-3.5 flex-shrink-0 text-purple" aria-hidden="true" />Civic Crossroads</Link>
+              <Link href="/manifesto" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Scroll className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />Civic Manifesto</Link>
+              <Link href="/pipeline" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><GitBranch className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />Legislation Pipeline</Link>
+              <Link href="/discover" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Globe className="h-3.5 w-3.5 flex-shrink-0 text-for-300" aria-hidden="true" />Discover</Link>
+              <Link href="/settings" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Settings className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />Settings</Link>
+              <Link href="/stats" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><TrendingUp className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />State of the Lobby</Link>
+              <Link href="/weather" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Cloud className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />Civic Weather</Link>
+              <Link href="/heatmap" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><BarChart2 className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />Lobby Heatmap</Link>
+              <Link href="/observatory" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Globe className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />Civic Observatory</Link>
+              <Link href="/streaks" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Flame className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />Streak Hall</Link>
+              <Link href="/consensus" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Globe className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />Consensus Engine</Link>
               <div className="border-t border-surface-300" role="separator" />
-              <Link
-                href="/about"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <BookOpen className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
-                About
-              </Link>
-              <Link
-                href="/help"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <HelpCircle className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
-                Help & FAQ
-              </Link>
-              <Link
-                href="/glossary"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <BookOpen className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
-                Civic Glossary
-              </Link>
-              <Link
-                href="/changelog"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <History className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
-                Changelog
-              </Link>
-              <Link
-                href="/transparency"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Shield className="h-3.5 w-3.5 flex-shrink-0 text-emerald" aria-hidden="true" />
-                Transparency
-              </Link>
-              <Link
-                href="/developers"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <FileText className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
-                Developer API
-              </Link>
-              <Link
-                href="/widget"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"
-              >
-                <Network className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />
-                Widget Builder
-              </Link>
+              <Link href="/about" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><BookOpen className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />About</Link>
+              <Link href="/help" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><HelpCircle className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />Help &amp; FAQ</Link>
+              <Link href="/glossary" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><BookOpen className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />Civic Glossary</Link>
+              <Link href="/changelog" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><History className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />Changelog</Link>
+              <Link href="/transparency" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Shield className="h-3.5 w-3.5 flex-shrink-0 text-emerald" aria-hidden="true" />Transparency</Link>
+              <Link href="/developers" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><FileText className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />Developer API</Link>
+              <Link href="/widget" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Network className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />Widget Builder</Link>
               <div className="border-t border-surface-300" role="separator" />
-              <button
-                role="menuitem"
-                onClick={handleSignOut}
-                className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-against-400 hover:bg-against-950/40 hover:text-against-300 transition-colors"
-              >
-                <LogOut className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
-                Sign out
-              </button>
+              <button role="menuitem" onClick={handleSignOut} className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-against-400 hover:bg-against-950/40 hover:text-against-300 transition-colors"><LogOut className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />Sign out</button>
             </div>
           )}
         </div>
