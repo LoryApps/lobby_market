@@ -934,6 +934,20 @@ const CHAPTERS: Chapter[] = [
     ],
   },
   {
+    number: 'Ch. 62',
+    title: 'Argument Impact Analysis',
+    subtitle: 'Per-topic impact page ranking every argument by composite discourse impact score — side comparison, grade distribution, and top 5 per side',
+    accent: 'text-for-400',
+    borderColor: 'border-for-500/30',
+    bgColor: 'bg-for-500/5',
+    textColor: 'text-for-300',
+    items: [
+      { icon: Activity, label: 'New /topic/[id]/impact page ranks all arguments by discourse impact — a composite of upvotes (×3), AI quality score (×8), reply count (×2), citation count (×4), and letter-grade bonuses (A=+15, B=+8). Backed by new /api/topics/[id]/impact route.', href: undefined, color: 'text-for-400' },
+      { icon: Scale, label: 'Side-by-side FOR vs. AGAINST impact comparison: animated split bar showing total impact share, per-side stats (argument count, avg upvotes, avg AI score, top grade, avg impact), and a winning-side banner for the dominant camp.', href: undefined, color: 'text-emerald' },
+      { icon: Award, label: 'Platform-wide grade distribution bar chart for all AI-scored arguments, animated on load. Top 5 arguments per side shown as expandable cards with impact progress bars, rank medals, grade badges, upvote/reply/citation counts, and author avatars. "Argument impact" link added to TopicDetail sub-page nav. All impact pages added to sitemap.', href: undefined, color: 'text-gold' },
+    ],
+  },
+  {
     number: 'Ch. 60',
     title: 'Topic Prediction Market',
     subtitle: 'Per-topic prediction market — community consensus gauge, confidence distribution, predictor profiles, and inline stake form',
@@ -1006,10 +1020,10 @@ const CHAPTERS: Chapter[] = [
 ]
 
 const STATS = [
-  { value: '59', label: 'chapters shipped' },
-  { value: '337+', label: 'features built' },
+  { value: '62', label: 'chapters shipped' },
+  { value: '340+', label: 'features built' },
   { value: '70', label: 'DB migrations' },
-  { value: '400+', label: 'API routes' },
+  { value: '401+', label: 'API routes' },
 ]
 
 interface RecentBuild {
@@ -1022,6 +1036,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Argument Impact Analysis',
+    description: 'New /topic/[id]/impact page ranks every debate\'s arguments by their discourse impact — a composite score of upvotes (×3), AI quality score (×8), reply depth (×2), and citation count (×4), with grade bonuses for A/B arguments. Shows a side-by-side FOR vs. AGAINST impact comparison with a split bar, per-side stats (avg upvotes, AI score, top grade, avg impact), platform-wide grade distribution, and the top 5 highest-impact arguments per side with expandable previews, impact progress bars, and author profiles. A winning-side banner declares which camp had stronger discourse impact. "Argument impact" link added to the topic sub-page nav in TopicDetail. All impact pages added to sitemap.',
+    href: undefined,
+    icon: Activity,
+    color: 'text-for-400',
+    tag: 'Ch. 62',
+  },
   {
     title: 'Topic Prediction Market',
     description: 'New /topic/[id]/predictions page gives every debate a dedicated prediction market view. Shows the community consensus gauge (% predicting law vs. fail), a confidence-distribution histogram, individual predictor profiles with reasoning quotes, and a prediction form to make or update your own stake. Stats row displays total predictors, avg confidence for each side, and outcome. "Prediction market" link added to the sub-page nav in TopicDetail. Backed by new POST+GET /api/topics/[id]/predictions endpoint. No new migration needed — builds on the existing topic_predictions and topic_prediction_stats tables (00015 + 00044).',
