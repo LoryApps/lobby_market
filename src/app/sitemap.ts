@@ -65,6 +65,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/analytics/topics`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/analytics/coalitions`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/analytics/votes`, changeFrequency: 'daily', priority: 0.65 },
+  { url: `${BASE_URL}/analytics/laws`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/calibration`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/compare`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/compare-users`, changeFrequency: 'daily', priority: 0.65 },
@@ -97,7 +98,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/changelog`, changeFrequency: 'monthly', priority: 0.55 },
   { url: `${BASE_URL}/missions`, changeFrequency: 'daily', priority: 0.8 },
   { url: `${BASE_URL}/wisdom`, changeFrequency: 'hourly', priority: 0.75 },
-  // ── Recently added pages (not previously in sitemap) ────────────────────────────────────────────────────────
+  // ── Recently added pages (not previously in sitemap) ──────────────────────────────────────────────────────────────────────────────────────────────────────────────
   { url: `${BASE_URL}/prompt`, changeFrequency: 'daily', priority: 0.88 },
   { url: `${BASE_URL}/prompt/archive`, changeFrequency: 'daily', priority: 0.7 },
   { url: `${BASE_URL}/crossroads`, changeFrequency: 'weekly', priority: 0.75 },
@@ -164,7 +165,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/karma`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/hotspot`, changeFrequency: 'always', priority: 0.8 },
   { url: `${BASE_URL}/forecasters`, changeFrequency: 'hourly', priority: 0.75 },
-  // ── Tag pages (added with tag-sentiment enhancement) ───────────────────────────────────────────────────────────────────
+  // ── Tag pages (added with tag-sentiment enhancement) ────────────────────────────────────────────────────────────────────────────────────────────────────────
   { url: `${BASE_URL}/tags`, changeFrequency: 'daily', priority: 0.72 },
   // Popular civic tags — static list mirrors migration 00059 civic vocabulary
   ...(
@@ -179,9 +180,9 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
       priority: 0.65,
     }))
   ),
-  // ── Common Threads discovery ─────────────────────────────────────────────────────────────────────────────────────────────────
+  // ── Common Threads discovery ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
   { url: `${BASE_URL}/common-threads`, changeFrequency: 'hourly', priority: 0.72 },
-  // ── Feeds hub ──────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  // ── Feeds hub ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
   { url: `${BASE_URL}/feeds`, changeFrequency: 'monthly', priority: 0.55 },
 ]
 
