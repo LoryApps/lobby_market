@@ -40,7 +40,7 @@ import { cn } from '@/lib/utils/cn'
 import type { PredictionRecord } from '@/app/api/analytics/predictions/route'
 import type { KinProfile, KinResponse } from '@/app/api/analytics/kin/route'
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+// ─── Types ───────────────────────────────────────────────────────────────────────────────
 
 interface AnalyticsData {
   profile: {
@@ -78,7 +78,7 @@ interface AnalyticsData {
   }
 }
 
-// ─── Skeleton ───────────────────────────────────────────────────────────────────────
+// ─── Skeleton ────────────────────────────────────────────────────────────────────────────────────
 
 function Skeleton({ className }: { className?: string }) {
   return (
@@ -115,7 +115,7 @@ function AnalyticsSkeleton() {
   )
 }
 
-// ─── Sub-components ─────────────────────────────────────────────────────────────────
+// ─── Sub-components ───────────────────────────────────────────────────────────────────────────────────
 
 function TodayProgressCard({
   votesUsed,
@@ -130,7 +130,6 @@ function TodayProgressCard({
   const goalMet = votesUsed >= dailyLimit
   const hasVotedToday = votesUsed > 0
 
-  // Streak-driven heat color
   const streakColor =
     streak >= 30
       ? 'text-against-300'
@@ -160,7 +159,6 @@ function TodayProgressCard({
       </div>
 
       <div className="flex items-start gap-4">
-        {/* Streak display */}
         <div className="flex flex-col items-center gap-1 flex-shrink-0">
           <div className={cn('text-3xl font-mono font-bold', streakColor)}>
             {streak}
@@ -174,10 +172,8 @@ function TodayProgressCard({
           </div>
         </div>
 
-        {/* Separator */}
         <div className="w-px self-stretch bg-surface-300 flex-shrink-0" />
 
-        {/* Daily vote progress */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-mono font-medium text-white">
@@ -192,7 +188,6 @@ function TodayProgressCard({
             </span>
           </div>
 
-          {/* Progress bar */}
           <div className="relative h-2.5 rounded-full bg-surface-300 overflow-hidden mb-3">
             <motion.div
               initial={{ width: 0 }}
@@ -202,7 +197,6 @@ function TodayProgressCard({
             />
           </div>
 
-          {/* Status message */}
           {goalMet ? (
             <div className="flex items-center gap-1.5 text-xs font-mono text-emerald">
               <CheckCircle2 className="h-3.5 w-3.5 flex-shrink-0" />
@@ -319,7 +313,6 @@ function VoteDNACard({
         Vote DNA
       </div>
 
-      {/* Identity label */}
       <div className="mb-4">
         <span className="text-white font-bold text-lg">{identity}</span>
         <p className="text-xs text-surface-500 mt-0.5">
@@ -327,7 +320,6 @@ function VoteDNACard({
         </p>
       </div>
 
-      {/* Gradient bar */}
       <div className="relative h-3 rounded-full overflow-hidden bg-surface-300 mb-3">
         <motion.div
           initial={{ width: 0 }}
@@ -390,7 +382,6 @@ function AccuracyCard({
         </div>
       ) : (
         <div className="flex items-center gap-6">
-          {/* Circle */}
           <div
             className={cn(
               'relative flex-shrink-0 h-20 w-20 rounded-full border-4 flex flex-col items-center justify-center',
@@ -545,7 +536,7 @@ function MonthlyBars({
   )
 }
 
-// ─── Prediction history ───────────────────────────────────────────────────────────────────
+// ─── Prediction history ──────────────────────────────────────────────────────────────────────────────────────────
 
 const STATUS_LABEL: Record<string, string> = {
   proposed: 'Proposed',
@@ -573,7 +564,6 @@ function PredictionRow({ pred }: { pred: PredictionRecord }) {
   const isResolved = pred.resolved_at !== null
   const isPending = !isResolved
 
-  // Outcome badge
   const outcome =
     isPending
       ? { label: 'Pending', color: 'text-surface-500', bg: 'bg-surface-300/50', icon: Clock }
@@ -583,7 +573,6 @@ function PredictionRow({ pred }: { pred: PredictionRecord }) {
 
   const OutcomeIcon = outcome.icon
 
-  // Prediction label
   const predLabel = pred.predicted_law ? 'Will pass' : 'Will fail'
   const predColor = pred.predicted_law ? 'text-for-400' : 'text-against-400'
 
@@ -592,7 +581,6 @@ function PredictionRow({ pred }: { pred: PredictionRecord }) {
       href={`/topic/${pred.topic_id}`}
       className="flex items-start gap-3 px-4 py-4 hover:bg-surface-200/50 transition-colors"
     >
-      {/* Outcome indicator */}
       <div className={cn(
         'flex-shrink-0 mt-0.5 h-7 w-7 rounded-lg flex items-center justify-center',
         outcome.bg
@@ -600,17 +588,14 @@ function PredictionRow({ pred }: { pred: PredictionRecord }) {
         <OutcomeIcon className={cn('h-3.5 w-3.5', outcome.color)} />
       </div>
 
-      {/* Content */}
       <div className="flex-1 min-w-0">
         <p className="text-sm text-surface-700 line-clamp-2 mb-1.5">
           {pred.topic?.statement ?? 'Unknown topic'}
         </p>
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] font-mono text-surface-500">
-          {/* Prediction */}
           <span className={cn('font-semibold', predColor)}>
             {predLabel} · {pred.confidence}% conf
           </span>
-          {/* Topic status */}
           {pred.topic && (
             <span className={cn(
               pred.topic.status === 'law' ? 'text-gold' :
@@ -620,13 +605,11 @@ function PredictionRow({ pred }: { pred: PredictionRecord }) {
               {STATUS_LABEL[pred.topic.status] ?? pred.topic.status}
             </span>
           )}
-          {/* Brier score */}
           {pred.brier_score !== null && (
             <span title="Brier score (lower = better calibration)">
               Brier {pred.brier_score.toFixed(3)}
             </span>
           )}
-          {/* Clout earned */}
           {pred.clout_earned > 0 && (
             <span className="text-gold">+{pred.clout_earned} clout</span>
           )}
@@ -634,7 +617,6 @@ function PredictionRow({ pred }: { pred: PredictionRecord }) {
         </div>
       </div>
 
-      {/* Outcome badge — right side */}
       <span className={cn(
         'flex-shrink-0 text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full',
         outcome.bg, outcome.color
@@ -645,7 +627,7 @@ function PredictionRow({ pred }: { pred: PredictionRecord }) {
   )
 }
 
-// ─── Political Kin section ────────────────────────────────────────────────────────────────
+// ─── Political Kin section ────────────────────────────────────────────────────────────────────────────────────────
 
 function KinCard({ person, type }: { person: KinProfile; type: 'kin' | 'opposite' }) {
   const isKin = type === 'kin'
@@ -863,7 +845,6 @@ function PredictionHistorySection() {
   const visible = expanded ? predictions : predictions.slice(0, SHOW_INITIAL)
   const hasMore = predictions.length > SHOW_INITIAL
 
-  // Summary stats
   const resolved = predictions.filter((p) => p.resolved_at !== null)
   const correct = resolved.filter((p) => p.correct === true)
   const pending = predictions.filter((p) => p.resolved_at === null)
@@ -875,14 +856,12 @@ function PredictionHistorySection() {
       transition={{ duration: 0.35, delay: 0.5 }}
       className="rounded-2xl bg-surface-100 border border-surface-300 overflow-hidden"
     >
-      {/* Header */}
       <div className="flex items-center justify-between px-6 py-4 border-b border-surface-300">
         <div className="flex items-center gap-2 text-xs font-mono text-surface-500 uppercase tracking-wider">
           <Target className="h-3.5 w-3.5 text-purple" />
           My Predictions
           <span className="text-surface-600">({predictions.length})</span>
         </div>
-        {/* Mini stats */}
         <div className="flex items-center gap-3 text-[11px] font-mono">
           {pending.length > 0 && (
             <span className="text-surface-500">{pending.length} pending</span>
@@ -895,14 +874,12 @@ function PredictionHistorySection() {
         </div>
       </div>
 
-      {/* List */}
       <div className="divide-y divide-surface-300/60">
         {visible.map((pred) => (
           <PredictionRow key={pred.id} pred={pred} />
         ))}
       </div>
 
-      {/* Show more */}
       {hasMore && (
         <button
           onClick={() => setExpanded((e) => !e)}
@@ -916,7 +893,7 @@ function PredictionHistorySection() {
   )
 }
 
-// ─── Main Page ────────────────────────────────────────────────────────────────────
+// ─── Main Page ──────────────────────────────────────────────────────────────────────────────────
 
 export default function AnalyticsPage() {
   const router = useRouter()
@@ -1039,6 +1016,13 @@ export default function AnalyticsPage() {
               Sentiment
             </Link>
             <Link
+              href="/analytics/coalitions"
+              className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"
+            >
+              <Users className="h-3.5 w-3.5" />
+              Coalition Analytics
+            </Link>
+            <Link
               href="/prescient"
               className="flex items-center gap-1 text-xs text-for-300 hover:text-for-200 transition-colors font-mono font-semibold"
             >
@@ -1072,7 +1056,6 @@ export default function AnalyticsPage() {
 
         {!loading && data && (
           <div className="space-y-4">
-            {/* Today's progress — streak + daily vote goal */}
             {data.today && (
               <TodayProgressCard
                 votesUsed={data.today.votes_used}
@@ -1081,7 +1064,6 @@ export default function AnalyticsPage() {
               />
             )}
 
-            {/* Hero stats row */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <StatCard
                 label="Clout"
@@ -1117,7 +1099,6 @@ export default function AnalyticsPage() {
               />
             </div>
 
-            {/* Vote DNA + Accuracy */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <VoteDNACard
                 blue={data.profile.blue_vote_count}
@@ -1130,21 +1111,16 @@ export default function AnalyticsPage() {
               />
             </div>
 
-            {/* Full-year vote calendar */}
             <VoteCalendar days={data.dailyActivity} />
 
-            {/* Monthly bars */}
             <MonthlyBars months={data.monthlyActivity} />
 
-            {/* Category breakdown */}
             {data.topCategories.length > 0 && (
               <CategoryBreakdown categories={data.topCategories} />
             )}
 
-            {/* Political kin */}
             <PoliticalKinSection />
 
-            {/* Reputation meter */}
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
@@ -1184,10 +1160,8 @@ export default function AnalyticsPage() {
               </p>
             </motion.div>
 
-            {/* Individual predictions history */}
             <PredictionHistorySection />
 
-            {/* Prediction market stats */}
             {data.predictions && data.predictions.total > 0 && (
               <motion.div
                 initial={{ opacity: 0, y: 12 }}
