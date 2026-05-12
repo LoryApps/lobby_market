@@ -29,6 +29,7 @@ import {
   Star,
   Network,
   Sparkles,
+  BookOpen,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -77,7 +78,7 @@ interface AnalyticsData {
   }
 }
 
-// ─── Skeleton ─────────────────────────────────────────────────────────────────
+// ─── Skeleton ───────────────────────────────────────────────────────────────────────
 
 function Skeleton({ className }: { className?: string }) {
   return (
@@ -114,7 +115,7 @@ function AnalyticsSkeleton() {
   )
 }
 
-// ─── Sub-components ───────────────────────────────────────────────────────────
+// ─── Sub-components ─────────────────────────────────────────────────────────────────
 
 function TodayProgressCard({
   votesUsed,
@@ -544,7 +545,7 @@ function MonthlyBars({
   )
 }
 
-// ─── Prediction history ───────────────────────────────────────────────────────
+// ─── Prediction history ───────────────────────────────────────────────────────────────────
 
 const STATUS_LABEL: Record<string, string> = {
   proposed: 'Proposed',
@@ -644,7 +645,7 @@ function PredictionRow({ pred }: { pred: PredictionRecord }) {
   )
 }
 
-// ─── Political Kin section ────────────────────────────────────────────────────
+// ─── Political Kin section ────────────────────────────────────────────────────────────────
 
 function KinCard({ person, type }: { person: KinProfile; type: 'kin' | 'opposite' }) {
   const isKin = type === 'kin'
@@ -915,7 +916,7 @@ function PredictionHistorySection() {
   )
 }
 
-// ─── Main Page ────────────────────────────────────────────────────────────────
+// ─── Main Page ────────────────────────────────────────────────────────────────────
 
 export default function AnalyticsPage() {
   const router = useRouter()
@@ -1008,6 +1009,13 @@ export default function AnalyticsPage() {
             >
               <Network className="h-3.5 w-3.5" />
               Mind Map
+            </Link>
+            <Link
+              href="/analytics/arguments"
+              className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"
+            >
+              <BookOpen className="h-3.5 w-3.5" />
+              Argument Portfolio
             </Link>
             <Link
               href="/analytics/evolution"
