@@ -4,7 +4,9 @@ import Link from 'next/link'
 import {
   ArrowLeft,
   ArrowRight,
+  BarChart2,
   Brain,
+  ChevronRight,
   ChevronUp,
   ExternalLink,
   FileText,
@@ -35,7 +37,7 @@ interface ArgumentPageProps {
   params: { id: string }
 }
 
-// ─── Grade config ─────────────────────────────────────────────────────────────────────────────
+// ─── Grade config ─────────────────────────────────────────────────────────────────────────────────────────
 
 const GRADE_CONFIG: Record<string, { text: string; bg: string; border: string; bar: string; label: string }> = {
   A: { text: 'text-emerald',      bg: 'bg-emerald/10',      border: 'border-emerald/30',      bar: 'bg-emerald',      label: 'Exceptional' },
@@ -45,7 +47,7 @@ const GRADE_CONFIG: Record<string, { text: string; bg: string; border: string; b
   F: { text: 'text-against-400', bg: 'bg-against-600/10',  border: 'border-against-600/30',  bar: 'bg-against-600',  label: 'Poor' },
 }
 
-// ─── Status helpers ─────────────────────────────────────────────────────────────────────────────
+// ─── Status helpers ─────────────────────────────────────────────────────────────────────────────────────────
 
 const STATUS_LABEL: Record<string, string> = {
   proposed: 'Proposed',
@@ -89,7 +91,7 @@ function relativeTime(iso: string): string {
   return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 }
 
-// ─── Metadata ─────────────────────────────────────────────────────────────────────────────
+// ─── Metadata ───────────────────────────────────────────────────────────────────────────────────────
 
 export async function generateMetadata({ params }: ArgumentPageProps): Promise<Metadata> {
   const supabase = await createClient()
@@ -144,7 +146,7 @@ export async function generateMetadata({ params }: ArgumentPageProps): Promise<M
   }
 }
 
-// ─── Page ─────────────────────────────────────────────────────────────────────────────
+// ─── Page ──────────────────────────────────────────────────────────────────────────────────────
 
 export default async function ArgumentPage({ params }: ArgumentPageProps) {
   const supabase = await createClient()
@@ -549,6 +551,22 @@ export default async function ArgumentPage({ params }: ArgumentPageProps) {
             </div>
           </div>
         </div>
+
+        {/* Analytics link */}
+        <Link
+          href={`/arguments/${arg.id}/analytics`}
+          className={cn(
+            'flex items-center justify-between w-full py-3 px-4 rounded-xl',
+            'bg-surface-100 hover:bg-surface-200 border border-surface-300',
+            'text-sm font-mono text-surface-500 hover:text-white transition-colors group'
+          )}
+        >
+          <div className="flex items-center gap-2">
+            <BarChart2 className="h-4 w-4 text-surface-500 group-hover:text-for-400 transition-colors" aria-hidden />
+            <span>Engagement analytics</span>
+          </div>
+          <ChevronRight className="h-4 w-4" aria-hidden />
+        </Link>
 
         <ArgumentEmbedPanel argumentId={arg.id} isFor={isFor} />
 
