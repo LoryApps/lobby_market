@@ -573,6 +573,13 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
                       Argument graph
                     </Link>
                     <Link
+                      href={`/topic/${topic.id}/impact`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-for-400 hover:text-for-300 transition-colors"
+                    >
+                      <Zap className="h-3.5 w-3.5" />
+                      Argument impact
+                    </Link>
+                    <Link
                       href={`/topic/${topic.id}/wordcloud`}
                       className="inline-flex items-center gap-1.5 text-xs font-mono text-purple hover:text-purple/80 transition-colors"
                     >
