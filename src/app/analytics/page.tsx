@@ -1018,6 +1018,13 @@ export default function AnalyticsPage() {
               Argument Portfolio
             </Link>
             <Link
+              href="/analytics/topics"
+              className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"
+            >
+              <Scale className="h-3.5 w-3.5" />
+              Topic Analytics
+            </Link>
+            <Link
               href="/analytics/evolution"
               className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"
             >
