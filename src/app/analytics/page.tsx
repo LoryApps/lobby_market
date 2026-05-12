@@ -32,6 +32,7 @@ import {
   BookOpen,
   ThumbsUp,
   Shield,
+  Gavel,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -1037,6 +1038,13 @@ export default function AnalyticsPage() {
             >
               <Swords className="h-3.5 w-3.5" />
               Faceoff Record
+            </Link>
+            <Link
+              href="/analytics/debates"
+              className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"
+            >
+              <Gavel className="h-3.5 w-3.5" />
+              Debate Stats
             </Link>
             <Link
               href="/prescient"
