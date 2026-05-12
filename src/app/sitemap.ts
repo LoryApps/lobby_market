@@ -308,12 +308,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .order('upvotes', { ascending: false })
       .limit(500)
 
-    const argumentUrls: MetadataRoute.Sitemap = (topArguments ?? []).map((a) => ({
-      url: `${BASE_URL}/arguments/${a.id}`,
-      lastModified: new Date(a.created_at),
-      changeFrequency: 'weekly' as const,
-      priority: 0.45,
-    }))
+    const argumentUrls: MetadataRoute.Sitemap = (topArguments ?? []).flatMap((a) => [
+      {
+        url: `${BASE_URL}/arguments/${a.id}`,
+        lastModified: new Date(a.created_at),
+        changeFrequency: 'weekly' as const,
+        priority: 0.45,
+      },
+      {
+        url: `${BASE_URL}/arguments/${a.id}/critique`,
+        lastModified: new Date(a.created_at),
+        changeFrequency: 'weekly' as const,
+        priority: 0.4,
+      },
+      {
+        url: `${BASE_URL}/arguments/${a.id}/analytics`,
+        lastModified: new Date(a.created_at),
+        changeFrequency: 'weekly' as const,
+        priority: 0.35,
+      },
+    ])
 
     // Fetch all distinct tags from topics for dynamic tag pages
     const { data: tagRows } = await supabase

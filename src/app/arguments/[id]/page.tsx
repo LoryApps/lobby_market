@@ -4,6 +4,7 @@ import Link from 'next/link'
 import {
   ArrowLeft,
   ArrowRight,
+  BarChart2,
   Brain,
   ChevronUp,
   ExternalLink,
@@ -330,12 +331,23 @@ export default async function ArgumentPage({ params }: ArgumentPageProps) {
             <span className="text-sm font-mono font-bold text-white">{replyCount}</span>
             <span className="text-xs font-mono text-surface-600">replies</span>
           </div>
-          {aiScore !== null && (
-            <div className="flex items-center gap-1.5">
+          {aiScore !== null ? (
+            <Link
+              href={`/arguments/${arg.id}/critique`}
+              className="flex items-center gap-1.5 hover:opacity-80 transition-opacity"
+            >
               <Brain className="h-4 w-4 text-purple" aria-hidden />
               <span className="text-sm font-mono font-bold text-purple">{aiScore}/10</span>
               <span className="text-xs font-mono text-surface-600">AI score</span>
-            </div>
+            </Link>
+          ) : (
+            <Link
+              href={`/arguments/${arg.id}/critique`}
+              className="flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-purple transition-colors"
+            >
+              <Brain className="h-3.5 w-3.5" aria-hidden />
+              Get AI critique
+            </Link>
           )}
           <span className="text-xs font-mono text-surface-600 ml-auto">
             {relativeTime(arg.created_at)}
@@ -387,10 +399,10 @@ export default async function ArgumentPage({ params }: ArgumentPageProps) {
                 </span>
               </div>
               <Link
-                href="/coach"
-                className="text-[10px] font-mono text-surface-500 hover:text-white transition-colors flex items-center gap-1"
+                href={`/arguments/${arg.id}/critique`}
+                className="text-[10px] font-mono text-for-400 hover:text-for-300 transition-colors flex items-center gap-1"
               >
-                Improve
+                Full breakdown
                 <ArrowRight className="h-3 w-3" aria-hidden />
               </Link>
             </div>
@@ -558,10 +570,31 @@ export default async function ArgumentPage({ params }: ArgumentPageProps) {
           initialCount={replyCount}
         />
 
+        {/* Engagement analytics link */}
+        <Link
+          href={`/arguments/${arg.id}/analytics`}
+          className={cn(
+            'flex items-center justify-between w-full py-3 px-4 rounded-xl mt-4',
+            'bg-surface-800/40 hover:bg-surface-800 border border-surface-700',
+            'transition-colors group'
+          )}
+        >
+          <div className="flex items-center gap-2">
+            <BarChart2 className="h-4 w-4 text-surface-500 group-hover:text-purple transition-colors" aria-hidden />
+            <span className="text-sm font-mono text-surface-400 group-hover:text-white transition-colors">
+              Engagement analytics
+            </span>
+          </div>
+          <span className="text-xs font-mono text-surface-600 group-hover:text-purple transition-colors">
+            {arg.upvotes} upvotes ·{' '}
+            {initialCounts.insightful + initialCounts.compelling + initialCounts.balanced + initialCounts.needs_evidence} reactions →
+          </span>
+        </Link>
+
         <Link
           href={`/topic/${topic.id}#arguments`}
           className={cn(
-            'flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl mt-4',
+            'flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl mt-3',
             'bg-surface-100 hover:bg-surface-200 border border-surface-300',
             'text-sm font-mono font-semibold text-white transition-colors'
           )}
