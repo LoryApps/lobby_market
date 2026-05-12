@@ -48,7 +48,7 @@ import type {
   FaceoffLeader,
 } from '@/app/api/arguments/faceoff/route'
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+// ─── Helpers ──────────────────────────────────────────────────────────────────────────────
 
 const CATEGORIES = [
   'All',
@@ -84,7 +84,7 @@ function relativeTime(iso: string): string {
   return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 }
 
-// ─── Grade badge ──────────────────────────────────────────────────────────────
+// ─── Grade badge ──────────────────────────────────────────────────────────────────────────────
 
 const GRADE_COLOR: Record<string, string> = {
   A: 'text-emerald bg-emerald/10 border-emerald/30',
@@ -104,7 +104,7 @@ function GradePill({ grade }: { grade: string | null }) {
   )
 }
 
-// ─── Win-rate bar ─────────────────────────────────────────────────────────────
+// ─── Win-rate bar ─────────────────────────────────────────────────────────────────────────────
 
 function WinBar({ wins, bouts, win_pct, revealed }: {
   wins: number; bouts: number; win_pct: number | null; revealed: boolean
@@ -134,7 +134,7 @@ function WinBar({ wins, bouts, win_pct, revealed }: {
   )
 }
 
-// ─── Argument card ────────────────────────────────────────────────────────────
+// ─── Argument card ────────────────────────────────────────────────────────────────────────────
 
 interface ArgCardProps {
   arg: FaceoffArgument
@@ -276,7 +276,7 @@ function ArgCard({ arg, side, chosen, winner, onPick, disabled, updatedArena }: 
   )
 }
 
-// ─── Leaderboard ──────────────────────────────────────────────────────────────
+// ─── Leaderboard ──────────────────────────────────────────────────────────────────────────────
 
 function Leaderboard({ leaders }: { leaders: FaceoffLeader[] }) {
   if (leaders.length === 0) return null
@@ -344,7 +344,7 @@ function Leaderboard({ leaders }: { leaders: FaceoffLeader[] }) {
   )
 }
 
-// ─── Main component ───────────────────────────────────────────────────────────
+// ─── Main component ────────────────────────────────────────────────────────────────────────────
 
 export default function FaceoffPage() {
   const [data, setData] = useState<FaceoffResponse | null>(null)
@@ -698,6 +698,13 @@ export default function FaceoffPage() {
           >
             <Gavel className="h-3 w-3" />
             Most Contested
+          </Link>
+          <Link
+            href="/arguments/champions"
+            className="flex items-center gap-1.5 text-xs font-mono text-gold hover:text-gold/80 transition-colors"
+          >
+            <Trophy className="h-3 w-3" />
+            Full Champions Leaderboard
           </Link>
         </div>
       </main>
