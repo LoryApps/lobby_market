@@ -380,6 +380,7 @@ export default function AnalyticsPage() {
             <Link href="/analytics/predictions" className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"><Zap className="h-3.5 w-3.5" />Predictions</Link>
             <Link href="/analytics/discourse" className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"><Brain className="h-3.5 w-3.5" />Discourse Quality</Link>
             <Link href="/analytics/reasons" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><Quote className="h-3.5 w-3.5" />Hot Take Voice</Link>
+            <Link href="/analytics/consensus-shift" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><Zap className="h-3.5 w-3.5" />Consensus Shift</Link>
             <Link href="/prescient" className="flex items-center gap-1 text-xs text-for-300 hover:text-for-200 transition-colors font-mono font-semibold"><Target className="h-3.5 w-3.5" />Alignment</Link>
             <Link href="/karma" className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"><Sparkles className="h-3.5 w-3.5" />Karma</Link>
             <Link href="/profile/me" className="flex items-center gap-1 text-xs text-surface-500 hover:text-white transition-colors">Profile<ChevronRight className="h-3.5 w-3.5" /></Link>
