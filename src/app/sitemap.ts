@@ -68,6 +68,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/analytics/laws`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/analytics/predictions`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/analytics/reactions`, changeFrequency: 'daily', priority: 0.65 },
+  { url: `${BASE_URL}/analytics/discourse`, changeFrequency: 'daily', priority: 0.68 },
   { url: `${BASE_URL}/calibration`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/compare`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/compare-users`, changeFrequency: 'daily', priority: 0.65 },
@@ -100,7 +101,6 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/changelog`, changeFrequency: 'monthly', priority: 0.55 },
   { url: `${BASE_URL}/missions`, changeFrequency: 'daily', priority: 0.8 },
   { url: `${BASE_URL}/wisdom`, changeFrequency: 'hourly', priority: 0.75 },
-  // ── Recently added pages (not previously in sitemap) ──────────────────────────────────────────────────────────────────────────────────────────────────────────────
   { url: `${BASE_URL}/prompt`, changeFrequency: 'daily', priority: 0.88 },
   { url: `${BASE_URL}/prompt/archive`, changeFrequency: 'daily', priority: 0.7 },
   { url: `${BASE_URL}/crossroads`, changeFrequency: 'weekly', priority: 0.75 },
@@ -167,9 +167,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/karma`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/hotspot`, changeFrequency: 'always', priority: 0.8 },
   { url: `${BASE_URL}/forecasters`, changeFrequency: 'hourly', priority: 0.75 },
-  // ── Tag pages (added with tag-sentiment enhancement) ────────────────────────────────────────────────────────────────────────────────────────────────────────
   { url: `${BASE_URL}/tags`, changeFrequency: 'daily', priority: 0.72 },
-  // Popular civic tags — static list mirrors migration 00059 civic vocabulary
   ...(
     [
       'climate', 'tax', 'housing', 'healthcare', 'education', 'immigration',
@@ -182,9 +180,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
       priority: 0.65,
     }))
   ),
-  // ── Common Threads discovery ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
   { url: `${BASE_URL}/common-threads`, changeFrequency: 'hourly', priority: 0.72 },
-  // ── Feeds hub ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
   { url: `${BASE_URL}/feeds`, changeFrequency: 'monthly', priority: 0.55 },
 ]
 
@@ -195,7 +191,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     const supabase = await createClient()
 
-    // Fetch public topics (active, voting, law) — limit to 1000 most recent
     const { data: topics } = await supabase
       .from('topics')
       .select('id, updated_at, status')
@@ -204,69 +199,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .limit(1000)
 
     const topicUrls: MetadataRoute.Sitemap = (topics ?? []).flatMap((topic) => [
-      {
-        url: `${BASE_URL}/topic/${topic.id}`,
-        lastModified: new Date(topic.updated_at),
-        changeFrequency: (topic.status === 'law' ? 'monthly' : 'hourly') as 'monthly' | 'hourly',
-        priority: topic.status === 'law' ? 0.7 : 0.8,
-      },
-      {
-        url: `${BASE_URL}/topic/${topic.id}/versus`,
-        lastModified: new Date(topic.updated_at),
-        changeFrequency: 'daily' as const,
-        priority: 0.55,
-      },
-      {
-        url: `${BASE_URL}/topic/${topic.id}/evidence`,
-        lastModified: new Date(topic.updated_at),
-        changeFrequency: 'hourly' as const,
-        priority: 0.6,
-      },
-      {
-        url: `${BASE_URL}/topic/${topic.id}/synthesis`,
-        lastModified: new Date(topic.updated_at),
-        changeFrequency: 'daily' as const,
-        priority: 0.55,
-      },
-      {
-        url: `${BASE_URL}/topic/${topic.id}/themes`,
-        lastModified: new Date(topic.updated_at),
-        changeFrequency: 'daily' as const,
-        priority: 0.55,
-      },
-      {
-        url: `${BASE_URL}/topic/${topic.id}/quality`,
-        lastModified: new Date(topic.updated_at),
-        changeFrequency: 'daily' as const,
-        priority: 0.5,
-      },
-      {
-        url: `${BASE_URL}/topic/${topic.id}/connections`,
-        lastModified: new Date(topic.updated_at),
-        changeFrequency: 'daily' as const,
-        priority: 0.5,
-      },
-      {
-        url: `${BASE_URL}/topic/${topic.id}/context`,
-        lastModified: new Date(topic.updated_at),
-        changeFrequency: 'weekly' as const,
-        priority: 0.5,
-      },
-      {
-        url: `${BASE_URL}/topic/${topic.id}/predictions`,
-        lastModified: new Date(topic.updated_at),
-        changeFrequency: 'hourly' as const,
-        priority: 0.6,
-      },
-      {
-        url: `${BASE_URL}/topic/${topic.id}/impact`,
-        lastModified: new Date(topic.updated_at),
-        changeFrequency: 'daily' as const,
-        priority: 0.55,
-      },
+      { url: `${BASE_URL}/topic/${topic.id}`, lastModified: new Date(topic.updated_at), changeFrequency: (topic.status === 'law' ? 'monthly' : 'hourly') as 'monthly' | 'hourly', priority: topic.status === 'law' ? 0.7 : 0.8 },
+      { url: `${BASE_URL}/topic/${topic.id}/versus`, lastModified: new Date(topic.updated_at), changeFrequency: 'daily' as const, priority: 0.55 },
+      { url: `${BASE_URL}/topic/${topic.id}/evidence`, lastModified: new Date(topic.updated_at), changeFrequency: 'hourly' as const, priority: 0.6 },
+      { url: `${BASE_URL}/topic/${topic.id}/synthesis`, lastModified: new Date(topic.updated_at), changeFrequency: 'daily' as const, priority: 0.55 },
+      { url: `${BASE_URL}/topic/${topic.id}/themes`, lastModified: new Date(topic.updated_at), changeFrequency: 'daily' as const, priority: 0.55 },
+      { url: `${BASE_URL}/topic/${topic.id}/quality`, lastModified: new Date(topic.updated_at), changeFrequency: 'daily' as const, priority: 0.5 },
+      { url: `${BASE_URL}/topic/${topic.id}/connections`, lastModified: new Date(topic.updated_at), changeFrequency: 'daily' as const, priority: 0.5 },
+      { url: `${BASE_URL}/topic/${topic.id}/context`, lastModified: new Date(topic.updated_at), changeFrequency: 'weekly' as const, priority: 0.5 },
+      { url: `${BASE_URL}/topic/${topic.id}/predictions`, lastModified: new Date(topic.updated_at), changeFrequency: 'hourly' as const, priority: 0.6 },
+      { url: `${BASE_URL}/topic/${topic.id}/impact`, lastModified: new Date(topic.updated_at), changeFrequency: 'daily' as const, priority: 0.55 },
     ])
 
-    // Wiki pages for topics that have descriptions
     const { data: topicsWithWiki } = await supabase
       .from('topics')
       .select('id, description_updated_at, updated_at')
@@ -281,7 +225,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.55,
     }))
 
-    // Fetch all established laws — these are canonical, stable pages
     const { data: laws } = await supabase
       .from('laws')
       .select('id, established_at')
@@ -295,7 +238,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.75,
     }))
 
-    // Fetch public user profiles (only those with a username)
     const { data: profiles } = await supabase
       .from('profiles')
       .select('username, updated_at')
@@ -304,21 +246,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .limit(500)
 
     const profileUrls: MetadataRoute.Sitemap = (profiles ?? []).flatMap((p) => ([
-      {
-        url: `${BASE_URL}/profile/${p.username}`,
-        lastModified: new Date(p.updated_at),
-        changeFrequency: 'weekly' as const,
-        priority: 0.5,
-      },
-      {
-        url: `${BASE_URL}/profile/${p.username}/achievements`,
-        lastModified: new Date(p.updated_at),
-        changeFrequency: 'weekly' as const,
-        priority: 0.4,
-      },
+      { url: `${BASE_URL}/profile/${p.username}`, lastModified: new Date(p.updated_at), changeFrequency: 'weekly' as const, priority: 0.5 },
+      { url: `${BASE_URL}/profile/${p.username}/achievements`, lastModified: new Date(p.updated_at), changeFrequency: 'weekly' as const, priority: 0.4 },
     ]))
 
-    // Fetch top arguments (most upvoted) for permalink pages
     const { data: topArguments } = await supabase
       .from('topic_arguments')
       .select('id, created_at')
@@ -332,7 +263,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.45,
     }))
 
-    // Fetch all distinct tags from topics for dynamic tag pages
     const { data: tagRows } = await supabase
       .from('topics')
       .select('tags, updated_at')
@@ -346,9 +276,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       const updatedAt = new Date((row as { updated_at: string }).updated_at)
       for (const t of rowTags) {
         const existing = tagSet.get(t)
-        if (!existing || updatedAt > existing) {
-          tagSet.set(t, updatedAt)
-        }
+        if (!existing || updatedAt > existing) tagSet.set(t, updatedAt)
       }
     }
 
@@ -359,17 +287,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.6,
     }))
 
-    return [
-      ...STATIC_ROUTES,
-      ...topicUrls,
-      ...wikiUrls,
-      ...lawUrls,
-      ...profileUrls,
-      ...argumentUrls,
-      ...dynamicTagUrls,
-    ]
+    return [...STATIC_ROUTES, ...topicUrls, ...wikiUrls, ...lawUrls, ...profileUrls, ...argumentUrls, ...dynamicTagUrls]
   } catch {
-    // If DB is unavailable (e.g. during build), return only static routes
     return STATIC_ROUTES
   }
 }
