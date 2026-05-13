@@ -229,6 +229,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.55,
       },
       {
+        url: `${BASE_URL}/topic/${topic.id}/themes`,
+        lastModified: new Date(topic.updated_at),
+        changeFrequency: 'daily' as const,
+        priority: 0.55,
+      },
+      {
         url: `${BASE_URL}/topic/${topic.id}/quality`,
         lastModified: new Date(topic.updated_at),
         changeFrequency: 'daily' as const,
