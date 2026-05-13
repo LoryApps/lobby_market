@@ -1047,6 +1047,13 @@ export default function AnalyticsPage() {
               Debate Stats
             </Link>
             <Link
+              href="/analytics/laws"
+              className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"
+            >
+              <Gavel className="h-3.5 w-3.5" />
+              Law Analytics
+            </Link>
+            <Link
               href="/prescient"
               className="flex items-center gap-1 text-xs text-for-300 hover:text-for-200 transition-colors font-mono font-semibold"
             >
