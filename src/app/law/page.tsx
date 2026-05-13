@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { Award, BookOpen, Clock, FileWarning, Gavel, Globe, Network, Rss, Trophy } from 'lucide-react'
+import { Award, BookOpen, Clock, FileWarning, Gavel, Globe, Network, Rss, Tag, Trophy } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -129,6 +129,18 @@ export default async function LawIndexPage() {
               >
                 <BookOpen className="h-4 w-4" />
                 <span className="hidden sm:inline">Constitution</span>
+              </Link>
+
+              <Link
+                href="/law/categories"
+                className={cn(
+                  'inline-flex items-center gap-2 px-3 py-2 rounded-lg',
+                  'bg-emerald/10 border border-emerald/30 text-emerald text-xs font-mono font-medium',
+                  'hover:bg-emerald/20 hover:border-emerald/50 transition-colors'
+                )}
+              >
+                <Tag className="h-4 w-4" />
+                <span className="hidden sm:inline">Categories</span>
               </Link>
 
               <Link
