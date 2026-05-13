@@ -8,6 +8,7 @@ import {
   Brain,
   ChevronDown,
   ChevronUp,
+  Crown,
   Flame,
   GitBranch,
   Loader2,
@@ -438,6 +439,13 @@ export default function ArgumentsPage() {
               >
                 <Trophy className="h-3 w-3" aria-hidden />
                 Champions
+              </Link>
+              <Link
+                href="/arguments/spotlight"
+                className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-gold/10 border border-gold/30 text-[11px] font-mono font-semibold text-gold hover:bg-gold/20 transition-colors flex-shrink-0"
+              >
+                <Crown className="h-3 w-3" aria-hidden />
+                Spotlight
               </Link>
               <Link
                 href="/arguments/dna"
