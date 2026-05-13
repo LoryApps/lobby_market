@@ -197,6 +197,7 @@ const QUICK_LINKS: QuickLink[] = [
   { type: 'link', id: 'coalition-analytics', label: 'Coalition Analytics', sublabel: 'Stance win rate, member alignment, and category performance across all your coalitions', href: '/analytics/coalitions', icon: Users, iconColor: 'text-purple', iconBg: 'bg-purple/10' },
   { type: 'link', id: 'prediction-analytics', label: 'Prediction Accuracy', sublabel: 'Your forecast track record — accuracy, Brier score, and category breakdown', href: '/analytics/predictions', icon: Target, iconColor: 'text-purple', iconBg: 'bg-purple/10' },
   { type: 'link', id: 'reaction-analytics', label: 'Argument Reception', sublabel: 'How the community reacts to your arguments — archetype, reaction mix, and top-reacted arguments', href: '/analytics/reactions', icon: MessageSquare, iconColor: 'text-against-400', iconBg: 'bg-against-500/10' },
+  { type: 'link', id: 'discourse-analytics', label: 'Discourse Quality', sublabel: 'Platform-wide argument health score, grade distribution, and healthiest debates by category', href: '/analytics/discourse', icon: Brain, iconColor: 'text-emerald', iconBg: 'bg-emerald/10' },
   { type: 'link', id: 'extremes', label: 'Civic Extremes', sublabel: 'Most contested debates & strongest mandates', href: '/extremes', icon: Scale, iconColor: 'text-yellow-400', iconBg: 'bg-yellow-500/10' },
   { type: 'link', id: 'hotspot', label: 'Civic Hotspot', sublabel: 'Critical moments: final votes, deadlocks, flash laws, live debates', href: '/hotspot', icon: Flame, iconColor: 'text-against-400', iconBg: 'bg-against-500/10' },
   { type: 'link', id: 'surge', label: 'Surge', sublabel: 'Topics gaining critical momentum right now', href: '/surge', icon: TrendingUp, iconColor: 'text-against-400', iconBg: 'bg-against-500/10' },
@@ -354,9 +355,7 @@ function ResultRow({
           <span className="block text-sm font-medium text-white leading-tight line-clamp-1">{item.statement}</span>
           <span className="flex items-center gap-2 mt-0.5">
             {item.category && <span className="text-xs text-surface-500">{item.category}</span>}
-            <span className={cn('text-[10px] font-mono uppercase', STATUS_COLOR[item.status] ?? 'text-surface-500')}>
-              {STATUS_LABEL[item.status] ?? item.status}
-            </span>
+            <span className={cn('text-[10px] font-mono uppercase', STATUS_COLOR[item.status] ?? 'text-surface-500')}>{STATUS_LABEL[item.status] ?? item.status}</span>
             <span className="text-[10px] font-mono text-surface-600">{forPct}% For</span>
           </span>
         </span>
@@ -390,10 +389,7 @@ function ResultRow({
         <span className="block text-sm font-medium text-white leading-tight">{item.display_name || item.username}</span>
         <span className="flex items-center gap-2 mt-0.5">
           <span className="text-xs text-surface-500">@{item.username}</span>
-          <span className="text-[10px] font-mono text-gold">
-            <TrendingUp className="inline h-2.5 w-2.5 mr-0.5" />
-            {item.clout.toLocaleString()}
-          </span>
+          <span className="text-[10px] font-mono text-gold"><TrendingUp className="inline h-2.5 w-2.5 mr-0.5" />{item.clout.toLocaleString()}</span>
         </span>
       </span>
       <span className="flex-shrink-0 text-[10px] font-mono text-surface-600">↵</span>
@@ -596,15 +592,9 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
               )}
             </div>
             <div className="flex items-center gap-4 px-4 py-2.5 border-t border-surface-300 bg-surface-50">
-              <div className="flex items-center gap-1.5 text-[10px] font-mono text-surface-600">
-                <kbd className="px-1 py-0.5 rounded bg-surface-200 border border-surface-400 text-surface-500">⇕</kbd>navigate
-              </div>
-              <div className="flex items-center gap-1.5 text-[10px] font-mono text-surface-600">
-                <kbd className="px-1 py-0.5 rounded bg-surface-200 border border-surface-400 text-surface-500">↵</kbd>open
-              </div>
-              <div className="flex items-center gap-1.5 text-[10px] font-mono text-surface-600">
-                <kbd className="px-1 py-0.5 rounded bg-surface-200 border border-surface-400 text-surface-500">esc</kbd>close
-              </div>
+              <div className="flex items-center gap-1.5 text-[10px] font-mono text-surface-600"><kbd className="px-1 py-0.5 rounded bg-surface-200 border border-surface-400 text-surface-500">⇕</kbd>navigate</div>
+              <div className="flex items-center gap-1.5 text-[10px] font-mono text-surface-600"><kbd className="px-1 py-0.5 rounded bg-surface-200 border border-surface-400 text-surface-500">↵</kbd>open</div>
+              <div className="flex items-center gap-1.5 text-[10px] font-mono text-surface-600"><kbd className="px-1 py-0.5 rounded bg-surface-200 border border-surface-400 text-surface-500">esc</kbd>close</div>
               <div className="ml-auto flex items-center gap-1.5 text-[10px] font-mono text-surface-600">
                 <button type="button"
                   onClick={() => { onClose(); import('@/lib/hooks/useKeyboardShortcuts').then(({ openKeyboardShortcuts }) => { openKeyboardShortcuts() }) }}
