@@ -8,7 +8,7 @@ import {
   TrendingUp, Vote, Zap, Target, BarChart2, ArrowLeft, Brain, Flame, Heart, Scale,
   MessageSquare, Award, ChevronRight, CheckCircle2, Circle, XCircle, Clock, ChevronDown,
   Compass, Fingerprint, Users, Swords, Star, Network, Sparkles, BookOpen, ThumbsUp,
-  Shield, Gavel, Quote,
+  Shield, Gavel, Quote, Rocket,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -369,6 +369,7 @@ export default function AnalyticsPage() {
             <Link href="/analytics/arguments" className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"><BookOpen className="h-3.5 w-3.5" />Argument Portfolio</Link>
             <Link href="/analytics/topics" className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"><Scale className="h-3.5 w-3.5" />Topic Analytics</Link>
             <Link href="/analytics/evolution" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><TrendingUp className="h-3.5 w-3.5" />Opinion Evolution</Link>
+            <Link href="/analytics/growth" className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"><Rocket className="h-3.5 w-3.5" />Activity Growth</Link>
             <Link href="/analytics/sentiment" className="flex items-center gap-1 text-xs text-against-400 hover:text-against-300 transition-colors font-mono font-semibold"><Heart className="h-3.5 w-3.5" />Sentiment</Link>
             <Link href="/analytics/votes" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><ThumbsUp className="h-3.5 w-3.5" />Vote History</Link>
             <Link href="/analytics/coalitions" className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"><Shield className="h-3.5 w-3.5" />Coalition Stats</Link>
