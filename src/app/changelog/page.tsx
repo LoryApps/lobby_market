@@ -934,6 +934,20 @@ const CHAPTERS: Chapter[] = [
     ],
   },
   {
+    number: 'Ch. 78',
+    title: 'Consensus Shift Report',
+    subtitle: 'Topic-level opinion shift tracker — see which debates have flipped or surged by comparing recent vs prior voter cohorts',
+    accent: 'text-gold',
+    borderColor: 'border-gold/30',
+    bgColor: 'bg-gold/5',
+    textColor: 'text-gold',
+    items: [
+      { icon: Zap, label: 'New /analytics/consensus-shift page: for each topic, compares the FOR% of votes cast in the recent window vs votes cast in the prior window of equal length. A +shift means recent voters lean more FOR than the older cohort — the debate is surging. A negative shift means it is losing support.', href: '/analytics/consensus-shift', color: 'text-gold' },
+      { icon: BarChart2, label: 'Dual-colour shift bar visualises prior vs recent window FOR% at a glance. Stats show exact pp delta, vote counts per window, and the all-time total. Time window toggle: 7 / 30 / 90 days. Two tabs — Surging FOR and Losing Ground — each listing up to 15 topics.', href: '/analytics/consensus-shift', color: 'text-for-400' },
+      { icon: Scale, label: 'Category Volatility grid ranks all debate categories by consensus instability: avg shift, std dev σ, and per-category surge / decline counts. Backed by new /api/analytics/consensus-shift endpoint (no migration needed). Added to analytics hub nav, command palette (⌘K), and sitemap.', href: '/analytics/consensus-shift', color: 'text-emerald' },
+    ],
+  },
+  {
     number: 'Ch. 67',
     title: 'Topic Voting Analytics',
     subtitle: 'Personal deep-dive into your topic voting history — accuracy gauge, category breakdown, monthly chart, and most-argued topics',
@@ -1034,7 +1048,7 @@ const CHAPTERS: Chapter[] = [
 ]
 
 const STATS = [
-  { value: '68', label: 'chapters shipped' },
+  { value: '78', label: 'chapters shipped' },
   { value: '350+', label: 'features built' },
   { value: '70', label: 'DB migrations' },
   { value: '401+', label: 'API routes' },
@@ -1050,6 +1064,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Consensus Shift Report',
+    description: 'New /analytics/consensus-shift page shows which debate topics have had the biggest swing in community opinion over a chosen time window (7 / 30 / 90 days). Compares recent voters\' FOR% against the prior cohort\'s FOR% to identify topics that are surging (gaining FOR support) or losing ground. Each card shows a dual-colour shift bar (prior vs recent window), exact pp shift, and vote counts per window. A category volatility grid ranks debate categories by consensus instability (avg shift, std dev σ). Backed by new /api/analytics/consensus-shift endpoint that time-windows the votes table — no new migration needed. Added to analytics hub nav, command palette, and sitemap.',
+    href: '/analytics/consensus-shift',
+    icon: Zap,
+    color: 'text-gold',
+    tag: 'Ch. 78',
+  },
   {
     title: 'Coalition Performance Analytics',
     description: 'New /analytics/coalitions deep-dive shows a user-centric view of every coalition they belong to. For each coalition: stance win rate (% of declared stances that matched the topic outcome — FOR+law or AGAINST+failed), user alignment score (% of voted stance-topics where your vote matched the coalition position), and a category breakdown of where the coalition is most active. Summary grid shows total coalitions, total stances, avg win rate, and avg alignment. Highlights panel surfaces the best-performing coalition and the one most aligned with your votes. Coalition cards are expandable to show per-category bars. Linked from the Analytics Hub navigation.',
