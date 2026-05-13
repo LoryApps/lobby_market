@@ -2,18 +2,6 @@
 
 /**
  * Global ⌘K / Ctrl+K command palette.
- *
- * Triggered by:
- *   - macOS : ⌘ + K
- *   - Windows/Linux : Ctrl + K
- *   - Click on the search icon in TopBar when in "palette" mode
- *
- * Features:
- *   - Static quick-nav links when no query is entered
- *   - Debounced full-text search via /api/search (topics, laws, people)
- *   - Arrow-key + Enter keyboard navigation
- *   - Framer Motion slide-in / fade-out animation
- *   - Closes on Escape, backdrop click, or after navigation
  */
 
 import {
@@ -207,6 +195,7 @@ const QUICK_LINKS: QuickLink[] = [
   { type: 'link', id: 'compass', label: 'Political Compass', sublabel: 'See where your votes place you on the spectrum', href: '/compass', icon: Compass, iconColor: 'text-emerald', iconBg: 'bg-emerald/10' },
   { type: 'link', id: 'sentiment', label: 'Sentiment Explorer', sublabel: 'The emotional tone of civic arguments — hopeful vs critical by category', href: '/analytics/sentiment', icon: Quote, iconColor: 'text-against-400', iconBg: 'bg-against-500/10' },
   { type: 'link', id: 'coalition-analytics', label: 'Coalition Analytics', sublabel: 'Stance win rate, member alignment, and category performance across all your coalitions', href: '/analytics/coalitions', icon: Users, iconColor: 'text-purple', iconBg: 'bg-purple/10' },
+  { type: 'link', id: 'prediction-analytics', label: 'Prediction Accuracy', sublabel: 'Your forecast track record — accuracy, Brier score, and category breakdown', href: '/analytics/predictions', icon: Target, iconColor: 'text-purple', iconBg: 'bg-purple/10' },
   { type: 'link', id: 'extremes', label: 'Civic Extremes', sublabel: 'Most contested debates & strongest mandates', href: '/extremes', icon: Scale, iconColor: 'text-yellow-400', iconBg: 'bg-yellow-500/10' },
   { type: 'link', id: 'hotspot', label: 'Civic Hotspot', sublabel: 'Critical moments: final votes, deadlocks, flash laws, live debates', href: '/hotspot', icon: Flame, iconColor: 'text-against-400', iconBg: 'bg-against-500/10' },
   { type: 'link', id: 'surge', label: 'Surge', sublabel: 'Topics gaining critical momentum right now', href: '/surge', icon: TrendingUp, iconColor: 'text-against-400', iconBg: 'bg-against-500/10' },
@@ -270,7 +259,7 @@ const QUICK_LINKS: QuickLink[] = [
   { type: 'link', id: 'civic-timeline', label: 'Civic Timeline', sublabel: 'Daily chronology challenge — arrange 5 laws from oldest to newest across 3 rounds', href: '/civic-timeline', icon: CalendarClock, iconColor: 'text-purple', iconBg: 'bg-purple/10' },
   { type: 'link', id: 'sprint', label: 'Civic Sprint', sublabel: '10-round prediction game — guess whether each closed topic became law or failed, race the clock for speed bonuses', href: '/sprint', icon: Timer, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
   { type: 'link', id: 'civic-imposter', label: 'Civic Imposter', sublabel: 'Daily fake-law detection — spot the one imposter hiding among five real Lobby Codex laws', href: '/civic-imposter', icon: Skull, iconColor: 'text-against-400', iconBg: 'bg-against-600/10' },
-  { type: 'link', id: 'civic-mirror', label: 'Civic Mirror', sublabel: 'Daily gut-check: vote FOR or AGAINST on 5 topics — see if you\'re with the majority or a contrarian outlier', href: '/civic-mirror', icon: Gauge, iconColor: 'text-for-400', iconBg: 'bg-for-500/10' },
+  { type: 'link', id: 'civic-mirror', label: 'Civic Mirror', sublabel: "Daily gut-check: vote FOR or AGAINST on 5 topics — see if you're with the majority or a contrarian outlier", href: '/civic-mirror', icon: Gauge, iconColor: 'text-for-400', iconBg: 'bg-for-500/10' },
   { type: 'link', id: 'civic-decoder', label: 'Civic Decoder', sublabel: 'Read 3 real arguments from a mystery civic debate and identify which topic they came from — 5 rounds, 50 pts max', href: '/civic-decoder', icon: Search, iconColor: 'text-purple', iconBg: 'bg-purple/10' },
   { type: 'link', id: 'civic-recall', label: 'Civic Recall', sublabel: 'Memorise 6 civic topics in 15 seconds — then spot them in a grid of 12. Daily flash-memory challenge, 60 pts max', href: '/civic-recall', icon: Brain, iconColor: 'text-emerald', iconBg: 'bg-emerald/10' },
   { type: 'link', id: 'civic-verdict', label: 'Civic Verdict', sublabel: 'Read FOR and AGAINST arguments from mystery debates — render your verdict. Match the crowd for 10 pts per round, 50 max', href: '/civic-verdict', icon: Gavel, iconColor: 'text-against-400', iconBg: 'bg-against-500/10' },
