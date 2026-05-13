@@ -13,6 +13,7 @@ import {
   FileText,
   GitBranch,
   GitCompare,
+  Layers,
   Globe,
   Info,
   Lightbulb,
@@ -571,6 +572,13 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
                     >
                       <GitBranch className="h-3.5 w-3.5" />
                       Argument graph
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/themes`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-purple hover:text-purple/80 transition-colors"
+                    >
+                      <Layers className="h-3.5 w-3.5" />
+                      Debate themes
                     </Link>
                     <Link
                       href={`/topic/${topic.id}/impact`}
