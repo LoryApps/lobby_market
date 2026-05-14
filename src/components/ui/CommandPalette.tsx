@@ -2,6 +2,18 @@
 
 /**
  * Global ⌘K / Ctrl+K command palette.
+ *
+ * Triggered by:
+ *   - macOS : ⌘ + K
+ *   - Windows/Linux : Ctrl + K
+ *   - Click on the search icon in TopBar when in "palette" mode
+ *
+ * Features:
+ *   - Static quick-nav links when no query is entered
+ *   - Debounced full-text search via /api/search (topics, laws, people)
+ *   - Arrow-key + Enter keyboard navigation
+ *   - Framer Motion slide-in / fade-out animation
+ *   - Closes on Escape, backdrop click, or after navigation
  */
 
 import {
@@ -16,10 +28,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useFocusTrap } from '@/lib/hooks/useFocusTrap'
 import {
   Activity,
-  ArrowDownUp,
   BarChart2,
   Bookmark,
-  CalendarClock,
   Flame,
   History,
   Hourglass,
@@ -32,13 +42,13 @@ import {
   Target,
   ThumbsUp,
   Trophy,
-  TrendingUp,
   User,
   Users,
   X,
   Building2,
   Landmark,
   FileText,
+  TrendingUp,
   Bell,
   Settings,
   HelpCircle,
@@ -66,8 +76,6 @@ import {
   Swords,
   FlaskConical,
   Gamepad2,
-  Gauge,
-  Sliders,
   Quote,
   Hash,
   GitCompare,
@@ -81,12 +89,11 @@ import {
   Brain,
   Mail,
   HandHeart,
-  Star,
-  Gavel,
-  Rocket,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
+
+// ─── Types ────────────────────────────────────────────────────────────────────
 
 interface QuickLink {
   type: 'link'
@@ -128,181 +135,1531 @@ interface PersonResult {
 
 type PaletteItem = QuickLink | TopicResult | LawResult | PersonResult
 
+// ─── Quick-nav links shown when no query is typed ─────────────────────────────
+
 const QUICK_LINKS: QuickLink[] = [
-  { type: 'link', id: 'feed', label: 'Feed', sublabel: 'Live topic feed', href: '/', icon: Flame, iconColor: 'text-against-400', iconBg: 'bg-against-500/10' },
-  { type: 'link', id: 'floor', label: 'The Floor', sublabel: 'Watch consensus form in real-time', href: '/floor', icon: Landmark, iconColor: 'text-for-400', iconBg: 'bg-for-500/10' },
-  { type: 'link', id: 'city', label: 'City View', sublabel: 'Explore the user city', href: '/city', icon: Building2, iconColor: 'text-emerald', iconBg: 'bg-emerald/10' },
-  { type: 'link', id: 'debates', label: 'Debates', sublabel: 'Live debate arena', href: '/debate', icon: Mic, iconColor: 'text-purple', iconBg: 'bg-purple/10' },
-  { type: 'link', id: 'rivals', label: 'Civic Rivals', sublabel: 'Find citizens who voted opposite to you — your ideological opponents', href: '/rivals', icon: Swords, iconColor: 'text-against-400', iconBg: 'bg-against-500/10' },
-  { type: 'link', id: 'moments', label: 'Civic Moments', sublabel: 'Swipeable highlights — new laws, vote surges, and debates resolved', href: '/moments', icon: Sparkles, iconColor: 'text-emerald', iconBg: 'bg-emerald/10' },
-  { type: 'link', id: 'spotlight', label: 'Civic Spotlight', sublabel: 'Best argument, closest call, rising star, and newest law this week', href: '/spotlight', icon: Sparkles, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
-  { type: 'link', id: 'leaderboard', label: 'Leaderboard', sublabel: 'Top voters and lawmakers', href: '/leaderboard', icon: Trophy, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
-  { type: 'link', id: 'season', label: 'Civic Season', sublabel: 'Monthly championship — earn Season Points for every vote, argument, and law', href: '/season', icon: Crown, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
-  { type: 'link', id: 'seasons', label: 'Hall of Fame', sublabel: 'All-time season champions — every winner, every era', href: '/seasons', icon: Trophy, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
-  { type: 'link', id: 'records', label: 'Civic Records', sublabel: 'All-time platform records — fastest law, most voted, best argument', href: '/records', icon: Trophy, iconColor: 'text-gold', iconBg: 'bg-gold/15' },
-  { type: 'link', id: 'ladder', label: 'Argument Ladder', sublabel: 'Top civic arguers ranked by total argument upvotes — who reasons best?', href: '/ladder', icon: MessageSquare, iconColor: 'text-for-400', iconBg: 'bg-for-500/10' },
-  { type: 'link', id: 'top-arguments', label: 'Top Arguments', sublabel: 'AI-graded argument hall of fame — best reasoning on the platform by grade (A–F) and upvotes', href: '/top-arguments', icon: Award, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
-  { type: 'link', id: 'leaderboard-debates', label: 'Debate Hall of Fame', sublabel: 'Top completed debates ranked by viewers, decisive outcomes, and activity', href: '/leaderboard/debates', icon: Mic, iconColor: 'text-purple', iconBg: 'bg-purple/10' },
-  { type: 'link', id: 'leaderboard-evidence', label: 'Evidence Leaderboard', sublabel: 'Top evidence contributors, best-documented topics, and trusted sources', href: '/leaderboard/evidence', icon: BookOpen, iconColor: 'text-emerald', iconBg: 'bg-emerald/10' },
-  { type: 'link', id: 'stage', label: 'Civic Stage', sublabel: 'Full-screen live debate display for town halls & classrooms', href: '/stage', icon: MonitorPlay, iconColor: 'text-for-400', iconBg: 'bg-for-500/10' },
-  { type: 'link', id: 'arcade', label: 'Civic Arcade', sublabel: 'All games & challenges in one hub', href: '/arcade', icon: Gamepad2, iconColor: 'text-purple', iconBg: 'bg-purple/10' },
-  { type: 'link', id: 'blitz', label: 'Blitz Mode', sublabel: '60-second speed voting challenge', href: '/blitz', icon: Timer, iconColor: 'text-against-400', iconBg: 'bg-against-500/10' },
-  { type: 'link', id: 'challenge', label: 'Daily Quorum', sublabel: "Today's 3 topics — vote to earn Clout", href: '/challenge', icon: Flame, iconColor: 'text-for-300', iconBg: 'bg-for-600/15' },
-  { type: 'link', id: 'my-challenges', label: 'My Challenges', sublabel: 'Debate duels — accept, decline, or issue challenges', href: '/challenges', icon: Swords, iconColor: 'text-against-300', iconBg: 'bg-against-600/10' },
-  { type: 'link', id: 'flashcards', label: 'Civic Flashcards', sublabel: 'Study established laws — self-paced spaced repetition', href: '/flashcards', icon: BookOpen, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
-  { type: 'link', id: 'archetype', label: 'Civic Archetype', sublabel: 'Discover your political personality — 10 questions, 8 archetypes', href: '/archetype', icon: Crown, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
-  { type: 'link', id: 'archetype-intelligence', label: 'Archetype Intelligence', sublabel: 'How each civic archetype votes — divisive topics, cross-archetype consensus', href: '/archetype/intelligence', icon: Brain, iconColor: 'text-purple', iconBg: 'bg-purple/10' },
-  { type: 'link', id: 'quiz', label: 'Civic Quiz', sublabel: 'Find your civic alignment — no login required', href: '/quiz', icon: Scale, iconColor: 'text-emerald', iconBg: 'bg-emerald/10' },
-  { type: 'link', id: 'trivia', label: 'Civic Trivia', sublabel: 'Daily challenge — guess the community vote split', href: '/trivia', icon: Target, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
-  { type: 'link', id: 'training', label: 'Argument Training', sublabel: 'Sharpen your debate skills — fallacy spotting, argument ranking, vote calibration', href: '/training', icon: Zap, iconColor: 'text-for-400', iconBg: 'bg-for-500/10' },
-  { type: 'link', id: 'senate', label: 'The Senate', sublabel: 'Topics in final vote — deadlines approaching', href: '/senate', icon: Vote, iconColor: 'text-purple', iconBg: 'bg-purple/10' },
-  { type: 'link', id: 'predictions', label: 'Prediction Market', sublabel: 'Community forecasts — stake your accuracy for Clout', href: '/predictions', icon: Target, iconColor: 'text-purple', iconBg: 'bg-purple/10' },
-  { type: 'link', id: 'forecast', label: 'Civic Forecast', sublabel: 'Data-driven pass probability for every topic in final vote', href: '/forecast', icon: FlaskConical, iconColor: 'text-purple', iconBg: 'bg-purple/10' },
-  { type: 'link', id: 'missions', label: 'Daily Missions', sublabel: 'Three civic challenges today — earn Clout and protect your streak', href: '/missions', icon: Target, iconColor: 'text-emerald', iconBg: 'bg-emerald/10' },
-  { type: 'link', id: 'dashboard', label: 'Dashboard', sublabel: 'Personal command centre — league, predictions, watchlist', href: '/dashboard', icon: LayoutGrid, iconColor: 'text-for-300', iconBg: 'bg-for-400/10' },
-  { type: 'link', id: 'analytics', label: 'Analytics', sublabel: 'Your voting patterns and stats', href: '/analytics', icon: BarChart2, iconColor: 'text-for-400', iconBg: 'bg-for-500/10' },
-  { type: 'link', id: 'signals', label: 'Signals', sublabel: 'Platform-wide consensus signals — breaking, contested, momentum', href: '/signals', icon: Activity, iconColor: 'text-emerald', iconBg: 'bg-emerald/10' },
-  { type: 'link', id: 'catchup', label: 'Catch Up', sublabel: 'What happened while you were away', href: '/catchup', icon: Zap, iconColor: 'text-for-400', iconBg: 'bg-for-500/10' },
-  { type: 'link', id: 'activity', label: 'Activity', sublabel: "What's happening in the Lobby", href: '/activity', icon: Activity, iconColor: 'text-purple', iconBg: 'bg-purple/10' },
-  { type: 'link', id: 'live', label: 'Live Arguments', sublabel: 'Real-time stream of arguments being posted right now', href: '/live', icon: Radio, iconColor: 'text-against-400', iconBg: 'bg-against-900/50' },
-  { type: 'link', id: 'hot-takes', label: 'Hot Takes', sublabel: "Citizens' unfiltered vote reasons — what people actually think", href: '/hot-takes', icon: MessageSquare, iconColor: 'text-against-400', iconBg: 'bg-against-900/50' },
-  { type: 'link', id: 'pulse', label: 'Community Pulse', sublabel: 'Top FOR/AGAINST arguments from active debates', href: '/pulse', icon: Zap, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
-  { type: 'link', id: 'arguments', label: 'Top Arguments', sublabel: 'Most-upvoted arguments ever made in the Lobby', href: '/arguments', icon: ThumbsUp, iconColor: 'text-purple', iconBg: 'bg-purple/10' },
-  { type: 'link', id: 'argument-discussions', label: 'Argument Discussions', sublabel: 'Most active reply threads — find the arguments generating the most conversation', href: '/arguments/discussions', icon: MessageSquare, iconColor: 'text-purple', iconBg: 'bg-purple/10' },
-  { type: 'link', id: 'my-arguments', label: 'My Arguments', sublabel: 'Personal argument analytics — upvotes, categories, history', href: '/arguments/mine', icon: Quote, iconColor: 'text-for-400', iconBg: 'bg-for-500/10' },
-  { type: 'link', id: 'opposing-voices', label: 'Opposing Voices', sublabel: 'The strongest arguments challenging your positions — best counterarguments ranked by AI quality', href: '/arguments/opposing', icon: Scale, iconColor: 'text-against-400', iconBg: 'bg-against-500/10' },
-  { type: 'link', id: 'wisdom', label: 'Wisdom Feed', sublabel: "The platform's most respected voices — top arguments from Elders, Senators, and Lawmakers", href: '/wisdom', icon: Crown, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
-  { type: 'link', id: 'split', label: 'The Split', sublabel: 'Most contested topics — vote where it matters', href: '/split', icon: GitFork, iconColor: 'text-against-400', iconBg: 'bg-against-500/10' },
-  { type: 'link', id: 'pipeline', label: 'Legislation Pipeline', sublabel: 'Kanban board of all topics at every civic stage', href: '/pipeline', icon: GitBranch, iconColor: 'text-for-400', iconBg: 'bg-for-500/10' },
-  { type: 'link', id: 'chains', label: 'Topic Chains', sublabel: 'Browse topic lineages and continuation trees', href: '/chains', icon: GitFork, iconColor: 'text-purple', iconBg: 'bg-purple/10' },
-  { type: 'link', id: 'categories', label: 'Categories', sublabel: 'Browse topics by category', href: '/topic/categories', icon: LayoutGrid, iconColor: 'text-surface-400', iconBg: 'bg-surface-300/20' },
-  { type: 'link', id: 'coalitions', label: 'Coalitions', sublabel: 'Join or create an alliance', href: '/coalitions', icon: Users, iconColor: 'text-purple', iconBg: 'bg-purple/10' },
-  { type: 'link', id: 'create-topic', label: 'Propose a Topic', sublabel: 'Submit a new topic for debate', href: '/topic/create', icon: PenSquare, iconColor: 'text-emerald', iconBg: 'bg-emerald/10' },
-  { type: 'link', id: 'profile', label: 'My Profile', sublabel: 'View your public profile', href: '/profile/me', icon: User, iconColor: 'text-surface-400', iconBg: 'bg-surface-300/20' },
-  { type: 'link', id: 'saved', label: 'Saved Topics', sublabel: 'Your bookmarked topics', href: '/saved', icon: Bookmark, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
-  { type: 'link', id: 'notifications', label: 'Notifications', sublabel: 'Recent alerts and updates', href: '/notifications', icon: Bell, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
-  { type: 'link', id: 'messages', label: 'Messages', sublabel: 'Private conversations', href: '/messages', icon: MessageSquare, iconColor: 'text-for-400', iconBg: 'bg-for-500/10' },
-  { type: 'link', id: 'settings', label: 'Settings', sublabel: 'Preferences and account', href: '/settings', icon: Settings, iconColor: 'text-surface-400', iconBg: 'bg-surface-300/20' },
-  { type: 'link', id: 'brief', label: 'Daily Brief', sublabel: 'Personalized morning summary — hot topics, debates, laws', href: '/brief', icon: Sparkles, iconColor: 'text-purple', iconBg: 'bg-purple/10' },
-  { type: 'link', id: 'newspaper', label: 'The Lobby Dispatch', sublabel: 'Daily civic front page — debates, laws, voices, numbers', href: '/newspaper', icon: FileText, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
-  { type: 'link', id: 'editorial', label: 'AI Civic Editorial', sublabel: "Claude analyses today's top debates in a daily editorial", href: '/editorial', icon: Sparkles, iconColor: 'text-purple', iconBg: 'bg-purple/10' },
-  { type: 'link', id: 'digest', label: 'Weekly Digest', sublabel: 'Laws, debates, and top voices this week', href: '/digest', icon: Calendar, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
-  { type: 'link', id: 'civic-calendar', label: 'Civic Calendar', sublabel: 'Upcoming debates, voting deadlines, and new laws', href: '/calendar', icon: Calendar, iconColor: 'text-for-400', iconBg: 'bg-for-500/10' },
-  { type: 'link', id: 'civic-almanac', label: 'Civic Almanac', sublabel: 'On This Day — topics proposed, laws made, arguments celebrated', href: '/almanac', icon: BookOpen, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
-  { type: 'link', id: 'timeline', label: 'Civic Timeline', sublabel: 'Chronological history of all platform events and laws', href: '/timeline', icon: History, iconColor: 'text-surface-500', iconBg: 'bg-surface-300/20' },
-  { type: 'link', id: 'graveyard', label: 'The Graveyard', sublabel: 'Topics that failed to become law — and the stories of why', href: '/graveyard', icon: Skull, iconColor: 'text-surface-500', iconBg: 'bg-surface-300/20' },
-  { type: 'link', id: 'checker', label: 'Civic Claim Checker', sublabel: 'Check any claim against the Codex — see if established laws support or contradict it', href: '/checker', icon: Scale, iconColor: 'text-emerald', iconBg: 'bg-emerald/10' },
-  { type: 'link', id: 'spar', label: 'Sparring Arena', sublabel: 'Practice debating civic topics against Claude AI in 5-round bouts', href: '/spar', icon: Swords, iconColor: 'text-purple', iconBg: 'bg-purple/10' },
-  { type: 'link', id: 'compass', label: 'Political Compass', sublabel: 'See where your votes place you on the spectrum', href: '/compass', icon: Compass, iconColor: 'text-emerald', iconBg: 'bg-emerald/10' },
-  { type: 'link', id: 'sentiment', label: 'Sentiment Explorer', sublabel: 'The emotional tone of civic arguments — hopeful vs critical by category', href: '/analytics/sentiment', icon: Quote, iconColor: 'text-against-400', iconBg: 'bg-against-500/10' },
-  { type: 'link', id: 'coalition-analytics', label: 'Coalition Analytics', sublabel: 'Stance win rate, member alignment, and category performance across all your coalitions', href: '/analytics/coalitions', icon: Users, iconColor: 'text-purple', iconBg: 'bg-purple/10' },
-  { type: 'link', id: 'prediction-analytics', label: 'Prediction Accuracy', sublabel: 'Your forecast track record — accuracy, Brier score, and category breakdown', href: '/analytics/predictions', icon: Target, iconColor: 'text-purple', iconBg: 'bg-purple/10' },
-  { type: 'link', id: 'reaction-analytics', label: 'Argument Reception', sublabel: 'How the community reacts to your arguments — archetype, reaction mix, and top-reacted arguments', href: '/analytics/reactions', icon: MessageSquare, iconColor: 'text-against-400', iconBg: 'bg-against-500/10' },
-  { type: 'link', id: 'discourse-analytics', label: 'Discourse Quality', sublabel: 'Platform-wide argument health score, grade distribution, and healthiest debates by category', href: '/analytics/discourse', icon: Brain, iconColor: 'text-emerald', iconBg: 'bg-emerald/10' },
-  { type: 'link', id: 'reasons-analytics', label: 'Hot Take Voice', sublabel: 'How often you explain your votes — word cloud, category breakdown, and recent hot takes', href: '/analytics/reasons', icon: Quote, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
-  { type: 'link', id: 'growth-analytics', label: 'Civic Growth', sublabel: 'Your engagement trajectory — monthly activity chart, momentum score, personal records, and milestone timeline', href: '/analytics/growth', icon: Rocket, iconColor: 'text-emerald', iconBg: 'bg-emerald/10' },
-  { type: 'link', id: 'consensus-shift', label: 'Consensus Shift', sublabel: 'Which debates have flipped most dramatically — compare recent vs prior voter cohort FOR% by topic', href: '/analytics/consensus-shift', icon: Zap, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
-  { type: 'link', id: 'extremes', label: 'Civic Extremes', sublabel: 'Most contested debates & strongest mandates', href: '/extremes', icon: Scale, iconColor: 'text-yellow-400', iconBg: 'bg-yellow-500/10' },
-  { type: 'link', id: 'hotspot', label: 'Civic Hotspot', sublabel: 'Critical moments: final votes, deadlocks, flash laws, live debates', href: '/hotspot', icon: Flame, iconColor: 'text-against-400', iconBg: 'bg-against-500/10' },
-  { type: 'link', id: 'surge', label: 'Surge', sublabel: 'Topics gaining critical momentum right now', href: '/surge', icon: TrendingUp, iconColor: 'text-against-400', iconBg: 'bg-against-500/10' },
-  { type: 'link', id: 'momentum', label: 'Momentum', sublabel: 'Live vote velocity — which topics are accelerating?', href: '/momentum', icon: ArrowUpRight, iconColor: 'text-against-400', iconBg: 'bg-against-500/10' },
-  { type: 'link', id: 'tally', label: 'Tally Board', sublabel: 'Live election-night results for every topic in the voting phase', href: '/tally', icon: Radio, iconColor: 'text-for-400', iconBg: 'bg-for-500/10' },
-  { type: 'link', id: 'vote-stream', label: 'Vote Stream', sublabel: 'Watch democracy in real-time — a live ticker of every vote landing on the platform', href: '/vote-stream', icon: Activity, iconColor: 'text-for-400', iconBg: 'bg-for-500/10' },
-  { type: 'link', id: 'vote-map', label: 'Civic Scope Map', sublabel: 'Visualise every topic\'s vote split nested by geographic scope — Global, National, Regional, Local', href: '/vote-map', icon: Globe, iconColor: 'text-for-400', iconBg: 'bg-for-500/10' },
-  { type: 'link', id: 'flip', label: 'The Big Flip', sublabel: 'Debates that defied the early odds — the biggest vote reversals in the Lobby', href: '/flip', icon: Flame, iconColor: 'text-against-400', iconBg: 'bg-against-500/10' },
-  { type: 'link', id: 'trending', label: 'Trending', sublabel: 'Most active topics in the last 24 hours', href: '/trending', icon: Flame, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
-  { type: 'link', id: 'codex', label: 'Law Codex', sublabel: 'All established laws and the knowledge graph', href: '/law', icon: Scale, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
-  { type: 'link', id: 'law-today', label: 'Law of the Day', sublabel: 'One spotlighted established law, refreshed every 24 hours', href: '/law/today', icon: Gavel, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
-  { type: 'link', id: 'constitution', label: 'Civic Constitution', sublabel: 'Living constitutional document of all established laws', href: '/constitution', icon: BookOpen, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
-  { type: 'link', id: 'watchdog', label: 'Civic Watchdog', sublabel: 'Laws under active community pressure — amendments, petitions, and contested margins', href: '/watchdog', icon: Shield, iconColor: 'text-against-400', iconBg: 'bg-against-500/10' },
-  { type: 'link', id: 'amendments', label: 'Amendment Chamber', sublabel: 'Community proposals to refine and extend established laws — vote to ratify', href: '/amendments', icon: FileText, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
-  { type: 'link', id: 'law-graph', label: 'Law Graph', sublabel: 'Interactive knowledge graph of all established laws', href: '/law/graph', icon: Network, iconColor: 'text-emerald', iconBg: 'bg-emerald/10' },
-  { type: 'link', id: 'topic-network', label: 'Topic Network', sublabel: 'Force-directed graph of all debate topics', href: '/topic/graph', icon: Network, iconColor: 'text-purple', iconBg: 'bg-purple/10' },
-  { type: 'link', id: 'widget', label: 'Widget Builder', sublabel: 'Embed a live vote widget on any website', href: '/widget', icon: Layers, iconColor: 'text-for-400', iconBg: 'bg-for-500/10' },
-  { type: 'link', id: 'badges', label: 'Profile Badges', sublabel: 'SVG badges for GitHub README and portfolios', href: '/badges', icon: Shield, iconColor: 'text-for-400', iconBg: 'bg-for-500/10' },
-  { type: 'link', id: 'stats', label: 'Global Stats', sublabel: 'Platform-wide vote counts, laws, and growth', href: '/stats', icon: BarChart2, iconColor: 'text-surface-400', iconBg: 'bg-surface-300/20' },
-  { type: 'link', id: 'weather', label: 'Civic Weather Report', sublabel: 'Political climate across categories — consensus, controversy, and wind speed', href: '/weather', icon: Cloud, iconColor: 'text-for-400', iconBg: 'bg-for-500/10' },
-  { type: 'link', id: 'heatmap', label: 'Lobby Heatmap', sublabel: 'Topic density across categories and lifecycle stages', href: '/heatmap', icon: BarChart2, iconColor: 'text-for-400', iconBg: 'bg-for-500/10' },
-  { type: 'link', id: 'consensus', label: 'Consensus Engine', sublabel: 'Force-directed bubble map of all active debates sized by votes', href: '/consensus', icon: Globe, iconColor: 'text-emerald', iconBg: 'bg-emerald/10' },
-  { type: 'link', id: 'clout', label: 'Clout', sublabel: 'Earn, spend, and send Clout to other users', href: '/clout', icon: Coins, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
-  { type: 'link', id: 'lobbies', label: 'Lobbies', sublabel: 'Join or create a special-interest lobby', href: '/lobby', icon: Megaphone, iconColor: 'text-for-400', iconBg: 'bg-for-500/10' },
-  { type: 'link', id: 'law-timeline', label: 'Law Timeline', sublabel: 'Chronological history of all laws established', href: '/law/timeline', icon: Clock, iconColor: 'text-surface-400', iconBg: 'bg-surface-300/20' },
-  { type: 'link', id: 'network', label: 'Your Network', sublabel: 'Topics and arguments from people you follow', href: '/network', icon: Activity, iconColor: 'text-for-400', iconBg: 'bg-for-500/10' },
-  { type: 'link', id: 'sources', label: 'Evidence Index', sublabel: 'Top external sources cited across all Lobby Market arguments', href: '/sources', icon: BookOpen, iconColor: 'text-emerald', iconBg: 'bg-emerald/10' },
-  { type: 'link', id: 'evidence', label: 'Civic Evidence Library', sublabel: 'Best community-curated evidence from the Evidence Board, ranked by votes', href: '/evidence', icon: BookOpen, iconColor: 'text-emerald', iconBg: 'bg-emerald/10' },
-  { type: 'link', id: 'discover', label: 'Discover', sublabel: 'Suggested people, hot topics, debates, and new laws', href: '/discover', icon: Globe, iconColor: 'text-for-300', iconBg: 'bg-for-400/10' },
-  { type: 'link', id: 'capsule', label: 'Civic Time Capsules', sublabel: 'Write time-locked predictions — seal them, score them, earn Clout', href: '/capsule', icon: Hourglass, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
-  { type: 'link', id: 'time-machine', label: 'Civic Time Machine', sublabel: 'Revisit any date — see which topics, laws, arguments, and debates shaped that day', href: '/time-machine', icon: History, iconColor: 'text-for-300', iconBg: 'bg-for-500/10' },
-  { type: 'link', id: 'radar', label: 'Civic Radar', sublabel: 'Live urgency dashboard — dead heats, surges, and laws established today', href: '/radar', icon: Radio, iconColor: 'text-for-400', iconBg: 'bg-for-500/10' },
-  { type: 'link', id: 'battleground', label: 'Civic Battleground', sublabel: 'Live FOR vs AGAINST split-screen — see both sides battle in real time', href: '/battleground', icon: Swords, iconColor: 'text-against-400', iconBg: 'bg-against-500/10' },
-  { type: 'link', id: 'today', label: 'Today in the Lobby', sublabel: 'Daily snapshot — hottest topic, top argument, latest law, and live stats', href: '/today', icon: Zap, iconColor: 'text-emerald', iconBg: 'bg-emerald/10' },
-  { type: 'link', id: 'my-week', label: 'My Week', sublabel: 'Your personal weekly report — votes cast, arguments posted, Clout earned', href: '/my-week', icon: Calendar, iconColor: 'text-for-300', iconBg: 'bg-for-500/10' },
-  { type: 'link', id: 'drift', label: 'Opinion Drift', sublabel: 'How civic consensus has shifted across categories over 7d / 30d / 90d', href: '/drift', icon: Repeat2, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
-  { type: 'link', id: 'lens', label: 'Civic Lens', sublabel: 'Live category-level dashboard — law rates, avg split, top topics per category', href: '/lens', icon: Target, iconColor: 'text-for-300', iconBg: 'bg-for-400/10' },
-  { type: 'link', id: 'influence', label: 'Civic Influence Graph', sublabel: 'Personal vote network — see which topics connect through shared opinion', href: '/influence', icon: Network, iconColor: 'text-purple', iconBg: 'bg-purple/10' },
-  { type: 'link', id: 'observatory', label: 'Civic Observatory', sublabel: "Researcher's view of platform health — polarisation, debate quality, vitality", href: '/observatory', icon: Activity, iconColor: 'text-surface-600', iconBg: 'bg-surface-300/20' },
-  { type: 'link', id: 'report-card', label: 'My Civic Report Card', sublabel: 'A graded summary of your participation, predictions, influence, and breadth', href: '/report-card', icon: Award, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
-  { type: 'link', id: 'karma', label: 'Civic Karma Score', sublabel: 'Your holistic civic credit score — discourse, predictions, breadth, engagement, trust', href: '/karma', icon: Sparkles, iconColor: 'text-purple', iconBg: 'bg-purple/10' },
-  { type: 'link', id: 'positions', label: 'My Positions', sublabel: 'Your full vote history — every topic you took a stance on, searchable', href: '/positions', icon: CheckCircle2, iconColor: 'text-for-300', iconBg: 'bg-for-500/10' },
-  { type: 'link', id: 'wrapped', label: 'Civic Wrapped', sublabel: 'Your year in review — top categories, biggest wins, final stats', href: '/wrapped', icon: BarChart2, iconColor: 'text-purple', iconBg: 'bg-purple/10' },
-  { type: 'link', id: 'manifesto', label: 'Civic Manifesto', sublabel: 'AI-generated political declaration based on your full voting history', href: '/manifesto', icon: Scroll, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
-  { type: 'link', id: 'elections', label: 'Civic Elections', sublabel: 'Vote for community representatives — Senators, Troll Catchers, Elders', href: '/elections', icon: Vote, iconColor: 'text-purple', iconBg: 'bg-purple/10' },
-  { type: 'link', id: 'league', label: 'Lobby League', sublabel: 'Monthly tier race — earn Clout to climb from Bystander to Champion', href: '/league', icon: Trophy, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
-  { type: 'link', id: 'race', label: 'Civic Race', sublabel: 'Live topic velocity chart — which debates are accelerating fastest?', href: '/race', icon: TrendingUp, iconColor: 'text-for-400', iconBg: 'bg-for-500/10' },
-  { type: 'link', id: 'crossroads', label: 'Civic Crossroads', sublabel: 'Weekly values dilemma — a hard civic choice with no easy answer', href: '/crossroads', icon: GitBranch, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
-  { type: 'link', id: 'pledges', label: 'Civic Pledge Wall', sublabel: 'Make public civic commitments — let the community witness your actions', href: '/pledges', icon: HandHeart, iconColor: 'text-for-300', iconBg: 'bg-for-500/10' },
-  { type: 'link', id: 'petitions', label: 'Civic Petitions', sublabel: 'Community-backed proposals — sign or oppose to trigger platform review', href: '/petitions', icon: Scale, iconColor: 'text-for-400', iconBg: 'bg-for-500/10' },
-  { type: 'link', id: 'watchlist', label: 'My Watchlist', sublabel: 'Topics you subscribed to — get notified when they hit milestones', href: '/watchlist', icon: Eye, iconColor: 'text-for-300', iconBg: 'bg-for-500/10' },
-  { type: 'link', id: 'agenda', label: 'Civic Agenda', sublabel: 'Your scheduled debates, upcoming votes, and calendar events', href: '/agenda', icon: Calendar, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
-  { type: 'link', id: 'compare', label: 'Compare Topics', sublabel: 'Side-by-side comparison of two debates — votes, arguments, category', href: '/compare', icon: GitCompare, iconColor: 'text-surface-600', iconBg: 'bg-surface-300/20' },
-  { type: 'link', id: 'compare-users', label: 'Compare Citizens', sublabel: 'See how you and another citizen voted on the same topics', href: '/compare-users', icon: Users, iconColor: 'text-surface-600', iconBg: 'bg-surface-300/20' },
-  { type: 'link', id: 'connections', label: 'Civic Connections', sublabel: 'Daily word-grouping puzzle — find the 4 hidden links between 16 civic terms', href: '/connections', icon: Hash, iconColor: 'text-emerald', iconBg: 'bg-emerald/10' },
-  { type: 'link', id: 'wordle', label: 'Civic Wordle', sublabel: 'Daily 5-letter word game using civic vocabulary — 6 attempts', href: '/wordle', icon: Hash, iconColor: 'text-for-400', iconBg: 'bg-for-500/10' },
-  { type: 'link', id: 'cloze', label: 'Civic Cloze', sublabel: 'Fill in the missing word from real Lobby Market laws and debate statements', href: '/cloze', icon: FileText, iconColor: 'text-purple', iconBg: 'bg-purple/10' },
-  { type: 'link', id: 'crossword', label: 'Civic Crossword', sublabel: 'Daily mini-crossword with clues drawn from platform debates and laws', href: '/crossword', icon: LayoutGrid, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
-  { type: 'link', id: 'bingo', label: 'Civic Bingo', sublabel: 'Weekly 5×5 bingo card — mark topics as they pass into law and get five in a row', href: '/bingo', icon: Star, iconColor: 'text-for-400', iconBg: 'bg-for-500/10' },
-  { type: 'link', id: 'gauntlet', label: 'Civic Gauntlet', sublabel: 'Sudden-death survival game — pick the majority side each round or be eliminated', href: '/gauntlet', icon: Swords, iconColor: 'text-against-400', iconBg: 'bg-against-600/10' },
-  { type: 'link', id: 'civic-rank', label: 'Civic Rank', sublabel: 'Daily sorting challenge — arrange 4 laws by community support (% FOR) across 5 rounds', href: '/civic-rank', icon: ArrowDownUp, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
-  { type: 'link', id: 'civic-timeline', label: 'Civic Timeline', sublabel: 'Daily chronology challenge — arrange 5 laws from oldest to newest across 3 rounds', href: '/civic-timeline', icon: CalendarClock, iconColor: 'text-purple', iconBg: 'bg-purple/10' },
-  { type: 'link', id: 'sprint', label: 'Civic Sprint', sublabel: '10-round prediction game — guess whether each closed topic became law or failed, race the clock for speed bonuses', href: '/sprint', icon: Timer, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
-  { type: 'link', id: 'civic-imposter', label: 'Civic Imposter', sublabel: 'Daily fake-law detection — spot the one imposter hiding among five real Lobby Codex laws', href: '/civic-imposter', icon: Skull, iconColor: 'text-against-400', iconBg: 'bg-against-600/10' },
-  { type: 'link', id: 'civic-mirror', label: 'Civic Mirror', sublabel: "Daily gut-check: vote FOR or AGAINST on 5 topics — see if you're with the majority or a contrarian outlier", href: '/civic-mirror', icon: Gauge, iconColor: 'text-for-400', iconBg: 'bg-for-500/10' },
-  { type: 'link', id: 'civic-decoder', label: 'Civic Decoder', sublabel: 'Read 3 real arguments from a mystery civic debate and identify which topic they came from — 5 rounds, 50 pts max', href: '/civic-decoder', icon: Search, iconColor: 'text-purple', iconBg: 'bg-purple/10' },
-  { type: 'link', id: 'civic-recall', label: 'Civic Recall', sublabel: 'Memorise 6 civic topics in 15 seconds — then spot them in a grid of 12. Daily flash-memory challenge, 60 pts max', href: '/civic-recall', icon: Brain, iconColor: 'text-emerald', iconBg: 'bg-emerald/10' },
-  { type: 'link', id: 'civic-verdict', label: 'Civic Verdict', sublabel: 'Read FOR and AGAINST arguments from mystery debates — render your verdict. Match the crowd for 10 pts per round, 50 max', href: '/civic-verdict', icon: Gavel, iconColor: 'text-against-400', iconBg: 'bg-against-500/10' },
-  { type: 'link', id: 'gauge', label: 'Civic Gauge', sublabel: 'Daily estimation game — outcome known, percentage hidden. Drag the slider to guess what % voted FOR on 5 resolved debates. Max 100 pts.', href: '/gauge', icon: Sliders, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
-  { type: 'link', id: 'advisor', label: 'Civic Advisor', sublabel: 'AI-powered personalised briefing — which topics need your voice most right now', href: '/advisor', icon: Sparkles, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
-  { type: 'link', id: 'coach', label: 'Argument Coach', sublabel: 'AI workshop: draft an argument, get a Claude critique across Clarity, Evidence, Logic, and Persuasion', href: '/coach', icon: Sparkles, iconColor: 'text-purple', iconBg: 'bg-purple/10' },
-  { type: 'link', id: 'prep', label: 'Debate Prep', sublabel: 'Full debate dossier for any topic — your strongest arguments, likely counterattacks, AI talking points', href: '/prep', icon: Layers, iconColor: 'text-for-400', iconBg: 'bg-for-500/10' },
-  { type: 'link', id: 'rapid', label: 'Rapid Vote', sublabel: 'Fast-paced swipe voting — clear your entire unvoted queue with FOR/AGAINST gestures', href: '/rapid', icon: Timer, iconColor: 'text-against-400', iconBg: 'bg-against-500/10' },
-  { type: 'link', id: 'swipe', label: 'Swipe & Vote', sublabel: 'Full-screen deliberate card-by-card voting — drag right FOR, left AGAINST, no timer', href: '/swipe', icon: Repeat2, iconColor: 'text-emerald', iconBg: 'bg-emerald/10' },
-  { type: 'link', id: 'crossfire', label: 'Crossfire', sublabel: 'Battle of Ideas — most contested topics with best FOR vs AGAINST arguments head-to-head', href: '/crossfire', icon: Swords, iconColor: 'text-against-300', iconBg: 'bg-against-500/10' },
-  { type: 'link', id: 'mindmap', label: 'Civic Mind Map', sublabel: "Personal Obsidian-style knowledge graph of every debate, argument, and law you've engaged with", href: '/mindmap', icon: Network, iconColor: 'text-purple', iconBg: 'bg-purple/10' },
-  { type: 'link', id: 'skill-tree', label: 'Civic Skill Tree', sublabel: 'Your RPG-style progression map — every milestone from first vote to Elder, locked and unlocked', href: '/skill-tree', icon: GitFork, iconColor: 'text-for-300', iconBg: 'bg-for-500/10' },
-  { type: 'link', id: 'streaks', label: 'Streak Leaderboard', sublabel: "Who's on the hottest civic voting streak? Top consistency rankings across the Lobby", href: '/streaks', icon: Flame, iconColor: 'text-against-400', iconBg: 'bg-against-500/10' },
-  { type: 'link', id: 'activity-calendar', label: 'Activity Calendar', sublabel: 'GitHub-style contribution calendar — your full year of civic engagement, day by day', href: '/activity-calendar', icon: Calendar, iconColor: 'text-emerald', iconBg: 'bg-emerald/10' },
-  { type: 'link', id: 'spectrum', label: 'Civic Spectrum', sublabel: 'A 2D scatter map of every debate — consensus direction vs engagement intensity', href: '/spectrum', icon: BarChart2, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
-  { type: 'link', id: 'verdicts', label: 'Civic Verdicts', sublabel: 'Every resolved debate with its outcome — laws that passed, proposals the Lobby rejected', href: '/verdicts', icon: Scroll, iconColor: 'text-surface-500', iconBg: 'bg-surface-300/20' },
-  { type: 'link', id: 'glossary', label: 'Civic Glossary', sublabel: 'Searchable guide to Lobby Market terms, debate concepts, logical fallacies, and civic vocabulary', href: '/glossary', icon: BookOpen, iconColor: 'text-for-400', iconBg: 'bg-for-500/10' },
-  { type: 'link', id: 'twins', label: 'Civic Twins', sublabel: 'Find citizens who voted most like you — your civic doppelgangers and ideological nearest neighbours', href: '/twins', icon: GitCompare, iconColor: 'text-emerald', iconBg: 'bg-emerald/10' },
-  { type: 'link', id: 'oracle', label: 'The Oracle', sublabel: "AI prophecy engine — Claude's one-sentence fate verdict on every topic currently in voting", href: '/oracle', icon: Eye, iconColor: 'text-purple', iconBg: 'bg-purple/10' },
-  { type: 'link', id: 'forecasters', label: 'Oracle Board', sublabel: 'Prediction accuracy leaderboard — top forecasters ranked by Brier score, accuracy, and category breadth', href: '/forecasters', icon: Brain, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
-  { type: 'link', id: 'simulate', label: 'Policy Simulator', sublabel: 'Model the projected outcomes of any proposed law — economic, social, and environmental ripple effects', href: '/simulate', icon: FlaskConical, iconColor: 'text-emerald', iconBg: 'bg-emerald/10' },
-  { type: 'link', id: 'bounties', label: 'Civic Bounties', sublabel: 'Open research bounties on unresolved civic questions — earn Clout for compelling answers', href: '/bounties', icon: Coins, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
-  { type: 'link', id: 'gallery', label: 'Argument Gallery', sublabel: 'Visual showcase of the most upvoted civic arguments — masonry quote cards by category', href: '/gallery', icon: Sparkles, iconColor: 'text-purple', iconBg: 'bg-purple/10' },
-  { type: 'link', id: 'common-threads', label: 'Common Threads', sublabel: 'Recurring civic themes that run through multiple debates — see cross-cutting values at a glance', href: '/common-threads', icon: Layers, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
-  { type: 'link', id: 'judge', label: 'Argument Acuity', sublabel: 'Which argument is more convincing? Rate FOR vs AGAINST to build your argument acuity score', href: '/judge', icon: Scale, iconColor: 'text-for-400', iconBg: 'bg-for-500/10' },
-  { type: 'link', id: 'perspective', label: 'Perspective Swap', sublabel: "Steel-man generator — Claude builds the strongest honest case for the side you disagree with", href: '/perspective', icon: Repeat2, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
-  { type: 'link', id: 'letter', label: 'Civic Letter Generator', sublabel: 'AI-powered letters to representatives, op-eds, petitions, and social threads — grounded in community consensus data', href: '/letter', icon: Mail, iconColor: 'text-for-400', iconBg: 'bg-for-500/10' },
-  { type: 'link', id: 'journal', label: 'Civic Journal', sublabel: 'Private notes tied to debates — track your evolving views, see how topics developed since you wrote', href: '/journal', icon: BookOpen, iconColor: 'text-purple', iconBg: 'bg-purple/10' },
-  { type: 'link', id: 'myth', label: 'Law or Myth', sublabel: "Daily fact-check game — did the Lobby pass this into law or reject it? 5 rounds, 100 points max", href: '/myth', icon: Hash, iconColor: 'text-against-300', iconBg: 'bg-against-500/10' },
-  { type: 'link', id: 'crucible', label: 'The Crucible', sublabel: "Today's most contested topic — live argument leaderboard, FOR vs AGAINST ranked by upvotes", href: '/crucible', icon: Flame, iconColor: 'text-against-400', iconBg: 'bg-against-500/10' },
-  { type: 'link', id: 'impact', label: 'My Civic Impact', sublabel: 'Your personal ledger of influence — laws you helped pass, arguments that swayed votes', href: '/impact', icon: TrendingUp, iconColor: 'text-emerald', iconBg: 'bg-emerald/10' },
-  { type: 'link', id: 'match', label: 'Priority Match', sublabel: 'Head-to-head: pick which topic deserves more urgent attention — builds a community urgency ranking', href: '/match', icon: Swords, iconColor: 'text-for-300', iconBg: 'bg-for-500/10' },
-  { type: 'link', id: 'shifts', label: 'Vote Shifts', sublabel: 'Track how community sentiment has moved on topics over time — the biggest swings and reversals', href: '/shifts', icon: TrendingUp, iconColor: 'text-gold', iconBg: 'bg-gold/10' },
-  { type: 'link', id: 'polarization', label: 'Polarization Index', sublabel: 'Platform health dashboard — how divided or united is the Lobby? Per-category and platform-wide', href: '/polarization', icon: Activity, iconColor: 'text-against-400', iconBg: 'bg-against-500/10' },
+  {
+    type: 'link',
+    id: 'feed',
+    label: 'Feed',
+    sublabel: 'Live topic feed',
+    href: '/',
+    icon: Flame,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-500/10',
+  },
+  {
+    type: 'link',
+    id: 'floor',
+    label: 'The Floor',
+    sublabel: 'Watch consensus form in real-time',
+    href: '/floor',
+    icon: Landmark,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
+    id: 'city',
+    label: 'City View',
+    sublabel: 'Explore the user city',
+    href: '/city',
+    icon: Building2,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+  },
+  {
+    type: 'link',
+    id: 'debates',
+    label: 'Debates',
+    sublabel: 'Live debate arena',
+    href: '/debate',
+    icon: Mic,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
+    id: 'rivals',
+    label: 'Civic Rivals',
+    sublabel: 'Find citizens who voted opposite to you — your ideological opponents',
+    href: '/rivals',
+    icon: Swords,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-500/10',
+  },
+  {
+    type: 'link',
+    id: 'moments',
+    label: 'Civic Moments',
+    sublabel: 'Swipeable highlights — new laws, vote surges, and debates resolved',
+    href: '/moments',
+    icon: Sparkles,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+  },
+  {
+    type: 'link',
+    id: 'spotlight',
+    label: 'Civic Spotlight',
+    sublabel: 'Best argument, closest call, rising star, and newest law this week',
+    href: '/spotlight',
+    icon: Sparkles,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'leaderboard',
+    label: 'Leaderboard',
+    sublabel: 'Top voters and lawmakers',
+    href: '/leaderboard',
+    icon: Trophy,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'season',
+    label: 'Civic Season',
+    sublabel: 'Monthly championship — earn Season Points for every vote, argument, and law',
+    href: '/season',
+    icon: Crown,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'seasons',
+    label: 'Hall of Fame',
+    sublabel: 'All-time season champions — every winner, every era',
+    href: '/seasons',
+    icon: Trophy,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'records',
+    label: 'Civic Records',
+    sublabel: 'All-time platform records — fastest law, most voted, best argument',
+    href: '/records',
+    icon: Trophy,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/15',
+  },
+  {
+    type: 'link',
+    id: 'ladder',
+    label: 'Argument Ladder',
+    sublabel: 'Top civic arguers ranked by total argument upvotes — who reasons best?',
+    href: '/ladder',
+    icon: MessageSquare,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
+    id: 'leaderboard-debates',
+    label: 'Debate Hall of Fame',
+    sublabel: 'Top completed debates ranked by viewers, decisive outcomes, and activity',
+    href: '/leaderboard/debates',
+    icon: Mic,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
+    id: 'leaderboard-evidence',
+    label: 'Evidence Leaderboard',
+    sublabel: 'Top evidence contributors, best-documented topics, and trusted sources',
+    href: '/leaderboard/evidence',
+    icon: BookOpen,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+  },
+  {
+    type: 'link',
+    id: 'stage',
+    label: 'Civic Stage',
+    sublabel: 'Full-screen live debate display for town halls & classrooms',
+    href: '/stage',
+    icon: MonitorPlay,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
+    id: 'arcade',
+    label: 'Civic Arcade',
+    sublabel: 'All games & challenges in one hub',
+    href: '/arcade',
+    icon: Gamepad2,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
+    id: 'blitz',
+    label: 'Blitz Mode',
+    sublabel: '60-second speed voting challenge',
+    href: '/blitz',
+    icon: Timer,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-500/10',
+  },
+  {
+    type: 'link',
+    id: 'challenge',
+    label: 'Daily Quorum',
+    sublabel: "Today's 3 topics — vote to earn Clout",
+    href: '/challenge',
+    icon: Flame,
+    iconColor: 'text-for-300',
+    iconBg: 'bg-for-600/15',
+  },
+  {
+    type: 'link',
+    id: 'my-challenges',
+    label: 'My Challenges',
+    sublabel: 'Debate duels — accept, decline, or issue challenges',
+    href: '/challenges',
+    icon: Swords,
+    iconColor: 'text-against-300',
+    iconBg: 'bg-against-600/10',
+  },
+  {
+    type: 'link',
+    id: 'flashcards',
+    label: 'Civic Flashcards',
+    sublabel: 'Study established laws — self-paced spaced repetition',
+    href: '/flashcards',
+    icon: BookOpen,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'archetype',
+    label: 'Civic Archetype',
+    sublabel: 'Discover your political personality — 10 questions, 8 archetypes',
+    href: '/archetype',
+    icon: Crown,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'archetype-intelligence',
+    label: 'Archetype Intelligence',
+    sublabel: 'How each civic archetype votes — divisive topics, cross-archetype consensus',
+    href: '/archetype/intelligence',
+    icon: Brain,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
+    id: 'quiz',
+    label: 'Civic Quiz',
+    sublabel: 'Find your civic alignment — no login required',
+    href: '/quiz',
+    icon: Scale,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+  },
+  {
+    type: 'link',
+    id: 'trivia',
+    label: 'Civic Trivia',
+    sublabel: 'Daily challenge — guess the community vote split',
+    href: '/trivia',
+    icon: Target,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'training',
+    label: 'Argument Training',
+    sublabel: 'Sharpen your debate skills — fallacy spotting, argument ranking, vote calibration',
+    href: '/training',
+    icon: Zap,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
+    id: 'senate',
+    label: 'The Senate',
+    sublabel: 'Topics in final vote — deadlines approaching',
+    href: '/senate',
+    icon: Vote,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
+    id: 'predictions',
+    label: 'Prediction Market',
+    sublabel: 'Community forecasts — stake your accuracy for Clout',
+    href: '/predictions',
+    icon: Target,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
+    id: 'forecast',
+    label: 'Civic Forecast',
+    sublabel: 'Data-driven pass probability for every topic in final vote',
+    href: '/forecast',
+    icon: FlaskConical,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
+    id: 'missions',
+    label: 'Daily Missions',
+    sublabel: 'Three civic challenges today — earn Clout and protect your streak',
+    href: '/missions',
+    icon: Target,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+  },
+  {
+    type: 'link',
+    id: 'dashboard',
+    label: 'Dashboard',
+    sublabel: 'Personal command centre — league, predictions, watchlist',
+    href: '/dashboard',
+    icon: LayoutGrid,
+    iconColor: 'text-for-300',
+    iconBg: 'bg-for-400/10',
+  },
+  {
+    type: 'link',
+    id: 'analytics',
+    label: 'Analytics',
+    sublabel: 'Your voting patterns and stats',
+    href: '/analytics',
+    icon: BarChart2,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
+    id: 'signals',
+    label: 'Signals',
+    sublabel: 'Platform-wide consensus signals — breaking, contested, momentum',
+    href: '/signals',
+    icon: Activity,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+  },
+  {
+    type: 'link',
+    id: 'catchup',
+    label: 'Catch Up',
+    sublabel: 'What happened while you were away',
+    href: '/catchup',
+    icon: Zap,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
+    id: 'activity',
+    label: 'Activity',
+    sublabel: 'What\'s happening in the Lobby',
+    href: '/activity',
+    icon: Activity,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
+    id: 'live',
+    label: 'Live Arguments',
+    sublabel: 'Real-time stream of arguments being posted right now',
+    href: '/live',
+    icon: Radio,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-900/50',
+  },
+  {
+    type: 'link',
+    id: 'hot-takes',
+    label: 'Hot Takes',
+    sublabel: "Citizens' unfiltered vote reasons — what people actually think",
+    href: '/hot-takes',
+    icon: MessageSquare,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-900/50',
+  },
+  {
+    type: 'link',
+    id: 'pulse',
+    label: 'Community Pulse',
+    sublabel: 'Top FOR/AGAINST arguments from active debates',
+    href: '/pulse',
+    icon: Zap,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'arguments',
+    label: 'Top Arguments',
+    sublabel: 'Most-upvoted arguments ever made in the Lobby',
+    href: '/arguments',
+    icon: ThumbsUp,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
+    id: 'my-arguments',
+    label: 'My Arguments',
+    sublabel: 'Personal argument analytics — upvotes, categories, history',
+    href: '/arguments/mine',
+    icon: Quote,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
+    id: 'wisdom',
+    label: 'Wisdom Feed',
+    sublabel: "The platform's most respected voices — top arguments from Elders, Senators, and Lawmakers",
+    href: '/wisdom',
+    icon: Crown,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'split',
+    label: 'The Split',
+    sublabel: 'Most contested topics — vote where it matters',
+    href: '/split',
+    icon: GitFork,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-500/10',
+  },
+  {
+    type: 'link',
+    id: 'pipeline',
+    label: 'Legislation Pipeline',
+    sublabel: 'Kanban board of all topics at every civic stage',
+    href: '/pipeline',
+    icon: GitBranch,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
+    id: 'chains',
+    label: 'Topic Chains',
+    sublabel: 'Browse topic lineages and continuation trees',
+    href: '/chains',
+    icon: GitFork,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
+    id: 'categories',
+    label: 'Categories',
+    sublabel: 'Browse topics by category',
+    href: '/topic/categories',
+    icon: LayoutGrid,
+    iconColor: 'text-surface-400',
+    iconBg: 'bg-surface-300/20',
+  },
+  {
+    type: 'link',
+    id: 'coalitions',
+    label: 'Coalitions',
+    sublabel: 'Join or create an alliance',
+    href: '/coalitions',
+    icon: Users,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
+    id: 'create-topic',
+    label: 'Propose a Topic',
+    sublabel: 'Submit a new topic for debate',
+    href: '/topic/create',
+    icon: PenSquare,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+  },
+  {
+    type: 'link',
+    id: 'profile',
+    label: 'My Profile',
+    sublabel: 'View your public profile',
+    href: '/profile/me',
+    icon: User,
+    iconColor: 'text-surface-400',
+    iconBg: 'bg-surface-300/20',
+  },
+  {
+    type: 'link',
+    id: 'saved',
+    label: 'Saved Topics',
+    sublabel: 'Your bookmarked topics',
+    href: '/saved',
+    icon: Bookmark,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'notifications',
+    label: 'Notifications',
+    sublabel: 'Recent alerts and updates',
+    href: '/notifications',
+    icon: Bell,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'messages',
+    label: 'Messages',
+    sublabel: 'Private conversations',
+    href: '/messages',
+    icon: MessageSquare,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
+    id: 'settings',
+    label: 'Settings',
+    sublabel: 'Preferences and account',
+    href: '/settings',
+    icon: Settings,
+    iconColor: 'text-surface-400',
+    iconBg: 'bg-surface-300/20',
+  },
+  {
+    type: 'link',
+    id: 'brief',
+    label: 'Daily Brief',
+    sublabel: 'Personalized morning summary — hot topics, debates, laws',
+    href: '/brief',
+    icon: Sparkles,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
+    id: 'newspaper',
+    label: 'The Lobby Dispatch',
+    sublabel: 'Daily civic front page — debates, laws, voices, numbers',
+    href: '/newspaper',
+    icon: FileText,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'editorial',
+    label: 'AI Civic Editorial',
+    sublabel: 'Claude analyses today\'s top debates in a daily editorial',
+    href: '/editorial',
+    icon: Sparkles,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
+    id: 'digest',
+    label: 'Weekly Digest',
+    sublabel: 'Laws, debates, and top voices this week',
+    href: '/digest',
+    icon: Calendar,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'civic-calendar',
+    label: 'Civic Calendar',
+    sublabel: 'Upcoming debates, voting deadlines, and new laws',
+    href: '/calendar',
+    icon: Calendar,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
+    id: 'civic-almanac',
+    label: 'Civic Almanac',
+    sublabel: 'On This Day — topics proposed, laws made, arguments celebrated',
+    href: '/almanac',
+    icon: BookOpen,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'timeline',
+    label: 'Civic Timeline',
+    sublabel: 'Chronological history of all platform events and laws',
+    href: '/timeline',
+    icon: History,
+    iconColor: 'text-surface-500',
+    iconBg: 'bg-surface-300/20',
+  },
+  {
+    type: 'link',
+    id: 'graveyard',
+    label: 'The Graveyard',
+    sublabel: 'Topics that failed to become law — and the stories of why',
+    href: '/graveyard',
+    icon: Skull,
+    iconColor: 'text-surface-500',
+    iconBg: 'bg-surface-300/20',
+  },
+  {
+    type: 'link',
+    id: 'checker',
+    label: 'Civic Claim Checker',
+    sublabel: 'Check any claim against the Codex — see if established laws support or contradict it',
+    href: '/checker',
+    icon: Scale,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+  },
+  {
+    type: 'link',
+    id: 'spar',
+    label: 'Sparring Arena',
+    sublabel: 'Practice debating civic topics against Claude AI in 5-round bouts',
+    href: '/spar',
+    icon: Swords,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
+    id: 'compass',
+    label: 'Political Compass',
+    sublabel: 'See where your votes place you on the spectrum',
+    href: '/compass',
+    icon: Compass,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+  },
+  {
+    type: 'link',
+    id: 'sentiment',
+    label: 'Sentiment Explorer',
+    sublabel: 'The emotional tone of civic arguments — hopeful vs critical by category',
+    href: '/analytics/sentiment',
+    icon: Quote,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-500/10',
+  },
+  {
+    type: 'link',
+    id: 'argument-quality-index',
+    label: 'Argument Quality Index',
+    sublabel: 'Platform-wide AI grade distribution, category quality rankings, quality trends, and top-graded arguers',
+    href: '/analytics/argument-quality',
+    icon: Award,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+  },
+  {
+    type: 'link',
+    id: 'extremes',
+    label: 'Civic Extremes',
+    sublabel: 'Most contested debates & strongest mandates',
+    href: '/extremes',
+    icon: Scale,
+    iconColor: 'text-yellow-400',
+    iconBg: 'bg-yellow-500/10',
+  },
+  {
+    type: 'link',
+    id: 'hotspot',
+    label: 'Civic Hotspot',
+    sublabel: 'Critical moments: final votes, deadlocks, flash laws, live debates',
+    href: '/hotspot',
+    icon: Flame,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-500/10',
+  },
+  {
+    type: 'link',
+    id: 'surge',
+    label: 'Surge',
+    sublabel: 'Topics gaining critical momentum right now',
+    href: '/surge',
+    icon: TrendingUp,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-500/10',
+  },
+  {
+    type: 'link',
+    id: 'momentum',
+    label: 'Momentum',
+    sublabel: 'Live vote velocity — which topics are accelerating?',
+    href: '/momentum',
+    icon: ArrowUpRight,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-500/10',
+  },
+  {
+    type: 'link',
+    id: 'tally',
+    label: 'Tally Board',
+    sublabel: 'Live election-night results for every topic in the voting phase',
+    href: '/tally',
+    icon: Radio,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
+    id: 'vote-stream',
+    label: 'Vote Stream',
+    sublabel: 'Watch democracy in real-time — a live ticker of every vote landing on the platform',
+    href: '/vote-stream',
+    icon: Activity,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
+    id: 'flip',
+    label: 'The Big Flip',
+    sublabel: 'Debates that defied the early odds — the biggest vote reversals in the Lobby',
+    href: '/flip',
+    icon: Flame,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-500/10',
+  },
+  {
+    type: 'link',
+    id: 'trending',
+    label: 'Trending',
+    sublabel: 'Most active topics in the last 24 hours',
+    href: '/trending',
+    icon: Flame,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'codex',
+    label: 'Law Codex',
+    sublabel: 'All established laws and the knowledge graph',
+    href: '/law',
+    icon: Scale,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'law-today',
+    label: 'Law of the Day',
+    sublabel: 'One spotlighted established law, refreshed every 24 hours',
+    href: '/law/today',
+    icon: Gavel,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'constitution',
+    label: 'Civic Constitution',
+    sublabel: 'Living constitutional document of all established laws',
+    href: '/constitution',
+    icon: BookOpen,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'watchdog',
+    label: 'Civic Watchdog',
+    sublabel: 'Laws under active community pressure — amendments, petitions, and contested margins',
+    href: '/watchdog',
+    icon: Shield,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-500/10',
+  },
+  {
+    type: 'link',
+    id: 'amendments',
+    label: 'Amendment Chamber',
+    sublabel: 'Community proposals to refine and extend established laws — vote to ratify',
+    href: '/amendments',
+    icon: FileText,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'law-graph',
+    label: 'Law Graph',
+    sublabel: 'Interactive knowledge graph of all established laws',
+    href: '/law/graph',
+    icon: Network,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+  },
+  {
+    type: 'link',
+    id: 'topic-network',
+    label: 'Topic Network',
+    sublabel: 'Force-directed graph of all debate topics',
+    href: '/topic/graph',
+    icon: Network,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
+    id: 'widget',
+    label: 'Widget Builder',
+    sublabel: 'Embed a live vote widget on any website',
+    href: '/widget',
+    icon: Layers,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
+    id: 'badges',
+    label: 'Profile Badges',
+    sublabel: 'SVG badges for GitHub README and portfolios',
+    href: '/badges',
+    icon: Shield,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
+    id: 'stats',
+    label: 'Global Stats',
+    sublabel: 'Platform-wide vote counts, laws, and growth',
+    href: '/stats',
+    icon: BarChart2,
+    iconColor: 'text-surface-400',
+    iconBg: 'bg-surface-300/20',
+  },
+  {
+    type: 'link',
+    id: 'weather',
+    label: 'Civic Weather Report',
+    sublabel: 'Political climate across categories — consensus, controversy, and wind speed',
+    href: '/weather',
+    icon: Cloud,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
+    id: 'heatmap',
+    label: 'Lobby Heatmap',
+    sublabel: 'Topic density across categories and lifecycle stages',
+    href: '/heatmap',
+    icon: BarChart2,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
+    id: 'consensus',
+    label: 'Consensus Engine',
+    sublabel: 'Force-directed bubble map of all active debates sized by votes',
+    href: '/consensus',
+    icon: Globe,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+  },
+  {
+    type: 'link',
+    id: 'clout',
+    label: 'Clout',
+    sublabel: 'Earn, spend, and send Clout to other users',
+    href: '/clout',
+    icon: Coins,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'lobbies',
+    label: 'Lobbies',
+    sublabel: 'Join or create a special-interest lobby',
+    href: '/lobby',
+    icon: Megaphone,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
+    id: 'law-timeline',
+    label: 'Law Timeline',
+    sublabel: 'Chronological history of all laws established',
+    href: '/law/timeline',
+    icon: Clock,
+    iconColor: 'text-surface-400',
+    iconBg: 'bg-surface-300/20',
+  },
+  {
+    type: 'link',
+    id: 'network',
+    label: 'Your Network',
+    sublabel: 'Topics and arguments from people you follow',
+    href: '/network',
+    icon: Activity,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
+    id: 'sources',
+    label: 'Evidence Index',
+    sublabel: 'Top external sources cited across all Lobby Market arguments',
+    href: '/sources',
+    icon: BookOpen,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+  },
+  {
+    type: 'link',
+    id: 'evidence',
+    label: 'Civic Evidence Library',
+    sublabel: 'Best community-curated evidence from the Evidence Board, ranked by votes',
+    href: '/evidence',
+    icon: BookOpen,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+  },
+  {
+    type: 'link',
+    id: 'discover',
+    label: 'Discover',
+    sublabel: 'Suggested people, hot topics, debates, and new laws',
+    href: '/discover',
+    icon: Globe,
+    iconColor: 'text-for-300',
+    iconBg: 'bg-for-400/10',
+  },
+  {
+    type: 'link',
+    id: 'capsule',
+    label: 'Civic Time Capsules',
+    sublabel: 'Write time-locked predictions — seal them, score them, earn Clout',
+    href: '/capsule',
+    icon: Hourglass,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'time-machine',
+    label: 'Civic Time Machine',
+    sublabel: 'Revisit any date — see which topics, laws, arguments, and debates shaped that day',
+    href: '/time-machine',
+    icon: History,
+    iconColor: 'text-for-300',
+    iconBg: 'bg-for-500/10',
+  },
+  // ── Live / activity ──────────────────────────────────────────────────────────────────────
+  {
+    type: 'link',
+    id: 'radar',
+    label: 'Civic Radar',
+    sublabel: 'Live urgency dashboard — dead heats, surges, and laws established today',
+    href: '/radar',
+    icon: Radio,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
+    id: 'battleground',
+    label: 'Civic Battleground',
+    sublabel: 'Live FOR vs AGAINST split-screen — see both sides battle in real time',
+    href: '/battleground',
+    icon: Swords,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-500/10',
+  },
+  {
+    type: 'link',
+    id: 'today',
+    label: 'Today in the Lobby',
+    sublabel: 'Daily snapshot — hottest topic, top argument, latest law, and live stats',
+    href: '/today',
+    icon: Zap,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+  },
+  {
+    type: 'link',
+    id: 'my-week',
+    label: 'My Week',
+    sublabel: 'Your personal weekly report — votes cast, arguments posted, Clout earned',
+    href: '/my-week',
+    icon: Calendar,
+    iconColor: 'text-for-300',
+    iconBg: 'bg-for-500/10',
+  },
+  // ── Analytics & insight ──────────────────────────────────────────────────────────────────
+  {
+    type: 'link',
+    id: 'drift',
+    label: 'Opinion Drift',
+    sublabel: 'How civic consensus has shifted across categories over 7d / 30d / 90d',
+    href: '/drift',
+    icon: Repeat2,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'lens',
+    label: 'Civic Lens',
+    sublabel: 'Live category-level dashboard — law rates, avg split, top topics per category',
+    href: '/lens',
+    icon: Target,
+    iconColor: 'text-for-300',
+    iconBg: 'bg-for-400/10',
+  },
+  {
+    type: 'link',
+    id: 'influence',
+    label: 'Civic Influence Graph',
+    sublabel: 'Personal vote network — see which topics connect through shared opinion',
+    href: '/influence',
+    icon: Network,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
+    id: 'observatory',
+    label: 'Civic Observatory',
+    sublabel: "Researcher's view of platform health — polarisation, debate quality, vitality",
+    href: '/observatory',
+    icon: Activity,
+    iconColor: 'text-surface-600',
+    iconBg: 'bg-surface-300/20',
+  },
+  {
+    type: 'link',
+    id: 'report-card',
+    label: 'My Civic Report Card',
+    sublabel: 'A graded summary of your participation, predictions, influence, and breadth',
+    href: '/report-card',
+    icon: Award,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'karma',
+    label: 'Civic Karma Score',
+    sublabel: 'Your holistic civic credit score — discourse, predictions, breadth, engagement, trust',
+    href: '/karma',
+    icon: Sparkles,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
+    id: 'positions',
+    label: 'My Positions',
+    sublabel: 'Your full vote history — every topic you took a stance on, searchable',
+    href: '/positions',
+    icon: CheckCircle2,
+    iconColor: 'text-for-300',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
+    id: 'wrapped',
+    label: 'Civic Wrapped',
+    sublabel: 'Your year in review — top categories, biggest wins, final stats',
+    href: '/wrapped',
+    icon: BarChart2,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
+    id: 'manifesto',
+    label: 'Civic Manifesto',
+    sublabel: 'AI-generated political declaration based on your full voting history',
+    href: '/manifesto',
+    icon: Scroll,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  // ── Competition ────────────────────────────────────────────────────────────────────────
+  {
+    type: 'link',
+    id: 'elections',
+    label: 'Civic Elections',
+    sublabel: 'Vote for community representatives — Senators, Troll Catchers, Elders',
+    href: '/elections',
+    icon: Vote,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
+    id: 'league',
+    label: 'Lobby League',
+    sublabel: 'Monthly tier race — earn Clout to climb from Bystander to Champion',
+    href: '/league',
+    icon: Trophy,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'race',
+    label: 'Civic Race',
+    sublabel: 'Live topic velocity chart — which debates are accelerating fastest?',
+    href: '/race',
+    icon: TrendingUp,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  // ── Civic tools ───────────────────────────────────────────────────────────────────────
+  {
+    type: 'link',
+    id: 'crossroads',
+    label: 'Civic Crossroads',
+    sublabel: 'Weekly values dilemma — a hard civic choice with no easy answer',
+    href: '/crossroads',
+    icon: GitBranch,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'pledges',
+    label: 'Civic Pledge Wall',
+    sublabel: 'Make public civic commitments — let the community witness your actions',
+    href: '/pledges',
+    icon: HandHeart,
+    iconColor: 'text-for-300',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
+    id: 'petitions',
+    label: 'Civic Petitions',
+    sublabel: 'Community-backed proposals — sign or oppose to trigger platform review',
+    href: '/petitions',
+    icon: Scale,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
+    id: 'watchlist',
+    label: 'My Watchlist',
+    sublabel: 'Topics you subscribed to — get notified when they hit milestones',
+    href: '/watchlist',
+    icon: Eye,
+    iconColor: 'text-for-300',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
+    id: 'agenda',
+    label: 'Civic Agenda',
+    sublabel: 'Your scheduled debates, upcoming votes, and calendar events',
+    href: '/agenda',
+    icon: Calendar,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  // ── Compare ──────────────────────────────────────────────────────────────────────────
+  {
+    type: 'link',
+    id: 'compare',
+    label: 'Compare Topics',
+    sublabel: 'Side-by-side comparison of two debates — votes, arguments, category',
+    href: '/compare',
+    icon: GitCompare,
+    iconColor: 'text-surface-600',
+    iconBg: 'bg-surface-300/20',
+  },
+  {
+    type: 'link',
+    id: 'compare-users',
+    label: 'Compare Citizens',
+    sublabel: 'See how you and another citizen voted on the same topics',
+    href: '/compare-users',
+    icon: Users,
+    iconColor: 'text-surface-600',
+    iconBg: 'bg-surface-300/20',
+  },
+  // ── Games ──────────────────────────────────────────────────────────────────────────
+  {
+    type: 'link',
+    id: 'connections',
+    label: 'Civic Connections',
+    sublabel: 'Daily word-grouping puzzle — find the 4 hidden links between 16 civic terms',
+    href: '/connections',
+    icon: Hash,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+  },
+  {
+    type: 'link',
+    id: 'wordle',
+    label: 'Civic Wordle',
+    sublabel: 'Daily 5-letter word game using civic vocabulary — 6 attempts',
+    href: '/wordle',
+    icon: Hash,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
+    id: 'cloze',
+    label: 'Civic Cloze',
+    sublabel: 'Fill in the missing word from real Lobby Market laws and debate statements',
+    href: '/cloze',
+    icon: FileText,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
+    id: 'crossword',
+    label: 'Civic Crossword',
+    sublabel: 'Daily mini-crossword with clues drawn from platform debates and laws',
+    href: '/crossword',
+    icon: LayoutGrid,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  // ── Debate & Writing Tools ─────────────────────────────────────────────────────────
+  {
+    type: 'link',
+    id: 'advisor',
+    label: 'Civic Advisor',
+    sublabel: 'AI-powered personalised briefing — which topics need your voice most right now',
+    href: '/advisor',
+    icon: Sparkles,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'coach',
+    label: 'Argument Coach',
+    sublabel: 'AI workshop: draft an argument, get a Claude critique across Clarity, Evidence, Logic, and Persuasion',
+    href: '/coach',
+    icon: Sparkles,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
+    id: 'prep',
+    label: 'Debate Prep',
+    sublabel: 'Full debate dossier for any topic — your strongest arguments, likely counterattacks, AI talking points',
+    href: '/prep',
+    icon: Layers,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
+    id: 'rapid',
+    label: 'Rapid Vote',
+    sublabel: 'Fast-paced swipe voting — clear your entire unvoted queue with FOR/AGAINST gestures',
+    href: '/rapid',
+    icon: Timer,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-500/10',
+  },
+  {
+    type: 'link',
+    id: 'swipe',
+    label: 'Swipe & Vote',
+    sublabel: 'Full-screen deliberate card-by-card voting — drag right FOR, left AGAINST, no timer',
+    href: '/swipe',
+    icon: Repeat2,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+  },
+  {
+    type: 'link',
+    id: 'crossfire',
+    label: 'Crossfire',
+    sublabel: 'Battle of Ideas — most contested topics with best FOR vs AGAINST arguments head-to-head',
+    href: '/crossfire',
+    icon: Swords,
+    iconColor: 'text-against-300',
+    iconBg: 'bg-against-500/10',
+  },
+  // ── Analytics & Personal ───────────────────────────────────────────────────────────────────
+  {
+    type: 'link',
+    id: 'mindmap',
+    label: 'Civic Mind Map',
+    sublabel: 'Personal Obsidian-style knowledge graph of every debate, argument, and law you\'ve engaged with',
+    href: '/mindmap',
+    icon: Network,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
+    id: 'skill-tree',
+    label: 'Civic Skill Tree',
+    sublabel: 'Your RPG-style progression map — every milestone from first vote to Elder, locked and unlocked',
+    href: '/skill-tree',
+    icon: GitFork,
+    iconColor: 'text-for-300',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
+    id: 'streaks',
+    label: 'Streak Leaderboard',
+    sublabel: 'Who\'s on the hottest civic voting streak? Top consistency rankings across the Lobby',
+    href: '/streaks',
+    icon: Flame,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-500/10',
+  },
+  {
+    type: 'link',
+    id: 'activity-calendar',
+    label: 'Activity Calendar',
+    sublabel: 'GitHub-style contribution calendar — your full year of civic engagement, day by day',
+    href: '/activity-calendar',
+    icon: Calendar,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+  },
+  // ── Discovery & Research ──────────────────────────────────────────────────────────────────
+  {
+    type: 'link',
+    id: 'spectrum',
+    label: 'Civic Spectrum',
+    sublabel: 'A 2D scatter map of every debate — consensus direction vs engagement intensity',
+    href: '/spectrum',
+    icon: BarChart2,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'verdicts',
+    label: 'Civic Verdicts',
+    sublabel: 'Every resolved debate with its outcome — laws that passed, proposals the Lobby rejected',
+    href: '/verdicts',
+    icon: Scroll,
+    iconColor: 'text-surface-500',
+    iconBg: 'bg-surface-300/20',
+  },
+  {
+    type: 'link',
+    id: 'glossary',
+    label: 'Civic Glossary',
+    sublabel: 'Searchable guide to Lobby Market terms, debate concepts, logical fallacies, and civic vocabulary',
+    href: '/glossary',
+    icon: BookOpen,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
+    id: 'twins',
+    label: 'Civic Twins',
+    sublabel: 'Find citizens who voted most like you — your civic doppelgangers and ideological nearest neighbours',
+    href: '/twins',
+    icon: GitCompare,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+  },
+  {
+    type: 'link',
+    id: 'oracle',
+    label: 'The Oracle',
+    sublabel: 'AI prophecy engine — Claude\'s one-sentence fate verdict on every topic currently in voting',
+    href: '/oracle',
+    icon: Eye,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
+    id: 'forecasters',
+    label: 'Oracle Board',
+    sublabel: 'Prediction accuracy leaderboard — top forecasters ranked by Brier score, accuracy, and category breadth',
+    href: '/forecasters',
+    icon: Brain,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'simulate',
+    label: 'Policy Simulator',
+    sublabel: 'Model the projected outcomes of any proposed law — economic, social, and environmental ripple effects',
+    href: '/simulate',
+    icon: FlaskConical,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+  },
+  {
+    type: 'link',
+    id: 'bounties',
+    label: 'Civic Bounties',
+    sublabel: 'Open research bounties on unresolved civic questions — earn Clout for compelling answers',
+    href: '/bounties',
+    icon: Coins,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'gallery',
+    label: 'Argument Gallery',
+    sublabel: 'Visual showcase of the most upvoted civic arguments — masonry quote cards by category',
+    href: '/gallery',
+    icon: Sparkles,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
+    id: 'common-threads',
+    label: 'Common Threads',
+    sublabel: 'Recurring civic themes that run through multiple debates — see cross-cutting values at a glance',
+    href: '/common-threads',
+    icon: Layers,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'judge',
+    label: 'Argument Acuity',
+    sublabel: 'Which argument is more convincing? Rate FOR vs AGAINST to build your argument acuity score',
+    href: '/judge',
+    icon: Scale,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
+    id: 'perspective',
+    label: 'Perspective Swap',
+    sublabel: "Steel-man generator — Claude builds the strongest honest case for the side you disagree with",
+    href: '/perspective',
+    icon: Repeat2,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'letter',
+    label: 'Civic Letter Generator',
+    sublabel: 'AI-powered letters to representatives, op-eds, petitions, and social threads — grounded in community consensus data',
+    href: '/letter',
+    icon: Mail,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
+    id: 'journal',
+    label: 'Civic Journal',
+    sublabel: 'Private notes tied to debates — track your evolving views, see how topics developed since you wrote',
+    href: '/journal',
+    icon: BookOpen,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
+    id: 'myth',
+    label: 'Law or Myth',
+    sublabel: "Daily fact-check game — did the Lobby pass this into law or reject it? 5 rounds, 100 points max",
+    href: '/myth',
+    icon: Hash,
+    iconColor: 'text-against-300',
+    iconBg: 'bg-against-500/10',
+  },
+  {
+    type: 'link',
+    id: 'crucible',
+    label: 'The Crucible',
+    sublabel: "Today's most contested topic — live argument leaderboard, FOR vs AGAINST ranked by upvotes",
+    href: '/crucible',
+    icon: Flame,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-500/10',
+  },
+  {
+    type: 'link',
+    id: 'impact',
+    label: 'My Civic Impact',
+    sublabel: 'Your personal ledger of influence — laws you helped pass, arguments that swayed votes',
+    href: '/impact',
+    icon: TrendingUp,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+  },
+  {
+    type: 'link',
+    id: 'match',
+    label: 'Priority Match',
+    sublabel: 'Head-to-head: pick which topic deserves more urgent attention — builds a community urgency ranking',
+    href: '/match',
+    icon: Swords,
+    iconColor: 'text-for-300',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
+    id: 'shifts',
+    label: 'Vote Shifts',
+    sublabel: 'Track how community sentiment has moved on topics over time — the biggest swings and reversals',
+    href: '/shifts',
+    icon: TrendingUp,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'polarization',
+    label: 'Polarization Index',
+    sublabel: 'Platform health dashboard — how divided or united is the Lobby? Per-category and platform-wide',
+    href: '/polarization',
+    icon: Activity,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-500/10',
+  },
 ]
 
+// Status label / color helpers for topic results
 const STATUS_LABEL: Record<string, string> = {
   proposed: 'Proposed',
   active: 'Active',
@@ -318,6 +1675,8 @@ const STATUS_COLOR: Record<string, string> = {
   law: 'text-gold',
   failed: 'text-against-400',
 }
+
+// ─── Single result row ────────────────────────────────────────────────────────────────
 
 function ResultRow({
   item,
@@ -336,15 +1695,33 @@ function ResultRow({
   if (item.type === 'link') {
     const Icon = item.icon
     return (
-      <button type="button" className={baseClass} onClick={() => onSelect(item)} tabIndex={-1}>
-        <span className={cn('flex-shrink-0 flex items-center justify-center h-8 w-8 rounded-lg', item.iconBg)}>
+      <button
+        type="button"
+        className={baseClass}
+        onClick={() => onSelect(item)}
+        tabIndex={-1}
+      >
+        <span
+          className={cn(
+            'flex-shrink-0 flex items-center justify-center h-8 w-8 rounded-lg',
+            item.iconBg
+          )}
+        >
           <Icon className={cn('h-4 w-4', item.iconColor)} />
         </span>
         <span className="flex-1 min-w-0">
-          <span className="block text-sm font-medium text-white leading-tight">{item.label}</span>
-          {item.sublabel && <span className="block text-xs text-surface-500 leading-tight mt-0.5">{item.sublabel}</span>}
+          <span className="block text-sm font-medium text-white leading-tight">
+            {item.label}
+          </span>
+          {item.sublabel && (
+            <span className="block text-xs text-surface-500 leading-tight mt-0.5">
+              {item.sublabel}
+            </span>
+          )}
         </span>
-        <span className="flex-shrink-0 text-[10px] font-mono text-surface-600">↵</span>
+        <span className="flex-shrink-0 text-[10px] font-mono text-surface-600">
+          ↵
+        </span>
       </button>
     )
   }
@@ -352,63 +1729,118 @@ function ResultRow({
   if (item.type === 'topic') {
     const forPct = Math.round(item.blue_pct)
     return (
-      <button type="button" className={baseClass} onClick={() => onSelect(item)} tabIndex={-1}>
+      <button
+        type="button"
+        className={baseClass}
+        onClick={() => onSelect(item)}
+        tabIndex={-1}
+      >
         <span className="flex-shrink-0 flex items-center justify-center h-8 w-8 rounded-lg bg-for-500/10">
           <FileText className="h-4 w-4 text-for-400" />
         </span>
         <span className="flex-1 min-w-0">
-          <span className="block text-sm font-medium text-white leading-tight line-clamp-1">{item.statement}</span>
+          <span className="block text-sm font-medium text-white leading-tight line-clamp-1">
+            {item.statement}
+          </span>
           <span className="flex items-center gap-2 mt-0.5">
-            {item.category && <span className="text-xs text-surface-500">{item.category}</span>}
-            <span className={cn('text-[10px] font-mono uppercase', STATUS_COLOR[item.status] ?? 'text-surface-500')}>{STATUS_LABEL[item.status] ?? item.status}</span>
-            <span className="text-[10px] font-mono text-surface-600">{forPct}% For</span>
+            {item.category && (
+              <span className="text-xs text-surface-500">{item.category}</span>
+            )}
+            <span
+              className={cn(
+                'text-[10px] font-mono uppercase',
+                STATUS_COLOR[item.status] ?? 'text-surface-500'
+              )}
+            >
+              {STATUS_LABEL[item.status] ?? item.status}
+            </span>
+            <span className="text-[10px] font-mono text-surface-600">
+              {forPct}% For
+            </span>
           </span>
         </span>
-        <span className="flex-shrink-0 text-[10px] font-mono text-surface-600">↵</span>
+        <span className="flex-shrink-0 text-[10px] font-mono text-surface-600">
+          ↵
+        </span>
       </button>
     )
   }
 
   if (item.type === 'law') {
     return (
-      <button type="button" className={baseClass} onClick={() => onSelect(item)} tabIndex={-1}>
+      <button
+        type="button"
+        className={baseClass}
+        onClick={() => onSelect(item)}
+        tabIndex={-1}
+      >
         <span className="flex-shrink-0 flex items-center justify-center h-8 w-8 rounded-lg bg-gold/10">
           <Scale className="h-4 w-4 text-gold" />
         </span>
         <span className="flex-1 min-w-0">
-          <span className="block text-sm font-medium text-white leading-tight line-clamp-1">{item.statement}</span>
+          <span className="block text-sm font-medium text-white leading-tight line-clamp-1">
+            {item.statement}
+          </span>
           <span className="flex items-center gap-2 mt-0.5">
-            {item.category && <span className="text-xs text-surface-500">{item.category}</span>}
+            {item.category && (
+              <span className="text-xs text-surface-500">{item.category}</span>
+            )}
             <span className="text-[10px] font-mono text-gold uppercase">LAW</span>
           </span>
         </span>
-        <span className="flex-shrink-0 text-[10px] font-mono text-surface-600">↵</span>
+        <span className="flex-shrink-0 text-[10px] font-mono text-surface-600">
+          ↵
+        </span>
       </button>
     )
   }
 
+  // person
   return (
-    <button type="button" className={baseClass} onClick={() => onSelect(item)} tabIndex={-1}>
-      <Avatar src={item.avatar_url} fallback={item.display_name || item.username} size="sm" className="flex-shrink-0" />
+    <button
+      type="button"
+      className={baseClass}
+      onClick={() => onSelect(item)}
+      tabIndex={-1}
+    >
+      <Avatar
+        src={item.avatar_url}
+        fallback={item.display_name || item.username}
+        size="sm"
+        className="flex-shrink-0"
+      />
       <span className="flex-1 min-w-0">
-        <span className="block text-sm font-medium text-white leading-tight">{item.display_name || item.username}</span>
+        <span className="block text-sm font-medium text-white leading-tight">
+          {item.display_name || item.username}
+        </span>
         <span className="flex items-center gap-2 mt-0.5">
           <span className="text-xs text-surface-500">@{item.username}</span>
-          <span className="text-[10px] font-mono text-gold"><TrendingUp className="inline h-2.5 w-2.5 mr-0.5" />{item.clout.toLocaleString()}</span>
+          <span className="text-[10px] font-mono text-gold">
+            <TrendingUp className="inline h-2.5 w-2.5 mr-0.5" />
+            {item.clout.toLocaleString()}
+          </span>
         </span>
       </span>
-      <span className="flex-shrink-0 text-[10px] font-mono text-surface-600">↵</span>
+      <span className="flex-shrink-0 text-[10px] font-mono text-surface-600">
+        ↵
+      </span>
     </button>
   )
 }
 
+// ─── Section header ────────────────────────────────────────────────────────────────────
+
 function SectionHeader({ label }: { label: string }) {
   return (
     <div className="px-4 pt-2 pb-1">
-      <span className="text-[10px] font-mono uppercase tracking-widest text-surface-500">{label}</span>
+      <span className="text-[10px] font-mono uppercase tracking-widest text-surface-500">
+        {label}
+      </span>
     </div>
   )
 }
+
+// ─── The palette itself ───────────────────────────────────────────────────────────────────
 
 interface CommandPaletteProps {
   open: boolean
@@ -427,10 +1859,14 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
   const [activeIndex, setActiveIndex] = useState(0)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
+  // Derived flat list of all navigable items
   const items: PaletteItem[] = query.trim().length < 2 ? QUICK_LINKS : results
 
+  // Trap keyboard focus inside the palette while it is open.
+  // autoFocus=false because we manually focus the input below.
   useFocusTrap(panelRef, open, false)
 
+  // Auto-focus input when palette opens; reset state on close
   useEffect(() => {
     if (open) {
       setQuery('')
@@ -440,25 +1876,41 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
     }
   }, [open])
 
+  // Debounced search
   const doSearch = useCallback(async (q: string) => {
-    if (q.trim().length < 2) { setResults([]); setLoading(false); return }
+    if (q.trim().length < 2) {
+      setResults([])
+      setLoading(false)
+      return
+    }
+
     setLoading(true)
     try {
+      // Fire all three tabs in parallel
       const [topicsRes, lawsRes, peopleRes] = await Promise.all([
         fetch(`/api/search?q=${encodeURIComponent(q.trim())}&tab=topics`),
         fetch(`/api/search?q=${encodeURIComponent(q.trim())}&tab=laws`),
         fetch(`/api/search?q=${encodeURIComponent(q.trim())}&tab=people`),
       ])
+
       const [topicsData, lawsData, peopleData] = await Promise.all([
         topicsRes.ok ? topicsRes.json() : { results: [] },
         lawsRes.ok ? lawsRes.json() : { results: [] },
         peopleRes.ok ? peopleRes.json() : { results: [] },
       ])
+
       const combined: PaletteItem[] = [
-        ...(topicsData.results ?? []).slice(0, 4).map((r: Omit<TopicResult, 'type'>) => ({ ...r, type: 'topic' as const })),
-        ...(lawsData.results ?? []).slice(0, 3).map((r: Omit<LawResult, 'type'>) => ({ ...r, type: 'law' as const })),
-        ...(peopleData.results ?? []).slice(0, 3).map((r: Omit<PersonResult, 'type'>) => ({ ...r, type: 'person' as const })),
+        ...(topicsData.results ?? []).slice(0, 4).map(
+          (r: Omit<TopicResult, 'type'>) => ({ ...r, type: 'topic' as const })
+        ),
+        ...(lawsData.results ?? []).slice(0, 3).map(
+          (r: Omit<LawResult, 'type'>) => ({ ...r, type: 'law' as const })
+        ),
+        ...(peopleData.results ?? []).slice(0, 3).map(
+          (r: Omit<PersonResult, 'type'>) => ({ ...r, type: 'person' as const })
+        ),
       ]
+
       setResults(combined)
       setActiveIndex(0)
     } catch {
@@ -471,42 +1923,73 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current)
     debounceRef.current = setTimeout(() => doSearch(query), 250)
-    return () => { if (debounceRef.current) clearTimeout(debounceRef.current) }
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current)
+    }
   }, [query, doSearch])
 
-  const navigateTo = useCallback((item: PaletteItem) => {
-    onClose()
-    let href = '/'
-    if (item.type === 'link') href = item.href
-    else if (item.type === 'topic') href = `/topic/${item.id}`
-    else if (item.type === 'law') href = `/law/${item.id}`
-    else if (item.type === 'person') href = `/profile/${item.username}`
-    router.push(href)
-  }, [onClose, router])
+  // Navigate to the selected item
+  const navigateTo = useCallback(
+    (item: PaletteItem) => {
+      onClose()
+      let href = '/'
 
-  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'ArrowDown') { e.preventDefault(); setActiveIndex((i) => Math.min(i + 1, items.length - 1)) }
-    else if (e.key === 'ArrowUp') { e.preventDefault(); setActiveIndex((i) => Math.max(i - 1, 0)) }
-    else if (e.key === 'Enter') { e.preventDefault(); const item = items[activeIndex]; if (item) navigateTo(item) }
-    else if (e.key === 'Escape') { e.preventDefault(); onClose() }
-  }, [items, activeIndex, navigateTo, onClose])
+      if (item.type === 'link') href = item.href
+      else if (item.type === 'topic') href = `/topic/${item.id}`
+      else if (item.type === 'law') href = `/law/${item.id}`
+      else if (item.type === 'person') href = `/profile/${item.username}`
 
+      router.push(href)
+    },
+    [onClose, router]
+  )
+
+  // Keyboard: ↑ ↓ Enter Escape
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault()
+        setActiveIndex((i) => Math.min(i + 1, items.length - 1))
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault()
+        setActiveIndex((i) => Math.max(i - 1, 0))
+      } else if (e.key === 'Enter') {
+        e.preventDefault()
+        const item = items[activeIndex]
+        if (item) navigateTo(item)
+      } else if (e.key === 'Escape') {
+        e.preventDefault()
+        onClose()
+      }
+    },
+    [items, activeIndex, navigateTo, onClose]
+  )
+
+  // Scroll active item into view
   useEffect(() => {
     const list = scrollRef.current
     if (!list) return
-    const el = list.querySelectorAll('[data-palette-item]')[activeIndex] as HTMLElement | undefined
+    const el = list.querySelectorAll('[data-palette-item]')[activeIndex] as
+      | HTMLElement
+      | undefined
     el?.scrollIntoView({ block: 'nearest' })
   }, [activeIndex])
 
+  // Group labels when showing search results
   const topicsInResults = results.filter((r) => r.type === 'topic')
   const lawsInResults = results.filter((r) => r.type === 'law')
   const peopleInResults = results.filter((r) => r.type === 'person')
 
+  // Build labelled sections for search results
   const sections: Array<{ label: string; items: PaletteItem[] }> = []
-  if (topicsInResults.length > 0) sections.push({ label: 'Topics', items: topicsInResults })
-  if (lawsInResults.length > 0) sections.push({ label: 'Laws', items: lawsInResults })
-  if (peopleInResults.length > 0) sections.push({ label: 'People', items: peopleInResults })
+  if (topicsInResults.length > 0)
+    sections.push({ label: 'Topics', items: topicsInResults })
+  if (lawsInResults.length > 0)
+    sections.push({ label: 'Laws', items: lawsInResults })
+  if (peopleInResults.length > 0)
+    sections.push({ label: 'People', items: peopleInResults })
 
+  // Flat index offset for highlighting within grouped sections
   function globalIndex(sectionIdx: number, rowIdx: number): number {
     let offset = 0
     for (let s = 0; s < sectionIdx; s++) offset += sections[s].items.length
@@ -520,12 +2003,23 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
       {open && (
         <motion.div
           key="command-palette-backdrop"
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
           transition={{ duration: 0.15 }}
           className="fixed inset-0 z-[9995] flex items-start justify-center px-4 pt-[12vh] pb-8"
-          onClick={onClose} aria-modal="true" role="dialog" aria-label="Command palette"
+          onClick={onClose}
+          aria-modal="true"
+          role="dialog"
+          aria-label="Command palette"
         >
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" aria-hidden="true" />
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            aria-hidden="true"
+          />
+
+          {/* Panel */}
           <motion.div
             ref={panelRef}
             key="command-palette-panel"
@@ -534,79 +2028,166 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
             exit={{ opacity: 0, y: -8, scale: 0.97 }}
             transition={{ type: 'spring', stiffness: 400, damping: 32 }}
             onClick={(e) => e.stopPropagation()}
-            className={cn('relative z-10 w-full max-w-lg', 'rounded-2xl overflow-hidden', 'bg-surface-100 border border-surface-300', 'shadow-2xl shadow-black/60')}
+            className={cn(
+              'relative z-10 w-full max-w-lg',
+              'rounded-2xl overflow-hidden',
+              'bg-surface-100 border border-surface-300',
+              'shadow-2xl shadow-black/60'
+            )}
           >
+            {/* Search input */}
             <div className="flex items-center gap-3 px-4 py-3.5 border-b border-surface-300">
-              {loading ? <Loader2 className="h-4 w-4 text-surface-500 animate-spin flex-shrink-0" /> : <Search className="h-4 w-4 text-surface-500 flex-shrink-0" />}
+              {loading ? (
+                <Loader2 className="h-4 w-4 text-surface-500 animate-spin flex-shrink-0" />
+              ) : (
+                <Search className="h-4 w-4 text-surface-500 flex-shrink-0" />
+              )}
               <input
-                ref={inputRef} type="text" value={query}
-                onChange={(e) => { setQuery(e.target.value); setActiveIndex(0) }}
+                ref={inputRef}
+                type="text"
+                value={query}
+                onChange={(e) => {
+                  setQuery(e.target.value)
+                  setActiveIndex(0)
+                }}
                 onKeyDown={handleKeyDown}
                 placeholder="Search topics, laws, people…"
-                className={cn('flex-1 bg-transparent text-sm text-white placeholder:text-surface-500', 'focus:outline-none')}
-                autoComplete="off" spellCheck={false}
+                className={cn(
+                  'flex-1 bg-transparent text-sm text-white placeholder:text-surface-500',
+                  'focus:outline-none'
+                )}
+                autoComplete="off"
+                spellCheck={false}
               />
               {query.length > 0 && (
-                <button type="button" onClick={() => { setQuery(''); setActiveIndex(0); inputRef.current?.focus() }}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setQuery('')
+                    setActiveIndex(0)
+                    inputRef.current?.focus()
+                  }}
                   className="flex-shrink-0 flex items-center justify-center h-5 w-5 rounded text-surface-500 hover:text-white hover:bg-surface-300 transition-colors"
-                  aria-label="Clear search" tabIndex={-1}>
+                  aria-label="Clear search"
+                  tabIndex={-1}
+                >
                   <X className="h-3.5 w-3.5" />
                 </button>
               )}
-              <kbd className="hidden sm:flex flex-shrink-0 items-center justify-center px-1.5 py-0.5 rounded-md bg-surface-200 border border-surface-400 text-[10px] font-mono text-surface-500">esc</kbd>
+              <kbd className="hidden sm:flex flex-shrink-0 items-center justify-center px-1.5 py-0.5 rounded-md bg-surface-200 border border-surface-400 text-[10px] font-mono text-surface-500">
+                esc
+              </kbd>
             </div>
-            <div ref={scrollRef} className="overflow-y-auto overscroll-contain max-h-[min(420px,60dvh)] py-1">
+
+            {/* Results area */}
+            <div
+              ref={scrollRef}
+              className="overflow-y-auto overscroll-contain max-h-[min(420px,60dvh)] py-1"
+            >
+              {/* No query: show quick links */}
               {query.trim().length < 2 && (
                 <>
                   <SectionHeader label="Quick Navigation" />
                   {QUICK_LINKS.map((link, i) => (
                     <div key={link.id} data-palette-item>
-                      <ResultRow item={link} isActive={i === activeIndex} onSelect={navigateTo} />
+                      <ResultRow
+                        item={link}
+                        isActive={i === activeIndex}
+                        onSelect={navigateTo}
+                      />
                     </div>
                   ))}
                 </>
               )}
+
+              {/* With query: show grouped results */}
               {query.trim().length >= 2 && !loading && sections.length === 0 && (
                 <div className="flex flex-col items-center justify-center py-10 px-4 text-center gap-2">
                   <Search className="h-6 w-6 text-surface-500" />
-                  <p className="text-sm text-surface-500">No results for &ldquo;{query}&rdquo;</p>
-                  <button type="button" onClick={() => { onClose(); router.push(`/search?q=${encodeURIComponent(query.trim())}`) }}
-                    className="mt-1 text-xs text-for-400 hover:text-for-300 transition-colors underline-offset-2 hover:underline">
+                  <p className="text-sm text-surface-500">
+                    No results for &ldquo;{query}&rdquo;
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onClose()
+                      router.push(
+                        `/search?q=${encodeURIComponent(query.trim())}`
+                      )
+                    }}
+                    className="mt-1 text-xs text-for-400 hover:text-for-300 transition-colors underline-offset-2 hover:underline"
+                  >
                     Open full search page
                   </button>
                 </div>
               )}
-              {query.trim().length >= 2 && sections.length > 0 && sections.map((section, si) => (
-                <div key={section.label}>
-                  <SectionHeader label={section.label} />
-                  {section.items.map((item, ri) => (
-                    <div key={item.id} data-palette-item>
-                      <ResultRow item={item} isActive={globalIndex(si, ri) === activeIndex} onSelect={navigateTo} />
-                    </div>
-                  ))}
-                </div>
-              ))}
+
+              {query.trim().length >= 2 && sections.length > 0 &&
+                sections.map((section, si) => (
+                  <div key={section.label}>
+                    <SectionHeader label={section.label} />
+                    {section.items.map((item, ri) => (
+                      <div key={item.id} data-palette-item>
+                        <ResultRow
+                          item={item}
+                          isActive={globalIndex(si, ri) === activeIndex}
+                          onSelect={navigateTo}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                ))}
+
+              {/* Quick link to full search page */}
               {query.trim().length >= 2 && sections.length > 0 && (
                 <div className="px-4 py-2 mt-1 border-t border-surface-300">
-                  <button type="button" onClick={() => { onClose(); router.push(`/search?q=${encodeURIComponent(query.trim())}`) }}
-                    className="flex items-center gap-2 text-xs text-surface-500 hover:text-white transition-colors">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onClose()
+                      router.push(
+                        `/search?q=${encodeURIComponent(query.trim())}`
+                      )
+                    }}
+                    className="flex items-center gap-2 text-xs text-surface-500 hover:text-white transition-colors"
+                  >
                     <Activity className="h-3.5 w-3.5" />
                     See all results for &ldquo;{query}&rdquo;
                   </button>
                 </div>
               )}
             </div>
+
+            {/* Footer */}
             <div className="flex items-center gap-4 px-4 py-2.5 border-t border-surface-300 bg-surface-50">
-              <div className="flex items-center gap-1.5 text-[10px] font-mono text-surface-600"><kbd className="px-1 py-0.5 rounded bg-surface-200 border border-surface-400 text-surface-500">⇕</kbd>navigate</div>
-              <div className="flex items-center gap-1.5 text-[10px] font-mono text-surface-600"><kbd className="px-1 py-0.5 rounded bg-surface-200 border border-surface-400 text-surface-500">↵</kbd>open</div>
-              <div className="flex items-center gap-1.5 text-[10px] font-mono text-surface-600"><kbd className="px-1 py-0.5 rounded bg-surface-200 border border-surface-400 text-surface-500">esc</kbd>close</div>
+              <div className="flex items-center gap-1.5 text-[10px] font-mono text-surface-600">
+                <kbd className="px-1 py-0.5 rounded bg-surface-200 border border-surface-400 text-surface-500">↑↓</kbd>
+                navigate
+              </div>
+              <div className="flex items-center gap-1.5 text-[10px] font-mono text-surface-600">
+                <kbd className="px-1 py-0.5 rounded bg-surface-200 border border-surface-400 text-surface-500">↵</kbd>
+                open
+              </div>
+              <div className="flex items-center gap-1.5 text-[10px] font-mono text-surface-600">
+                <kbd className="px-1 py-0.5 rounded bg-surface-200 border border-surface-400 text-surface-500">esc</kbd>
+                close
+              </div>
               <div className="ml-auto flex items-center gap-1.5 text-[10px] font-mono text-surface-600">
-                <button type="button"
-                  onClick={() => { onClose(); import('@/lib/hooks/useKeyboardShortcuts').then(({ openKeyboardShortcuts }) => { openKeyboardShortcuts() }) }}
+                <button
+                  type="button"
+                  onClick={() => {
+                    onClose()
+                    import('@/lib/hooks/useKeyboardShortcuts').then(({ openKeyboardShortcuts }) => {
+                      openKeyboardShortcuts()
+                    })
+                  }}
                   className="flex items-center gap-1.5 text-surface-600 hover:text-surface-700 transition-colors"
-                  aria-label="Show keyboard shortcuts">
+                  aria-label="Show keyboard shortcuts"
+                >
                   <HelpCircle className="h-3 w-3" />
-                  <kbd className="px-1 py-0.5 rounded bg-surface-200 border border-surface-400 text-surface-500">?</kbd>
+                  <kbd className="px-1 py-0.5 rounded bg-surface-200 border border-surface-400 text-surface-500">
+                    ?
+                  </kbd>
                   shortcuts
                 </button>
               </div>
