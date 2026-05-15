@@ -89,6 +89,7 @@ import {
   Brain,
   Mail,
   HandHeart,
+  TrendingDown,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -807,6 +808,16 @@ const QUICK_LINKS: QuickLink[] = [
     icon: Trophy,
     iconColor: 'text-gold',
     iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'civic-drift',
+    label: 'Civic Drift Report',
+    sublabel: 'See how far your vote positions diverge from current community consensus — contrarian and aligned topics',
+    href: '/analytics/drift',
+    icon: TrendingDown,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-500/10',
   },
   {
     type: 'link',

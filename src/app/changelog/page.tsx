@@ -49,6 +49,7 @@ import {
   Timer,
   Trophy,
   TrendingUp,
+  TrendingDown,
   Type,
   Users,
   Vote,
@@ -1118,10 +1119,10 @@ const CHAPTERS: Chapter[] = [
 ]
 
 const STATS = [
-  { value: '78', label: 'chapters shipped' },
-  { value: '350+', label: 'features built' },
+  { value: '85', label: 'chapters shipped' },
+  { value: '355+', label: 'features built' },
   { value: '70', label: 'DB migrations' },
-  { value: '401+', label: 'API routes' },
+  { value: '402+', label: 'API routes' },
 ]
 
 interface RecentBuild {
@@ -1134,6 +1135,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Civic Drift Report',
+    description: 'New /analytics/drift page shows how far a user\'s fixed vote positions diverge from current community consensus. For every topic a user has voted on, the report classifies the position into one of five buckets: Strongly Aligned (user matches a 70%+ consensus), Aligned (moderate majority match), Deadlocked (near 50/50 split), Contrarian (against a moderate majority), or Strongly Contrarian (opposing a 70%+ consensus). A headline Alignment Score (0–100%) and civic archetype label (Crowd Follower → Contrarian) summarise the user\'s overall stance relative to the platform. Four tabs expose the most contrarian positions (largest gap from consensus), most aligned positions, a per-category drift breakdown with bar charts, and the 20 most recent votes. Distinct from /analytics/evolution (tracks the user\'s own opinion shifts), /analytics/consensus-shift (platform-wide movement), and /analytics/calibration (prediction accuracy). Added to analytics hub featured card and nav link, command palette, and sitemap.',
+    href: '/analytics/drift',
+    icon: TrendingDown,
+    color: 'text-against-400',
+    tag: 'Ch. 85',
+  },
   {
     title: 'Civic Perspective Lens',
     description: 'New /analytics/lens page reveals how each user\'s vote distribution diverges from community consensus on a category-by-category basis. Shows four headline scores — Alignment (how closely your votes match the community average), Contrarian (% of votes cast against the majority), Diversity (how many of the 10 civic categories you engage with), and total vote count. An archetype engine assigns one of five profiles: The Contrarian, The Maverick, The Oracle, The Specialist, or The Moderate — based on your diversity and contrarian scores. A stacked dual-bar chart for each category overlays your FOR% on top of the community FOR% so divergences are instantly visible. The Most Contrarian Votes section lists your outlier picks (where your side had <35% community support) with topic links and outcome badges. Added to analytics hub nav, featured card in hub, sitemap, and command palette.',
