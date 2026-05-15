@@ -8,7 +8,7 @@ import {
   TrendingUp, Vote, Zap, Target, BarChart2, ArrowLeft, Brain, Flame, Heart, Scale,
   MessageSquare, Award, ChevronRight, CheckCircle2, Circle, XCircle, Clock, ChevronDown,
   Compass, Fingerprint, Users, Swords, Star, Network, Sparkles, BookOpen, ThumbsUp,
-  Shield, Gavel, Quote, Rocket, Hash, Gauge,
+  Shield, Gavel, Quote, Rocket, Hash, Gauge, Eye,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -383,6 +383,8 @@ export default function AnalyticsPage() {
             <Link href="/analytics/consensus-shift" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><Zap className="h-3.5 w-3.5" />Consensus Shift</Link>
             <Link href="/analytics/tags" className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"><Hash className="h-3.5 w-3.5" />Tag Profile</Link>
             <Link href="/analytics/calibration" className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"><Gauge className="h-3.5 w-3.5" />Calibration</Link>
+            <Link href="/analytics/lens" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><Eye className="h-3.5 w-3.5" />Perspective Lens</Link>
+            <Link href="/analytics/argument-quality" className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"><Brain className="h-3.5 w-3.5" />Arg. Quality</Link>
             <Link href="/prescient" className="flex items-center gap-1 text-xs text-for-300 hover:text-for-200 transition-colors font-mono font-semibold"><Target className="h-3.5 w-3.5" />Alignment</Link>
             <Link href="/karma" className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"><Sparkles className="h-3.5 w-3.5" />Karma</Link>
             <Link href="/profile/me" className="flex items-center gap-1 text-xs text-surface-500 hover:text-white transition-colors">Profile<ChevronRight className="h-3.5 w-3.5" /></Link>
@@ -436,6 +438,20 @@ export default function AnalyticsPage() {
                 </Link>
               </motion.div>
             </div>
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.38 }}>
+              <Link href="/analytics/lens" className="flex items-center justify-between rounded-2xl bg-surface-100 border border-surface-300 p-5 hover:border-for-500/40 hover:bg-surface-100/80 transition-colors group">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center justify-center h-10 w-10 rounded-xl bg-for-500/10 border border-for-500/20 flex-shrink-0">
+                    <Eye className="h-5 w-5 text-for-400" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-mono font-semibold text-white">Civic Perspective Lens</div>
+                    <div className="text-xs font-mono text-surface-500 mt-0.5">How your votes diverge from community consensus by category</div>
+                  </div>
+                </div>
+                <ChevronRight className="h-4 w-4 text-surface-500 group-hover:text-white transition-colors flex-shrink-0" />
+              </Link>
+            </motion.div>
             <PoliticalKinSection />
             <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.4 }} className="rounded-2xl bg-surface-100 border border-surface-300 p-6">
               <div className="flex items-center gap-2 text-xs font-mono text-surface-500 uppercase tracking-wider mb-4"><Award className="h-3.5 w-3.5" />Reputation Score</div>

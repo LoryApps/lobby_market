@@ -780,6 +780,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'perspective-lens',
+    label: 'Civic Perspective Lens',
+    sublabel: 'How your votes diverge from community consensus by category — contrarian score, diversity, archetype, outlier votes',
+    href: '/analytics/lens',
+    icon: Eye,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
     id: 'extremes',
     label: 'Civic Extremes',
     sublabel: 'Most contested debates & strongest mandates',
