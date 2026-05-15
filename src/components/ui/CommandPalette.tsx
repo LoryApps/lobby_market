@@ -821,6 +821,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'analytics-timing',
+    label: 'Civic Timing Report',
+    sublabel: 'When do you vote? Hour-of-day patterns, early-adopter score, and your timing archetype (Trailblazer to Archivist)',
+    href: '/analytics/timing',
+    icon: Clock,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
     id: 'extremes',
     label: 'Civic Extremes',
     sublabel: 'Most contested debates & strongest mandates',

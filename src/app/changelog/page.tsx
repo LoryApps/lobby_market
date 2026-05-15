@@ -10,6 +10,7 @@ import {
   BookOpen,
   Brain,
   CalendarClock,
+  Clock,
   Bot,
   Building2,
   CheckCircle2,
@@ -1135,6 +1136,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Civic Timing Report',
+    description: 'New /analytics/timing page reveals WHEN a user votes — not what they vote on, but the precise timing patterns of their civic participation. The page analyses up to 1,000 votes and computes: (1) an Early Adopter Score (0–100) based on the logarithmic decay of average time-to-vote from topic creation; (2) a Timing Archetype — Trailblazer (<24h average), Pioneer (<72h), Mainstream (<7d), Deliberator (<30d), or Archivist (30d+); (3) an hour-of-day bar chart (UTC) showing which hours the user votes most, with a peak-hour highlight; (4) a day-of-week distribution chart showing civic rhythms across the week; (5) "Fastest Votes" (voted within minutes of a topic going live) and "Slowest Votes" (revisited weeks later) topic lists; (6) Early accuracy — of topics voted on within 24h that later resolved, what % of early votes matched the eventual majority. Distinct from /analytics/votes (topic history), /analytics/evolution (opinion shifts), and /analytics/growth (participation trends). Added to analytics hub nav link, featured card, command palette, and sitemap.',
+    href: '/analytics/timing',
+    icon: Clock,
+    color: 'text-for-400',
+    tag: 'Ch. 86',
+  },
   {
     title: 'Civic Drift Report',
     description: 'New /analytics/drift page shows how far a user\'s fixed vote positions diverge from current community consensus. For every topic a user has voted on, the report classifies the position into one of five buckets: Strongly Aligned (user matches a 70%+ consensus), Aligned (moderate majority match), Deadlocked (near 50/50 split), Contrarian (against a moderate majority), or Strongly Contrarian (opposing a 70%+ consensus). A headline Alignment Score (0–100%) and civic archetype label (Crowd Follower → Contrarian) summarise the user\'s overall stance relative to the platform. Four tabs expose the most contrarian positions (largest gap from consensus), most aligned positions, a per-category drift breakdown with bar charts, and the 20 most recent votes. Distinct from /analytics/evolution (tracks the user\'s own opinion shifts), /analytics/consensus-shift (platform-wide movement), and /analytics/calibration (prediction accuracy). Added to analytics hub featured card and nav link, command palette, and sitemap.',

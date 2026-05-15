@@ -83,6 +83,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/analytics/snapshot`, changeFrequency: 'daily', priority: 0.72 },
   { url: `${BASE_URL}/analytics/benchmark`, changeFrequency: 'daily', priority: 0.7 },
   { url: `${BASE_URL}/analytics/drift`, changeFrequency: 'daily', priority: 0.7 },
+  { url: `${BASE_URL}/analytics/timing`, changeFrequency: 'daily', priority: 0.7 },
   { url: `${BASE_URL}/laws/atlas`, changeFrequency: 'daily', priority: 0.72 },
   { url: `${BASE_URL}/calibration`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/compare`, changeFrequency: 'daily', priority: 0.65 },
