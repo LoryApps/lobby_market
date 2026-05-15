@@ -800,6 +800,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'civic-benchmark',
+    label: 'Civic Benchmark',
+    sublabel: 'How you rank against citizens who joined at the same time — percentile scores across clout, votes, reputation',
+    href: '/analytics/benchmark',
+    icon: Trophy,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'extremes',
     label: 'Civic Extremes',
     sublabel: 'Most contested debates & strongest mandates',
