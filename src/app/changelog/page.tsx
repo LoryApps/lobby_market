@@ -1137,6 +1137,14 @@ interface RecentBuild {
 
 const RECENT_BUILDS: RecentBuild[] = [
   {
+    title: 'Civic Influence Score',
+    description: 'New /analytics/influence page computes a composite 0–100 Civic Influence Score from four pillars: Engagement (0–40 pts, log-scaled total argument upvotes received), Quality (0–25 pts, avg AI grade + citation rate), Reach (0–20 pts, log-scaled follower count), and Civic Impact (0–15 pts, legislative vote accuracy on resolved topics). Score maps to five tiers — Newcomer → Emerging Voice → Contributor → Advocate → Amplifier — each with a unique description. Score breakdown is shown as four animated progress bars. Supporting sections: (1) Argument Quality card showing avg upvotes per argument, avg AI score, and citation rate; (2) Top Arguments tab listing up to 10 best arguments by upvotes, with grade badge, reply count, citation indicator, and topic context; (3) Categories tab showing per-category upvote distribution bar chart; (4) Legislative tab with laws correctly backed, fails correctly opposed, accuracy %, and a per-pick correct/incorrect indicator on resolved votes. Added to analytics hub nav link and featured gold card, command palette (⌘K), and sitemap.',
+    href: '/analytics/influence',
+    icon: Zap,
+    color: 'text-gold',
+    tag: 'Ch. 87',
+  },
+  {
     title: 'Civic Timing Report',
     description: 'New /analytics/timing page reveals WHEN a user votes — not what they vote on, but the precise timing patterns of their civic participation. The page analyses up to 1,000 votes and computes: (1) an Early Adopter Score (0–100) based on the logarithmic decay of average time-to-vote from topic creation; (2) a Timing Archetype — Trailblazer (<24h average), Pioneer (<72h), Mainstream (<7d), Deliberator (<30d), or Archivist (30d+); (3) an hour-of-day bar chart (UTC) showing which hours the user votes most, with a peak-hour highlight; (4) a day-of-week distribution chart showing civic rhythms across the week; (5) "Fastest Votes" (voted within minutes of a topic going live) and "Slowest Votes" (revisited weeks later) topic lists; (6) Early accuracy — of topics voted on within 24h that later resolved, what % of early votes matched the eventual majority. Distinct from /analytics/votes (topic history), /analytics/evolution (opinion shifts), and /analytics/growth (participation trends). Added to analytics hub nav link, featured card, command palette, and sitemap.',
     href: '/analytics/timing',

@@ -831,6 +831,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'analytics-influence',
+    label: 'Civic Influence Score',
+    sublabel: 'Your composite influence score — argument upvotes, follower reach, content quality, and legislative accuracy in one number',
+    href: '/analytics/influence',
+    icon: Zap,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'extremes',
     label: 'Civic Extremes',
     sublabel: 'Most contested debates & strongest mandates',
