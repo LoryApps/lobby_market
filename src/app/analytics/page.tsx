@@ -8,7 +8,7 @@ import {
   TrendingUp, Vote, Zap, Target, BarChart2, ArrowLeft, Brain, Flame, Heart, Scale,
   MessageSquare, Award, ChevronRight, CheckCircle2, Circle, XCircle, Clock, ChevronDown,
   Compass, Fingerprint, Users, Swords, Star, Network, Sparkles, BookOpen, ThumbsUp,
-  Shield, Gavel, Quote, Rocket, Hash, Gauge, Eye,
+  Shield, Gavel, Quote, Rocket, Hash, Gauge, Eye, LayoutGrid,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -385,6 +385,7 @@ export default function AnalyticsPage() {
             <Link href="/analytics/calibration" className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"><Gauge className="h-3.5 w-3.5" />Calibration</Link>
             <Link href="/analytics/lens" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><Eye className="h-3.5 w-3.5" />Perspective Lens</Link>
             <Link href="/analytics/argument-quality" className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"><Brain className="h-3.5 w-3.5" />Arg. Quality</Link>
+            <Link href="/analytics/snapshot" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><LayoutGrid className="h-3.5 w-3.5" />Snapshot</Link>
             <Link href="/prescient" className="flex items-center gap-1 text-xs text-for-300 hover:text-for-200 transition-colors font-mono font-semibold"><Target className="h-3.5 w-3.5" />Alignment</Link>
             <Link href="/karma" className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"><Sparkles className="h-3.5 w-3.5" />Karma</Link>
             <Link href="/profile/me" className="flex items-center gap-1 text-xs text-surface-500 hover:text-white transition-colors">Profile<ChevronRight className="h-3.5 w-3.5" /></Link>
@@ -450,6 +451,20 @@ export default function AnalyticsPage() {
                   </div>
                 </div>
                 <ChevronRight className="h-4 w-4 text-surface-500 group-hover:text-white transition-colors flex-shrink-0" />
+              </Link>
+            </motion.div>
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.39 }}>
+              <Link href="/analytics/snapshot" className="flex items-center justify-between rounded-2xl bg-gradient-to-r from-gold/10 to-surface-100 border border-gold/30 p-5 hover:border-gold/50 hover:bg-gold/10 transition-colors group">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center justify-center h-10 w-10 rounded-xl bg-gold/10 border border-gold/30 flex-shrink-0">
+                    <LayoutGrid className="h-5 w-5 text-gold" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-mono font-semibold text-white">Civic Identity Snapshot</div>
+                    <div className="text-xs font-mono text-surface-500 mt-0.5">Your full civic profile at a glance — archetype, top categories, scores</div>
+                  </div>
+                </div>
+                <ChevronRight className="h-4 w-4 text-surface-500 group-hover:text-gold transition-colors flex-shrink-0" />
               </Link>
             </motion.div>
             <PoliticalKinSection />

@@ -53,6 +53,8 @@ import {
   Users,
   Vote,
   Zap,
+  LayoutGrid,
+  Share2,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -931,6 +933,20 @@ const CHAPTERS: Chapter[] = [
       { icon: MessageSquare, label: 'New /arguments/discussions page ranks arguments by reply activity rather than upvotes or velocity — making threaded conversations discoverable for the first time. Three sort modes: Most Replies, Recent Activity, Most Active (hybrid score).', href: '/arguments/discussions', color: 'text-purple' },
       { icon: Sparkles, label: 'Filter by side (FOR/AGAINST), time window (7d / 30d / 90d / all-time), and all 10 civic categories. Each card shows reply count badge, last reply timestamp, author, AI grade, and upvote count.', href: '/arguments/discussions', color: 'text-for-400' },
       { icon: Layers, label: '"Read thread" CTA links directly to the argument\'s full reply view at /arguments/[id]. Added to sitemap (/arguments/discussions) and command palette. Backed by new /api/arguments/discussions endpoint — no new migration needed.', href: '/arguments/discussions', color: 'text-emerald' },
+    ],
+  },
+  {
+    number: 'Ch. 83',
+    title: 'Civic Identity Snapshot',
+    subtitle: 'Your complete civic profile at a glance — archetype, top categories, alignment scores, and a one-link shareable card',
+    accent: 'text-gold',
+    borderColor: 'border-gold/30',
+    bgColor: 'bg-gold/5',
+    textColor: 'text-gold',
+    items: [
+      { icon: LayoutGrid, label: 'New /analytics/snapshot page aggregates the most important data from all analytics sub-pages into a single beautiful, shareable identity card: civic archetype badge, vote split, top 3 categories, streak, clout, debates, laws backed, followers, and member-since.', href: '/analytics/snapshot', color: 'text-gold' },
+      { icon: Target, label: 'Three civic profile scores displayed as animated progress bars: Community Alignment (how closely votes match platform consensus), Civic Diversity (breadth of category engagement across all 10 domains), and Contrarian Index (how often you vote against the majority).', href: '/analytics/snapshot', color: 'text-purple' },
+      { icon: Share2, label: 'Native share button triggers the Web Share API (mobile) or clipboard copy (desktop) with a pre-formatted civic summary text. Copy-link row at the bottom shows the full URL. Added to analytics hub as gold-accent featured card, CommandPalette entry, and sitemap.', href: '/analytics/snapshot', color: 'text-emerald' },
     ],
   },
   {

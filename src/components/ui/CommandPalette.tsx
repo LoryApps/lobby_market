@@ -790,6 +790,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'civic-snapshot',
+    label: 'Civic Identity Snapshot',
+    sublabel: 'Your full civic profile at a glance — archetype, top categories, alignment scores, shareable card',
+    href: '/analytics/snapshot',
+    icon: LayoutGrid,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'extremes',
     label: 'Civic Extremes',
     sublabel: 'Most contested debates & strongest mandates',
