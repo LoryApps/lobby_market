@@ -1120,10 +1120,10 @@ const CHAPTERS: Chapter[] = [
 ]
 
 const STATS = [
-  { value: '85', label: 'chapters shipped' },
-  { value: '355+', label: 'features built' },
+  { value: '89', label: 'chapters shipped' },
+  { value: '365+', label: 'features built' },
   { value: '70', label: 'DB migrations' },
-  { value: '402+', label: 'API routes' },
+  { value: '403+', label: 'API routes' },
 ]
 
 interface RecentBuild {

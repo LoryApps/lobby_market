@@ -841,6 +841,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'analytics-clout',
+    label: 'Clout Economy Analytics',
+    sublabel: 'How you earn, spend, and rank in the civic currency system — monthly trend, top sources, and transaction history',
+    href: '/analytics/clout',
+    icon: Coins,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'extremes',
     label: 'Civic Extremes',
     sublabel: 'Most contested debates & strongest mandates',
