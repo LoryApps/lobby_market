@@ -851,6 +851,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'analytics-following',
+    label: 'Network Analytics',
+    sublabel: 'What your civic network is voting on, arguing about, and how aligned you are with the people you follow',
+    href: '/analytics/following',
+    icon: Users,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
     id: 'extremes',
     label: 'Civic Extremes',
     sublabel: 'Most contested debates & strongest mandates',
