@@ -9,6 +9,7 @@ import {
   MessageSquare, Award, ChevronRight, CheckCircle2, Circle, XCircle, Clock, ChevronDown,
   Compass, Fingerprint, Users, Swords, Star, Network, Sparkles, BookOpen, ThumbsUp,
   Shield, Gavel, Quote, Rocket, Hash, Gauge, Eye, LayoutGrid, Trophy, TrendingDown,
+  GitMerge,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -390,6 +391,7 @@ export default function AnalyticsPage() {
             <Link href="/analytics/drift" className="flex items-center gap-1 text-xs text-against-400 hover:text-against-300 transition-colors font-mono font-semibold"><TrendingDown className="h-3.5 w-3.5" />Drift</Link>
             <Link href="/analytics/timing" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><Clock className="h-3.5 w-3.5" />Timing</Link>
             <Link href="/analytics/influence" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><Zap className="h-3.5 w-3.5" />Influence</Link>
+            <Link href="/analytics/consistency" className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"><GitMerge className="h-3.5 w-3.5" />Consistency</Link>
             <Link href="/prescient" className="flex items-center gap-1 text-xs text-for-300 hover:text-for-200 transition-colors font-mono font-semibold"><Target className="h-3.5 w-3.5" />Alignment</Link>
             <Link href="/karma" className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"><Sparkles className="h-3.5 w-3.5" />Karma</Link>
             <Link href="/profile/me" className="flex items-center gap-1 text-xs text-surface-500 hover:text-white transition-colors">Profile<ChevronRight className="h-3.5 w-3.5" /></Link>
@@ -511,6 +513,20 @@ export default function AnalyticsPage() {
                   </div>
                 </div>
                 <ChevronRight className="h-4 w-4 text-surface-500 group-hover:text-gold transition-colors flex-shrink-0" />
+              </Link>
+            </motion.div>
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.415 }}>
+              <Link href="/analytics/consistency" className="flex items-center justify-between rounded-2xl bg-surface-100 border border-surface-300 p-5 hover:border-emerald/40 hover:bg-surface-100/80 transition-colors group">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center justify-center h-10 w-10 rounded-xl bg-emerald/10 border border-emerald/20 flex-shrink-0">
+                    <GitMerge className="h-5 w-5 text-emerald" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-mono font-semibold text-white">Consistency Report</div>
+                    <div className="text-xs font-mono text-surface-500 mt-0.5">How predictably you vote within and across categories</div>
+                  </div>
+                </div>
+                <ChevronRight className="h-4 w-4 text-surface-500 group-hover:text-emerald transition-colors flex-shrink-0" />
               </Link>
             </motion.div>
             <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.41 }}>
