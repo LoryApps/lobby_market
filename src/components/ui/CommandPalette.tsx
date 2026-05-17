@@ -1961,6 +1961,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'analytics-legacy',
+    label: 'Civic Legacy',
+    sublabel: 'Laws you authored, best arguments, debate record — your permanent civic footprint and legacy tier',
+    href: '/analytics/legacy',
+    icon: Trophy,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'analytics-votes',
     label: 'Vote History Analytics',
     sublabel: 'Full breakdown of your votes by category, scope, status, and time period',
