@@ -1120,10 +1120,10 @@ const CHAPTERS: Chapter[] = [
 ]
 
 const STATS = [
-  { value: '89', label: 'chapters shipped' },
-  { value: '365+', label: 'features built' },
+  { value: '90', label: 'chapters shipped' },
+  { value: '370+', label: 'features built' },
   { value: '70', label: 'DB migrations' },
-  { value: '403+', label: 'API routes' },
+  { value: '405+', label: 'API routes' },
 ]
 
 interface RecentBuild {
@@ -1136,6 +1136,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Per-Topic Argument Faceoff',
+    description: 'New /topic/[id]/faceoff page brings the arena-style head-to-head matchup directly into every debate. FOR and AGAINST arguments face off on the same topic: the top unvoted FOR argument is paired against the top unvoted AGAINST argument, and users vote which is more compelling. Votes are recorded in argument_faceoff_votes (same table as the global Arena) so win counts and win-rate % carry across both surfaces. After voting, an animated result reveal shows the winner with a "Next round" button to advance through more pairs — the system skips already-seen combinations so each session is fresh. A per-topic arena leaderboard at the bottom surfaces the debate\'s champion arguments ranked by faceoff wins and win rate. Unauthenticated visitors see the top pair but cannot vote. "Argument faceoff" link added to the TopicDetail sub-page nav alongside impact, wordcloud, and themes. All faceoff pages added to sitemap (hourly changeFrequency). No new migration — powered by existing argument_faceoff_votes table (Ch. 70).',
+    href: undefined,
+    icon: Swords,
+    color: 'text-purple',
+    tag: 'Ch. 90',
+  },
   {
     title: 'Civic Influence Score',
     description: 'New /analytics/influence page computes a composite 0–100 Civic Influence Score from four pillars: Engagement (0–40 pts, log-scaled total argument upvotes received), Quality (0–25 pts, avg AI grade + citation rate), Reach (0–20 pts, log-scaled follower count), and Civic Impact (0–15 pts, legislative vote accuracy on resolved topics). Score maps to five tiers — Newcomer → Emerging Voice → Contributor → Advocate → Amplifier — each with a unique description. Score breakdown is shown as four animated progress bars. Supporting sections: (1) Argument Quality card showing avg upvotes per argument, avg AI score, and citation rate; (2) Top Arguments tab listing up to 10 best arguments by upvotes, with grade badge, reply count, citation indicator, and topic context; (3) Categories tab showing per-category upvote distribution bar chart; (4) Legislative tab with laws correctly backed, fails correctly opposed, accuracy %, and a per-pick correct/incorrect indicator on resolved votes. Added to analytics hub nav link and featured gold card, command palette (⌘K), and sitemap.',
