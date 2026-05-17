@@ -98,6 +98,7 @@ import {
   Ghost,
   RotateCcw,
   Dna,
+  Rocket,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -2110,6 +2111,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
 
   // ─── Leaderboard sub-pages ────────────────────────────────────────────────
+  {
+    type: 'link',
+    id: 'leaderboard-rising',
+    label: 'Rising Stars',
+    sublabel: 'Who is climbing fastest this week — momentum score based on votes, arguments, and achievements',
+    href: '/leaderboard/rising',
+    icon: Rocket,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+  },
   {
     type: 'link',
     id: 'leaderboard-arguments',
