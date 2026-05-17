@@ -19,6 +19,7 @@
 import {
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react'
@@ -91,6 +92,12 @@ import {
   HandHeart,
   TrendingDown,
   Heart,
+  Fingerprint,
+  GitMerge,
+  ArrowDownUp,
+  Ghost,
+  RotateCcw,
+  Dna,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -1446,6 +1453,126 @@ const QUICK_LINKS: QuickLink[] = [
     iconColor: 'text-gold',
     iconBg: 'bg-gold/10',
   },
+  {
+    type: 'link',
+    id: 'civic-decoder',
+    label: 'Civic Decoder',
+    sublabel: 'Three real arguments. One mystery topic. Five rounds — can you identify which debate they came from?',
+    href: '/civic-decoder',
+    icon: Brain,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
+    id: 'civic-verdict',
+    label: 'Civic Verdict',
+    sublabel: 'Daily jury game — read FOR and AGAINST arguments, render your verdict, see if you match the consensus',
+    href: '/civic-verdict',
+    icon: Scale,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
+    id: 'civic-mirror',
+    label: 'Civic Mirror',
+    sublabel: 'Vote five topics gut-first — then see how you compare to the community majority',
+    href: '/civic-mirror',
+    icon: RotateCcw,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+  },
+  {
+    type: 'link',
+    id: 'civic-recall',
+    label: 'Civic Recall',
+    sublabel: 'Flash-memory challenge — memorise 6 civic topics in 15 seconds, then pick them from a field of 12',
+    href: '/civic-recall',
+    icon: BookOpen,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'civic-imposter',
+    label: 'Civic Imposter',
+    sublabel: 'Spot the Fake Law — five real laws from the Codex, one plausible imposter. Daily challenge.',
+    href: '/civic-imposter',
+    icon: Ghost,
+    iconColor: 'text-against-300',
+    iconBg: 'bg-against-500/10',
+  },
+  {
+    type: 'link',
+    id: 'civic-rank',
+    label: 'Civic Rank',
+    sublabel: 'Sort 4 laws by community support (highest FOR% first) — 5 rounds, 25 seconds each',
+    href: '/civic-rank',
+    icon: ArrowDownUp,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'civic-timeline',
+    label: 'Civic Timeline',
+    sublabel: 'Put laws in the order they were passed — a daily chronological sorting challenge',
+    href: '/civic-timeline',
+    icon: Calendar,
+    iconColor: 'text-for-300',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
+    id: 'bingo',
+    label: 'Civic Bingo',
+    sublabel: '5×5 weekly bingo card — mark squares as civic laws pass, first to five in a row wins',
+    href: '/bingo',
+    icon: LayoutGrid,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+  },
+  {
+    type: 'link',
+    id: 'gauntlet',
+    label: 'The Gauntlet',
+    sublabel: 'Sudden-death survival — pick the majority side on each topic within 10 seconds or your run ends',
+    href: '/gauntlet',
+    icon: Swords,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-500/10',
+  },
+  {
+    type: 'link',
+    id: 'odd-one-out',
+    label: 'Civic Odd One Out',
+    sublabel: 'Four topics — three share a category, one doesn\'t. Find the odd one out. Daily categorisation game.',
+    href: '/odd-one-out',
+    icon: Hash,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
+    id: 'bracket',
+    label: 'Civic Bracket',
+    sublabel: 'March Madness for debates — 8 contested topics compete head-to-head, vote to crown the week\'s champion',
+    href: '/bracket',
+    icon: Trophy,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'sprint',
+    label: 'Civic Sprint',
+    sublabel: 'Predict 10 closed topics: law or failed? Race the clock for speed bonuses.',
+    href: '/sprint',
+    icon: Timer,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
   // ── Debate & Writing Tools ─────────────────────────────────────────────────────────
   {
     type: 'link',
@@ -1547,6 +1674,46 @@ const QUICK_LINKS: QuickLink[] = [
     icon: Calendar,
     iconColor: 'text-emerald',
     iconBg: 'bg-emerald/10',
+  },
+  {
+    type: 'link',
+    id: 'fingerprint',
+    label: 'Civic Fingerprint',
+    sublabel: 'How unique is your civic voice? Category-by-category deviation from the platform median voter',
+    href: '/fingerprint',
+    icon: Fingerprint,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-500/10',
+  },
+  {
+    type: 'link',
+    id: 'cohort',
+    label: 'Civic Tribe',
+    sublabel: 'Find citizens who think most like you — your civic doppelgangers across votes, values, and vision',
+    href: '/cohort',
+    icon: Dna,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+  },
+  {
+    type: 'link',
+    id: 'analytics-consistency',
+    label: 'Consistency Report',
+    sublabel: 'How principled are your stances? Reveal your within-category consistency and surprising flip votes',
+    href: '/analytics/consistency',
+    icon: GitMerge,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+  },
+  {
+    type: 'link',
+    id: 'analytics-groups',
+    label: 'Civic Groups Analytics',
+    sublabel: 'How different civic roles (Citizens → Elders) vote, argue, and engage — platform-wide group breakdown',
+    href: '/analytics/groups',
+    icon: Users,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
   },
   // ── Discovery & Research ──────────────────────────────────────────────────────────────────
   {
@@ -1748,6 +1915,26 @@ const QUICK_LINKS: QuickLink[] = [
     icon: Activity,
     iconColor: 'text-against-400',
     iconBg: 'bg-against-500/10',
+  },
+  {
+    type: 'link',
+    id: 'memories',
+    label: 'Civic Memories',
+    sublabel: 'On this day in civic history — your past votes and arguments, plus laws passed on this date in prior years',
+    href: '/memories',
+    icon: History,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
+    id: 'transparency',
+    label: 'Transparency Report',
+    sublabel: 'Real-time platform health — citizens, votes cast, laws established, category breakdowns, and growth milestones',
+    href: '/transparency',
+    icon: Eye,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
   },
 ]
 
@@ -1952,7 +2139,16 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Derived flat list of all navigable items
-  const items: PaletteItem[] = query.trim().length < 2 ? QUICK_LINKS : results
+  const items: PaletteItem[] = useMemo(() => {
+    if (query.trim().length < 2) return QUICK_LINKS
+    const q2 = query.trim().toLowerCase()
+    const pageMatches = QUICK_LINKS.filter((l) =>
+      l.label.toLowerCase().includes(q2) ||
+      (l.sublabel ?? '').toLowerCase().includes(q2) ||
+      l.href.toLowerCase().includes(q2)
+    ).slice(0, 5)
+    return [...pageMatches, ...results]
+  }, [query, results])
 
   // Trap keyboard focus inside the palette while it is open.
   // autoFocus=false because we manually focus the input below.
@@ -2072,8 +2268,21 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
   const lawsInResults = results.filter((r) => r.type === 'law')
   const peopleInResults = results.filter((r) => r.type === 'person')
 
+  // Filter QUICK_LINKS by query label/sublabel for page search
+  const normalizedQ = query.trim().toLowerCase()
+  const matchingPages: QuickLink[] = useMemo(() => {
+    if (query.trim().length < 2) return []
+    return QUICK_LINKS.filter((l) =>
+      l.label.toLowerCase().includes(normalizedQ) ||
+      (l.sublabel ?? '').toLowerCase().includes(normalizedQ) ||
+      l.href.toLowerCase().includes(normalizedQ)
+    ).slice(0, 5)
+  }, [normalizedQ, query])
+
   // Build labelled sections for search results
   const sections: Array<{ label: string; items: PaletteItem[] }> = []
+  if (matchingPages.length > 0)
+    sections.push({ label: 'Pages', items: matchingPages })
   if (topicsInResults.length > 0)
     sections.push({ label: 'Topics', items: topicsInResults })
   if (lawsInResults.length > 0)
@@ -2193,7 +2402,7 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
               )}
 
               {/* With query: show grouped results */}
-              {query.trim().length >= 2 && !loading && sections.length === 0 && (
+              {query.trim().length >= 2 && !loading && sections.length === 0 && matchingPages.length === 0 && (
                 <div className="flex flex-col items-center justify-center py-10 px-4 text-center gap-2">
                   <Search className="h-6 w-6 text-surface-500" />
                   <p className="text-sm text-surface-500">
