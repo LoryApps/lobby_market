@@ -1981,6 +1981,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'analytics-journey',
+    label: 'Civic Journey',
+    sublabel: 'Narrative timeline of your milestones — first vote, achievements earned, laws shaped',
+    href: '/analytics/journey',
+    icon: Landmark,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'analytics-votes',
     label: 'Vote History Analytics',
     sublabel: 'Full breakdown of your votes by category, scope, status, and time period',

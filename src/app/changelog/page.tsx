@@ -30,6 +30,7 @@ import {
   Hash,
   Heart,
   History,
+  Landmark,
   Layers,
   Mail,
   MessageSquare,
@@ -992,6 +993,34 @@ const CHAPTERS: Chapter[] = [
     items: [
       { icon: Hash, label: 'New /analytics/tags page shows a user\'s FOR/AGAINST split broken down by every civic tag they\'ve voted on. For each tag: vote count, FOR% bar, community FOR% comparison (±pp delta), and a direction pill (more FOR / more AGAINST / aligned). Tags sorted by engagement, with emerging tags (< 3 votes) in a secondary section.', href: '/analytics/tags', color: 'text-emerald' },
       { icon: BarChart2, label: 'Tag diversity score measures engagement breadth. Headline callouts surface the most-voted tag and the tag with the largest community divergence. Backed by new /api/analytics/tags endpoint that joins topic_votes, topics, topic_tags, and tags. Featured card added to analytics hub.', href: '/analytics/tags', color: 'text-for-400' },
+    ],
+  },
+  {
+    number: 'Ch. 100',
+    title: 'Civic Journey Timeline',
+    subtitle: 'A narrative, chronological timeline of your most significant civic moments — first vote, arguments written, laws shaped, and achievements unlocked',
+    accent: 'text-gold',
+    borderColor: 'border-gold/40',
+    bgColor: 'bg-gold/8',
+    textColor: 'text-gold',
+    items: [
+      { icon: Landmark, label: 'New /analytics/journey page: a beautiful vertical timeline showing every civic milestone in order — from joining the Lobby to your 1000th vote, with month groupings and highlight moments.', href: '/analytics/journey', color: 'text-gold' },
+      { icon: Trophy, label: 'Timeline events cover: first vote, vote count milestones (10/50/100/250/500/1000), first argument, argument milestones, first debate, voted-on topics that became law, all achievements earned, and civic archetype assignment.', href: '/analytics/journey', color: 'text-for-400' },
+      { icon: Star, label: 'Highlights system: key moments (first vote, 100th vote, laws shaped, legendary achievements) receive a gold star and elevated card treatment. Connected to the analytics hub with a dedicated card in the featured section.', href: '/analytics/journey', color: 'text-gold' },
+    ],
+  },
+  {
+    number: 'Ch. 99',
+    title: 'Civic Welcome',
+    subtitle: 'Post-onboarding identity reveal screen that shows the user their assigned civic archetype and opens the platform',
+    accent: 'text-purple',
+    borderColor: 'border-purple/30',
+    bgColor: 'bg-purple/5',
+    textColor: 'text-purple',
+    items: [
+      { icon: Sparkles, label: 'New /welcome page: displayed after completing the calibration quiz. Shows the user\'s assigned civic archetype (e.g. Progressive Pragmatist) with its color accent, a personalised description, and key stats from their starting position.', href: '/welcome', color: 'text-purple' },
+      { icon: Zap, label: 'Animated reveal sequence using Framer Motion — archetype badge zooms in, stats fade up, and the user is invited to "Enter the Lobby". Links to the personalised feed and recommended topics based on their calibration answers.', href: '/welcome', color: 'text-for-400' },
+      { icon: BookOpen, label: 'Retrieves and displays the user\'s first 3 recommended topics based on their calibration quiz answers and preferred categories. Shows vote bars with real-time consensus data to immediately show what the platform is about.', href: '/welcome', color: 'text-gold' },
     ],
   },
   {
