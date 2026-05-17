@@ -7,6 +7,7 @@ import {
   Award,
   BarChart2,
   Bell,
+  Bookmark,
   BookOpen,
   Brain,
   CalendarClock,
@@ -994,6 +995,20 @@ const CHAPTERS: Chapter[] = [
     ],
   },
   {
+    number: 'Ch. 98',
+    title: 'Civic Reel',
+    subtitle: 'TikTok-style full-screen argument feed — swipe through the best FOR and AGAINST arguments one at a time',
+    accent: 'text-gold',
+    borderColor: 'border-gold/30',
+    bgColor: 'bg-gold/5',
+    textColor: 'text-gold',
+    items: [
+      { icon: Zap, label: 'New /reel page presents civic arguments full-screen, one at a time. Swipe or use arrow keys to navigate. FOR arguments glow blue, AGAINST glow red. Progress dots, drag-to-advance gesture, and keyboard shortcuts (↑↓ / j/k).', href: '/reel', color: 'text-gold' },
+      { icon: TrendingUp, label: 'Arguments are personalised for logged-in users: pulled from topics they\'ve voted on and preferred categories. Guests see trending arguments as fallback. Filter by side (FOR / AGAINST / Both) and by civic category.', href: '/reel', color: 'text-for-400' },
+      { icon: Bookmark, label: 'Inline upvote and bookmark actions — optimistic UI updates with server sync. Shows argument AI grade, reply count, author info, topic vote bar, and a direct link to the full topic. Pre-fetches next batch when 5 cards from the end.', href: '/reel', color: 'text-purple' },
+    ],
+  },
+  {
     number: 'Ch. 97',
     title: 'Civic Legacy Report',
     subtitle: 'A permanent-record summary of your biggest contributions: laws authored, best arguments, debate record, and your Legacy Tier',
@@ -1414,6 +1429,14 @@ const RECENT_BUILDS: RecentBuild[] = [
     icon: Gauge,
     color: 'text-purple',
     tag: 'Ch. 81',
+  },
+  {
+    title: 'Civic Reel',
+    description: 'New /reel page: TikTok-style full-screen argument feed. Swipe or use arrow keys to navigate one argument at a time. FOR arguments glow blue, AGAINST glow red. Inline upvote (POST /api/topics/[id]/arguments/[argId]/upvote) and bookmark actions with optimistic UI. Filter by side (FOR / AGAINST / Both) and civic category. Personalized for logged-in users; trending fallback for guests. Pre-fetches next batch when 5 cards from the end. Added to arcade, sitemap, and command palette.',
+    href: '/reel',
+    icon: Zap,
+    color: 'text-gold',
+    tag: 'Ch. 98',
   },
   {
     title: 'Civic Legacy Report',

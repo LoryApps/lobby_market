@@ -550,6 +550,23 @@ const GAMES: GameDef[] = [
     timeEstimate: '2 min',
   },
   {
+    id: 'reel',
+    href: '/reel',
+    title: 'Civic Reel',
+    tagline: 'TikTok-style argument feed',
+    description:
+      'Swipe through the best FOR and AGAINST arguments one at a time, full-screen. Upvote what moves you. Filter by side or category.',
+    icon: Zap,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+    border: 'border-gold/20',
+    badge: 'Always',
+    badgeColor: 'bg-gold/10 text-gold border-gold/30',
+    refresh: 'always',
+    difficulty: 'easy',
+    timeEstimate: '5 min',
+  },
+  {
     id: 'rapid',
     href: '/rapid',
     title: 'Rapid Fire',

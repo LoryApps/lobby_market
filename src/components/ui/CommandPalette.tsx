@@ -1637,6 +1637,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'reel',
+    label: 'Civic Reel',
+    sublabel: 'TikTok-style argument feed — swipe through the best FOR and AGAINST arguments one at a time',
+    href: '/reel',
+    icon: Zap,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'crossfire',
     label: 'Crossfire',
     sublabel: 'Battle of Ideas — most contested topics with best FOR vs AGAINST arguments head-to-head',
