@@ -153,7 +153,7 @@ export default function OnboardingPage() {
         // Brief pause for the calibrating animation, then redirect
         setTimeout(() => {
           setStep('done')
-          setTimeout(() => router.replace('/'), 800)
+          setTimeout(() => router.replace('/welcome'), 800)
         }, 2200)
       }
     },
