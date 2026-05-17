@@ -286,7 +286,10 @@ function PoliticalKinSection() {
         <div className="space-y-5">
           {data!.kin.length > 0 && (<div><div className="flex items-center gap-1.5 text-[10px] font-mono text-emerald uppercase tracking-wider mb-3"><Users className="h-3 w-3" />Allies — highest vote agreement</div><div className="flex flex-col gap-2">{data!.kin.map((p)=><KinCard key={p.id} person={p} type="kin" />)}</div></div>)}
           {data!.opposites.length > 0 && (<div><div className="flex items-center gap-1.5 text-[10px] font-mono text-against-400 uppercase tracking-wider mb-3"><Swords className="h-3 w-3" />Rivals — lowest vote agreement</div><div className="flex flex-col gap-2">{data!.opposites.map((p)=><KinCard key={p.id} person={p} type="opposite" />)}</div></div>)}
-          <p className="text-[10px] font-mono text-surface-600 border-t border-surface-300 pt-3">Based on your recent votes. Agreement % = shared votes where you chose the same side. Minimum 3 topics in common required.</p>
+          <div className="border-t border-surface-300 pt-3 flex items-center justify-between">
+            <p className="text-[10px] font-mono text-surface-600">Based on your recent votes. Agreement % = shared votes where you chose the same side. Minimum 3 topics in common required.</p>
+            <Link href="/analytics/kin" className="flex items-center gap-1 text-[10px] font-mono text-emerald hover:text-emerald/80 transition-colors flex-shrink-0 ml-4"><ChevronRight className="h-3 w-3" />Full report</Link>
+          </div>
         </div>
       )}
     </motion.div>
@@ -589,6 +592,21 @@ export default function AnalyticsPage() {
                   </div>
                 </div>
                 <ChevronRight className="h-4 w-4 text-surface-500 group-hover:text-for-400 transition-colors flex-shrink-0" />
+              </Link>
+            </motion.div>
+            {/* Civic Kin card */}
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.445 }}>
+              <Link href="/analytics/kin" className="flex items-center justify-between rounded-2xl bg-surface-100 border border-emerald/20 p-5 hover:border-emerald/40 hover:bg-emerald/5 transition-colors group">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center justify-center h-10 w-10 rounded-xl bg-emerald/10 border border-emerald/30 flex-shrink-0">
+                    <Heart className="h-5 w-5 text-emerald" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-mono font-semibold text-white">Civic Kin</div>
+                    <div className="text-xs font-mono text-surface-500 mt-0.5">Your political soulmates and civic rivals by vote agreement</div>
+                  </div>
+                </div>
+                <ChevronRight className="h-4 w-4 text-surface-500 group-hover:text-emerald transition-colors flex-shrink-0" />
               </Link>
             </motion.div>
             <PoliticalKinSection />

@@ -90,6 +90,7 @@ import {
   Mail,
   HandHeart,
   TrendingDown,
+  Heart,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -858,6 +859,16 @@ const QUICK_LINKS: QuickLink[] = [
     icon: Users,
     iconColor: 'text-for-400',
     iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
+    id: 'analytics-kin',
+    label: 'Civic Kin',
+    sublabel: 'Your political soulmates and civic rivals — who votes most like you, and who is your ideological opposite',
+    href: '/analytics/kin',
+    icon: Heart,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
   },
   {
     type: 'link',
