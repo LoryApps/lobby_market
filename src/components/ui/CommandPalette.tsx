@@ -869,6 +869,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'analytics-alignment',
+    label: 'Civic Alignment',
+    sublabel: 'How your votes align with people you follow and your coalition members — your network agreement score',
+    href: '/analytics/alignment',
+    icon: Scale,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
     id: 'analytics-kin',
     label: 'Civic Kin',
     sublabel: 'Your political soulmates and civic rivals — who votes most like you, and who is your ideological opposite',
