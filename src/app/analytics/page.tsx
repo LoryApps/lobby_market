@@ -400,6 +400,7 @@ export default function AnalyticsPage() {
             <Link href="/analytics/groups" className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"><Users className="h-3.5 w-3.5" />Civic Groups</Link>
             <Link href="/analytics/following" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><Network className="h-3.5 w-3.5" />Network</Link>
             <Link href="/analytics/alignment" className="flex items-center gap-1 text-xs text-for-300 hover:text-for-200 transition-colors font-mono font-semibold"><Scale className="h-3.5 w-3.5" />Alignment</Link>
+            <Link href="/analytics/streak" className="flex items-center gap-1 text-xs text-against-400 hover:text-against-300 transition-colors font-mono font-semibold"><Flame className="h-3.5 w-3.5" />Streak History</Link>
             <Link href="/karma" className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"><Sparkles className="h-3.5 w-3.5" />Karma</Link>
             <Link href="/profile/me" className="flex items-center gap-1 text-xs text-surface-500 hover:text-white transition-colors">Profile<ChevronRight className="h-3.5 w-3.5" /></Link>
           </div>
