@@ -940,6 +940,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'flashpoint',
+    label: 'Flashpoint',
+    sublabel: 'The single most contested debate raging right now — peak velocity, maximum drama',
+    href: '/flashpoint',
+    icon: Flame,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-500/10',
+  },
+  {
+    type: 'link',
     id: 'momentum',
     label: 'Momentum',
     sublabel: 'Live vote velocity — which topics are accelerating?',
