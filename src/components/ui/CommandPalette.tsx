@@ -960,6 +960,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'scoreboard',
+    label: 'Civic Scoreboard',
+    sublabel: 'Real-time leaderboard — most active citizens and hottest topics right now',
+    href: '/scoreboard',
+    icon: Trophy,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'tally',
     label: 'Tally Board',
     sublabel: 'Live election-night results for every topic in the voting phase',
