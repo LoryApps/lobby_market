@@ -250,6 +250,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'summit',
+    label: 'Civic Summit',
+    sublabel: 'Quarterly awards ceremony — top contributors, landmark laws, civic moments',
+    href: '/summit',
+    icon: Trophy,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/15',
+  },
+  {
+    type: 'link',
     id: 'records',
     label: 'Civic Records',
     sublabel: 'All-time platform records — fastest law, most voted, best argument',

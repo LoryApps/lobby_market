@@ -997,6 +997,20 @@ const CHAPTERS: Chapter[] = [
     ],
   },
   {
+    number: 'Ch. 111',
+    title: 'The Civic Summit',
+    subtitle: 'Quarterly awards ceremony celebrating the platform\'s top contributors, landmark laws, and most contested topics — with stats, award cards, and top argument showcase',
+    accent: 'text-gold',
+    borderColor: 'border-gold/30',
+    bgColor: 'bg-gold/5',
+    textColor: 'text-gold',
+    items: [
+      { icon: Trophy, label: 'New /summit page: quarterly awards ceremony with hero banner, per-quarter stats (votes, arguments, laws, topics, debates, new users), and three award categories — The People\'s Voice (most votes), The Grand Orator (most argument upvotes), and The Civic Champion (highest clout).', href: '/summit', color: 'text-gold' },
+      { icon: Gavel, label: 'Landmark Laws section showcases every law established during the current quarter, ordered by total votes. Hot Contest section surfaces the most fiercely divided topic (closest to 50/50 split) with an animated vote bar.', href: '/summit', color: 'text-emerald' },
+      { icon: Star, label: 'Argument of the Quarter card highlights the quarter\'s most-upvoted argument with author attribution, topic link, and side badge. New /api/summit route computes all data in parallel with 30-minute cache. Quarter-color theming (Q1=blue, Q2=emerald, Q3=gold, Q4=purple).', href: '/summit', color: 'text-for-400' },
+    ],
+  },
+  {
     number: 'Ch. 108',
     title: 'The Argument Anthology',
     subtitle: 'A curated daily editorial of the five best civic arguments — ranked by community upvotes and AI quality score, with a weekly edition of fifteen',
