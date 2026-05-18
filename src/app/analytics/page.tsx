@@ -12,6 +12,7 @@ import {
   GitMerge,
   Coins,
   Landmark,
+  Layers,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -396,6 +397,7 @@ export default function AnalyticsPage() {
             <Link href="/analytics/drift" className="flex items-center gap-1 text-xs text-against-400 hover:text-against-300 transition-colors font-mono font-semibold"><TrendingDown className="h-3.5 w-3.5" />Drift</Link>
             <Link href="/analytics/timing" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><Clock className="h-3.5 w-3.5" />Timing</Link>
             <Link href="/analytics/influence" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><Zap className="h-3.5 w-3.5" />Influence</Link>
+            <Link href="/analytics/depth" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><Layers className="h-3.5 w-3.5" />Depth Score</Link>
             <Link href="/analytics/consistency" className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"><GitMerge className="h-3.5 w-3.5" />Consistency</Link>
             <Link href="/analytics/clout" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><Coins className="h-3.5 w-3.5" />Clout Economy</Link>
             <Link href="/analytics/groups" className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"><Users className="h-3.5 w-3.5" />Civic Groups</Link>
@@ -594,6 +596,21 @@ export default function AnalyticsPage() {
                   </div>
                 </div>
                 <ChevronRight className="h-4 w-4 text-surface-500 group-hover:text-against-400 transition-colors flex-shrink-0" />
+              </Link>
+            </motion.div>
+            {/* Civic Depth Score card */}
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.419 }}>
+              <Link href="/analytics/depth" className="flex items-center justify-between rounded-2xl bg-gradient-to-r from-for-600/10 to-surface-100 border border-for-500/30 p-5 hover:border-for-500/50 hover:bg-for-600/10 transition-colors group">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center justify-center h-10 w-10 rounded-xl bg-for-500/10 border border-for-500/30 flex-shrink-0">
+                    <Layers className="h-5 w-5 text-for-400" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-mono font-semibold text-white">Civic Depth Score</div>
+                    <div className="text-xs font-mono text-surface-500 mt-0.5">How deeply you engage — beyond just voting — across every topic</div>
+                  </div>
+                </div>
+                <ChevronRight className="h-4 w-4 text-surface-500 group-hover:text-for-400 transition-colors flex-shrink-0" />
               </Link>
             </motion.div>
             {/* Civic Groups card */}
