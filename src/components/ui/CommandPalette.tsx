@@ -760,6 +760,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'steelman',
+    label: 'Civic Steelman',
+    sublabel: 'Generate the strongest possible FOR and AGAINST arguments for any debate',
+    href: '/steelman',
+    icon: Brain,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
     id: 'spar',
     label: 'Sparring Arena',
     sublabel: 'Practice debating civic topics against Claude AI in 5-round bouts',
