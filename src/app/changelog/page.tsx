@@ -37,6 +37,7 @@ import {
   Mic,
   Network,
   Radio,
+  RefreshCw,
   Rocket,
   Scale,
   Search,
@@ -996,6 +997,90 @@ const CHAPTERS: Chapter[] = [
     ],
   },
   {
+    number: 'Ch. 107',
+    title: 'Argument Battle',
+    subtitle: 'Daily single-elimination bracket — 8 top arguments compete head-to-head and you vote on which makes the stronger civic case',
+    accent: 'text-against-400',
+    borderColor: 'border-against-500/30',
+    bgColor: 'bg-against-500/5',
+    textColor: 'text-against-300',
+    items: [
+      { icon: Swords, label: 'New /argument-battle page: 8 top arguments from the past 48 h are seeded into a single-elimination bracket — alternating FOR/AGAINST. Read each pair and vote on which argument is more compelling.', href: '/argument-battle', color: 'text-against-400' },
+      { icon: Trophy, label: 'Three rounds (R1 → Semifinals → Final) with animated transitions. Progress tracked in localStorage so the bracket survives page refreshes. Champion revealed with celebration animation and share button.', href: '/argument-battle', color: 'text-gold' },
+      { icon: RefreshCw, label: 'New /api/argument-battle route: deterministic daily seed picks 4 best FOR + 4 best AGAINST arguments. Stable bracket per calendar day — every user judges the same 8 arguments.', color: 'text-for-400' },
+    ],
+  },
+  {
+    number: 'Ch. 106',
+    title: 'The Civic Tribunal',
+    subtitle: 'Democratic argument review — citizens challenge misleading arguments; eligible jurors deliberate and deliver a verdict',
+    accent: 'text-against-400',
+    borderColor: 'border-against-500/30',
+    bgColor: 'bg-against-500/5',
+    textColor: 'text-against-300',
+    items: [
+      { icon: Gavel, label: 'New /tribunal page: open tribunal cases, juror vote panel, verdict reveal. Citizens can challenge arguments (misleading/fallacious/irrelevant/spam). 3 challenges = case opens.', href: '/tribunal', color: 'text-against-400' },
+      { icon: Scale, label: 'Two new DB tables: tribunal_challenges and tribunal_cases. Juror eligibility = debator+ role. 2-of-3 majority rules. Jurors earn 5 Clout for participating in a decided verdict.', color: 'text-gold' },
+      { icon: ShieldCheck, label: 'tribunal_juror_votes table with RLS. Challenge button on argument cards; case list with status badges (open/deliberating/closed) and verdict indicators (sustained/dismissed).', color: 'text-emerald' },
+    ],
+  },
+  {
+    number: 'Ch. 105',
+    title: 'Civic Live Scoreboard',
+    subtitle: 'Real-time ranked leaderboard of who\'s most active in the Lobby right now — votes, arguments, and reactions in the last hour',
+    accent: 'text-emerald',
+    borderColor: 'border-emerald/30',
+    bgColor: 'bg-emerald/5',
+    textColor: 'text-emerald',
+    items: [
+      { icon: Activity, label: 'New /scoreboard page: live leaderboard polling /api/scoreboard every 30s. Ranked by hourly score (votes × 1 + arguments × 3 + upvotes received × 2). Animated rank position changes.', href: '/scoreboard', color: 'text-emerald' },
+      { icon: Flame, label: 'Top 3 players get gold/silver/bronze crown treatment. Rank delta indicators (+2/−1) animate when the leaderboard refreshes. Personal row highlighted in the list.', color: 'text-gold' },
+      { icon: Radio, label: 'Activity feed panel showing the most recent civic actions platform-wide. Distinct from /now (status board) and /live (argument stream) — focused on who is active, not what is being said.', color: 'text-for-400' },
+    ],
+  },
+  {
+    number: 'Ch. 104',
+    title: 'Civic Flashpoint',
+    subtitle: 'Speed-round 90-second civic literacy quiz — 5 rapid-fire questions on laws, voting thresholds, and platform mechanics',
+    accent: 'text-purple',
+    borderColor: 'border-purple/30',
+    bgColor: 'bg-purple/5',
+    textColor: 'text-purple',
+    items: [
+      { icon: Zap, label: 'New /flashpoint page: 90-second speed quiz covering law thresholds, vote mechanics, topic lifecycle, and civic vocabulary. 5 multiple-choice questions per session. Score S–D letter grade.', href: '/flashpoint', color: 'text-purple' },
+      { icon: Timer, label: 'Single shared countdown timer across all 5 questions. Partial credit for fast answers. Daily lock stores best score in localStorage. Deterministic daily question seed — same quiz for all players each day.', color: 'text-gold' },
+      { icon: Brain, label: 'Questions bank covers: required FOR% to pass, how chains work, clout gifting mechanics, debate format types, tribunal challenge rules, and amendment ratification thresholds.', color: 'text-for-400' },
+    ],
+  },
+  {
+    number: 'Ch. 103',
+    title: 'Civic Steelman Engine',
+    subtitle: 'AI-powered devil\'s advocate — generate the strongest honest counter-argument to any civic position',
+    accent: 'text-for-400',
+    borderColor: 'border-for-500/30',
+    bgColor: 'bg-for-500/5',
+    textColor: 'text-for-300',
+    items: [
+      { icon: Bot, label: 'New /steelman page: select a topic, choose your position (FOR/AGAINST), and Claude generates a rigorous steel-man of the opposing view — structured as premise → evidence → counter → synthesis.', href: '/steelman', color: 'text-for-400' },
+      { icon: Scale, label: 'Distinct from /perspective (one-liner anti-echo-chamber) and /coach (argument critique) — /steelman is specifically for generating a charitable maximum-strength counter. Uses Claude with explicit steel-manning system prompt.', color: 'text-purple' },
+      { icon: Sparkles, label: 'Results include: main counter-thesis, 3 supporting evidence points, best real-world precedent, and a synthesis paragraph. Copy-to-clipboard and share panel support.', color: 'text-gold' },
+    ],
+  },
+  {
+    number: 'Ch. 102',
+    title: 'Civic Quick Polls',
+    subtitle: 'Rapid, emoji-style opinion polls embedded across the platform for lightweight civic signal gathering',
+    accent: 'text-gold',
+    borderColor: 'border-gold/30',
+    bgColor: 'bg-gold/5',
+    textColor: 'text-gold',
+    items: [
+      { icon: Vote, label: 'New /polls page: browse and vote on community polls. New DB table: civic_polls (migration 00071). Polls have 2–4 options, optional topic_id link, category, and vote counts.', href: '/polls', color: 'text-gold' },
+      { icon: BarChart2, label: 'Animated result bars appear immediately after voting. Polls expire at a configurable deadline. Logged-in users see their chosen option highlighted in gold. Anonymous vote counts without auth.', color: 'text-for-400' },
+      { icon: Hash, label: 'Polls can be linked to existing topics, appear inline in topic detail pages, and are browsable by category. Linked to the arcade and added to the command palette and sitemap.', color: 'text-purple' },
+    ],
+  },
+  {
     number: 'Ch. 101',
     title: 'Argument of the Day',
     subtitle: 'A daily spotlight on the single most compelling argument written in the last 24 hours — ranked by community upvotes and AI quality score — with a 7-day archive',
@@ -1401,10 +1486,10 @@ const CHAPTERS: Chapter[] = [
 ]
 
 const STATS = [
-  { value: '90', label: 'chapters shipped' },
-  { value: '370+', label: 'features built' },
-  { value: '70', label: 'DB migrations' },
-  { value: '405+', label: 'API routes' },
+  { value: '107', label: 'chapters shipped' },
+  { value: '400+', label: 'features built' },
+  { value: '72', label: 'DB migrations' },
+  { value: '420+', label: 'API routes' },
 ]
 
 interface RecentBuild {
@@ -1417,6 +1502,54 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Argument Battle',
+    description: 'New /argument-battle page: each day, the 8 best arguments from the past 48 hours are seeded into a single-elimination bracket — 4 FOR vs 4 AGAINST, alternating so every matchup pits opposing sides. Users read both arguments and vote on which makes the stronger civic case. Three rounds (R1 → Semis → Final) with animated transitions. State persists across page refreshes via localStorage (keyed by date). Champion revealed with celebration animation, share button, and links to /gallery and /duel. New /api/argument-battle route uses a deterministic daily seed (mulberry32 PRNG) to return the same 8 arguments to every visitor on a given calendar day.',
+    href: '/argument-battle',
+    icon: Swords,
+    color: 'text-against-400',
+    tag: 'Ch. 107',
+  },
+  {
+    title: 'The Civic Tribunal',
+    description: 'New /tribunal page: democratic argument review system. Any user can file a challenge against an argument they believe is misleading, fallacious, irrelevant, or spam (one challenge per user per argument). When an argument accumulates 3 challenges a tribunal case opens automatically. Eligible jurors (debator+ role) are assigned and each submits a "sustained" or "dismissed" vote. 2-of-3 majority decides the verdict — sustained flags the argument, dismissed clears all challenges. Jurors earn 5 Clout for participating in any decided case. New DB tables: tribunal_challenges, tribunal_cases, tribunal_juror_votes (migration 00072). UI shows open cases with challenge reasons, juror vote panel with role badges, progress indicators, and verdict announcement with animation. Challenge button wired into argument cards platform-wide.',
+    href: '/tribunal',
+    icon: Gavel,
+    color: 'text-against-400',
+    tag: 'Ch. 106',
+  },
+  {
+    title: 'Civic Live Scoreboard',
+    description: 'New /scoreboard page: real-time ranked table of who is most active in the Lobby right now. Scores computed by /api/scoreboard from votes, arguments, and argument upvotes received in the past hour (weights: 1/3/2). Top 3 rows get gold/silver/bronze crown styling. Rank delta badges animate on every 30-second poll cycle. Personal row is highlighted. Activity feed panel alongside shows the latest civic actions platform-wide, auto-polling every 15s.',
+    href: '/scoreboard',
+    icon: Activity,
+    color: 'text-emerald',
+    tag: 'Ch. 105',
+  },
+  {
+    title: 'Civic Flashpoint',
+    description: 'New /flashpoint page: a 90-second civic literacy speed-quiz covering platform mechanics — voting thresholds, law passage requirements, debate formats, amendment ratification, clout mechanics, and the tribunal system. 5 multiple-choice questions per session with a shared countdown timer. Letter grade S–D based on score. Daily lock stored in localStorage; same seed every day so all players face identical questions. Distinct from /training (skill drills), /prep (debate prep), and /quiz (topic content quiz).',
+    href: '/flashpoint',
+    icon: Zap,
+    color: 'text-purple',
+    tag: 'Ch. 104',
+  },
+  {
+    title: 'Civic Steelman Engine',
+    description: "New /steelman page: AI-powered devil's advocate. Pick a topic and your position (FOR or AGAINST) — Claude generates the strongest honest counter-argument structured as: main thesis → 3 evidence points → best historical precedent → synthesis. Uses an explicit steel-manning system prompt to ensure charitable maximum-strength outputs. Distinct from /perspective (anti-echo-chamber one-liner) and /coach (critiques your argument). The steelman is a fully fleshed opposing case, not just a summary. Copy and share support.",
+    href: '/steelman',
+    icon: Bot,
+    color: 'text-for-400',
+    tag: 'Ch. 103',
+  },
+  {
+    title: 'Civic Quick Polls',
+    description: "New /polls page backed by new civic_polls DB table (migration 00071). Polls have 2–4 options, an optional link to a platform topic, category, and vote counts. Users vote with a single click — result bars animate in immediately. Polls are browsable by category, sorted by recency and activity. Linked to topic detail pages when a poll covers that topic's subject matter. Anonymous votes counted; auth users see their own choice highlighted.",
+    href: '/polls',
+    icon: Vote,
+    color: 'text-gold',
+    tag: 'Ch. 102',
+  },
   {
     title: 'Per-Topic Argument Faceoff',
     description: 'New /topic/[id]/faceoff page brings the arena-style head-to-head matchup directly into every debate. FOR and AGAINST arguments face off on the same topic: the top unvoted FOR argument is paired against the top unvoted AGAINST argument, and users vote which is more compelling. Votes are recorded in argument_faceoff_votes (same table as the global Arena) so win counts and win-rate % carry across both surfaces. After voting, an animated result reveal shows the winner with a "Next round" button to advance through more pairs — the system skips already-seen combinations so each session is fresh. A per-topic arena leaderboard at the bottom surfaces the debate\'s champion arguments ranked by faceoff wins and win rate. Unauthenticated visitors see the top pair but cannot vote. "Argument faceoff" link added to the TopicDetail sub-page nav alongside impact, wordcloud, and themes. All faceoff pages added to sitemap (hourly changeFrequency). No new migration — powered by existing argument_faceoff_votes table (Ch. 70).',

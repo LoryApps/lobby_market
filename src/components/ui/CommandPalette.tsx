@@ -1616,6 +1616,15 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'argument-battle',
+    label: 'Argument Battle',
+    sublabel: "Daily bracket — 8 best arguments from the last 48 h compete head-to-head. Vote on which makes the stronger civic case.",
+    href: '/argument-battle',
+    icon: Swords,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-500/10',
+  },
+  {
     id: 'bracket',
     label: 'Civic Bracket',
     sublabel: 'March Madness for debates — 8 contested topics compete head-to-head, vote to crown the week\'s champion',
