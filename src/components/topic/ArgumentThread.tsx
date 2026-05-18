@@ -46,6 +46,7 @@ import { Button } from '@/components/ui/Button'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { GiftCloutButton } from '@/components/clout/GiftCloutButton'
 import { ReportButton } from '@/components/moderation/ReportButton'
+import { TribunalChallengeButton } from '@/components/topic/TribunalChallengeButton'
 import {
   MentionAutocomplete,
   getMentionContext,
@@ -712,6 +713,11 @@ function ArgumentCard({
             reportedUserId={arg.user_id}
             compact
           />
+        )}
+
+        {/* Tribunal challenge — only for other users' arguments */}
+        {currentUserId && !isOwn && (
+          <TribunalChallengeButton argumentId={arg.id} />
         )}
       </div>
     </div>

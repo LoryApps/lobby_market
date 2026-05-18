@@ -1050,6 +1050,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'tribunal',
+    label: 'The Civic Tribunal',
+    sublabel: 'Democratic argument review — challenge fallacious reasoning, serve as a juror, deliver verdicts',
+    href: '/tribunal',
+    icon: Scale,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'amendments',
     label: 'Amendment Chamber',
     sublabel: 'Community proposals to refine and extend established laws — vote to ratify',
