@@ -996,6 +996,20 @@ const CHAPTERS: Chapter[] = [
     ],
   },
   {
+    number: 'Ch. 101',
+    title: 'Argument of the Day',
+    subtitle: 'A daily spotlight on the single most compelling argument written in the last 24 hours — ranked by community upvotes and AI quality score — with a 7-day archive',
+    accent: 'text-gold',
+    borderColor: 'border-gold/40',
+    bgColor: 'bg-gold/8',
+    textColor: 'text-gold',
+    items: [
+      { icon: Crown, label: 'New /argument-of-the-day page: every day, the Lobby crowns one argument the best of the day. Ranked by composite score (upvotes × 3 + AI score × 10). Full-width hero card with expanded quote, author attribution, topic context, and vote split.', href: '/argument-of-the-day', color: 'text-gold' },
+      { icon: Trophy, label: '7-day archive below the hero: each past day shows its winner in a compact card with side badge, AI grade, author link, and a direct link into the debate. Gives the page replay value and makes daily wins feel meaningful.', href: '/argument-of-the-day', color: 'text-for-400' },
+      { icon: Share2, label: 'Native share support: taps the Web Share API on mobile or copies a quote card to clipboard on desktop. Countdown timer shows how long until the next argument is crowned at midnight UTC.', href: '/argument-of-the-day', color: 'text-purple' },
+    ],
+  },
+  {
     number: 'Ch. 100',
     title: 'Civic Journey Timeline',
     subtitle: 'A narrative, chronological timeline of your most significant civic moments — first vote, arguments written, laws shaped, and achievements unlocked',

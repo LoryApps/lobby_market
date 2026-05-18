@@ -520,6 +520,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'argument-of-the-day',
+    label: 'Argument of the Day',
+    sublabel: "Today's best argument crowned by the Lobby — ranked by upvotes and AI quality score",
+    href: '/argument-of-the-day',
+    icon: Crown,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'arguments',
     label: 'Top Arguments',
     sublabel: 'Most-upvoted arguments ever made in the Lobby',

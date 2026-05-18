@@ -18,6 +18,7 @@ import { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
+  Crown,
   Gavel,
   Mic,
   Scale,
@@ -363,6 +364,30 @@ export function LobbyRail() {
           </ul>
         </div>
       )}
+
+      {/* ── Argument of the Day ──────────────────────────────────────────── */}
+      <Link
+        href="/argument-of-the-day"
+        className={cn(
+          'flex items-center justify-between gap-2',
+          'rounded-xl border border-gold/30 bg-gold/5',
+          'px-3 py-2.5',
+          'hover:bg-gold/10 hover:border-gold/50 transition-colors group',
+        )}
+      >
+        <div className="flex items-center gap-2">
+          <Crown className="h-3.5 w-3.5 text-gold shrink-0" aria-hidden="true" />
+          <div>
+            <p className="text-[11px] font-mono font-semibold text-gold leading-tight">
+              Argument of the Day
+            </p>
+            <p className="text-[10px] text-surface-600 leading-tight mt-0.5">
+              Today&apos;s best argument, crowned by the Lobby
+            </p>
+          </div>
+        </div>
+        <ChevronRight className="h-3 w-3 text-surface-600 group-hover:text-gold transition-colors shrink-0" aria-hidden="true" />
+      </Link>
 
       {/* ── Quick nav ────────────────────────────────────────────────────── */}
       <div className="rounded-xl border border-surface-300/50 bg-surface-100/80 backdrop-blur-sm p-3">
