@@ -760,6 +760,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'public-record',
+    label: 'The Civic Public Record',
+    sublabel: 'Permanent archive of every law established and every proposal rejected',
+    href: '/public-record',
+    icon: Shield,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-600/15',
+  },
+  {
+    type: 'link',
     id: 'checker',
     label: 'Civic Claim Checker',
     sublabel: 'Check any claim against the Codex — see if established laws support or contradict it',

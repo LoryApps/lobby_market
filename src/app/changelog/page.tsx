@@ -1511,13 +1511,28 @@ const CHAPTERS: Chapter[] = [
       { icon: Layers, label: '"Open full context →" link added below the inline TopicContextPanel in TopicDetail. All context pages added to sitemap (weekly changeFrequency). No new migration needed — powered by existing topic_contexts table from Ch. 17.', href: undefined, color: 'text-for-400' },
     ],
   },
+  {
+    number: 'Ch. 113',
+    title: 'The Civic Public Record',
+    subtitle: 'A permanent, searchable archive of every democratic decision — laws passed and proposals rejected by the people',
+    accent: 'text-for-400',
+    borderColor: 'border-for-500/30',
+    bgColor: 'bg-for-500/5',
+    textColor: 'text-for-300',
+    items: [
+      { icon: Shield, label: 'New /public-record page: permanent civic archive of all decided topics — laws established (with civic seal) and rejected proposals (with memorial treatment). The democratic ledger.', href: '/public-record', color: 'text-for-400' },
+      { icon: Scale, label: 'Filter by outcome (All / Laws / Rejected), category, and search query. Sort by most recent, most voted, or consensus strength. Infinite scroll pagination.', href: '/public-record', color: 'text-purple' },
+      { icon: BarChart2, label: 'Platform stats dashboard at top: total laws, total rejected, total votes cast, laws this month. Highlight cards for most decisive law (highest FOR%) and closest call (nearest 50%).', href: '/public-record', color: 'text-gold' },
+      { icon: Share2, label: 'Wired into Command Palette and TopBar navigation menu. No new DB migration — built entirely on the existing topics table.', href: '/public-record', color: 'text-surface-400' },
+    ],
+  },
 ]
 
 const STATS = [
-  { value: '107', label: 'chapters shipped' },
-  { value: '400+', label: 'features built' },
-  { value: '72', label: 'DB migrations' },
-  { value: '420+', label: 'API routes' },
+  { value: '113', label: 'chapters shipped' },
+  { value: '420+', label: 'features built' },
+  { value: '73', label: 'DB migrations' },
+  { value: '430+', label: 'API routes' },
 ]
 
 interface RecentBuild {
@@ -1530,6 +1545,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'The Civic Public Record',
+    description: 'New /public-record page: a permanent, searchable archive of every democratic decision on Lobby Market. Laws passed display with a civic seal; rejected proposals display with a memorial stone treatment. Platform stats at the top (total laws, rejected, votes cast, laws this month). Highlight cards for the most decisive law and closest decision. Filter by outcome (All / Laws / Rejected), category filter pills, full-text search, sort by date/votes/consensus. Infinite scroll. Wired into Command Palette and TopBar navigation. No new DB migration — built entirely on the existing topics table.',
+    href: '/public-record',
+    icon: Shield,
+    color: 'text-for-400',
+    tag: 'Ch. 113',
+  },
   {
     title: 'Argument Battle',
     description: 'New /argument-battle page: each day, the 8 best arguments from the past 48 hours are seeded into a single-elimination bracket — 4 FOR vs 4 AGAINST, alternating so every matchup pits opposing sides. Users read both arguments and vote on which makes the stronger civic case. Three rounds (R1 → Semis → Final) with animated transitions. State persists across page refreshes via localStorage (keyed by date). Champion revealed with celebration animation, share button, and links to /gallery and /duel. New /api/argument-battle route uses a deterministic daily seed (mulberry32 PRNG) to return the same 8 arguments to every visitor on a given calendar day.',
