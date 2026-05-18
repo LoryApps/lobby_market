@@ -10,6 +10,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/quiz`, changeFrequency: 'daily', priority: 0.88 },
   { url: `${BASE_URL}/duel`, changeFrequency: 'always', priority: 0.82 },
   { url: `${BASE_URL}/argument-battle`, changeFrequency: 'daily', priority: 0.85 },
+  { url: `${BASE_URL}/anthology`, changeFrequency: 'daily', priority: 0.82 },
   { url: `${BASE_URL}/trending`, changeFrequency: 'hourly', priority: 0.9 },
   { url: `${BASE_URL}/surge`, changeFrequency: 'hourly', priority: 0.85 },
   { url: `${BASE_URL}/hotspot`, changeFrequency: 'always', priority: 0.88 },

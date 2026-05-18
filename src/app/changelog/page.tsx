@@ -997,6 +997,20 @@ const CHAPTERS: Chapter[] = [
     ],
   },
   {
+    number: 'Ch. 108',
+    title: 'The Argument Anthology',
+    subtitle: 'A curated daily editorial of the five best civic arguments — ranked by community upvotes and AI quality score, with a weekly edition of fifteen',
+    accent: 'text-gold',
+    borderColor: 'border-gold/30',
+    bgColor: 'bg-gold/5',
+    textColor: 'text-gold',
+    items: [
+      { icon: BookOpen, label: 'New /anthology page: the platform\'s five best arguments from today, presented as a literary anthology edition. Each entry shows full argument text, author, topic context, FOR/AGAINST side, AI grade, and vote split.', href: '/anthology', color: 'text-gold' },
+      { icon: Trophy, label: 'Weekly Edition tab shows the top fifteen arguments from the past seven days. Ranked by composite score (upvotes × 3 + AI score × 10) — the same formula used for Argument of the Day.', href: '/anthology', color: 'text-for-400' },
+      { icon: Award, label: 'New /api/anthology route returns daily (top 5) and weekly (top 15) curated arguments with author and topic context. 30-minute cache. Footer links to Hall of Fame, Argument Leaderboard, and Argument Coach.', color: 'text-purple' },
+    ],
+  },
+  {
     number: 'Ch. 107',
     title: 'Argument Battle',
     subtitle: 'Daily single-elimination bracket — 8 top arguments compete head-to-head and you vote on which makes the stronger civic case',
