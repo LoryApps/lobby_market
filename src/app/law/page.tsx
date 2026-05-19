@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { Award, BookOpen, Clock, FileWarning, Gavel, Globe, Network, Rss, Tag, Trophy } from 'lucide-react'
+import { Award, BookOpen, Clock, FileWarning, Gavel, Globe, Network, Rss, Scale, Tag, Trophy } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -153,6 +153,18 @@ export default async function LawIndexPage() {
               >
                 <Trophy className="h-4 w-4" />
                 <span className="hidden sm:inline">Quality Index</span>
+              </Link>
+
+              <Link
+                href="/tensions"
+                className={cn(
+                  'inline-flex items-center gap-2 px-3 py-2 rounded-lg',
+                  'bg-against-600/10 border border-against-500/30 text-against-300 text-xs font-mono font-medium',
+                  'hover:bg-against-600/20 hover:border-against-500/50 transition-colors'
+                )}
+              >
+                <Scale className="h-4 w-4" />
+                <span className="hidden sm:inline">Tensions</span>
               </Link>
 
               <Link

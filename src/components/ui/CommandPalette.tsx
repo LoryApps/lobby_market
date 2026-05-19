@@ -1143,6 +1143,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'civic-tensions',
+    label: 'Civic Tensions',
+    sublabel: 'Laws that may pull in opposing directions — codex coherence analysis',
+    href: '/tensions',
+    icon: Scale,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-500/10',
+  },
+  {
+    type: 'link',
     id: 'topic-network',
     label: 'Topic Network',
     sublabel: 'Force-directed graph of all debate topics',
