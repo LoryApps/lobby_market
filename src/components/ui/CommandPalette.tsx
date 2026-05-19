@@ -99,6 +99,7 @@ import {
   RotateCcw,
   Dna,
   Rocket,
+  Grid3X3,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -767,6 +768,16 @@ const QUICK_LINKS: QuickLink[] = [
     icon: Shield,
     iconColor: 'text-for-400',
     iconBg: 'bg-for-600/15',
+  },
+  {
+    type: 'link',
+    id: 'mosaic',
+    label: 'The Civic Mosaic',
+    sublabel: 'Every debate as a colour-coded tile — consensus in colour, engagement in size',
+    href: '/mosaic',
+    icon: Grid3X3,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
   },
   {
     type: 'link',

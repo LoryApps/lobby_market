@@ -61,6 +61,7 @@ import {
   Zap,
   LayoutGrid,
   Share2,
+  Grid3X3,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -1526,13 +1527,28 @@ const CHAPTERS: Chapter[] = [
       { icon: Share2, label: 'Wired into Command Palette and TopBar navigation menu. No new DB migration — built entirely on the existing topics table.', href: '/public-record', color: 'text-surface-400' },
     ],
   },
+  {
+    number: 'Ch. 114',
+    title: 'The Civic Mosaic',
+    subtitle: 'Every debate on the platform rendered as a living colour-coded tile grid — consensus in colour, engagement in size',
+    accent: 'text-purple',
+    borderColor: 'border-purple/30',
+    bgColor: 'bg-purple/5',
+    textColor: 'text-purple',
+    items: [
+      { icon: Grid3X3, label: 'New /mosaic page: every topic on the platform visualised as a colour-coded tile. Blue = strong FOR mandate, red = strong AGAINST mandate, gold = contested. Tile size is proportional to vote count (sqrt-scaled to keep the display legible).', href: '/mosaic', color: 'text-purple' },
+      { icon: Layers, label: 'Filter by category (All + 10 civic categories), status (All / Active / Laws / Failed), and consensus type (All / Mandates / Contested / Deadlocked). Live count of matching tiles shown in filter bar.', href: '/mosaic', color: 'text-for-400' },
+      { icon: BarChart2, label: 'Platform stats strip: total debates, established laws, contested count, total votes cast. Tiles refresh every 90 seconds. Click any tile to open a detail panel with vote bar, consensus label, and a direct link to the full debate or law.', href: '/mosaic', color: 'text-gold' },
+      { icon: Share2, label: 'Wired into Command Palette. No new DB migration — built entirely on the existing topics table via /api/mosaic.', href: '/mosaic', color: 'text-surface-400' },
+    ],
+  },
 ]
 
 const STATS = [
-  { value: '113', label: 'chapters shipped' },
-  { value: '420+', label: 'features built' },
+  { value: '114', label: 'chapters shipped' },
+  { value: '425+', label: 'features built' },
   { value: '73', label: 'DB migrations' },
-  { value: '430+', label: 'API routes' },
+  { value: '431+', label: 'API routes' },
 ]
 
 interface RecentBuild {
@@ -1545,6 +1561,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'The Civic Mosaic',
+    description: 'New /mosaic page: every topic on the platform visualised as a colour-coded tile grid. Blue tiles = strong FOR mandates. Red = strong AGAINST. Gold = contested (within 7% of 50/50). Gold-outlined = established laws. Tile size is proportional to vote count (sqrt-scaled). Filter by category, status, or consensus type. Click any tile to open a detail panel with vote bar and a direct link. Stats strip at top: total debates, laws, contested count, and total votes cast. Auto-refreshes every 90s. Wired into Command Palette. No new DB migration.',
+    href: '/mosaic',
+    icon: Grid3X3,
+    color: 'text-purple',
+    tag: 'Ch. 114',
+  },
   {
     title: 'The Civic Public Record',
     description: 'New /public-record page: a permanent, searchable archive of every democratic decision on Lobby Market. Laws passed display with a civic seal; rejected proposals display with a memorial stone treatment. Platform stats at the top (total laws, rejected, votes cast, laws this month). Highlight cards for the most decisive law and closest decision. Filter by outcome (All / Laws / Rejected), category filter pills, full-text search, sort by date/votes/consensus. Infinite scroll. Wired into Command Palette and TopBar navigation. No new DB migration — built entirely on the existing topics table.',
