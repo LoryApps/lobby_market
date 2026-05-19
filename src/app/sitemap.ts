@@ -117,6 +117,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/signals`, changeFrequency: 'always', priority: 0.85 },
   { url: `${BASE_URL}/timeline`, changeFrequency: 'hourly', priority: 0.75 },
   { url: `${BASE_URL}/graveyard`, changeFrequency: 'daily', priority: 0.65 },
+  { url: `${BASE_URL}/recoil`, changeFrequency: 'daily', priority: 0.70 },
   { url: `${BASE_URL}/mindmap`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/steelman`, changeFrequency: 'daily', priority: 0.8 },
   { url: `${BASE_URL}/spar`, changeFrequency: 'hourly', priority: 0.75 },
