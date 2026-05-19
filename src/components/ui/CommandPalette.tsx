@@ -1799,6 +1799,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'diversity',
+    label: 'Civic Diversity Score',
+    sublabel: 'Your echo-chamber rating — category coverage, balance, and position independence across all your votes',
+    href: '/diversity',
+    icon: Globe,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+  },
+  {
+    type: 'link',
     id: 'fingerprint',
     label: 'Civic Fingerprint',
     sublabel: 'How unique is your civic voice? Category-by-category deviation from the platform median voter',
