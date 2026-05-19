@@ -1799,6 +1799,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'bridge',
+    label: 'The Civic Bridge',
+    sublabel: 'Where your votes cross partisan lines — bridge moments, unexpected agreements, and your cross-divide score',
+    href: '/bridge',
+    icon: GitCompare,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
     id: 'diversity',
     label: 'Civic Diversity Score',
     sublabel: 'Your echo-chamber rating — category coverage, balance, and position independence across all your votes',

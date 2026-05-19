@@ -149,6 +149,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/flashpoint`, changeFrequency: 'always', priority: 0.78 },
   { url: `${BASE_URL}/tribunal`, changeFrequency: 'daily', priority: 0.75 },
   { url: `${BASE_URL}/diversity`, changeFrequency: 'weekly', priority: 0.70 },
+  { url: `${BASE_URL}/bridge`, changeFrequency: 'weekly', priority: 0.70 },
   { url: `${BASE_URL}/spectrum`, changeFrequency: 'daily', priority: 0.72 },
   { url: `${BASE_URL}/twins`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/rivals`, changeFrequency: 'daily', priority: 0.65 },

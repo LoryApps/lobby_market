@@ -25,6 +25,7 @@ import {
   Gamepad2,
   Gavel,
   GitBranch,
+  GitCompare,
   GitMerge,
   Globe,
   Hash,
@@ -1513,6 +1514,21 @@ const CHAPTERS: Chapter[] = [
     ],
   },
   {
+    number: 'Ch. 117',
+    title: 'The Civic Bridge',
+    subtitle: 'Find unexpected common ground — where your votes cross partisan lines and reveal the bridge-builder in you',
+    accent: 'text-for-400',
+    borderColor: 'border-for-500/30',
+    bgColor: 'bg-for-500/5',
+    textColor: 'text-for-300',
+    items: [
+      { icon: GitCompare, label: 'New /bridge page: measures how often you vote against your own category lean — "bridge moments" where you agreed with the opposing side. A 0–100 Bridge Score ranks you from Partisan → Occasional Bridge → Bridge Builder → Consensus Seeker → Unifier.', href: '/bridge', color: 'text-for-400' },
+      { icon: BarChart2, label: 'Three-tab view: Bridge Topics (your most surprising votes), By Category (your FOR% vs platform average per category with bridge moments highlighted), and Bridge Citizens (other users who share your unexpected positions).', href: '/bridge', color: 'text-gold' },
+      { icon: Globe, label: 'Bridge score is computed from your full vote history. Each vote is checked against your typical category lean — a "crossed_own_lean" vote, a "crossed_platform_lean" vote, or a "minority_vote" all count as bridge moments. Animated gauge with Framer Motion arc transition.', href: '/bridge', color: 'text-purple' },
+      { icon: Share2, label: 'Wired into Command Palette (⌘K), analytics hub nav link, and sitemap. No new DB migration — uses existing votes and topics tables.', href: '/bridge', color: 'text-surface-400' },
+    ],
+  },
+  {
     number: 'Ch. 113',
     title: 'The Civic Public Record',
     subtitle: 'A permanent, searchable archive of every democratic decision — laws passed and proposals rejected by the people',
@@ -1545,10 +1561,10 @@ const CHAPTERS: Chapter[] = [
 ]
 
 const STATS = [
-  { value: '114', label: 'chapters shipped' },
-  { value: '425+', label: 'features built' },
-  { value: '73', label: 'DB migrations' },
-  { value: '431+', label: 'API routes' },
+  { value: '117', label: 'chapters shipped' },
+  { value: '430+', label: 'features built' },
+  { value: '74', label: 'DB migrations' },
+  { value: '435+', label: 'API routes' },
 ]
 
 interface RecentBuild {
@@ -1561,6 +1577,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'The Civic Bridge',
+    description: 'New /bridge page reveals where your votes cross partisan lines — the "bridge moments" where you agreed with the opposing side or voted with the minority. A 0–100 Bridge Score ranks you from Partisan to Unifier. Three-tab view: Bridge Topics (your most surprising votes with bridge reason pills and vote-split bars), By Category (your FOR% vs platform average with bridge moment counts), and Bridge Citizens (other users sharing your unexpected positions). Bridge score computed from vote history by checking each vote against your typical category lean. Animated gauge with Framer Motion arc. Wired into Command Palette, analytics hub, and sitemap. No new DB migration.',
+    href: '/bridge',
+    icon: GitCompare,
+    color: 'text-for-400',
+    tag: 'Ch. 117',
+  },
   {
     title: 'The Civic Mosaic',
     description: 'New /mosaic page: every topic on the platform visualised as a colour-coded tile grid. Blue tiles = strong FOR mandates. Red = strong AGAINST. Gold = contested (within 7% of 50/50). Gold-outlined = established laws. Tile size is proportional to vote count (sqrt-scaled). Filter by category, status, or consensus type. Click any tile to open a detail panel with vote bar and a direct link. Stats strip at top: total debates, laws, contested count, and total votes cast. Auto-refreshes every 90s. Wired into Command Palette. No new DB migration.',

@@ -10,6 +10,7 @@ import {
   Compass, Fingerprint, Users, Swords, Star, Network, Sparkles, BookOpen, ThumbsUp,
   Shield, Gavel, Quote, Rocket, Hash, Gauge, Eye, LayoutGrid, Trophy, TrendingDown,
   GitMerge,
+  GitCompare,
   Coins,
   Landmark,
   Layers,
@@ -372,6 +373,7 @@ export default function AnalyticsPage() {
             <Link href="/impact" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><Star className="h-3.5 w-3.5" />Impact</Link>
             <Link href="/compass" className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"><Compass className="h-3.5 w-3.5" />Compass</Link>
             <Link href="/influence" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><Network className="h-3.5 w-3.5" />Influence</Link>
+            <Link href="/bridge" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><GitCompare className="h-3.5 w-3.5" />Civic Bridge</Link>
             <Link href="/diversity" className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"><Globe className="h-3.5 w-3.5" />Diversity Score</Link>
             <Link href="/fingerprint" className="flex items-center gap-1 text-xs text-against-400 hover:text-against-300 transition-colors font-mono font-semibold"><Fingerprint className="h-3.5 w-3.5" />Fingerprint</Link>
             <Link href="/mindmap" className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"><Network className="h-3.5 w-3.5" />Mind Map</Link>
