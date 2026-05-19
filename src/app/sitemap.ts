@@ -210,6 +210,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/karma`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/hotspot`, changeFrequency: 'always', priority: 0.8 },
   { url: `${BASE_URL}/forecasters`, changeFrequency: 'hourly', priority: 0.75 },
+  { url: `${BASE_URL}/resolutions`, changeFrequency: 'hourly', priority: 0.75 },
   { url: `${BASE_URL}/tags`, changeFrequency: 'daily', priority: 0.72 },
   ...(
     [
