@@ -983,6 +983,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'convergence',
+    label: 'Civic Convergence',
+    sublabel: 'Where consensus is building — and where it\'s cracking. Recent voters vs. the platform average.',
+    href: '/convergence',
+    icon: GitMerge,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+  },
+  {
+    type: 'link',
     id: 'flashpoint',
     label: 'Flashpoint',
     sublabel: 'The single most contested debate raging right now — peak velocity, maximum drama',
