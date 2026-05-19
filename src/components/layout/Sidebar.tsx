@@ -80,6 +80,7 @@ const navItems: NavItem[] = [
   { href: '/swipe', label: 'Swipe & Vote', icon: SwatchBook },
   { href: '/bracket', label: 'Civic Bracket', icon: GitMerge },
   { href: '/arguments', label: 'Top Arguments', icon: ThumbsUp },
+  { href: '/analytics/mentor', label: 'Argument Mentor', icon: Activity },
   { href: '/collections', label: 'Collections', icon: Layers },
   { href: '/saved', label: 'Saved', icon: Bookmark },
   { href: '/citizens', label: 'Citizen Directory', icon: Users },

@@ -397,6 +397,7 @@ export default function AnalyticsPage() {
             <Link href="/analytics/calibration" className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"><Gauge className="h-3.5 w-3.5" />Calibration</Link>
             <Link href="/analytics/lens" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><Eye className="h-3.5 w-3.5" />Perspective Lens</Link>
             <Link href="/analytics/argument-quality" className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"><Brain className="h-3.5 w-3.5" />Arg. Quality</Link>
+            <Link href="/analytics/mentor" className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"><Brain className="h-3.5 w-3.5" />Argument Mentor</Link>
             <Link href="/analytics/snapshot" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><LayoutGrid className="h-3.5 w-3.5" />Snapshot</Link>
             <Link href="/analytics/benchmark" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><Trophy className="h-3.5 w-3.5" />Benchmark</Link>
             <Link href="/analytics/drift" className="flex items-center gap-1 text-xs text-against-400 hover:text-against-300 transition-colors font-mono font-semibold"><TrendingDown className="h-3.5 w-3.5" />Drift</Link>

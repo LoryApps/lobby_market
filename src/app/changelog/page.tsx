@@ -216,6 +216,7 @@ const CHAPTERS: Chapter[] = [
     bgColor: 'bg-purple/5',
     textColor: 'text-purple',
     items: [
+      { icon: Brain, label: 'Argument Mentor — AI coaching report on your full argument history', href: '/analytics/mentor', color: 'text-purple' },
       { icon: Bot, label: 'Argument Coach — AI critique across 4 dimensions', href: '/coach', color: 'text-purple' },
       { icon: Scale, label: 'Claim Checker — verify claims against the Codex', href: '/checker', color: 'text-for-400' },
       { icon: Activity, label: 'Policy Simulator — model outcomes with Claude', href: '/simulate', color: 'text-emerald' },
