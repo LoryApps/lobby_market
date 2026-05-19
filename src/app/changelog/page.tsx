@@ -63,6 +63,7 @@ import {
   LayoutGrid,
   Share2,
   Grid3X3,
+  Handshake,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -1514,6 +1515,21 @@ const CHAPTERS: Chapter[] = [
     ],
   },
   {
+    number: 'Ch. 118',
+    title: 'The Civic Accord',
+    subtitle: 'Discover topics where the entire community agrees — near-unanimous consensus that transcends political divides',
+    accent: 'text-emerald',
+    borderColor: 'border-emerald/30',
+    bgColor: 'bg-emerald/5',
+    textColor: 'text-emerald',
+    items: [
+      { icon: Handshake, label: 'New /accord page: surfaces all topics where ≥80% of the Lobby voted the same way — the rare civic common ground where partisan divides dissolve. Filters by category, status (Any / Active / Law), and sort (Strength / Votes / Mandate).', href: '/accord', color: 'text-emerald' },
+      { icon: Scale, label: 'Strength ring visualization for each accord topic: an animated SVG ring showing how decisive the agreement is, colour-coded FOR (blue) or AGAINST (red). Super-majority (≥85%) and near-unanimous (≥95%) tiers highlighted with gold callout.', href: '/accord', color: 'text-gold' },
+      { icon: BarChart2, label: 'Category breakdown panel: collapsible grid showing accord count, average strength, FOR vs AGAINST distribution, and total votes per category. Mandate score formula √(votes) × strength rewards both broad and strong consensus.', href: '/accord', color: 'text-purple' },
+      { icon: MessageSquare, label: 'Expandable top argument per accord: shows the highest-upvoted argument on the winning side, with author attribution and upvote count. Wired into Command Palette (⌘K), analytics hub nav, and sitemap. No new DB migration.', href: '/accord', color: 'text-surface-400' },
+    ],
+  },
+  {
     number: 'Ch. 117',
     title: 'The Civic Bridge',
     subtitle: 'Find unexpected common ground — where your votes cross partisan lines and reveal the bridge-builder in you',
@@ -1561,10 +1577,10 @@ const CHAPTERS: Chapter[] = [
 ]
 
 const STATS = [
-  { value: '117', label: 'chapters shipped' },
-  { value: '430+', label: 'features built' },
+  { value: '118', label: 'chapters shipped' },
+  { value: '435+', label: 'features built' },
   { value: '74', label: 'DB migrations' },
-  { value: '435+', label: 'API routes' },
+  { value: '440+', label: 'API routes' },
 ]
 
 interface RecentBuild {
@@ -1577,6 +1593,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'The Civic Accord',
+    description: 'New /accord page surfaces all topics where ≥80% of the Lobby voted the same way — the rare civic common ground where partisan divides dissolve. Animated strength rings per topic. Super-majority (≥85%) and near-unanimous (≥95%) callout tiers. Expandable top argument on the winning side per topic. Category breakdown with FOR vs AGAINST accord distribution. Mandate score formula: √(votes) × strength rewards broad AND decisive consensus. Filters by category, topic status, and sort mode. No new DB migration.',
+    href: '/accord',
+    icon: Handshake,
+    color: 'text-emerald',
+    tag: 'Ch. 118',
+  },
   {
     title: 'The Civic Bridge',
     description: 'New /bridge page reveals where your votes cross partisan lines — the "bridge moments" where you agreed with the opposing side or voted with the minority. A 0–100 Bridge Score ranks you from Partisan to Unifier. Three-tab view: Bridge Topics (your most surprising votes with bridge reason pills and vote-split bars), By Category (your FOR% vs platform average with bridge moment counts), and Bridge Citizens (other users sharing your unexpected positions). Bridge score computed from vote history by checking each vote against your typical category lean. Animated gauge with Framer Motion arc. Wired into Command Palette, analytics hub, and sitemap. No new DB migration.',

@@ -101,6 +101,7 @@ import {
   Rocket,
   Grid3X3,
   Link2,
+  Handshake,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -1806,6 +1807,16 @@ const QUICK_LINKS: QuickLink[] = [
     icon: GitCompare,
     iconColor: 'text-for-400',
     iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
+    id: 'accord',
+    label: 'The Civic Accord',
+    sublabel: 'Topics with near-unanimous agreement (≥80%) — where partisan divides dissolve and everyone agrees',
+    href: '/accord',
+    icon: Handshake,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
   },
   {
     type: 'link',
