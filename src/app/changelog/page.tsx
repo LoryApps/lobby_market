@@ -1515,6 +1515,21 @@ const CHAPTERS: Chapter[] = [
     ],
   },
   {
+    number: 'Ch. 119',
+    title: 'The Civic Groundswell',
+    subtitle: 'Spot dormant debates waking up — topics surging with new voter turnout far above their baseline',
+    accent: 'text-for-400',
+    borderColor: 'border-for-500/30',
+    bgColor: 'bg-for-500/5',
+    textColor: 'text-for-300',
+    items: [
+      { icon: Activity, label: 'New /groundswell page: surfaces topics whose 24-hour vote count is 2.5× or more above their 7-day daily average — the civic debates suddenly attracting a crowd after being quiet. Distinct from /surge (absolute volume), /momentum (direction), and /shifting (percentage split).', href: '/groundswell', color: 'text-for-400' },
+      { icon: TrendingUp, label: 'Revival rate metric: votes in last 24 h ÷ average daily votes over prior 7 days. Labelled Awakening (2.5–4×), Stirring (4–6×), Rising (6–10×), Surging (10–20×), Erupting (20×+). Each card shows an animated pulse ring for visual intensity.', href: '/groundswell', color: 'text-gold' },
+      { icon: BarChart2, label: 'Expandable card detail: vote bar (FOR/AGAINST split), 3-stat grid (24h votes, 7d daily baseline, revival rate), and direct "Join the debate" CTA. Sort toggle between Revival Rate and 24h Volume. Related links to /surge, /momentum, /shifting.', href: '/groundswell', color: 'text-purple' },
+      { icon: Zap, label: 'Added to Sidebar, Command Palette (⌘K), and the /groundswell/loading.tsx skeleton. No new DB migration — pure votes + topics query. API at /api/topics/groundswell with configurable MIN_RECENT_VOTES and MIN_REVIVAL_RATE thresholds.', href: '/groundswell', color: 'text-surface-400' },
+    ],
+  },
+  {
     number: 'Ch. 118',
     title: 'The Civic Accord',
     subtitle: 'Discover topics where the entire community agrees — near-unanimous consensus that transcends political divides',

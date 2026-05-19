@@ -973,6 +973,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'groundswell',
+    label: 'Civic Groundswell',
+    sublabel: 'Topics waking up — dormant debates suddenly surging with new voter turnout',
+    href: '/groundswell',
+    icon: Activity,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
     id: 'flashpoint',
     label: 'Flashpoint',
     sublabel: 'The single most contested debate raging right now — peak velocity, maximum drama',
