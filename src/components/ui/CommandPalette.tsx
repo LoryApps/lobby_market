@@ -653,6 +653,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'drafts',
+    label: 'Draft Box',
+    sublabel: 'Saved argument drafts — refine before posting',
+    href: '/drafts',
+    icon: Cloud,
+    iconColor: 'text-surface-400',
+    iconBg: 'bg-surface-300/50',
+  },
+  {
+    type: 'link',
     id: 'notifications',
     label: 'Notifications',
     sublabel: 'Recent alerts and updates',

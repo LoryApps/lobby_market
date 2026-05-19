@@ -2241,3 +2241,22 @@ export interface SeasonPoints {
   prediction_pts: number;
   updated_at: string;
 }
+
+export interface ArgumentDraft {
+  id: string;
+  user_id: string;
+  topic_id: string;
+  side: 'blue' | 'red';
+  content: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export type ArgumentDraftWithTopic = ArgumentDraft & {
+  topic: {
+    id: string;
+    statement: string;
+    category: string | null;
+    status: string;
+  };
+};

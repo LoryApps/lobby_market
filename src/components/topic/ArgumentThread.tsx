@@ -24,6 +24,7 @@ import {
   Brain,
   ChevronUp,
   Check,
+  Cloud,
   Copy,
   ExternalLink,
   Link2,
@@ -802,6 +803,8 @@ function PostArgumentForm({
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [draftRestored, setDraftRestored] = useState(false)
+  const [cloudSaving, setCloudSaving] = useState(false)
+  const [cloudSaved, setCloudSaved] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   // AI starter state
@@ -822,20 +825,63 @@ function PostArgumentForm({
   const [mentionResultCount, setMentionResultCount] = useState(0)
   const mentionResultsRef = useRef<MentionSuggestion[]>([])
 
-  // Restore draft from localStorage on first mount
+  // Restore draft: prefer cloud draft (newer/cross-device), fall back to localStorage
   useEffect(() => {
-    const draft = loadDraft(topicId)
-    if (draft) {
-      setContent(draft.content)
-      setSide(draft.side)
-      setDraftRestored(true)
-      setTimeout(() => setDraftRestored(false), 3000)
+    let cancelled = false
+    async function restoreDraft() {
+      // Try cloud first
+      try {
+        const res = await fetch(`/api/arguments/drafts`, { cache: 'no-store' })
+        if (!cancelled && res.ok) {
+          const { drafts } = await res.json() as { drafts: Array<{ topic_id: string; side: 'blue' | 'red'; content: string }> }
+          const cloud = drafts.find((d) => d.topic_id === topicId)
+          if (cloud) {
+            setContent(cloud.content)
+            setSide(cloud.side)
+            setDraftRestored(true)
+            setTimeout(() => setDraftRestored(false), 3000)
+            return
+          }
+        }
+      } catch { /* non-critical */ }
+      // Fall back to localStorage
+      if (!cancelled) {
+        const local = loadDraft(topicId)
+        if (local) {
+          setContent(local.content)
+          setSide(local.side)
+          setDraftRestored(true)
+          setTimeout(() => setDraftRestored(false), 3000)
+        }
+      }
     }
+    void restoreDraft()
+    return () => { cancelled = true }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const remaining = MAX_CHARS - content.length
   const isValid = side !== null && content.trim().length >= MIN_CHARS && content.trim().length <= MAX_CHARS && !sourceUrlError
+
+  const handleSaveToCloud = useCallback(async () => {
+    if (!side || content.trim().length < MIN_CHARS) return
+    setCloudSaving(true)
+    try {
+      const res = await fetch('/api/arguments/drafts', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ topic_id: topicId, side, content: content.trim() }),
+      })
+      if (res.ok) {
+        setCloudSaved(true)
+        setTimeout(() => setCloudSaved(false), 3000)
+      }
+    } catch {
+      // non-critical
+    } finally {
+      setCloudSaving(false)
+    }
+  }, [side, content, topicId])
 
   // Argument quality score (0-25, pure client-side heuristic)
   const argQuality = (() => {
@@ -969,6 +1015,8 @@ function PostArgumentForm({
 
       const newArg = json.argument as TopicArgumentWithAuthor
       clearDraft(topicId)
+      // Clear cloud draft after posting — fire-and-forget
+      fetch(`/api/arguments/drafts/by-topic/${topicId}`, { method: 'DELETE' }).catch(() => {})
 
       // If the user ran a critique before submitting, persist that grade to the new argument
       if (critiqueResult && newArg.id) {
@@ -1343,21 +1391,53 @@ function PostArgumentForm({
         </p>
       )}
 
-      <Button
-        type="submit"
-        disabled={!isValid || submitting}
-        className="w-full"
-        size="sm"
-      >
-        {submitting ? (
-          <>
-            <Loader2 className="h-3.5 w-3.5 animate-spin mr-2" />
-            Posting…
-          </>
-        ) : (
-          'Post Argument'
-        )}
-      </Button>
+      <div className="flex items-center gap-2">
+        <Button
+          type="submit"
+          disabled={!isValid || submitting}
+          className="flex-1"
+          size="sm"
+        >
+          {submitting ? (
+            <>
+              <Loader2 className="h-3.5 w-3.5 animate-spin mr-2" />
+              Posting…
+            </>
+          ) : (
+            'Post Argument'
+          )}
+        </Button>
+
+        {/* Save draft to cloud */}
+        <button
+          type="button"
+          onClick={() => void handleSaveToCloud()}
+          disabled={!side || content.trim().length < MIN_CHARS || cloudSaving}
+          title="Save draft to your Draft Box"
+          aria-label="Save as draft"
+          className={cn(
+            'flex items-center justify-center gap-1.5 h-9 px-3 rounded-xl border text-xs font-mono transition-all flex-shrink-0',
+            cloudSaved
+              ? 'border-emerald/50 bg-emerald/10 text-emerald'
+              : 'border-surface-400 bg-surface-200 text-surface-500 hover:border-surface-300 hover:text-white',
+            ((!side || content.trim().length < MIN_CHARS) && !cloudSaving) && 'opacity-40 cursor-not-allowed'
+          )}
+        >
+          {cloudSaving ? (
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+          ) : cloudSaved ? (
+            <>
+              <Check className="h-3.5 w-3.5" />
+              Saved
+            </>
+          ) : (
+            <>
+              <Cloud className="h-3.5 w-3.5" />
+              Save
+            </>
+          )}
+        </button>
+      </div>
     </form>
   )
 }
