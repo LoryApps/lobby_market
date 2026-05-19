@@ -142,6 +142,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/race`, changeFrequency: 'always', priority: 0.78 },
   { url: `${BASE_URL}/battleground`, changeFrequency: 'always', priority: 0.8 },
   { url: `${BASE_URL}/mosaic`, changeFrequency: 'always', priority: 0.78 },
+  { url: `${BASE_URL}/relay`, changeFrequency: 'always', priority: 0.80 },
   { url: `${BASE_URL}/spectrum`, changeFrequency: 'daily', priority: 0.72 },
   { url: `${BASE_URL}/twins`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/rivals`, changeFrequency: 'daily', priority: 0.65 },

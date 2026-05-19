@@ -100,6 +100,7 @@ import {
   Dna,
   Rocket,
   Grid3X3,
+  Link2,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -1078,6 +1079,16 @@ const QUICK_LINKS: QuickLink[] = [
     icon: Shield,
     iconColor: 'text-against-400',
     iconBg: 'bg-against-500/10',
+  },
+  {
+    type: 'link',
+    id: 'relay',
+    label: 'Civic Relay',
+    sublabel: 'Collaborative 5-leg argument chains — one user starts, four others build, the community votes',
+    href: '/relay',
+    icon: Link2,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
   },
   {
     type: 'link',
