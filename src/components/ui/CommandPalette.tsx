@@ -553,6 +553,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'discussions',
+    label: 'Active Discussions',
+    sublabel: 'Arguments with the most reply threads right now — filter by side, category, and time',
+    href: '/discussions',
+    icon: MessageSquare,
+    iconColor: 'text-for-300',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
     id: 'my-arguments',
     label: 'My Arguments',
     sublabel: 'Personal argument analytics — upvotes, categories, history',
