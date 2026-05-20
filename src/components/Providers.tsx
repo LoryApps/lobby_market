@@ -9,6 +9,18 @@ import { useCommandPalette, toggleCommandPalette } from '@/lib/hooks/useCommandP
 import { InstallPrompt } from '@/components/layout/InstallPrompt'
 import { RouteProgressBar } from '@/components/layout/RouteProgressBar'
 
+// Register the service worker for Web Push Notifications
+function ServiceWorkerRegistrar() {
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    if (!('serviceWorker' in navigator)) return
+    navigator.serviceWorker
+      .register('/sw.js', { scope: '/' })
+      .catch((err) => console.warn('[sw] registration failed:', err))
+  }, [])
+  return null
+}
+
 // Lazy-load heavy modal components — they're only needed when the user
 // triggers them, so they should not bloat the initial JS bundle.
 const CommandPalette = dynamic(
@@ -50,6 +62,7 @@ function CommandPaletteProvider() {
 export function Providers({ children }: ProvidersProps) {
   return (
     <ToastProvider>
+      <ServiceWorkerRegistrar />
       <RouteProgressBar />
       {children}
       <NotificationWatcher />

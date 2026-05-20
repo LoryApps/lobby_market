@@ -26,6 +26,7 @@ import {
 import { createClient } from '@/lib/supabase/client'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
+import { usePushNotifications } from '@/lib/hooks/usePushNotifications'
 import { cn } from '@/lib/utils/cn'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -212,6 +213,10 @@ export default function SettingsPage() {
   const [browserNotifPermission, setBrowserNotifPermission] = useState<NotificationPermission | 'unsupported'>('default')
   const [browserNotifEnabled, setBrowserNotifEnabled] = useState(false)
   const [browserNotifRequesting, setBrowserNotifRequesting] = useState(false)
+
+  // Web Push state
+  const { state: pushState, subscribe: pushSubscribe, unsubscribe: pushUnsubscribe } = usePushNotifications()
+  const [pushBusy, setPushBusy] = useState(false)
 
   // PWA install state
   const [isInstalled, setIsInstalled] = useState(false)
@@ -608,6 +613,77 @@ export default function SettingsPage() {
                     <Bell className="h-4 w-4" />
                     {browserNotifRequesting ? 'Requesting…' : 'Enable browser notifications'}
                   </button>
+                )}
+              </div>
+            )}
+
+            {/* ── Web Push Notifications ────────────────────────────────── */}
+            {pushState !== 'unsupported' && (
+              <div className={cardClass}>
+                <SectionHeader icon={Bell} title="Push Notifications" />
+                <p className="text-xs text-surface-500 mb-4">
+                  Receive notifications on this device even when Lobby Market isn&rsquo;t open — for debates, laws, replies, and achievements.
+                </p>
+
+                {pushState === 'blocked' && (
+                  <div className="flex items-start gap-3 p-3 rounded-xl bg-against-500/10 border border-against-500/20 mb-3">
+                    <X className="h-4 w-4 text-against-400 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-sm font-medium text-against-300">Blocked by browser</p>
+                      <p className="text-xs text-surface-500 mt-0.5">
+                        Open your browser&rsquo;s site settings and allow notifications for lobby.market, then reload.
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {pushState === 'subscribed' && (
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2 text-xs text-emerald">
+                      <Check className="h-3.5 w-3.5 flex-shrink-0" />
+                      <span>Push notifications active on this device</span>
+                    </div>
+                    <button
+                      type="button"
+                      disabled={pushBusy}
+                      onClick={async () => {
+                        setPushBusy(true)
+                        await pushUnsubscribe()
+                        setPushBusy(false)
+                      }}
+                      className="text-xs text-surface-500 hover:text-against-400 transition-colors disabled:opacity-50"
+                    >
+                      {pushBusy ? 'Disabling…' : 'Disable push notifications'}
+                    </button>
+                  </div>
+                )}
+
+                {(pushState === 'not_subscribed' || pushState === 'error') && (
+                  <button
+                    type="button"
+                    disabled={pushBusy || pushState === 'loading'}
+                    onClick={async () => {
+                      setPushBusy(true)
+                      await pushSubscribe()
+                      setPushBusy(false)
+                    }}
+                    className={cn(
+                      'flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-mono font-semibold transition-all',
+                      'bg-for-600/20 border border-for-600/40 text-for-300',
+                      'hover:bg-for-600/30 hover:text-white',
+                      'disabled:opacity-50 disabled:cursor-not-allowed',
+                      'focus:outline-none focus-visible:ring-2 focus-visible:ring-for-500/40'
+                    )}
+                  >
+                    <Bell className="h-4 w-4" />
+                    {pushBusy || pushState === 'loading' ? 'Enabling…' : 'Enable push notifications'}
+                  </button>
+                )}
+
+                {pushState === 'error' && (
+                  <p className="text-xs text-against-400 mt-2">
+                    Failed to enable push notifications. Make sure you&rsquo;ve allowed notifications for this site.
+                  </p>
                 )}
               </div>
             )}
