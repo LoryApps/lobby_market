@@ -18,6 +18,7 @@ import { VoteHistoryTimeline, type VoteHistoryEntry } from './VoteHistoryTimelin
 import { AchievementGrid } from './AchievementGrid'
 import { NextAchievementsPanel } from './NextAchievementsPanel'
 import { ProfileArguments, type ProfileArgumentEntry } from './ProfileArguments'
+import { PinnedArgumentsShowcase } from './PinnedArgumentsShowcase'
 import { VoteDnaPanel, type VoteCategoryBreakdown } from './VoteDnaPanel'
 import { VoteCalendar } from './VoteCalendar'
 import type {
@@ -376,6 +377,14 @@ export function ProfilePage({
                   </div>
                   <NextAchievementsPanel userId={profile.id} limit={2} />
                 </div>
+              )}
+
+              {/* Argument Spotlight — pinned arguments showcase */}
+              {(profile.total_arguments ?? 0) > 0 && (
+                <PinnedArgumentsShowcase
+                  username={profile.username}
+                  isOwner={isOwner}
+                />
               )}
 
               {/* Top arguments preview */}

@@ -31,6 +31,8 @@ import {
   Loader2,
   MessageSquare,
   MessageSquarePlus,
+  Pin,
+  PinOff,
   Send,
   Share2,
   Sparkles,
@@ -430,11 +432,14 @@ function ArgumentCard({
   const [showReplies, setShowReplies] = useState(false)
   const [bookmarked, setBookmarked] = useState(false)
   const [bookmarking, setBookmarking] = useState(false)
+  const [pinned, setPinned] = useState(false)
+  const [pinning, setPinning] = useState(false)
+  const [pinError, setPinError] = useState<string | null>(null)
   const [linkCopied, setLinkCopied] = useState(false)
   const isOwn = arg.user_id === currentUserId
   const canUpvote = currentUserId !== null && !isOwn
 
-  // Fetch initial bookmark state
+  // Fetch initial bookmark + pin state
   useEffect(() => {
     if (!currentUserId) return
     fetch(`/api/arguments/${arg.id}/bookmark`)
@@ -442,6 +447,46 @@ function ArgumentCard({
       .then((data) => { if (typeof data.bookmarked === 'boolean') setBookmarked(data.bookmarked) })
       .catch(() => {})
   }, [arg.id, currentUserId])
+
+  // Fetch initial pin state (own arguments only)
+  useEffect(() => {
+    if (!currentUserId || !isOwn) return
+    fetch('/api/profile/pinned-arguments')
+      .then((r) => r.json())
+      .then((data: { pins?: Array<{ argument_id: string }> }) => {
+        if (Array.isArray(data.pins)) {
+          setPinned(data.pins.some((p) => p.argument_id === arg.id))
+        }
+      })
+      .catch(() => {})
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [arg.id, currentUserId, isOwn])
+
+  const handlePin = async () => {
+    if (!currentUserId || !isOwn || pinning) return
+    setPinning(true)
+    setPinError(null)
+    const action = pinned ? 'unpin' : 'pin'
+    const prevPinned = pinned
+    setPinned(!prevPinned)
+    try {
+      const res = await fetch('/api/profile/pinned-arguments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ argument_id: arg.id, action }),
+      })
+      const data = await res.json() as { ok?: boolean; error?: string }
+      if (!data.ok) {
+        setPinned(prevPinned)
+        setPinError(data.error ?? 'Could not pin')
+        setTimeout(() => setPinError(null), 3000)
+      }
+    } catch {
+      setPinned(prevPinned)
+    } finally {
+      setPinning(false)
+    }
+  }
 
   const handleUpvote = async () => {
     if (!canUpvote || upvoting) return
@@ -705,6 +750,32 @@ function ArgumentCard({
         >
           <Share2 className="h-3 w-3" />
         </a>
+
+        {/* Pin to Spotlight — only for own arguments */}
+        {currentUserId && isOwn && (
+          <button
+            type="button"
+            onClick={handlePin}
+            disabled={pinning}
+            aria-label={pinned ? 'Remove from Spotlight' : 'Pin to profile Spotlight'}
+            title={pinError ?? (pinned ? 'Remove from Spotlight' : 'Pin to profile Spotlight (max 3)')}
+            className={cn(
+              'flex items-center justify-center p-1.5 rounded-lg transition-all',
+              pinned
+                ? 'text-gold bg-gold/10 hover:bg-gold/20'
+                : 'text-surface-600 hover:text-gold hover:bg-gold/10',
+              pinError && 'text-against-400 bg-against-500/10',
+            )}
+          >
+            {pinning ? (
+              <Loader2 className="h-3 w-3 animate-spin" />
+            ) : pinned ? (
+              <PinOff className="h-3 w-3" />
+            ) : (
+              <Pin className="h-3 w-3" />
+            )}
+          </button>
+        )}
 
         {/* Report — only for other users' arguments */}
         {currentUserId && !isOwn && (
