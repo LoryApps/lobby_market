@@ -664,6 +664,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'series',
+    label: 'Civic Series',
+    sublabel: 'Curated thematic reading paths through civic debates',
+    href: '/series',
+    icon: BookOpen,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
     id: 'saved',
     label: 'Saved Topics',
     sublabel: 'Your bookmarked topics',

@@ -132,6 +132,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/lobby`, changeFrequency: 'daily', priority: 0.6 },
   { url: `${BASE_URL}/reactions`, changeFrequency: 'hourly', priority: 0.75 },
   { url: `${BASE_URL}/collections`, changeFrequency: 'daily', priority: 0.6 },
+  { url: `${BASE_URL}/series`, changeFrequency: 'weekly', priority: 0.75 },
   { url: `${BASE_URL}/almanac`, changeFrequency: 'daily', priority: 0.7 },
   { url: `${BASE_URL}/arcade`, changeFrequency: 'weekly', priority: 0.75 },
   { url: `${BASE_URL}/polarization`, changeFrequency: 'daily', priority: 0.72 },
@@ -337,7 +338,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.6,
     }))
 
-    return [...STATIC_ROUTES, ...topicUrls, ...wikiUrls, ...lawUrls, ...profileUrls, ...argumentUrls, ...dynamicTagUrls]
+    const { CIVIC_SERIES } = await import('@/lib/config/series')
+    const seriesUrls: MetadataRoute.Sitemap = CIVIC_SERIES.map((s) => ({
+      url: `${BASE_URL}/series/${s.slug}`,
+      changeFrequency: 'weekly' as const,
+      priority: 0.7,
+    }))
+
+    return [...STATIC_ROUTES, ...topicUrls, ...wikiUrls, ...lawUrls, ...profileUrls, ...argumentUrls, ...dynamicTagUrls, ...seriesUrls]
   } catch {
     return STATIC_ROUTES
   }

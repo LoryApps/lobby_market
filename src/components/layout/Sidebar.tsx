@@ -86,6 +86,7 @@ const navItems: NavItem[] = [
   { href: '/bracket', label: 'Civic Bracket', icon: GitMerge },
   { href: '/arguments', label: 'Top Arguments', icon: ThumbsUp },
   { href: '/analytics/mentor', label: 'Argument Mentor', icon: Activity },
+  { href: '/series', label: 'Civic Series', icon: BookOpen },
   { href: '/collections', label: 'Collections', icon: Layers },
   { href: '/saved', label: 'Saved', icon: Bookmark },
   { href: '/drafts', label: 'Draft Box', icon: Cloud },

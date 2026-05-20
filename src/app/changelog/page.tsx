@@ -1635,13 +1635,28 @@ const CHAPTERS: Chapter[] = [
       { icon: Activity, label: 'Built on existing TopicGraph + TopicGraphView D3 components. Wired into TopBar, Command Palette, and sitemap. No new DB migration — uses existing topic_links and topics.tags fields.', href: '/nexus', color: 'text-surface-400' },
     ],
   },
+  {
+    number: 'Ch. 131',
+    title: 'Civic Series',
+    subtitle: 'Curated thematic reading paths through the Lobby\'s most important debates',
+    accent: 'text-for-400',
+    borderColor: 'border-for-500/30',
+    bgColor: 'bg-for-500/5',
+    textColor: 'text-for-400',
+    items: [
+      { icon: BookOpen, label: 'New /series page: 11 platform-curated thematic reading paths — The AI Frontier, Climate Imperative, Democracy Under Pressure, Economic Fault Lines, Healthcare Crossroads, Digital Rights & Wrongs, The Social Contract, Education Futures, Ethics of Power, Laws of the Land, and Most Contested.', href: '/series', color: 'text-for-400' },
+      { icon: Layers, label: 'Each series groups 6–10 related debates around a coherent theme, distinct from categories (type-based) and collections (personal bookmarks). Series are editorial — they tell a civic story.', href: '/series', color: 'text-gold' },
+      { icon: LayoutGrid, label: 'Individual series pages (/series/[slug]) show an ordered topic list with vote bars, status badges, author attribution, and a series stats strip: topic count, total votes cast, law/active count.', href: '/series', color: 'text-purple' },
+      { icon: Activity, label: 'Two special series: Laws of the Land (all established laws ranked by votes) and Most Contested (active topics sorted by proximity to 50/50 deadlock). Wired into Sidebar, Command Palette, and sitemap. No new DB migration.', href: '/series', color: 'text-surface-400' },
+    ],
+  },
 ]
 
 const STATS = [
-  { value: '130', label: 'chapters shipped' },
-  { value: '450+', label: 'features built' },
+  { value: '131', label: 'chapters shipped' },
+  { value: '460+', label: 'features built' },
   { value: '76', label: 'DB migrations' },
-  { value: '450+', label: 'API routes' },
+  { value: '460+', label: 'API routes' },
 ]
 
 interface RecentBuild {
@@ -1654,6 +1669,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Civic Series',
+    description: 'New /series page: 11 platform-curated thematic reading paths that guide citizens through related debates around a shared theme. Series include The AI Frontier (8 tech/AI debates), Climate Imperative (8 environment topics), Democracy Under Pressure (7 political topics), Economic Fault Lines, Healthcare Crossroads, Digital Rights & Wrongs, The Social Contract, Education Futures, Ethics of Power, Laws of the Land (established laws ranked by votes), and Most Contested (active topics sorted by 50/50 proximity). Individual series pages at /series/[slug] show an ordered topic list with vote bars, status badges, author attribution, and a stats strip. Two special algorithmic series sort dynamically by vote outcome and contestedness. Wired into Sidebar, Command Palette ⌘K, and sitemap. No new DB migration.',
+    href: '/series',
+    icon: BookOpen,
+    color: 'text-for-400',
+    tag: 'Ch. 131',
+  },
   {
     title: 'The Civic Nexus',
     description: 'New /nexus page: a platform-wide force-directed knowledge graph showing how all civic topics interconnect through wiki links and shared civic tags. Two edge types: wiki links (from [[wikilinks]] in topic descriptions, weight=2) and tag connections (topics sharing the same civic keyword tag, weight=1). Edge mode filter tabs let you view all connections, only wiki links, or only tag links. Category legend with show/hide toggles. Expandable info panel with live stats: topic count, wiki edge count, tag edge count, most connected topic, top shared tag. Search to highlight specific topics. / shortcut to focus search. Built on existing TopicGraph + TopicGraphView components via a new /api/nexus route. Wired into TopBar, Command Palette, and sitemap. No new DB migration.',
