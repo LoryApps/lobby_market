@@ -493,6 +493,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'history',
+    label: 'Recently Viewed',
+    sublabel: 'Topics you\'ve visited — pick up where you left off',
+    href: '/history',
+    icon: History,
+    iconColor: 'text-for-300',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
     id: 'activity',
     label: 'Activity',
     sublabel: 'What\'s happening in the Lobby',

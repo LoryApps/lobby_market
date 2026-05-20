@@ -58,6 +58,7 @@ const SECTIONS: ShortcutSection[] = [
       { keys: ['G', 'T'], description: 'Go to Trending' },
       { keys: ['G', 'W'], description: 'Go to Activity feed' },
       { keys: ['G', 'M'], description: 'Go to My Week' },
+      { keys: ['G', 'R'], description: 'Go to Recently Viewed' },
     ],
   },
   {

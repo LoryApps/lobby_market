@@ -33,6 +33,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion'
 import type { Topic, Profile, VoteSide } from '@/lib/supabase/types'
 import { createClient } from '@/lib/supabase/client'
+import { recordTopicView } from '@/lib/utils/recently-viewed'
 import { Badge } from '@/components/ui/Badge'
 import { Avatar } from '@/components/ui/Avatar'
 import { VoteBar } from '@/components/voting/VoteBar'
@@ -189,6 +190,8 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
       sessionStorage.setItem(key, '1')
       fetch(`/api/topics/${topic.id}/view`, { method: 'POST' }).catch(() => {})
     }
+    // Also persist to localStorage for cross-session history (best-effort)
+    recordTopicView(topic.id)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [topic.id])
 
