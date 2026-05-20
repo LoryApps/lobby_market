@@ -1204,6 +1204,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'civic-nexus',
+    label: 'Civic Nexus',
+    sublabel: 'Knowledge graph: topics linked by wiki connections and shared tags',
+    href: '/nexus',
+    icon: Network,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
     id: 'widget',
     label: 'Widget Builder',
     sublabel: 'Embed a live vote widget on any website',

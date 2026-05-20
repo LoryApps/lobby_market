@@ -1605,13 +1605,43 @@ const CHAPTERS: Chapter[] = [
       { icon: Activity, label: 'Distinct from /convergence (direction of recent votes), /momentum (velocity), /groundswell (dormant revival), and /pipeline (all stages). Added to Sidebar, Command Palette (⌘K), and sitemap. No new DB migration — uses existing topics table.', href: '/tipping-point', color: 'text-surface-400' },
     ],
   },
+  {
+    number: 'Ch. 129',
+    title: 'Platform Insights',
+    subtitle: 'Weekly data-driven intelligence about the Lobby ecosystem — momentum, quality, contributors, and law velocity',
+    accent: 'text-for-400',
+    borderColor: 'border-for-500/30',
+    bgColor: 'bg-for-500/5',
+    textColor: 'text-for-400',
+    items: [
+      { icon: BarChart2, label: 'New /insights page: weekly intelligence report showing category momentum, consensus health score, argument quality trends, top-scored argument of the week, and rising contributors.', href: '/insights', color: 'text-for-400' },
+      { icon: TrendingUp, label: 'Category momentum: each of 10 civic categories scored by topic/law count, average consensus, and top mover. Shows momentum delta (+/-) relative to the prior period.', href: '/insights', color: 'text-gold' },
+      { icon: Sparkles, label: 'Consensus health metrics: law velocity (avg days to law), argument density (topics with ≥10 arguments), contested rate, overall platform health score.', href: '/insights', color: 'text-purple' },
+      { icon: Activity, label: 'Rising contributors: surfaces users posting the most high-quality arguments recently. No new DB migration — built entirely on existing tables via /api/insights.', href: '/insights', color: 'text-surface-400' },
+    ],
+  },
+  {
+    number: 'Ch. 130',
+    title: 'The Civic Nexus',
+    subtitle: 'The platform-wide knowledge graph — all civic debates connected through wiki links and shared civic tags',
+    accent: 'text-for-300',
+    borderColor: 'border-for-400/30',
+    bgColor: 'bg-for-500/5',
+    textColor: 'text-for-300',
+    items: [
+      { icon: Network, label: 'New /nexus page: force-directed graph of all active topics with two edge types — wiki links (explicit [[wikilinks]] in topic descriptions) and tag connections (shared civic keyword tags).', href: '/nexus', color: 'text-for-400' },
+      { icon: GitMerge, label: 'Edge mode tabs: view All connections, Wiki links only, or Tag links only. Wiki edges are weighted 2× heavier than tag edges in the force simulation.', href: '/nexus', color: 'text-gold' },
+      { icon: Hash, label: 'Category legend with click-to-hide/show per category. Info panel with live stats: topic count, edge counts by type, most-connected topic, top shared tag. Search with / shortcut to highlight nodes.', href: '/nexus', color: 'text-purple' },
+      { icon: Activity, label: 'Built on existing TopicGraph + TopicGraphView D3 components. Wired into TopBar, Command Palette, and sitemap. No new DB migration — uses existing topic_links and topics.tags fields.', href: '/nexus', color: 'text-surface-400' },
+    ],
+  },
 ]
 
 const STATS = [
-  { value: '128', label: 'chapters shipped' },
-  { value: '440+', label: 'features built' },
+  { value: '130', label: 'chapters shipped' },
+  { value: '450+', label: 'features built' },
   { value: '76', label: 'DB migrations' },
-  { value: '445+', label: 'API routes' },
+  { value: '450+', label: 'API routes' },
 ]
 
 interface RecentBuild {
@@ -1624,6 +1654,22 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'The Civic Nexus',
+    description: 'New /nexus page: a platform-wide force-directed knowledge graph showing how all civic topics interconnect through wiki links and shared civic tags. Two edge types: wiki links (from [[wikilinks]] in topic descriptions, weight=2) and tag connections (topics sharing the same civic keyword tag, weight=1). Edge mode filter tabs let you view all connections, only wiki links, or only tag links. Category legend with show/hide toggles. Expandable info panel with live stats: topic count, wiki edge count, tag edge count, most connected topic, top shared tag. Search to highlight specific topics. / shortcut to focus search. Built on existing TopicGraph + TopicGraphView components via a new /api/nexus route. Wired into TopBar, Command Palette, and sitemap. No new DB migration.',
+    href: '/nexus',
+    icon: Network,
+    color: 'text-for-400',
+    tag: 'Ch. 130',
+  },
+  {
+    title: 'Platform Insights',
+    description: 'New /insights page: weekly data-driven intelligence about the Lobby Market civic ecosystem. Category momentum section shows each of 10 civic categories with a momentum score (+/- change), topic/law counts, average consensus, and top mover topic. Consensus health section rates platform-wide debate quality: law velocity, percentage of topics with ≥10 arguments, contested rate, and an overall health score. Argument quality trends shows top-scored argument of the week with grade badge. Rising contributors section surfaces users who have posted the most high-quality arguments recently. Law velocity: avg days from proposed to law. Wired into TopBar, Command Palette, and sitemap. No new DB migration.',
+    href: '/insights',
+    icon: Sparkles,
+    color: 'text-for-400',
+    tag: 'Ch. 129',
+  },
   {
     title: 'The Civic Accord',
     description: 'New /accord page surfaces all topics where ≥80% of the Lobby voted the same way — the rare civic common ground where partisan divides dissolve. Animated strength rings per topic. Super-majority (≥85%) and near-unanimous (≥95%) callout tiers. Expandable top argument on the winning side per topic. Category breakdown with FOR vs AGAINST accord distribution. Mandate score formula: √(votes) × strength rewards broad AND decisive consensus. Filters by category, topic status, and sort mode. No new DB migration.',
