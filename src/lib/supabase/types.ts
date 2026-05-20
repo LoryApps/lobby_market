@@ -897,6 +897,7 @@ export type Database = {
           reference_type: string | null;
           is_read: boolean;
           created_at: string;
+          push_sent_at: string | null;
         };
         Insert: {
           id?: string;
@@ -908,6 +909,7 @@ export type Database = {
           reference_type?: string | null;
           is_read?: boolean;
           created_at?: string;
+          push_sent_at?: string | null;
         };
         Update: {
           id?: string;
@@ -919,6 +921,40 @@ export type Database = {
           reference_type?: string | null;
           is_read?: boolean;
           created_at?: string;
+          push_sent_at?: string | null;
+        };
+        Relationships: [];
+      };
+      push_subscriptions: {
+        Row: {
+          id: string;
+          user_id: string;
+          endpoint: string;
+          p256dh: string;
+          auth: string;
+          user_agent: string | null;
+          created_at: string;
+          last_used_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          endpoint: string;
+          p256dh: string;
+          auth: string;
+          user_agent?: string | null;
+          created_at?: string;
+          last_used_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          endpoint?: string;
+          p256dh?: string;
+          auth?: string;
+          user_agent?: string | null;
+          created_at?: string;
+          last_used_at?: string;
         };
         Relationships: [];
       };
@@ -1917,6 +1953,11 @@ export type NotificationInsert =
   Database["public"]["Tables"]["notifications"]["Insert"];
 export type NotificationUpdate =
   Database["public"]["Tables"]["notifications"]["Update"];
+
+export type PushSubscription =
+  Database["public"]["Tables"]["push_subscriptions"]["Row"];
+export type PushSubscriptionInsert =
+  Database["public"]["Tables"]["push_subscriptions"]["Insert"];
 
 export type Achievement =
   Database["public"]["Tables"]["achievements"]["Row"];

@@ -217,6 +217,8 @@ export default function SettingsPage() {
   // Web Push state
   const { state: pushState, subscribe: pushSubscribe, unsubscribe: pushUnsubscribe } = usePushNotifications()
   const [pushBusy, setPushBusy] = useState(false)
+  const [pushTestBusy, setPushTestBusy] = useState(false)
+  const [pushTestResult, setPushTestResult] = useState<'sent' | 'error' | null>(null)
 
   // PWA install state
   const [isInstalled, setIsInstalled] = useState(false)
@@ -642,6 +644,41 @@ export default function SettingsPage() {
                     <div className="flex items-center gap-2 text-xs text-emerald">
                       <Check className="h-3.5 w-3.5 flex-shrink-0" />
                       <span>Push notifications active on this device</span>
+                    </div>
+                    <div className="flex items-center gap-3 flex-wrap">
+                      <button
+                        type="button"
+                        disabled={pushTestBusy}
+                        onClick={async () => {
+                          setPushTestBusy(true)
+                          setPushTestResult(null)
+                          try {
+                            const res = await fetch('/api/push/test', { method: 'POST' })
+                            setPushTestResult(res.ok ? 'sent' : 'error')
+                          } catch {
+                            setPushTestResult('error')
+                          } finally {
+                            setPushTestBusy(false)
+                            setTimeout(() => setPushTestResult(null), 4000)
+                          }
+                        }}
+                        className={cn(
+                          'flex items-center gap-1.5 text-xs font-mono px-3 py-1.5 rounded-lg transition-colors',
+                          'bg-surface-200 border border-surface-300 text-surface-600',
+                          'hover:bg-surface-300 hover:text-white disabled:opacity-50'
+                        )}
+                      >
+                        <BellRing className="h-3 w-3" />
+                        {pushTestBusy ? 'Sending…' : 'Send test notification'}
+                      </button>
+                      {pushTestResult === 'sent' && (
+                        <span className="text-xs text-emerald font-mono flex items-center gap-1">
+                          <Check className="h-3 w-3" /> Sent!
+                        </span>
+                      )}
+                      {pushTestResult === 'error' && (
+                        <span className="text-xs text-against-400 font-mono">Failed — check VAPID keys.</span>
+                      )}
                     </div>
                     <button
                       type="button"
