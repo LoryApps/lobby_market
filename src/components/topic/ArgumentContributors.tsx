@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { ThumbsUp, ThumbsDown, MessageSquare, Users } from 'lucide-react'
+import { ThumbsUp, ThumbsDown, MessageSquare, Trophy, Users } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { cn } from '@/lib/utils/cn'
@@ -147,6 +147,14 @@ export function ArgumentContributors({ topicId, className }: ArgumentContributor
             {totalArguments} argument{totalArguments !== 1 ? 's' : ''}
           </span>
         )}
+        <Link
+          href={`/topic/${topicId}/leaderboard`}
+          className="inline-flex items-center gap-1 text-[10px] font-mono text-gold hover:text-gold/80 transition-colors ml-1"
+          aria-label="View full leaderboard"
+        >
+          <Trophy className="h-3 w-3" />
+          Full board →
+        </Link>
       </div>
 
       {/* List */}

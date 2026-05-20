@@ -28,6 +28,7 @@ import {
   ScrollText,
   Tag,
   ThumbsUp,
+  Trophy,
   Users,
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -932,6 +933,17 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
             <ErrorBoundary size="sm" label="Couldn't load contributors" className="mt-6">
               <ArgumentContributors topicId={topic.id} className="mt-6" />
             </ErrorBoundary>
+
+            {/* Leaderboard link */}
+            <div className="mt-3 flex justify-end">
+              <Link
+                href={`/topic/${topic.id}/leaderboard`}
+                className="inline-flex items-center gap-1.5 text-[11px] font-mono text-gold hover:text-gold/80 transition-colors"
+              >
+                <Trophy className="h-3 w-3" />
+                Full leaderboard →
+              </Link>
+            </div>
 
             {/* Extra bottom padding on mobile so the sticky CTA doesn't overlap content */}
             {isVotable && !hasVoted(topic.id) && (
