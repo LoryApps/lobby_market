@@ -891,6 +891,12 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
                   topicId={topic.id}
                   className="mt-6"
                 />
+                <Link
+                  href={`/topic/${topic.id}/momentum`}
+                  className="flex items-center justify-end gap-1 mt-1 text-[10px] font-mono text-surface-500 hover:text-for-400 transition-colors"
+                >
+                  Full momentum analysis →
+                </Link>
               </ErrorBoundary>
             )}
 
