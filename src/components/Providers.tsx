@@ -4,6 +4,7 @@ import { ReactNode, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { ToastProvider } from '@/components/ui/Toaster'
 import { NotificationWatcher } from '@/components/ui/NotificationWatcher'
+import { AchievementWatcher } from '@/components/ui/AchievementWatcher'
 import { useCommandPalette, toggleCommandPalette } from '@/lib/hooks/useCommandPalette'
 import { InstallPrompt } from '@/components/layout/InstallPrompt'
 import { RouteProgressBar } from '@/components/layout/RouteProgressBar'
@@ -52,6 +53,7 @@ export function Providers({ children }: ProvidersProps) {
       <RouteProgressBar />
       {children}
       <NotificationWatcher />
+      <AchievementWatcher />
       <CommandPaletteProvider />
       <KeyboardShortcutsProvider />
       <InstallPrompt />
