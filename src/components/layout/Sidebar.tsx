@@ -39,6 +39,7 @@ import {
   GitMerge,
   GitBranch,
   Activity,
+  Gauge,
 } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { createClient } from '@/lib/supabase/client'
@@ -60,6 +61,7 @@ const navItems: NavItem[] = [
   { href: '/trending', label: 'Trending', icon: TrendingUp },
   { href: '/surge', label: 'Surge', icon: Flame },
   { href: '/groundswell', label: 'Groundswell', icon: Activity },
+  { href: '/tipping-point', label: 'Tipping Point', icon: Gauge },
   { href: '/tally', label: 'Tally Board', icon: Radio },
   { href: '/shifts', label: 'Opinion Shifts', icon: BarChart2 },
   { href: '/split', label: 'The Split', icon: GitFork },

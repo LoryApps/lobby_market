@@ -1590,13 +1590,28 @@ const CHAPTERS: Chapter[] = [
       { icon: Share2, label: 'Wired into Command Palette. No new DB migration — built entirely on the existing topics table via /api/mosaic.', href: '/mosaic', color: 'text-surface-400' },
     ],
   },
+  {
+    number: 'Ch. 128',
+    title: 'The Tipping Point',
+    subtitle: 'Democracy\'s make-or-break moments — debates within striking distance of consensus or about to be definitively rejected',
+    accent: 'text-gold',
+    borderColor: 'border-gold/30',
+    bgColor: 'bg-gold/5',
+    textColor: 'text-gold',
+    items: [
+      { icon: Gauge, label: 'New /tipping-point page: surfaces active topics within the critical threshold zone — Breaking Through (FOR% 58–75%, approaching consensus) and About to Fall (FOR% 25–42%, sliding toward rejection). Proximity meter shows percentage of the way to threshold.', href: '/tipping-point', color: 'text-gold' },
+      { icon: TrendingUp, label: '"Votes Needed" calculation: each card shows exactly how many more FOR votes are required to reach 75% consensus, or how many AGAINST votes would push FOR% below 25%. Powered by a solve-for-x formula on the vote totals.', href: '/tipping-point', color: 'text-for-400' },
+      { icon: BarChart2, label: 'Two-zone tab view (Breaking Through / About to Fall) with counts, animated vote bar with FOR/AGAINST threshold markers, distance stats grid, and expandable per-topic detail. Category filter pills narrow results.', href: '/tipping-point', color: 'text-purple' },
+      { icon: Activity, label: 'Distinct from /convergence (direction of recent votes), /momentum (velocity), /groundswell (dormant revival), and /pipeline (all stages). Added to Sidebar, Command Palette (⌘K), and sitemap. No new DB migration — uses existing topics table.', href: '/tipping-point', color: 'text-surface-400' },
+    ],
+  },
 ]
 
 const STATS = [
-  { value: '118', label: 'chapters shipped' },
-  { value: '435+', label: 'features built' },
-  { value: '74', label: 'DB migrations' },
-  { value: '440+', label: 'API routes' },
+  { value: '128', label: 'chapters shipped' },
+  { value: '440+', label: 'features built' },
+  { value: '76', label: 'DB migrations' },
+  { value: '445+', label: 'API routes' },
 ]
 
 interface RecentBuild {

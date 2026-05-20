@@ -102,6 +102,7 @@ import {
   Grid3X3,
   Link2,
   Handshake,
+  Gauge,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -1010,6 +1011,16 @@ const QUICK_LINKS: QuickLink[] = [
     icon: Activity,
     iconColor: 'text-for-400',
     iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
+    id: 'tipping-point',
+    label: 'The Tipping Point',
+    sublabel: 'Debates within striking distance of consensus — or about to be definitively rejected',
+    href: '/tipping-point',
+    icon: Gauge,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
   },
   {
     type: 'link',
