@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Share2, Eye, ThumbsUp, ThumbsDown, MapPin, Flame, Clock, Gavel, Swords, TrendingUp, Zap, X } from 'lucide-react'
+import { MessageSquare, Share2, Eye, ThumbsUp, ThumbsDown, MapPin, Flame, Clock, Gavel, Swords, TrendingUp, Zap, X } from 'lucide-react'
 import { motion, AnimatePresence, useMotionValue, useTransform, animate } from 'framer-motion'
 import { useRef, useState } from 'react'
 import { cn } from '@/lib/utils/cn'
@@ -24,6 +24,7 @@ import { getTopicSignal, SIGNAL_PILL_CLASSES } from '@/lib/utils/topic-signal'
 import { TopicReactions } from '@/components/topic/TopicReactions'
 import { TrendMini } from '@/components/topic/TrendMini'
 import { TopArgumentsPreview } from '@/components/feed/TopArgumentsPreview'
+import { QuickArgueSheet } from '@/components/feed/QuickArgueSheet'
 
 // ── Signal icon map ───────────────────────────────────────────────────────────
 
@@ -133,6 +134,9 @@ export function TopicCard({ topic, authorName, authorAvatar }: TopicCardProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submittedHotTake, setSubmittedHotTake] = useState<string | null>(null)
   const hotTakeRef = useRef<HTMLTextAreaElement>(null)
+
+  // Quick Argue sheet state
+  const [argueSheetOpen, setArgueSheetOpen] = useState(false)
 
   // Swipe gesture is only available on active/voting topics the user hasn't voted on yet
   const canSwipeVote = isVotable && !hasVoted(topic.id) && !pendingVoteSide
@@ -657,6 +661,22 @@ export function TopicCard({ topic, authorName, authorAvatar }: TopicCardProps) {
         </div>
         <BookmarkButton topicId={topic.id} />
         <TopicSubscribeButton topicId={topic.id} size="sm" />
+        {/* Quick Argue button — only on active/voting topics */}
+        {(isVotable || isProposed) && (
+          <button
+            onClick={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              haptics.selection()
+              setArgueSheetOpen(true)
+            }}
+            className="flex items-center justify-center h-10 w-10 rounded-full bg-surface-200 text-surface-500 hover:bg-surface-300 hover:text-purple transition-colors"
+            aria-label="Add argument"
+            title="Add argument"
+          >
+            <MessageSquare className="h-5 w-5" />
+          </button>
+        )}
         <button
           onClick={handleShare}
           className="flex items-center justify-center h-10 w-10 rounded-full bg-surface-200 text-surface-500 hover:bg-surface-300 hover:text-white transition-colors"
@@ -665,6 +685,14 @@ export function TopicCard({ topic, authorName, authorAvatar }: TopicCardProps) {
           <Share2 className="h-5 w-5" />
         </button>
       </div>
+
+      {/* Quick Argue Sheet */}
+      <QuickArgueSheet
+        open={argueSheetOpen}
+        onClose={() => setArgueSheetOpen(false)}
+        topicId={topic.id}
+        topicStatement={topic.statement}
+      />
     </div>
   )
 }
