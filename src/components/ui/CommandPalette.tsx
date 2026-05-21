@@ -685,9 +685,9 @@ const QUICK_LINKS: QuickLink[] = [
   {
     type: 'link',
     id: 'saved',
-    label: 'Saved Topics',
-    sublabel: 'Your bookmarked topics',
-    href: '/saved',
+    label: 'Bookmarks',
+    sublabel: 'Your saved topics and arguments',
+    href: '/bookmarks',
     icon: Bookmark,
     iconColor: 'text-gold',
     iconBg: 'bg-gold/10',
