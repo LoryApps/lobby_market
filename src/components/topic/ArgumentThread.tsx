@@ -96,7 +96,7 @@ interface ArgumentThreadProps {
   topicCategory?: string | null
 }
 
-type SortMode = 'top' | 'new' | 'quality'
+type SortMode = 'top' | 'new' | 'quality' | 'discussed'
 type MobileTab = 'all' | 'for' | 'against'
 
 // ─── Skeleton loading cards ─────────────────────────────────────────────────────
@@ -1578,7 +1578,6 @@ export function ArgumentThread({ topicId, topicStatement, topicCategory }: Argum
   const currentUserIdRef = useRef<string | null>(null)
   const loadedArgIdsRef = useRef<Set<string>>(new Set())
   const sortModeRef = useRef<SortMode>('top')
-  // quality sort doesn't need special realtime handling — treat like 'top'
 
   // Get current user id for self-detection
   useEffect(() => {
@@ -1593,7 +1592,9 @@ export function ArgumentThread({ topicId, topicStatement, topicCategory }: Argum
   const loadArguments = useCallback(async () => {
     try {
       const sort = sortModeRef.current
-      const url = `/api/topics/${topicId}/arguments${sort !== 'top' ? `?sort=${sort}` : ''}`
+      // 'discussed' uses top server-side ordering; client re-sorts by reply_count
+      const apiSort = sort === 'discussed' ? 'top' : sort
+      const url = `/api/topics/${topicId}/arguments${apiSort !== 'top' ? `?sort=${apiSort}` : ''}`
       const res = await fetch(url)
       if (!res.ok) return
       const json = await res.json()
@@ -1746,6 +1747,11 @@ export function ArgumentThread({ topicId, topicStatement, topicCategory }: Argum
       if (b.upvotes !== a.upvotes) return b.upvotes - a.upvotes
       return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     }
+    if (sortMode === 'discussed') {
+      const diff = (b.reply_count ?? 0) - (a.reply_count ?? 0)
+      if (diff !== 0) return diff
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    }
     // top: by upvotes desc, then newest
     if (b.upvotes !== a.upvotes) return b.upvotes - a.upvotes
     return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
@@ -1822,21 +1828,23 @@ export function ArgumentThread({ topicId, topicStatement, topicCategory }: Argum
         </div>
 
         <div className="flex items-center gap-2 flex-shrink-0">
-          {/* Sort toggle — cycles Top → New → Quality */}
+          {/* Sort toggle — cycles Top → New → Quality → Discussed */}
           {args.length > 1 && (
             <button
               type="button"
               onClick={() =>
                 setSortMode((m) =>
-                  m === 'top' ? 'new' : m === 'new' ? 'quality' : 'top'
+                  m === 'top' ? 'new' : m === 'new' ? 'quality' : m === 'quality' ? 'discussed' : 'top'
                 )
               }
-              aria-label={`Sort by ${sortMode === 'top' ? 'newest' : sortMode === 'new' ? 'AI quality' : 'top votes'}`}
+              aria-label={`Sort by ${sortMode === 'top' ? 'newest' : sortMode === 'new' ? 'AI quality' : sortMode === 'quality' ? 'most discussed' : 'top votes'}`}
               className={cn(
                 'flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-mono font-medium transition-colors',
                 sortMode === 'quality'
                   ? 'bg-purple/15 border border-purple/40 text-purple hover:bg-purple/25'
-                  : 'bg-surface-200 border border-surface-300 text-surface-400 hover:bg-surface-300 hover:text-white'
+                  : sortMode === 'discussed'
+                    ? 'bg-emerald/15 border border-emerald/40 text-emerald hover:bg-emerald/25'
+                    : 'bg-surface-200 border border-surface-300 text-surface-400 hover:bg-surface-300 hover:text-white'
               )}
             >
               {sortMode === 'top' && (
@@ -1858,6 +1866,12 @@ export function ArgumentThread({ topicId, topicStatement, topicCategory }: Argum
                 <>
                   <Brain className="h-3 w-3" aria-hidden />
                   Quality
+                </>
+              )}
+              {sortMode === 'discussed' && (
+                <>
+                  <MessageSquare className="h-3 w-3" aria-hidden />
+                  Discussed
                 </>
               )}
               <ArrowUpDown className="h-3 w-3 text-surface-500" aria-hidden />

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import type { TopicArgument, TopicArgumentWithAuthor, Profile } from '@/lib/supabase/types'
 
-// GET /api/topics/[id]/arguments?sort=top|new|quality
+// GET /api/topics/[id]/arguments?sort=top|new|quality|discussed
 // Returns the arguments for a topic, enriched with author info and the
 // authenticated user's upvote status.
 export async function GET(
@@ -33,7 +33,8 @@ export async function GET(
       .order('upvotes', { ascending: false })
       .order('created_at', { ascending: false })
   } else {
-    // top (default): upvotes desc, then newest
+    // top (default) and discussed: upvotes desc, then newest
+    // (discussed re-sorts client-side by reply_count once counts are attached)
     query = query
       .order('upvotes', { ascending: false })
       .order('created_at', { ascending: false })
@@ -63,10 +64,11 @@ export async function GET(
     profileMap.set(p.id, p)
   }
 
+  const argIds = rawArgs.map((a) => a.id)
+
   // Fetch which arguments the current user has upvoted
   const upvotedArgIds = new Set<string>()
   if (user) {
-    const argIds = rawArgs.map((a) => a.id)
     const { data: myVotes } = await supabase
       .from('topic_argument_votes')
       .select('argument_id')
@@ -78,11 +80,23 @@ export async function GET(
     }
   }
 
+  // Batch-fetch reply counts for all arguments
+  const replyCountMap = new Map<string, number>()
+  const { data: replyCounts } = await supabase
+    .from('argument_replies')
+    .select('argument_id')
+    .in('argument_id', argIds)
+
+  for (const r of replyCounts ?? []) {
+    replyCountMap.set(r.argument_id, (replyCountMap.get(r.argument_id) ?? 0) + 1)
+  }
+
   const enriched: TopicArgumentWithAuthor[] = rawArgs.map((a) => ({
     ...a,
     side: a.side as 'blue' | 'red',
     author: profileMap.get(a.user_id) ?? null,
     has_upvoted: upvotedArgIds.has(a.id),
+    reply_count: replyCountMap.get(a.id) ?? 0,
   }))
 
   // Tell the client which argument belongs to the current user (if any)

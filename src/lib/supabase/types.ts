@@ -2165,6 +2165,7 @@ export type TopicArgumentWithAuthor = TopicArgument & {
     "id" | "username" | "display_name" | "avatar_url" | "role"
   > | null;
   has_upvoted: boolean;
+  reply_count?: number;
 };
 
 // Argument replies (threaded discussion beneath a single argument)
