@@ -411,6 +411,7 @@ export default function AnalyticsPage() {
             <Link href="/analytics/consistency" className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"><GitMerge className="h-3.5 w-3.5" />Consistency</Link>
             <Link href="/analytics/clout" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><Coins className="h-3.5 w-3.5" />Clout Economy</Link>
             <Link href="/analytics/groups" className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"><Users className="h-3.5 w-3.5" />Civic Groups</Link>
+            <Link href="/analytics/network" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><Network className="h-3.5 w-3.5" />Network Topology</Link>
             <Link href="/analytics/following" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><Network className="h-3.5 w-3.5" />Network</Link>
             <Link href="/analytics/alignment" className="flex items-center gap-1 text-xs text-for-300 hover:text-for-200 transition-colors font-mono font-semibold"><Scale className="h-3.5 w-3.5" />Alignment</Link>
             <Link href="/analytics/streak" className="flex items-center gap-1 text-xs text-against-400 hover:text-against-300 transition-colors font-mono font-semibold"><Flame className="h-3.5 w-3.5" />Streak History</Link>
