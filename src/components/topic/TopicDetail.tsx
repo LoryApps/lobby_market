@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
+  Activity,
   ArrowLeft,
   ArrowUpRight,
   BarChart2,
@@ -618,6 +619,13 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
                     >
                       <BarChart2 className="h-3.5 w-3.5" />
                       Stats
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/activity`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-for-400 hover:text-for-300 transition-colors"
+                    >
+                      <Activity className="h-3.5 w-3.5" />
+                      Live activity
                     </Link>
                     {(topic.status === 'law' || topic.status === 'failed') && (
                       <Link
