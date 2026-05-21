@@ -3,7 +3,9 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
+import { Bell, BellOff, Check, Flame, Gavel, Loader2, MessageSquare, Zap } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import { usePushNotifications } from '@/lib/hooks/usePushNotifications'
 import { cn } from '@/lib/utils/cn'
 
 // ---------------------------------------------------------------------------
@@ -98,7 +100,7 @@ type Choice = 'left' | 'right'
 
 export default function OnboardingPage() {
   const router = useRouter()
-  const [step, setStep] = useState<'intro' | 'quiz' | 'calibrating' | 'done'>('intro')
+  const [step, setStep] = useState<'intro' | 'quiz' | 'calibrating' | 'done' | 'notifications'>('intro')
   const [questionIndex, setQuestionIndex] = useState(0)
   const [choices, setChoices] = useState<Choice[]>([])
   const [direction, setDirection] = useState(1)
@@ -150,14 +152,14 @@ export default function OnboardingPage() {
 
         setSaving(false)
 
-        // Brief pause for the calibrating animation, then redirect
+        // Brief pause for the calibrating animation, then go to notifications opt-in
         setTimeout(() => {
           setStep('done')
-          setTimeout(() => router.replace('/welcome'), 800)
+          setTimeout(() => setStep('notifications'), 800)
         }, 2200)
       }
     },
-    [choices, questionIndex, router]
+    [choices, questionIndex]
   )
 
   const currentQuestion = QUESTIONS[questionIndex]
@@ -312,6 +314,10 @@ export default function OnboardingPage() {
             <CalibrationAnimation done={step === 'done'} saving={saving} />
           </motion.div>
         )}
+
+        {step === 'notifications' && (
+          <NotificationsStep onDone={() => router.replace('/welcome')} />
+        )}
       </AnimatePresence>
     </div>
   )
@@ -393,6 +399,155 @@ function ChoiceCard({
       </p>
       <p className="text-sm text-surface-500 leading-relaxed">{sublabel}</p>
     </motion.button>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Notifications opt-in step
+// ---------------------------------------------------------------------------
+
+const NOTIFICATION_EXAMPLES = [
+  { icon: Flame, color: 'text-orange-400', label: 'A debate you follow is heating up' },
+  { icon: Gavel, color: 'text-gold',       label: 'A topic you voted on becomes law' },
+  { icon: Zap,   color: 'text-for-400',    label: 'Your clout streak is at risk' },
+  { icon: MessageSquare, color: 'text-purple', label: 'Someone replies to your argument' },
+]
+
+function NotificationsStep({ onDone }: { onDone: () => void }) {
+  const { state, subscribe } = usePushNotifications()
+  const [subscribing, setSubscribing] = useState(false)
+  const [result, setResult] = useState<'subscribed' | 'skipped' | null>(null)
+
+  // If already subscribed or unsupported, skip straight through
+  useEffect(() => {
+    if (state === 'subscribed' || state === 'unsupported' || state === 'blocked') {
+      const t = setTimeout(onDone, 400)
+      return () => clearTimeout(t)
+    }
+  }, [state, onDone])
+
+  async function handleEnable() {
+    setSubscribing(true)
+    await subscribe()
+    setResult('subscribed')
+    setTimeout(onDone, 1200)
+  }
+
+  function handleSkip() {
+    setResult('skipped')
+    setTimeout(onDone, 400)
+  }
+
+  if (result === 'subscribed') {
+    return (
+      <motion.div
+        key="notif-success"
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0 }}
+        className="relative z-10 text-center max-w-sm w-full"
+      >
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 18 }}
+          className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-emerald/10 border border-emerald/30 mb-4"
+        >
+          <Check className="h-8 w-8 text-emerald" />
+        </motion.div>
+        <p className="font-mono text-xl font-bold text-white mb-1">You&apos;re in.</p>
+        <p className="text-sm text-surface-500 font-mono">Notifications enabled — entering the Lobby.</p>
+      </motion.div>
+    )
+  }
+
+  return (
+    <motion.div
+      key="notifications"
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -16 }}
+      transition={{ duration: 0.4 }}
+      className="relative z-10 max-w-lg w-full"
+    >
+      {/* Icon */}
+      <div className="text-center mb-8">
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.1, type: 'spring', stiffness: 260, damping: 20 }}
+          className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-for-500/10 border border-for-500/30 mb-6 relative"
+        >
+          <Bell className="h-9 w-9 text-for-400" />
+          <motion.span
+            className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-against-500 border-2 border-surface-50"
+            animate={{ scale: [1, 1.25, 1] }}
+            transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
+          />
+        </motion.div>
+        <h2 className="font-mono text-2xl font-bold text-white mb-2">
+          Stay in the debate
+        </h2>
+        <p className="text-surface-500 text-sm leading-relaxed max-w-xs mx-auto">
+          Get notified when it matters — not every minute.
+        </p>
+      </div>
+
+      {/* Examples list */}
+      <div className="space-y-2 mb-8">
+        {NOTIFICATION_EXAMPLES.map(({ icon: Icon, color, label }, i) => (
+          <motion.div
+            key={label}
+            initial={{ opacity: 0, x: -12 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.15 + i * 0.07 }}
+            className="flex items-center gap-3 rounded-xl bg-surface-100 border border-surface-300 px-4 py-3"
+          >
+            <Icon className={cn('h-4 w-4 flex-shrink-0', color)} aria-hidden />
+            <span className="text-sm text-surface-600 font-mono">{label}</span>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Actions */}
+      <div className="space-y-3">
+        <button
+          onClick={handleEnable}
+          disabled={subscribing || state === 'loading'}
+          className={cn(
+            'w-full flex items-center justify-center gap-2',
+            'bg-for-600 hover:bg-for-500 active:bg-for-700 text-white',
+            'font-mono font-semibold text-base',
+            'px-8 py-4 rounded-xl',
+            'transition-all duration-200',
+            'border border-for-500/50 hover:border-for-400',
+            'shadow-lg shadow-for-900/30',
+            'disabled:opacity-50 disabled:cursor-not-allowed'
+          )}
+        >
+          {subscribing ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Bell className="h-4 w-4" />
+          )}
+          {subscribing ? 'Enabling…' : 'Enable notifications'}
+        </button>
+
+        <button
+          onClick={handleSkip}
+          disabled={subscribing}
+          className="w-full flex items-center justify-center gap-2 py-3 font-mono text-sm text-surface-500 hover:text-surface-600 transition-colors disabled:opacity-40"
+        >
+          <BellOff className="h-3.5 w-3.5" />
+          Maybe later
+        </button>
+      </div>
+
+      {/* Fine print */}
+      <p className="text-center text-xs text-surface-600 font-mono mt-4">
+        You can change this any time in Settings.
+      </p>
+    </motion.div>
   )
 }
 
