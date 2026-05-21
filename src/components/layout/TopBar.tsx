@@ -244,6 +244,7 @@ export function TopBar() {
                   </div>
                 </Link>
               )}
+              <Link href="/topics" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Layers className="h-3.5 w-3.5 flex-shrink-0 text-for-300" aria-hidden="true" />All Topics</Link>
               <Link href="/profile/me" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><User className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />My Profile</Link>
               <Link href="/positions" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Scale className="h-3.5 w-3.5 flex-shrink-0 text-for-400" aria-hidden="true" />My Positions</Link>
               <Link href="/arguments/daily" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Trophy className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />Argument of the Day</Link>

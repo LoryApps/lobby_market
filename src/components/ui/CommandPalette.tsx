@@ -624,6 +624,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'all-topics',
+    label: 'All Topics',
+    sublabel: 'Browse, filter, and sort every civic debate on the platform',
+    href: '/topics',
+    icon: Layers,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
     id: 'categories',
     label: 'Categories',
     sublabel: 'Browse topics by category',
