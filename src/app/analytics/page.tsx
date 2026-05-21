@@ -15,6 +15,7 @@ import {
   Landmark,
   Layers,
   Globe,
+  FileText,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -380,6 +381,7 @@ export default function AnalyticsPage() {
             <Link href="/mindmap" className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"><Network className="h-3.5 w-3.5" />Mind Map</Link>
             <Link href="/analytics/arguments" className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"><BookOpen className="h-3.5 w-3.5" />Argument Portfolio</Link>
             <Link href="/analytics/topics" className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"><Scale className="h-3.5 w-3.5" />Topic Analytics</Link>
+            <Link href="/analytics/proposals" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><FileText className="h-3.5 w-3.5" />Proposal Analytics</Link>
             <Link href="/analytics/evolution" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><TrendingUp className="h-3.5 w-3.5" />Opinion Evolution</Link>
             <Link href="/analytics/growth" className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"><Rocket className="h-3.5 w-3.5" />Activity Growth</Link>
             <Link href="/analytics/sentiment" className="flex items-center gap-1 text-xs text-against-400 hover:text-against-300 transition-colors font-mono font-semibold"><Heart className="h-3.5 w-3.5" />Sentiment</Link>
@@ -547,6 +549,20 @@ export default function AnalyticsPage() {
                   </div>
                 </div>
                 <ChevronRight className="h-4 w-4 text-surface-500 group-hover:text-gold transition-colors flex-shrink-0" />
+              </Link>
+            </motion.div>
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.41 }}>
+              <Link href="/analytics/proposals" className="flex items-center justify-between rounded-2xl bg-surface-100 border border-for-500/20 p-5 hover:border-for-500/40 hover:bg-for-500/5 transition-colors group">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center justify-center h-10 w-10 rounded-xl bg-for-500/10 border border-for-500/30 flex-shrink-0">
+                    <FileText className="h-5 w-5 text-for-400" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-mono font-semibold text-white">Proposal Analytics</div>
+                    <div className="text-xs font-mono text-surface-500 mt-0.5">Topics you&apos;ve proposed — law rate, votes received, category breakdown</div>
+                  </div>
+                </div>
+                <ChevronRight className="h-4 w-4 text-surface-500 group-hover:text-for-400 transition-colors flex-shrink-0" />
               </Link>
             </motion.div>
             <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.413 }}>
