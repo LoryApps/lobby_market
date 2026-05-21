@@ -612,6 +612,14 @@ export function ProfilePage({
                 arguments={profileArguments}
                 username={profile.username}
               />
+              <div className="mt-4 flex items-center justify-center gap-4 text-xs font-mono text-surface-500">
+                <a
+                  href={`/profile/${profile.username}/arguments`}
+                  className="hover:text-for-400 transition-colors underline underline-offset-2"
+                >
+                  Full argument portfolio ↗
+                </a>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>

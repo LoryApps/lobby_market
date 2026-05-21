@@ -300,6 +300,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const profileUrls: MetadataRoute.Sitemap = (profiles ?? []).flatMap((p) => ([
       { url: `${BASE_URL}/profile/${p.username}`, lastModified: new Date(p.updated_at), changeFrequency: 'weekly' as const, priority: 0.5 },
       { url: `${BASE_URL}/profile/${p.username}/achievements`, lastModified: new Date(p.updated_at), changeFrequency: 'weekly' as const, priority: 0.4 },
+      { url: `${BASE_URL}/profile/${p.username}/arguments`, lastModified: new Date(p.updated_at), changeFrequency: 'daily' as const, priority: 0.45 },
     ]))
 
     const { data: topArguments } = await supabase
