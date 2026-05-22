@@ -270,6 +270,15 @@ export default function HelpPage() {
             </Link>
           </div>
         </div>
+
+        {/* Legal footer */}
+        <div className="mt-10 pt-6 border-t border-surface-300 flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
+          <Link href="/privacy" className="text-[11px] font-mono text-surface-600 hover:text-surface-400 transition-colors">Privacy Policy</Link>
+          <span className="text-surface-700 text-[11px]">·</span>
+          <Link href="/terms" className="text-[11px] font-mono text-surface-600 hover:text-surface-400 transition-colors">Terms of Service</Link>
+          <span className="text-surface-700 text-[11px]">·</span>
+          <Link href="/about" className="text-[11px] font-mono text-surface-600 hover:text-surface-400 transition-colors">About Lobby Market</Link>
+        </div>
       </main>
 
       <BottomNav />

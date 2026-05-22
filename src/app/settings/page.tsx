@@ -894,7 +894,14 @@ export default function SettingsPage() {
               )}
             </div>
 
-            <p className="text-center text-[10px] font-mono text-surface-600 mt-6">
+            <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 mt-6">
+              <a href="/privacy" className="text-[10px] font-mono text-surface-600 hover:text-surface-400 transition-colors">Privacy Policy</a>
+              <span className="text-surface-700 text-[10px]">·</span>
+              <a href="/terms" className="text-[10px] font-mono text-surface-600 hover:text-surface-400 transition-colors">Terms of Service</a>
+              <span className="text-surface-700 text-[10px]">·</span>
+              <a href="/guidelines" className="text-[10px] font-mono text-surface-600 hover:text-surface-400 transition-colors">Community Guidelines</a>
+            </div>
+            <p className="text-center text-[10px] font-mono text-surface-600 mt-2">
               Lobby Market · Built by the community
             </p>
           </>

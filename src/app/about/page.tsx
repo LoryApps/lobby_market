@@ -357,6 +357,30 @@ export default function AboutPage() {
             </Link>
           </div>
         </section>
+
+        {/* Legal footer */}
+        <div className="mt-12 pt-8 border-t border-surface-300">
+          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+            {[
+              { href: '/privacy', label: 'Privacy Policy' },
+              { href: '/terms', label: 'Terms of Service' },
+              { href: '/guidelines', label: 'Community Guidelines' },
+              { href: '/help', label: 'Help & FAQ' },
+              { href: '/transparency', label: 'Transparency' },
+            ].map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-xs font-mono text-surface-500 hover:text-surface-400 transition-colors"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+          <p className="text-center text-[11px] font-mono text-surface-600 mt-3">
+            © 2026 Lobby Market. All rights reserved.
+          </p>
+        </div>
       </main>
 
       <BottomNav />
