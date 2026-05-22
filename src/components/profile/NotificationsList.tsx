@@ -9,6 +9,7 @@ import {
   Award,
   Bell,
   Bookmark,
+  Flame,
   Gavel,
   Hash,
   Link2,
@@ -57,6 +58,7 @@ const typeConfig: Record<
   vote_phase_started: { icon: Scale, color: 'text-purple' },
   direct_message: { icon: MessageSquare, color: 'text-for-300' },
   new_topic_in_tag: { icon: Hash, color: 'text-for-400' },
+  streak_at_risk: { icon: Flame, color: 'text-gold' },
 }
 
 // ─── Filter tabs ──────────────────────────────────────────────────────────────

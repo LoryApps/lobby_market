@@ -52,6 +52,7 @@ interface NotifPrefs {
   role_promoted: boolean
   lobby_update: boolean
   new_topic_in_tag: boolean
+  streak_reminder: boolean
 }
 
 const DEFAULT_PREFS: NotifPrefs = {
@@ -64,6 +65,7 @@ const DEFAULT_PREFS: NotifPrefs = {
   role_promoted: true,
   lobby_update: false,
   new_topic_in_tag: true,
+  streak_reminder: true,
 }
 
 function loadPrefs(): NotifPrefs {
@@ -540,6 +542,12 @@ export default function SettingsPage() {
                   description="When a new debate is created in a tag you follow"
                   checked={prefs.new_topic_in_tag}
                   onChange={(v) => updatePref('new_topic_in_tag', v)}
+                />
+                <SettingRow
+                  label="Streak reminder"
+                  description="Alert at 8 PM UTC when your vote streak is at risk of breaking"
+                  checked={prefs.streak_reminder ?? true}
+                  onChange={(v) => updatePref('streak_reminder', v)}
                 />
               </div>
             </div>

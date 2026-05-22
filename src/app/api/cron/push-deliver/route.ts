@@ -59,6 +59,7 @@ const TYPE_EMOJI: Record<string, string> = {
   new_topic_in_tag:          '#️⃣',
   topic_subscribed_update:   '📌',
   lobby_update:              '🏛️',
+  streak_at_risk:            '🔥',
 }
 
 // Map notification reference_type → app URL
@@ -146,10 +147,13 @@ export async function GET(req: Request) {
     const emoji = TYPE_EMOJI[notif.type] ?? '🔔'
     const title = `${emoji} ${notif.title}`
     const body  = notif.body ?? 'You have a new notification in the Lobby.'
-    const url   = buildUrl(
-      notif.reference_type as string | null,
-      notif.reference_id as string | null
-    )
+    // Streak reminders deep-link to the swipe voting screen
+    const url   = notif.type === 'streak_at_risk'
+      ? '/swipe'
+      : buildUrl(
+          notif.reference_type as string | null,
+          notif.reference_id as string | null,
+        )
 
     const payload = JSON.stringify({
       title,
