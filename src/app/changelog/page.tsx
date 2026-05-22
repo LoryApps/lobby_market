@@ -1714,6 +1714,22 @@ const CHAPTERS: Chapter[] = [
       { icon: Sparkles, label: 'Most Upvoted Argument showcase: displays the all-time champion argument with author, stance, upvote count, and full text. Linked from /insights sidebar and sitemap.', href: '/annual', color: 'text-surface-400' },
     ],
   },
+  {
+    number: 'Ch. 136',
+    title: 'The Civic Frontier',
+    subtitle: 'The leading edge of civic debate — freshest proposals, early-stage topics, and uncovered civic ground',
+    accent: 'text-for-400',
+    borderColor: 'border-for-500/30',
+    bgColor: 'bg-for-500/5',
+    textColor: 'text-for-400',
+    items: [
+      { icon: Compass, label: 'New /frontier page: three sections — Newest Arrivals (topics proposed in the last 72 h), Uncharted Ground (topics with few votes and first arguments landing), and Almost Active (60–95% of threshold).', href: '/frontier', color: 'text-for-400' },
+      { icon: Sparkles, label: 'Uncovered Ground panel: ranks civic categories by how many proposed topics exist relative to established laws, surfacing where the community has the most unresolved questions.', href: '/frontier', color: 'text-gold' },
+      { icon: BarChart2, label: 'Activation progress bars on Almost Active cards: visual indicator of support count vs activation threshold, with exact counts shown below.', href: '/frontier', color: 'text-emerald' },
+      { icon: Globe, label: 'Category-level gap analysis: /api/topics/frontier computes which civic categories have fewest laws relative to proposed topics, giving writers a data-driven nudge toward underserved debates.', href: '/frontier', color: 'text-purple' },
+      { icon: ArrowRight, label: 'Cross-links to /surge, /pipeline, /trending, and /groundswell for users who want to explore momentum-based views after scanning the frontier.', href: '/frontier', color: 'text-surface-400' },
+    ],
+  },
 ]
 
 const STATS = [

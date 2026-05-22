@@ -13,6 +13,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/anthology`, changeFrequency: 'daily', priority: 0.82 },
   { url: `${BASE_URL}/trending`, changeFrequency: 'hourly', priority: 0.9 },
   { url: `${BASE_URL}/surge`, changeFrequency: 'hourly', priority: 0.85 },
+  { url: `${BASE_URL}/frontier`, changeFrequency: 'hourly', priority: 0.84 },
   { url: `${BASE_URL}/groundswell`, changeFrequency: 'hourly', priority: 0.83 },
   { url: `${BASE_URL}/velocity`, changeFrequency: 'hourly', priority: 0.82 },
   { url: `${BASE_URL}/flux`, changeFrequency: 'always', priority: 0.84 },
