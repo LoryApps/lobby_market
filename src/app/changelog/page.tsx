@@ -67,6 +67,7 @@ import {
   FileText,
   Shuffle,
   Scroll,
+  Pin,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -1730,13 +1731,28 @@ const CHAPTERS: Chapter[] = [
       { icon: ArrowRight, label: 'Cross-links to /surge, /pipeline, /trending, and /groundswell for users who want to explore momentum-based views after scanning the frontier.', href: '/frontier', color: 'text-surface-400' },
     ],
   },
+  {
+    number: 'Ch. 138',
+    title: 'Argument Spotlight — Pin from Profile',
+    subtitle: 'Pin your best arguments to your profile Spotlight directly from the Argument Portfolio page',
+    accent: 'text-gold',
+    borderColor: 'border-gold/30',
+    bgColor: 'bg-gold/5',
+    textColor: 'text-gold',
+    items: [
+      { icon: Pin, label: 'PinArgumentButton client component: pin/unpin any own argument with optimistic UI, spinner, and error feedback. Respects the 3-pin limit — the button becomes disabled (with tooltip) when the Spotlight is full.', href: '/profile/me/arguments', color: 'text-gold' },
+      { icon: Star, label: 'Profile Arguments page (/profile/[username]/arguments) now detects ownership server-side, fetches current pinned IDs, and renders a PinArgumentButton below each argument card for the owner.', href: '/profile/me/arguments', color: 'text-for-400' },
+      { icon: Sparkles, label: 'Gold "Spotlight" pill appears on already-pinned arguments so owners and visitors can see at a glance which arguments are featured on the profile.', href: '/profile/me/arguments', color: 'text-gold' },
+      { icon: LayoutGrid, label: 'Spotlight nudge banner above the argument list shows current pin count (X/3) and links back to the profile Spotlight section.', href: '/profile/me', color: 'text-surface-400' },
+    ],
+  },
 ]
 
 const STATS = [
-  { value: '135', label: 'chapters shipped' },
-  { value: '477+', label: 'features built' },
-  { value: '79', label: 'DB migrations' },
-  { value: '462+', label: 'API routes' },
+  { value: '138', label: 'chapters shipped' },
+  { value: '481+', label: 'features built' },
+  { value: '80', label: 'DB migrations' },
+  { value: '464+', label: 'API routes' },
 ]
 
 interface RecentBuild {

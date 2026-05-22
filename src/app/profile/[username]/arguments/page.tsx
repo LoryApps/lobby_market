@@ -6,6 +6,7 @@ import {
   ChevronUp,
   ExternalLink,
   Link2,
+  Pin,
   ThumbsDown,
   ThumbsUp,
 } from 'lucide-react'
@@ -15,6 +16,7 @@ import { BottomNav } from '@/components/layout/BottomNav'
 import { Avatar } from '@/components/ui/Avatar'
 import { Badge } from '@/components/ui/Badge'
 import { EmptyState } from '@/components/ui/EmptyState'
+import { PinArgumentButton } from '@/components/profile/PinArgumentButton'
 import { cn } from '@/lib/utils/cn'
 
 export const dynamic = 'force-dynamic'
@@ -207,6 +209,22 @@ export default async function ProfileArgumentsPage({ params, searchParams }: Pag
 
   const displayName = profile.display_name ?? profile.username
 
+  // Check if the current viewer owns this profile
+  const {
+    data: { user: authUser },
+  } = await supabase.auth.getUser()
+  const isOwner = authUser?.id === profile.id
+
+  // Fetch pinned argument IDs (owner only — needed to show pin state)
+  const pinnedArgIds: Set<string> = new Set()
+  if (isOwner) {
+    const { data: pinRows } = await supabase
+      .from('profile_pinned_arguments')
+      .select('argument_id')
+      .eq('user_id', profile.id)
+    for (const row of pinRows ?? []) pinnedArgIds.add(row.argument_id)
+  }
+
   // Filter link builder
   function filterHref(overrides: Record<string, string | undefined>) {
     const p = new URLSearchParams()
@@ -366,6 +384,28 @@ export default async function ProfileArgumentsPage({ params, searchParams }: Pag
           </div>
         </div>
 
+        {/* Spotlight nudge — owner only */}
+        {isOwner && (
+          <div className="mb-5 rounded-xl border border-gold/20 bg-gold/5 px-4 py-3 flex items-center gap-3">
+            <Pin className="h-4 w-4 text-gold flex-shrink-0" aria-hidden />
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-mono text-gold font-semibold">Argument Spotlight</p>
+              <p className="text-[11px] font-mono text-surface-500 mt-0.5">
+                Pin up to 3 arguments to your profile Spotlight.
+                {pinnedArgIds.size > 0
+                  ? ` You have ${pinnedArgIds.size}/3 pinned.`
+                  : ' None pinned yet.'}
+              </p>
+            </div>
+            <Link
+              href={`/profile/${profile.username}`}
+              className="text-[11px] font-mono text-gold/70 hover:text-gold transition-colors flex-shrink-0"
+            >
+              View →
+            </Link>
+          </div>
+        )}
+
         {/* Results count */}
         <p className="text-xs font-mono text-surface-600 mb-4">
           {args.length} argument{args.length !== 1 ? 's' : ''}
@@ -396,96 +436,123 @@ export default async function ProfileArgumentsPage({ params, searchParams }: Pag
               const statusBadge = topic?.status ? (STATUS_BADGE[topic.status] ?? 'proposed') : 'proposed'
               const statusLabel = topic?.status ? (STATUS_LABEL[topic.status] ?? topic.status) : ''
 
+              const isPinned = pinnedArgIds.has(arg.id)
+              const atPinLimit = pinnedArgIds.size >= 3
+
               return (
-                <Link
+                <div
                   key={arg.id}
-                  href={`/arguments/${arg.id}`}
                   className={cn(
-                    'block rounded-xl border bg-surface-100 p-4',
-                    'hover:bg-surface-200/60 hover:border-surface-400 transition-colors group',
+                    'relative rounded-xl border bg-surface-100',
                     arg.side === 'blue' ? 'border-for-500/20' : 'border-against-500/20'
                   )}
                 >
-                  {/* Top row: side + grade + upvotes */}
-                  <div className="flex items-start justify-between gap-3 mb-2.5">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      {/* Side pill */}
-                      <span
-                        className={cn(
-                          'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold border',
-                          arg.side === 'blue'
-                            ? 'bg-for-500/10 text-for-400 border-for-500/30'
-                            : 'bg-against-500/10 text-against-400 border-against-500/30'
-                        )}
-                      >
-                        {arg.side === 'blue'
-                          ? <ThumbsUp className="h-2.5 w-2.5" />
-                          : <ThumbsDown className="h-2.5 w-2.5" />
-                        }
-                        {arg.side === 'blue' ? 'FOR' : 'AGAINST'}
-                      </span>
-
-                      {/* Grade badge */}
-                      {gradeCfg && arg.ai_grade && (
+                  <Link
+                    href={`/arguments/${arg.id}`}
+                    className={cn(
+                      'block p-4 hover:bg-surface-200/60 rounded-xl transition-colors group',
+                    )}
+                  >
+                    {/* Top row: side + grade + upvotes */}
+                    <div className="flex items-start justify-between gap-3 mb-2.5">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        {/* Side pill */}
                         <span
                           className={cn(
-                            'inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono font-bold border',
-                            gradeCfg.bg,
-                            gradeCfg.border,
-                            gradeCfg.text
+                            'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold border',
+                            arg.side === 'blue'
+                              ? 'bg-for-500/10 text-for-400 border-for-500/30'
+                              : 'bg-against-500/10 text-against-400 border-against-500/30'
                           )}
-                          title={`AI Grade: ${arg.ai_grade} — ${gradeCfg.label}`}
                         >
-                          {arg.ai_grade}
+                          {arg.side === 'blue'
+                            ? <ThumbsUp className="h-2.5 w-2.5" />
+                            : <ThumbsDown className="h-2.5 w-2.5" />
+                          }
+                          {arg.side === 'blue' ? 'FOR' : 'AGAINST'}
                         </span>
-                      )}
 
-                      {/* Source indicator */}
-                      {arg.source_url && (
-                        <span className="inline-flex items-center gap-0.5 text-[10px] font-mono text-surface-500">
-                          <Link2 className="h-2.5 w-2.5" />
-                          cited
-                        </span>
-                      )}
-                    </div>
+                        {/* Grade badge */}
+                        {gradeCfg && arg.ai_grade && (
+                          <span
+                            className={cn(
+                              'inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono font-bold border',
+                              gradeCfg.bg,
+                              gradeCfg.border,
+                              gradeCfg.text
+                            )}
+                            title={`AI Grade: ${arg.ai_grade} — ${gradeCfg.label}`}
+                          >
+                            {arg.ai_grade}
+                          </span>
+                        )}
 
-                    {/* Upvotes + date */}
-                    <div className="flex items-center gap-2 flex-shrink-0 text-[11px] font-mono text-surface-500">
-                      <span className="flex items-center gap-0.5">
-                        <ChevronUp className="h-3 w-3 text-emerald" />
-                        {arg.upvotes}
-                      </span>
-                      <span>{relativeTime(arg.created_at)}</span>
-                    </div>
-                  </div>
+                        {/* Source indicator */}
+                        {arg.source_url && (
+                          <span className="inline-flex items-center gap-0.5 text-[10px] font-mono text-surface-500">
+                            <Link2 className="h-2.5 w-2.5" />
+                            cited
+                          </span>
+                        )}
 
-                  {/* Content preview */}
-                  <p className="text-sm font-mono text-surface-300 leading-relaxed mb-3 line-clamp-3">
-                    {arg.content}
-                  </p>
-
-                  {/* Topic context */}
-                  {topic && (
-                    <div className="flex items-start gap-2">
-                      <ExternalLink className="h-3 w-3 text-surface-600 flex-shrink-0 mt-0.5" />
-                      <div className="flex items-center gap-1.5 flex-wrap min-w-0">
-                        <span className="text-[11px] font-mono text-surface-600 truncate">
-                          {topic.statement.length > 70
-                            ? topic.statement.slice(0, 70) + '…'
-                            : topic.statement}
-                        </span>
-                        <Badge variant={statusBadge} className="text-[9px] px-1.5 py-0 flex-shrink-0">
-                          {statusLabel}
-                        </Badge>
-                        {topic.category && (
-                          <span className="text-[10px] font-mono text-surface-600 flex-shrink-0">
-                            {topic.category}
+                        {/* Pinned indicator — shown for all visitors */}
+                        {isPinned && (
+                          <span className="inline-flex items-center gap-0.5 text-[10px] font-mono text-gold">
+                            <Pin className="h-2.5 w-2.5" />
+                            Spotlight
                           </span>
                         )}
                       </div>
+
+                      {/* Upvotes + date */}
+                      <div className="flex items-center gap-2 flex-shrink-0 text-[11px] font-mono text-surface-500">
+                        <span className="flex items-center gap-0.5">
+                          <ChevronUp className="h-3 w-3 text-emerald" />
+                          {arg.upvotes}
+                        </span>
+                        <span>{relativeTime(arg.created_at)}</span>
+                      </div>
+                    </div>
+
+                    {/* Content preview */}
+                    <p className="text-sm font-mono text-surface-300 leading-relaxed mb-3 line-clamp-3">
+                      {arg.content}
+                    </p>
+
+                    {/* Topic context */}
+                    {topic && (
+                      <div className="flex items-start gap-2">
+                        <ExternalLink className="h-3 w-3 text-surface-600 flex-shrink-0 mt-0.5" />
+                        <div className="flex items-center gap-1.5 flex-wrap min-w-0">
+                          <span className="text-[11px] font-mono text-surface-600 truncate">
+                            {topic.statement.length > 70
+                              ? topic.statement.slice(0, 70) + '…'
+                              : topic.statement}
+                          </span>
+                          <Badge variant={statusBadge} className="text-[9px] px-1.5 py-0 flex-shrink-0">
+                            {statusLabel}
+                          </Badge>
+                          {topic.category && (
+                            <span className="text-[10px] font-mono text-surface-600 flex-shrink-0">
+                              {topic.category}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </Link>
+
+                  {/* Pin button — owner only, outside the Link to avoid navigation */}
+                  {isOwner && (
+                    <div className="px-4 pb-3 -mt-1">
+                      <PinArgumentButton
+                        argumentId={arg.id}
+                        initiallyPinned={isPinned}
+                        atLimit={atPinLimit}
+                      />
                     </div>
                   )}
-                </Link>
+                </div>
               )
             })}
           </div>
