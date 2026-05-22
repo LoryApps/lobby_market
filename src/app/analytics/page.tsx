@@ -419,6 +419,7 @@ export default function AnalyticsPage() {
             <Link href="/analytics/streak" className="flex items-center gap-1 text-xs text-against-400 hover:text-against-300 transition-colors font-mono font-semibold"><Flame className="h-3.5 w-3.5" />Streak History</Link>
             <Link href="/analytics/legacy" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><Trophy className="h-3.5 w-3.5" />Legacy</Link>
             <Link href="/analytics/journey" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><Landmark className="h-3.5 w-3.5" />Journey</Link>
+            <Link href="/analytics/territory" className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"><Compass className="h-3.5 w-3.5" />Territory Map</Link>
             <Link href="/karma" className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"><Sparkles className="h-3.5 w-3.5" />Karma</Link>
             <Link href="/profile/me" className="flex items-center gap-1 text-xs text-surface-500 hover:text-white transition-colors">Profile<ChevronRight className="h-3.5 w-3.5" /></Link>
           </div>
