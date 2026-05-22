@@ -65,6 +65,7 @@ import {
   Grid3X3,
   Handshake,
   FileText,
+  Shuffle,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -1681,13 +1682,28 @@ const CHAPTERS: Chapter[] = [
       { icon: TrendingUp, label: 'Per-category FOR/AGAINST bar shows 24h consensus split. API route /api/stats/velocity joins votes → topics to bucket by hour, computing momentum and forPct per category. Auto-refreshes every 5 minutes. Wired into Sidebar, Command Palette, and sitemap.', href: '/velocity', color: 'text-surface-400' },
     ],
   },
+  {
+    number: 'Ch. 134',
+    title: 'Civic Flux',
+    subtitle: 'Consensus shift tracker — topics where the community is actively changing its mind, ranked by FOR/AGAINST swing magnitude',
+    accent: 'text-purple',
+    borderColor: 'border-purple/30',
+    bgColor: 'bg-purple/5',
+    textColor: 'text-purple',
+    items: [
+      { icon: Shuffle, label: 'New /flux page: shows topics with the largest consensus shifts in the last 24h by comparing FOR% among recent voters vs. the prior 24h window. Distinct from /momentum (raw vote volume) and /velocity (category hourly rates).', href: '/flux', color: 'text-purple' },
+      { icon: Activity, label: 'Dual flux bars per card: "Prior 24h" vs "Recent 24h" vote split shown side-by-side. Colour-coded by direction — blue bar when community is warming to the idea, red when sentiment is cooling.', href: '/flux', color: 'text-for-400' },
+      { icon: TrendingUp, label: 'Flux intensity tiers: EXTREME FLUX (≥15pp shift), HIGH FLUX (≥8pp), IN FLUX (≥3pp), MILD SHIFT (<3pp). Three sort modes: Biggest Shift (magnitude), Swinging FOR, Swinging AGAINST.', href: '/flux', color: 'text-gold' },
+      { icon: Zap, label: 'API route /api/topics/flux computes per-topic blue_pct in two 24h windows from raw votes table. No new migration needed. Wired into Sidebar, Command Palette, and sitemap. Auto-refreshes every 5 minutes.', href: '/flux', color: 'text-surface-400' },
+    ],
+  },
 ]
 
 const STATS = [
-  { value: '133', label: 'chapters shipped' },
-  { value: '468+', label: 'features built' },
+  { value: '134', label: 'chapters shipped' },
+  { value: '472+', label: 'features built' },
   { value: '79', label: 'DB migrations' },
-  { value: '460+', label: 'API routes' },
+  { value: '461+', label: 'API routes' },
 ]
 
 interface RecentBuild {
@@ -1700,6 +1716,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Civic Flux',
+    description: 'New /flux page: tracks topics where the community is actively changing its mind — ranked by magnitude of FOR/AGAINST consensus shift in the last 24h. Each card shows dual flux bars comparing "Prior 24h" vs "Recent 24h" vote split, a shift pill showing +pp FOR or -pp AGAINST, and flux intensity tiers (EXTREME ≥15pp, HIGH ≥8pp, IN FLUX ≥3pp). Three sort modes: Biggest Shift (magnitude), Swinging FOR, Swinging AGAINST. API route /api/topics/flux buckets the last 48h of votes by 24h window and computes blue_pct per window per topic — no new migration needed. Distinct from /momentum (raw vote volume) and /velocity (category rates). Wired into Sidebar, Command Palette, and sitemap. Auto-refreshes every 5 minutes.',
+    href: '/flux',
+    icon: Shuffle,
+    color: 'text-purple',
+    tag: 'Ch. 134',
+  },
   {
     title: 'Civic Velocity',
     description: 'New /velocity page: live vote velocity across all 10 civic categories over the last 24 hours. Each category shows a 24-point sparkline (one dot per hour), a momentum indicator comparing last-6h rate vs prior 18h, and three stat chips: last-hour votes, last-6h votes, and 24h total. A FOR/AGAINST bar shows aggregate consensus direction across all votes in the window. Four sort modes: Most Active, Last Hour, Surging, and Most FOR. Platform summary strip shows total platform votes and hottest category. API route /api/stats/velocity joins votes → topics!inner(category), buckets by UTC hour, and computes momentum ratios and forPct per category. Auto-refreshes every 5 minutes. Wired into Sidebar, Command Palette, and sitemap. No new DB migration.',

@@ -103,6 +103,7 @@ import {
   Link2,
   Handshake,
   Gauge,
+  Shuffle,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -1041,6 +1042,16 @@ const QUICK_LINKS: QuickLink[] = [
     icon: Zap,
     iconColor: 'text-gold',
     iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'flux',
+    label: 'Civic Flux',
+    sublabel: 'Where is the community changing its mind? Tracks the largest FOR/AGAINST consensus shifts in the last 24h',
+    href: '/flux',
+    icon: Shuffle,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
   },
   {
     type: 'link',
