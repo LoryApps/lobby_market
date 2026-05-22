@@ -100,5 +100,14 @@ export async function POST(
   // Check and grant achievements in the background (non-blocking to the caller)
   checkAndGrantAchievements(user.id, supabase).catch(() => {/* best-effort */})
 
+  // Lazily run topic lifecycle evaluation if this topic's voting phase has
+  // already expired — avoids waiting up to 5 minutes for the cron to fire.
+  if (
+    updatedTopic?.voting_ends_at &&
+    new Date(updatedTopic.voting_ends_at) <= new Date()
+  ) {
+    supabase.rpc('evaluate_topic_thresholds' as never).catch(() => {/* best-effort */})
+  }
+
   return NextResponse.json({ success: true, topic: updatedTopic })
 }

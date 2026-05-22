@@ -3,6 +3,14 @@
     {
       "path": "/api/cron/push-deliver",
       "schedule": "* * * * *"
+    },
+    {
+      "path": "/api/cron/topic-lifecycle",
+      "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/cron/daily-reset",
+      "schedule": "0 0 * * *"
     }
   ]
 }
