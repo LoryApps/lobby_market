@@ -1055,6 +1055,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'annual',
+    label: 'The Civic Annual',
+    sublabel: 'All-time platform record — every topic, every law, every vote, every contributor',
+    href: '/annual',
+    icon: Scroll,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'tipping-point',
     label: 'The Tipping Point',
     sublabel: 'Debates within striking distance of consensus — or about to be definitively rejected',

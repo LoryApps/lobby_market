@@ -66,6 +66,7 @@ import {
   Handshake,
   FileText,
   Shuffle,
+  Scroll,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -1697,13 +1698,29 @@ const CHAPTERS: Chapter[] = [
       { icon: Zap, label: 'API route /api/topics/flux computes per-topic blue_pct in two 24h windows from raw votes table. No new migration needed. Wired into Sidebar, Command Palette, and sitemap. Auto-refreshes every 5 minutes.', href: '/flux', color: 'text-surface-400' },
     ],
   },
+  {
+    number: 'Ch. 135',
+    title: 'The Civic Annual',
+    subtitle: 'All-time platform record — every topic debated, every law established, every citizen who shaped the civic landscape',
+    accent: 'text-gold',
+    borderColor: 'border-gold/30',
+    bgColor: 'bg-gold/5',
+    textColor: 'text-gold',
+    items: [
+      { icon: Scroll, label: 'New /annual page: a comprehensive all-time record of the platform. Shows total topics, laws, votes, arguments, debates, and citizens. Law pass rate and avg votes per topic at a glance.', href: '/annual', color: 'text-gold' },
+      { icon: BarChart2, label: 'Monthly activity chart: 12-month bar chart showing topic proposals and law establishments over time. Hover tooltips per bar. Topic bars in blue, law portion in gold overlay.', href: '/annual', color: 'text-for-400' },
+      { icon: Trophy, label: 'All-time records: most voted topic, most argued topic, most viewed topic, and most upvoted argument — each with a click-through to the source.', href: '/annual', color: 'text-purple' },
+      { icon: Gavel, label: 'Laws Hall of Fame: top 8 laws by vote count with live vote-split bars. Top Contributors: ranked by argument count with clout display. Category breakdown with vote volume bars and law pass rates.', href: '/annual', color: 'text-emerald' },
+      { icon: Sparkles, label: 'Most Upvoted Argument showcase: displays the all-time champion argument with author, stance, upvote count, and full text. Linked from /insights sidebar and sitemap.', href: '/annual', color: 'text-surface-400' },
+    ],
+  },
 ]
 
 const STATS = [
-  { value: '134', label: 'chapters shipped' },
-  { value: '472+', label: 'features built' },
+  { value: '135', label: 'chapters shipped' },
+  { value: '477+', label: 'features built' },
   { value: '79', label: 'DB migrations' },
-  { value: '461+', label: 'API routes' },
+  { value: '462+', label: 'API routes' },
 ]
 
 interface RecentBuild {
@@ -1716,6 +1733,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'The Civic Annual',
+    description: 'New /annual page: the complete all-time record of Lobby Market. Shows 8 platform stats (total topics, laws, votes, arguments, debates, citizens, law pass rate, avg votes/topic) in an animated stat grid. Monthly activity chart showing the last 12 months of topic proposals and laws as a bar chart with per-bar tooltips. All-time records section (most voted, most argued, most viewed topic; most upvoted argument). Laws Hall of Fame: top 8 laws by vote count with vote-split bars. Top Contributors: ranked by argument count with clout display. Most Upvoted Argument showcase with full text and author. Category breakdown with vote volume bars and law pass rates. API route /api/annual aggregates all-time platform data with a 1-hour CDN cache. Linked from /insights and /changelog. No new DB migration.',
+    href: '/annual',
+    icon: Scroll,
+    color: 'text-gold',
+    tag: 'Ch. 135',
+  },
   {
     title: 'Civic Flux',
     description: 'New /flux page: tracks topics where the community is actively changing its mind — ranked by magnitude of FOR/AGAINST consensus shift in the last 24h. Each card shows dual flux bars comparing "Prior 24h" vs "Recent 24h" vote split, a shift pill showing +pp FOR or -pp AGAINST, and flux intensity tiers (EXTREME ≥15pp, HIGH ≥8pp, IN FLUX ≥3pp). Three sort modes: Biggest Shift (magnitude), Swinging FOR, Swinging AGAINST. API route /api/topics/flux buckets the last 48h of votes by 24h window and computes blue_pct per window per topic — no new migration needed. Distinct from /momentum (raw vote volume) and /velocity (category rates). Wired into Sidebar, Command Palette, and sitemap. Auto-refreshes every 5 minutes.',

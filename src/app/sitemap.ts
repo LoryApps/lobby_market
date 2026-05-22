@@ -16,6 +16,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/groundswell`, changeFrequency: 'hourly', priority: 0.83 },
   { url: `${BASE_URL}/velocity`, changeFrequency: 'hourly', priority: 0.82 },
   { url: `${BASE_URL}/flux`, changeFrequency: 'always', priority: 0.84 },
+  { url: `${BASE_URL}/annual`, changeFrequency: 'daily', priority: 0.80 },
   { url: `${BASE_URL}/tipping-point`, changeFrequency: 'hourly', priority: 0.83 },
   { url: `${BASE_URL}/convergence`, changeFrequency: 'hourly', priority: 0.82 },
   { url: `${BASE_URL}/hotspot`, changeFrequency: 'always', priority: 0.88 },

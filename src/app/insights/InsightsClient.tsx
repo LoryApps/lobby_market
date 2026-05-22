@@ -667,6 +667,7 @@ export function InsightsClient() {
             { label: 'Observatory', href: '/observatory', icon: BarChart2 },
             { label: 'Transparency', href: '/transparency', icon: Award },
             { label: 'Leaderboard', href: '/leaderboard', icon: Users },
+            { label: 'Annual', href: '/annual', icon: Award },
           ].map((link) => {
             const Icon = link.icon
             return (
