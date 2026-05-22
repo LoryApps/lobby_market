@@ -1476,6 +1476,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'dossier',
+    label: 'Civic Dossier',
+    sublabel: 'Your compact civic identity card — stats, category fingerprint, FOR/AGAINST lean, laws shaped',
+    href: '/dossier',
+    icon: FileText,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
     id: 'karma',
     label: 'Civic Karma Score',
     sublabel: 'Your holistic civic credit score — discourse, predictions, breadth, engagement, trust',

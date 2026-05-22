@@ -64,6 +64,7 @@ import {
   Share2,
   Grid3X3,
   Handshake,
+  FileText,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -1650,12 +1651,27 @@ const CHAPTERS: Chapter[] = [
       { icon: Activity, label: 'Two special series: Laws of the Land (all established laws ranked by votes) and Most Contested (active topics sorted by proximity to 50/50 deadlock). Wired into Sidebar, Command Palette, and sitemap. No new DB migration.', href: '/series', color: 'text-surface-400' },
     ],
   },
+  {
+    number: 'Ch. 132',
+    title: 'The Civic Dossier',
+    subtitle: 'Your compact civic identity card — stats, category fingerprint, and civic legacy at a glance',
+    accent: 'text-for-400',
+    borderColor: 'border-for-500/30',
+    bgColor: 'bg-for-500/5',
+    textColor: 'text-for-400',
+    items: [
+      { icon: FileText, label: 'New /dossier page: a single-screen civic identity card showing who you are on the platform — avatar, archetype badge, role, member since, and your full engagement record.', href: '/dossier', color: 'text-for-400' },
+      { icon: BarChart2, label: 'Core stats grid: total votes cast, arguments written, laws shaped (topics you voted FOR that became law), and current day streak. Plus clout score and prediction accuracy side by side.', href: '/dossier', color: 'text-gold' },
+      { icon: Activity, label: 'Civic Fingerprint: animated category bars showing your top 5 engagement categories by vote count, with per-category FOR/AGAINST lean. A genuine civic DNA read-out.', href: '/dossier', color: 'text-purple' },
+      { icon: Share2, label: 'FOR/AGAINST alignment bar + one-click share: copy your public profile link instantly. Works for any user via ?username= query param — shareable, linkable, public. Wired into Sidebar, Command Palette, and sitemap. No new DB migration.', href: '/dossier', color: 'text-surface-400' },
+    ],
+  },
 ]
 
 const STATS = [
-  { value: '131', label: 'chapters shipped' },
-  { value: '460+', label: 'features built' },
-  { value: '76', label: 'DB migrations' },
+  { value: '132', label: 'chapters shipped' },
+  { value: '464+', label: 'features built' },
+  { value: '79', label: 'DB migrations' },
   { value: '460+', label: 'API routes' },
 ]
 
