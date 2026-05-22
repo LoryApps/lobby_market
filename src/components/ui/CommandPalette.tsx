@@ -1034,6 +1034,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'velocity',
+    label: 'Civic Velocity',
+    sublabel: 'Live vote flow by category — sparkline charts showing which issues the community is most active on right now',
+    href: '/velocity',
+    icon: Zap,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'tipping-point',
     label: 'The Tipping Point',
     sublabel: 'Debates within striking distance of consensus — or about to be definitively rejected',

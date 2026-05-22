@@ -63,6 +63,7 @@ const navItems: NavItem[] = [
   { href: '/trending', label: 'Trending', icon: TrendingUp },
   { href: '/surge', label: 'Surge', icon: Flame },
   { href: '/groundswell', label: 'Groundswell', icon: Activity },
+  { href: '/velocity', label: 'Velocity', icon: Zap },
   { href: '/tipping-point', label: 'Tipping Point', icon: Gauge },
   { href: '/tally', label: 'Tally Board', icon: Radio },
   { href: '/shifts', label: 'Opinion Shifts', icon: BarChart2 },

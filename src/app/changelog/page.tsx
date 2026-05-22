@@ -1666,11 +1666,26 @@ const CHAPTERS: Chapter[] = [
       { icon: Share2, label: 'FOR/AGAINST alignment bar + one-click share: copy your public profile link instantly. Works for any user via ?username= query param — shareable, linkable, public. Wired into Sidebar, Command Palette, and sitemap. No new DB migration.', href: '/dossier', color: 'text-surface-400' },
     ],
   },
+  {
+    number: 'Ch. 133',
+    title: 'Civic Velocity',
+    subtitle: 'Live vote-flow tracker by category — sparkline charts showing the platform\'s democratic pulse, hour by hour',
+    accent: 'text-gold',
+    borderColor: 'border-gold/30',
+    bgColor: 'bg-gold/5',
+    textColor: 'text-gold',
+    items: [
+      { icon: Zap, label: 'New /velocity page: vote velocity across all 10 civic categories over the last 24 hours. Each category gets a 24-point sparkline (one dot per hour) showing when the community is most active.', href: '/velocity', color: 'text-gold' },
+      { icon: Activity, label: 'Momentum indicator per category: compares the last-6h vote rate against the prior 18h. Surge (>1.5×), accelerating (+%), steady, slowing, or declining — at a glance.', href: '/velocity', color: 'text-for-400' },
+      { icon: BarChart2, label: 'Four sort modes: Most Active (24h votes), Last Hour (freshest), Surging (highest momentum ratio), and Most FOR (aggregate consensus direction). Platform summary strip shows total votes and peak category.', href: '/velocity', color: 'text-purple' },
+      { icon: TrendingUp, label: 'Per-category FOR/AGAINST bar shows 24h consensus split. API route /api/stats/velocity joins votes → topics to bucket by hour, computing momentum and forPct per category. Auto-refreshes every 5 minutes. Wired into Sidebar, Command Palette, and sitemap.', href: '/velocity', color: 'text-surface-400' },
+    ],
+  },
 ]
 
 const STATS = [
-  { value: '132', label: 'chapters shipped' },
-  { value: '464+', label: 'features built' },
+  { value: '133', label: 'chapters shipped' },
+  { value: '468+', label: 'features built' },
   { value: '79', label: 'DB migrations' },
   { value: '460+', label: 'API routes' },
 ]
@@ -1685,6 +1700,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Civic Velocity',
+    description: 'New /velocity page: live vote velocity across all 10 civic categories over the last 24 hours. Each category shows a 24-point sparkline (one dot per hour), a momentum indicator comparing last-6h rate vs prior 18h, and three stat chips: last-hour votes, last-6h votes, and 24h total. A FOR/AGAINST bar shows aggregate consensus direction across all votes in the window. Four sort modes: Most Active, Last Hour, Surging, and Most FOR. Platform summary strip shows total platform votes and hottest category. API route /api/stats/velocity joins votes → topics!inner(category), buckets by UTC hour, and computes momentum ratios and forPct per category. Auto-refreshes every 5 minutes. Wired into Sidebar, Command Palette, and sitemap. No new DB migration.',
+    href: '/velocity',
+    icon: Zap,
+    color: 'text-gold',
+    tag: 'Ch. 133',
+  },
   {
     title: 'Civic Series',
     description: 'New /series page: 11 platform-curated thematic reading paths that guide citizens through related debates around a shared theme. Series include The AI Frontier (8 tech/AI debates), Climate Imperative (8 environment topics), Democracy Under Pressure (7 political topics), Economic Fault Lines, Healthcare Crossroads, Digital Rights & Wrongs, The Social Contract, Education Futures, Ethics of Power, Laws of the Land (established laws ranked by votes), and Most Contested (active topics sorted by 50/50 proximity). Individual series pages at /series/[slug] show an ordered topic list with vote bars, status badges, author attribution, and a stats strip. Two special algorithmic series sort dynamically by vote outcome and contestedness. Wired into Sidebar, Command Palette ⌘K, and sitemap. No new DB migration.',
