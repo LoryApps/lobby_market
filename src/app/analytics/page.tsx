@@ -626,6 +626,21 @@ export default function AnalyticsPage() {
                 <ChevronRight className="h-4 w-4 text-surface-500 group-hover:text-against-400 transition-colors flex-shrink-0" />
               </Link>
             </motion.div>
+            {/* Argument Impact card */}
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.413 }}>
+              <Link href="/analytics/impact" className="flex items-center justify-between rounded-2xl bg-surface-100 border border-gold/20 p-5 hover:border-gold/40 hover:bg-gold/5 transition-colors group">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center justify-center h-10 w-10 rounded-xl bg-gold/10 border border-gold/30 flex-shrink-0">
+                    <Trophy className="h-5 w-5 text-gold" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-mono font-semibold text-white">Argument Impact</div>
+                    <div className="text-xs font-mono text-surface-500 mt-0.5">Upvotes earned, replies sparked, debate wins, reach, and your impact archetype</div>
+                  </div>
+                </div>
+                <ChevronRight className="h-4 w-4 text-surface-500 group-hover:text-gold transition-colors flex-shrink-0" />
+              </Link>
+            </motion.div>
             {/* Contrarian Deep Dive card */}
             <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.415 }}>
               <Link href="/analytics/contrarian" className="flex items-center justify-between rounded-2xl bg-surface-100 border border-against-500/20 p-5 hover:border-against-500/40 hover:bg-against-500/5 transition-colors group">
