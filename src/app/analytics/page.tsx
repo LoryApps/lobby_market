@@ -408,6 +408,7 @@ export default function AnalyticsPage() {
             <Link href="/analytics/mentor" className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"><Brain className="h-3.5 w-3.5" />Argument Mentor</Link>
             <Link href="/analytics/cascade" className="flex items-center gap-1 text-xs text-for-300 hover:text-for-200 transition-colors font-mono font-semibold"><GitMerge className="h-3.5 w-3.5" />Influence Cascade</Link>
             <Link href="/analytics/threads" className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"><MessageSquare className="h-3.5 w-3.5" />Thread Analytics</Link>
+            <Link href="/analytics/engagement" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><Activity className="h-3.5 w-3.5" />Engagement Depth</Link>
             <Link href="/analytics/snapshot" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><LayoutGrid className="h-3.5 w-3.5" />Snapshot</Link>
             <Link href="/analytics/benchmark" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><Trophy className="h-3.5 w-3.5" />Benchmark</Link>
             <Link href="/analytics/drift" className="flex items-center gap-1 text-xs text-against-400 hover:text-against-300 transition-colors font-mono font-semibold"><TrendingDown className="h-3.5 w-3.5" />Drift</Link>
@@ -799,6 +800,21 @@ export default function AnalyticsPage() {
                   </div>
                 </div>
                 <ChevronRight className="h-4 w-4 text-surface-500 group-hover:text-emerald transition-colors flex-shrink-0" />
+              </Link>
+            </motion.div>
+            {/* Engagement Depth card */}
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.442 }}>
+              <Link href="/analytics/engagement" className="flex items-center justify-between rounded-2xl bg-surface-100 border border-for-500/20 p-5 hover:border-for-500/40 hover:bg-for-500/5 transition-colors group">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center justify-center h-10 w-10 rounded-xl bg-for-500/10 border border-for-500/30 flex-shrink-0">
+                    <Activity className="h-5 w-5 text-for-400" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-mono font-semibold text-white">Engagement Depth</div>
+                    <div className="text-xs font-mono text-surface-500 mt-0.5">How broadly you participate — votes, arguments, replies, reactions, bookmarks, wiki edits, and more</div>
+                  </div>
+                </div>
+                <ChevronRight className="h-4 w-4 text-surface-500 group-hover:text-for-400 transition-colors flex-shrink-0" />
               </Link>
             </motion.div>
             {/* Alignment Analytics card */}
