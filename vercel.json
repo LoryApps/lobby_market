@@ -15,6 +15,10 @@
     {
       "path": "/api/cron/streak-reminder",
       "schedule": "0 20 * * *"
+    },
+    {
+      "path": "/api/cron/debate-reminder",
+      "schedule": "*/30 * * * *"
     }
   ]
 }
