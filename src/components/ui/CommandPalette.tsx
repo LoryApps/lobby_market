@@ -485,6 +485,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'briefing',
+    label: 'Daily Briefing',
+    sublabel: 'Personalized action-oriented daily start page',
+    href: '/briefing',
+    icon: Bookmark,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'catchup',
     label: 'Catch Up',
     sublabel: 'What happened while you were away',
