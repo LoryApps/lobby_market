@@ -17,6 +17,7 @@ import {
   Globe,
   FileText,
   Shuffle,
+  Activity,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -421,6 +422,8 @@ export default function AnalyticsPage() {
             <Link href="/analytics/legacy" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><Trophy className="h-3.5 w-3.5" />Legacy</Link>
             <Link href="/analytics/journey" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><Landmark className="h-3.5 w-3.5" />Journey</Link>
             <Link href="/analytics/territory" className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"><Compass className="h-3.5 w-3.5" />Territory Map</Link>
+            <Link href="/analytics/opposition" className="flex items-center gap-1 text-xs text-against-400 hover:text-against-300 transition-colors font-mono font-semibold"><Swords className="h-3.5 w-3.5" />Opposition Intel</Link>
+            <Link href="/analytics/velocity" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><Activity className="h-3.5 w-3.5" />Arg. Velocity</Link>
             <Link href="/karma" className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"><Sparkles className="h-3.5 w-3.5" />Karma</Link>
             <Link href="/profile/me" className="flex items-center gap-1 text-xs text-surface-500 hover:text-white transition-colors">Profile<ChevronRight className="h-3.5 w-3.5" /></Link>
           </div>
@@ -655,6 +658,36 @@ export default function AnalyticsPage() {
                   </div>
                 </div>
                 <ChevronRight className="h-4 w-4 text-surface-500 group-hover:text-emerald transition-colors flex-shrink-0" />
+              </Link>
+            </motion.div>
+            {/* Opposition Intel card */}
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.4145 }}>
+              <Link href="/analytics/opposition" className="flex items-center justify-between rounded-2xl bg-surface-100 border border-against-500/20 p-5 hover:border-against-500/40 hover:bg-against-500/5 transition-colors group">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center justify-center h-10 w-10 rounded-xl bg-against-500/10 border border-against-500/30 flex-shrink-0">
+                    <Swords className="h-5 w-5 text-against-400" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-mono font-semibold text-white">Opposition Intel</div>
+                    <div className="text-xs font-mono text-surface-500 mt-0.5">The strongest arguments written against your positions — who challenges you and where</div>
+                  </div>
+                </div>
+                <ChevronRight className="h-4 w-4 text-surface-500 group-hover:text-against-400 transition-colors flex-shrink-0" />
+              </Link>
+            </motion.div>
+            {/* Argument Velocity card */}
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.4148 }}>
+              <Link href="/analytics/velocity" className="flex items-center justify-between rounded-2xl bg-surface-100 border border-for-500/20 p-5 hover:border-for-500/40 hover:bg-for-500/5 transition-colors group">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center justify-center h-10 w-10 rounded-xl bg-for-500/10 border border-for-500/30 flex-shrink-0">
+                    <Activity className="h-5 w-5 text-for-400" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-mono font-semibold text-white">Argument Velocity</div>
+                    <div className="text-xs font-mono text-surface-500 mt-0.5">Upvotes per day — which arguments are evergreen, surging, or peaked</div>
+                  </div>
+                </div>
+                <ChevronRight className="h-4 w-4 text-surface-500 group-hover:text-for-400 transition-colors flex-shrink-0" />
               </Link>
             </motion.div>
             {/* Contrarian Deep Dive card */}
