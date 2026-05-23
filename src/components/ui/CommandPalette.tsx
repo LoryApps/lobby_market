@@ -104,6 +104,7 @@ import {
   Handshake,
   Gauge,
   Shuffle,
+  Wand2,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -412,6 +413,16 @@ const QUICK_LINKS: QuickLink[] = [
     icon: Zap,
     iconColor: 'text-for-400',
     iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
+    id: 'workshop',
+    label: 'Argument Workshop',
+    sublabel: 'Step-by-step guided argument builder — topic, angle, draft, AI review, publish',
+    href: '/workshop',
+    icon: Wand2,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
   },
   {
     type: 'link',
