@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useCallback, useState } from 'react'
 import Link from 'next/link'
-import { Users, Search, Keyboard, RefreshCw, ChevronUp, Sparkles, UserPlus, Check, Loader2, History, Vote, Hash } from 'lucide-react'
+import { Users, Search, Keyboard, RefreshCw, ChevronUp, Sparkles, UserPlus, Check, Loader2, History, Vote, Hash, Plus } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useFeedStore } from '@/lib/stores/feed-store'
 import { useVoteStore } from '@/lib/stores/vote-store'
@@ -768,6 +768,23 @@ export function FeedContainer() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Propose a topic FAB */}
+      <Link
+        href="/topic/create"
+        title="Propose a new topic"
+        aria-label="Propose a new civic topic"
+        className={cn(
+          'fixed bottom-[4.75rem] right-4 z-50 md:bottom-6 md:right-36',
+          'flex items-center gap-2 h-11 px-4 rounded-full shadow-lg',
+          'bg-for-600 hover:bg-for-500 text-white',
+          'text-xs font-semibold transition-colors',
+          'ring-2 ring-for-700/40 hover:ring-for-500/60',
+        )}
+      >
+        <Plus className="h-4 w-4 shrink-0" aria-hidden="true" />
+        <span className="hidden sm:inline">Propose</span>
+      </Link>
 
       {/* Keyboard shortcut hint — desktop only */}
       <button
