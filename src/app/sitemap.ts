@@ -111,6 +111,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/analytics/territory`, changeFrequency: 'daily', priority: 0.68 },
   { url: `${BASE_URL}/analytics/opposition`, changeFrequency: 'daily', priority: 0.68 },
   { url: `${BASE_URL}/analytics/velocity`, changeFrequency: 'daily', priority: 0.68 },
+  { url: `${BASE_URL}/analytics/persuasion`, changeFrequency: 'daily', priority: 0.68 },
   { url: `${BASE_URL}/leaderboard/rising`, changeFrequency: 'hourly', priority: 0.72 },
   { url: `${BASE_URL}/laws/atlas`, changeFrequency: 'daily', priority: 0.72 },
   { url: `${BASE_URL}/calibration`, changeFrequency: 'daily', priority: 0.65 },
