@@ -1944,7 +1944,8 @@ export type NotificationType =
   | "vote_phase_started"
   | "direct_message"
   | "new_topic_in_tag"
-  | "streak_at_risk";
+  | "streak_at_risk"
+  | "weekly_digest";
 
 export type AchievementTier = "common" | "rare" | "epic" | "legendary";
 

@@ -22,6 +22,7 @@ import {
   UserPlus,
   Users,
   CheckCircle,
+  Newspaper,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
@@ -59,6 +60,7 @@ const typeConfig: Record<
   direct_message: { icon: MessageSquare, color: 'text-for-300' },
   new_topic_in_tag: { icon: Hash, color: 'text-for-400' },
   streak_at_risk: { icon: Flame, color: 'text-gold' },
+  weekly_digest:  { icon: Newspaper, color: 'text-purple' },
 }
 
 // ─── Filter tabs ──────────────────────────────────────────────────────────────

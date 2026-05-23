@@ -87,6 +87,8 @@ interface NotifPrefs {
   role_promoted: boolean
   lobby_update: boolean
   new_topic_in_tag: boolean
+  streak_reminder: boolean
+  weekly_digest: boolean
 }
 
 const DEFAULT_PREFS: NotifPrefs = {
@@ -99,6 +101,8 @@ const DEFAULT_PREFS: NotifPrefs = {
   role_promoted: true,
   lobby_update: false,
   new_topic_in_tag: true,
+  streak_reminder: true,
+  weekly_digest: true,
 }
 
 function loadPrefs(): NotifPrefs {
@@ -248,6 +252,16 @@ const TYPE_CONFIG: Record<NotificationType, TypeConfig> = {
     prefKey: 'new_topic_in_tag',
     emoji: '#',
     duration: 5000,
+  },
+  streak_at_risk: {
+    prefKey: 'streak_reminder',
+    emoji: '🔥',
+    duration: 7000,
+  },
+  weekly_digest: {
+    prefKey: 'weekly_digest',
+    emoji: '📰',
+    duration: 8000,
   },
 }
 

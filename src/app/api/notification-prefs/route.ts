@@ -14,6 +14,7 @@ export interface NotifPrefs {
   lobby_update: boolean
   new_topic_in_tag: boolean
   streak_reminder: boolean
+  weekly_digest: boolean
 }
 
 const DEFAULT_PREFS: NotifPrefs = {
@@ -27,6 +28,7 @@ const DEFAULT_PREFS: NotifPrefs = {
   lobby_update: false,
   new_topic_in_tag: true,
   streak_reminder: true,
+  weekly_digest: true,
 }
 
 // ─── GET ───────────────────────────────────────────────────────────────────────
@@ -45,7 +47,7 @@ export async function GET() {
   const { data, error } = await supabase
     .from('user_notification_prefs')
     .select(
-      'achievement_earned, debate_starting, law_established, topic_activated, vote_threshold, reply_received, role_promoted, lobby_update, new_topic_in_tag, streak_reminder'
+      'achievement_earned, debate_starting, law_established, topic_activated, vote_threshold, reply_received, role_promoted, lobby_update, new_topic_in_tag, streak_reminder, weekly_digest'
     )
     .eq('user_id', user.id)
     .maybeSingle()

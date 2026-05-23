@@ -60,6 +60,7 @@ const TYPE_EMOJI: Record<string, string> = {
   topic_subscribed_update:   '📌',
   lobby_update:              '🏛️',
   streak_at_risk:            '🔥',
+  weekly_digest:             '📰',
 }
 
 // Map notification reference_type → app URL
@@ -72,6 +73,7 @@ function buildUrl(referenceType: string | null, referenceId: string | null): str
     case 'profile':   return `/profile/${referenceId}`
     case 'coalition': return `/coalitions/${referenceId}`
     case 'argument':  return `/arguments/${referenceId}`
+    case 'digest':    return '/analytics'
     default:          return '/notifications'
   }
 }

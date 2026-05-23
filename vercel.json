@@ -19,6 +19,10 @@
     {
       "path": "/api/cron/debate-reminder",
       "schedule": "*/30 * * * *"
+    },
+    {
+      "path": "/api/cron/weekly-digest",
+      "schedule": "0 6 * * 1"
     }
   ]
 }
