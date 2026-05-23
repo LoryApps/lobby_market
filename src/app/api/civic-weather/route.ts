@@ -130,7 +130,7 @@ export async function GET() {
     // 2. Recent (7-day) argument counts per topic_id — proxy for wind/activity
     const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
     const { data: recentArgRows } = await supabase
-      .from('arguments')
+      .from('topic_arguments')
       .select('topic_id')
       .gte('created_at', sevenDaysAgo)
 

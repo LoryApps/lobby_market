@@ -37,16 +37,131 @@ interface TopicRow {
   feed_score: number | null
 }
 
+// ─── Algorithmic fallback (no API key) ────────────────────────────────────────
+
+async function algorithmicAdvice(supabase: Awaited<ReturnType<typeof createClient>>, userId: string): Promise<AdvisorResponse> {
+  const [profileRes, votedRes, hotRes] = await Promise.all([
+    supabase
+      .from('profiles')
+      .select('display_name, role, total_votes, blue_vote_count, vote_streak, category_preferences, civic_archetype, reputation_score, total_arguments')
+      .eq('id', userId)
+      .maybeSingle(),
+    supabase.from('votes').select('topic_id, side, topic:topics(category)').eq('user_id', userId).limit(100),
+    supabase
+      .from('topics')
+      .select('id, statement, category, status, blue_pct, total_votes, feed_score')
+      .in('status', ['active', 'voting', 'proposed'])
+      .order('feed_score', { ascending: false })
+      .limit(40),
+  ])
+
+  const profile = profileRes.data
+  const votedRows = votedRes.data ?? []
+  const allTopics = hotRes.data ?? []
+
+  const votedSet = new Set(votedRows.map((v) => v.topic_id as string))
+  const unvoted: TopicRow[] = allTopics.filter((t) => !votedSet.has(t.id))
+
+  // Build category affinity from past votes
+  const catCounts: Record<string, number> = {}
+  for (const v of votedRows) {
+    const cat = (Array.isArray(v.topic) ? v.topic[0] : v.topic)?.category
+    if (cat) catCounts[cat] = (catCounts[cat] ?? 0) + 1
+  }
+  const preferredCats = Object.entries(catCounts).sort((a, b) => b[1] - a[1]).map(([c]) => c).slice(0, 3)
+  const prefSet = new Set(preferredCats.length > 0 ? preferredCats : (profile?.category_preferences ?? []))
+
+  // Score topics: preferred category +3, near law +2 (≥62%), voting status +2, high votes +1
+  const scored = unvoted.map((t) => {
+    let score = 0
+    if (t.category && prefSet.has(t.category)) score += 3
+    if ((t.blue_pct ?? 50) >= 62) score += 2
+    if (t.status === 'voting') score += 2
+    if (t.total_votes > 20) score += 1
+    score += (t.feed_score ?? 0) / 100
+    return { t, score }
+  })
+  scored.sort((a, b) => b.score - a.score)
+  const top5 = scored.slice(0, 5).map(({ t }) => t)
+
+  const totalVotes = profile?.total_votes ?? 0
+  const blueCount = profile?.blue_vote_count ?? 0
+  const forPct = totalVotes > 0 ? Math.round((blueCount / totalVotes) * 100) : 50
+  const streak = profile?.vote_streak ?? 0
+  const totalArgs = profile?.total_arguments ?? 0
+  const role = profile?.role ?? 'person'
+  const archetype = profile?.civic_archetype ?? null
+
+  const roleLabel: Record<string, string> = { person: 'Citizen', debator: 'Debator', troll_catcher: 'Troll Catcher', elder: 'Elder', lawmaker: 'Lawmaker', senator: 'Senator' }
+  const label = roleLabel[role] ?? 'Citizen'
+
+  const summary =
+    totalVotes === 0
+      ? "Welcome to the Lobby! Here are the most active debates to get you started. Cast your first vote to calibrate your civic profile."
+      : `You've cast ${totalVotes} votes (${forPct}% FOR). Here are the topics most worth your attention right now.`
+
+  const civic_strength = archetype
+    ? `${archetype} · ${label} · ${totalVotes} votes, ${totalArgs} arguments`
+    : `${label} · ${totalVotes} votes cast${streak > 1 ? `, ${streak}-day streak` : ''}`
+
+  const focus_area = preferredCats[0] ?? (top5[0]?.category ?? 'General')
+
+  const recommendations: AdvisorTopic[] = top5.map((t) => {
+    const forPctT = Math.round(t.blue_pct ?? 50)
+    const isClose = forPctT >= 45 && forPctT <= 65
+    const nearLaw = forPctT >= 62
+
+    let reason: string
+    let action: AdvisorTopic['action'] = 'vote'
+    let priority: AdvisorTopic['priority'] = 'medium'
+    let suggested_side: AdvisorTopic['suggested_side'] = null
+
+    if (t.status === 'voting') {
+      reason = `Final voting is open — your vote counts extra weight right now.`
+      action = 'vote'
+      priority = 'high'
+    } else if (nearLaw) {
+      reason = `${forPctT}% FOR — close to becoming law. A few more votes could tip it.`
+      action = 'vote'
+      priority = 'high'
+      suggested_side = 'for'
+    } else if (isClose) {
+      reason = `Contested at ${forPctT}% FOR — genuinely close debate that needs more voices.`
+      action = totalArgs > 0 ? 'argue' : 'vote'
+      priority = 'high'
+    } else if (t.category && prefSet.has(t.category)) {
+      reason = `${t.category} is one of your top categories — you have relevant context here.`
+      action = 'vote'
+      priority = 'medium'
+    } else {
+      reason = `Currently trending with ${t.total_votes} votes — a key debate to have on your radar.`
+      action = 'watch'
+      priority = 'medium'
+    }
+
+    if (forPct > 60 && !suggested_side) suggested_side = 'for'
+    else if (forPct < 40 && !suggested_side) suggested_side = 'against'
+
+    return {
+      topic_id: t.id,
+      statement: t.statement,
+      category: t.category,
+      status: t.status,
+      blue_pct: forPctT,
+      total_votes: t.total_votes,
+      reason,
+      suggested_side,
+      priority,
+      action,
+    }
+  })
+
+  return { recommendations, summary, civic_strength, focus_area }
+}
+
 // ─── POST /api/advisor ────────────────────────────────────────────────────────
 
 export async function POST() {
-  if (!process.env.ANTHROPIC_API_KEY) {
-    return NextResponse.json(
-      { unavailable: true } satisfies Partial<AdvisorResponse>,
-      { status: 200 }
-    )
-  }
-
   const supabase = await createClient()
 
   const {
@@ -55,6 +170,20 @@ export async function POST() {
 
   if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  // ── Algorithmic fallback when no API key ───────────────────────────────────
+  if (!process.env.ANTHROPIC_API_KEY) {
+    try {
+      const result = await algorithmicAdvice(supabase, user.id)
+      return NextResponse.json(result)
+    } catch (err) {
+      console.error('[advisor:fallback]', err)
+      return NextResponse.json(
+        { unavailable: true } satisfies Partial<AdvisorResponse>,
+        { status: 200 }
+      )
+    }
   }
 
   // ── Fetch user profile ─────────────────────────────────────────────────────

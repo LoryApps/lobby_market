@@ -339,7 +339,7 @@ export function AdvisorClient() {
             <div>
               <h1 className="font-mono text-2xl font-bold text-white">Civic Advisor</h1>
               <p className="text-sm font-mono text-surface-500 mt-0.5">
-                AI-powered briefing — personalised to your civic profile
+                Personalised briefing — matched to your civic profile
               </p>
             </div>
           </div>
@@ -388,7 +388,7 @@ export function AdvisorClient() {
           </motion.div>
         )}
 
-        {/* Unavailable (no API key) */}
+        {/* Unavailable (service error) */}
         {phase === 'unavailable' && (
           <motion.div
             initial={{ opacity: 0, y: 12 }}
@@ -397,10 +397,10 @@ export function AdvisorClient() {
           >
             <Sparkles className="h-10 w-10 text-surface-500 mx-auto mb-3" />
             <p className="font-mono text-sm font-semibold text-white mb-1">
-              AI Civic Advisor is coming soon
+              No topics to advise on yet
             </p>
             <p className="font-mono text-xs text-surface-500 mb-5">
-              This feature requires the Anthropic API. In the meantime, explore the feed or check your recommended topics.
+              The Lobby is quiet right now. Check back once more debates are active.
             </p>
             <div className="flex justify-center gap-3">
               <Link
