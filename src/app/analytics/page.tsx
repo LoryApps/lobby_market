@@ -418,6 +418,7 @@ export default function AnalyticsPage() {
             <Link href="/analytics/network" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><Network className="h-3.5 w-3.5" />Network Topology</Link>
             <Link href="/analytics/following" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><Network className="h-3.5 w-3.5" />Network</Link>
             <Link href="/analytics/alignment" className="flex items-center gap-1 text-xs text-for-300 hover:text-for-200 transition-colors font-mono font-semibold"><Scale className="h-3.5 w-3.5" />Alignment</Link>
+            <Link href="/analytics/alignment-network" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><Network className="h-3.5 w-3.5" />Alignment Network</Link>
             <Link href="/analytics/streak" className="flex items-center gap-1 text-xs text-against-400 hover:text-against-300 transition-colors font-mono font-semibold"><Flame className="h-3.5 w-3.5" />Streak History</Link>
             <Link href="/analytics/legacy" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><Trophy className="h-3.5 w-3.5" />Legacy</Link>
             <Link href="/analytics/journey" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><Landmark className="h-3.5 w-3.5" />Journey</Link>
