@@ -402,6 +402,7 @@ export default function AnalyticsPage() {
             <Link href="/analytics/lens" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><Eye className="h-3.5 w-3.5" />Perspective Lens</Link>
             <Link href="/analytics/argument-quality" className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"><Brain className="h-3.5 w-3.5" />Arg. Quality</Link>
             <Link href="/analytics/rhetoric" className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"><Brain className="h-3.5 w-3.5" />Rhetoric Style</Link>
+            <Link href="/analytics/resonance" className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"><GitMerge className="h-3.5 w-3.5" />Resonance</Link>
             <Link href="/analytics/mentor" className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"><Brain className="h-3.5 w-3.5" />Argument Mentor</Link>
             <Link href="/analytics/snapshot" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><LayoutGrid className="h-3.5 w-3.5" />Snapshot</Link>
             <Link href="/analytics/benchmark" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><Trophy className="h-3.5 w-3.5" />Benchmark</Link>
@@ -639,6 +640,21 @@ export default function AnalyticsPage() {
                   </div>
                 </div>
                 <ChevronRight className="h-4 w-4 text-surface-500 group-hover:text-gold transition-colors flex-shrink-0" />
+              </Link>
+            </motion.div>
+            {/* Civic Resonance card */}
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.414 }}>
+              <Link href="/analytics/resonance" className="flex items-center justify-between rounded-2xl bg-surface-100 border border-emerald/20 p-5 hover:border-emerald/40 hover:bg-emerald/5 transition-colors group">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center justify-center h-10 w-10 rounded-xl bg-emerald/10 border border-emerald/30 flex-shrink-0">
+                    <GitMerge className="h-5 w-5 text-emerald" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-mono font-semibold text-white">Civic Resonance</div>
+                    <div className="text-xs font-mono text-surface-500 mt-0.5">Arguments that crossed the partisan divide — upvoted by voters who disagreed with your position</div>
+                  </div>
+                </div>
+                <ChevronRight className="h-4 w-4 text-surface-500 group-hover:text-emerald transition-colors flex-shrink-0" />
               </Link>
             </motion.div>
             {/* Contrarian Deep Dive card */}
