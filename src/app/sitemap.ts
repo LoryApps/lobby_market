@@ -183,6 +183,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/positions`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/hot-takes`, changeFrequency: 'always', priority: 0.75 },
   { url: `${BASE_URL}/spotlight`, changeFrequency: 'daily', priority: 0.75 },
+  { url: `${BASE_URL}/rising`, changeFrequency: 'daily', priority: 0.78 },
   { url: `${BASE_URL}/gems`, changeFrequency: 'hourly', priority: 0.78 },
   { url: `${BASE_URL}/amendments`, changeFrequency: 'daily', priority: 0.72 },
   { url: `${BASE_URL}/petitions`, changeFrequency: 'daily', priority: 0.7 },

@@ -236,6 +236,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'rising',
+    label: 'Rising Citizens',
+    sublabel: 'New citizens (joined in last 30 days) making outsized civic impact — ranked by rise score',
+    href: '/rising',
+    icon: TrendingUp,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'leaderboard',
     label: 'Leaderboard',
     sublabel: 'Top voters and lawmakers',
