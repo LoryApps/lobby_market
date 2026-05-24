@@ -389,6 +389,7 @@ export default function AnalyticsPage() {
             <Link href="/analytics/growth" className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"><Rocket className="h-3.5 w-3.5" />Activity Growth</Link>
             <Link href="/analytics/sentiment" className="flex items-center gap-1 text-xs text-against-400 hover:text-against-300 transition-colors font-mono font-semibold"><Heart className="h-3.5 w-3.5" />Sentiment</Link>
             <Link href="/analytics/votes" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><ThumbsUp className="h-3.5 w-3.5" />Vote History</Link>
+            <Link href="/analytics/portfolio" className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"><BarChart2 className="h-3.5 w-3.5" />Civic Portfolio</Link>
             <Link href="/analytics/coalitions" className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"><Shield className="h-3.5 w-3.5" />Coalition Stats</Link>
             <Link href="/analytics/faceoffs" className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"><Swords className="h-3.5 w-3.5" />Faceoff Record</Link>
             <Link href="/analytics/debates" className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"><Gavel className="h-3.5 w-3.5" />Debate Stats</Link>
@@ -644,6 +645,21 @@ export default function AnalyticsPage() {
                   </div>
                 </div>
                 <ChevronRight className="h-4 w-4 text-surface-500 group-hover:text-against-400 transition-colors flex-shrink-0" />
+              </Link>
+            </motion.div>
+            {/* Civic Portfolio card */}
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.4125 }}>
+              <Link href="/analytics/portfolio" className="flex items-center justify-between rounded-2xl bg-surface-100 border border-emerald/20 p-5 hover:border-emerald/40 hover:bg-emerald/5 transition-colors group">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center justify-center h-10 w-10 rounded-xl bg-emerald/10 border border-emerald/30 flex-shrink-0">
+                    <BarChart2 className="h-5 w-5 text-emerald" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-mono font-semibold text-white">Civic Portfolio</div>
+                    <div className="text-xs font-mono text-surface-500 mt-0.5">Your votes as Polymarket-style positions — open, won, lost, right calls, and category allocation</div>
+                  </div>
+                </div>
+                <ChevronRight className="h-4 w-4 text-surface-500 group-hover:text-emerald transition-colors flex-shrink-0" />
               </Link>
             </motion.div>
             {/* Argument Impact card */}
