@@ -428,6 +428,7 @@ export default function AnalyticsPage() {
             <Link href="/analytics/streak" className="flex items-center gap-1 text-xs text-against-400 hover:text-against-300 transition-colors font-mono font-semibold"><Flame className="h-3.5 w-3.5" />Streak History</Link>
             <Link href="/analytics/legacy" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><Trophy className="h-3.5 w-3.5" />Legacy</Link>
             <Link href="/analytics/journey" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><Landmark className="h-3.5 w-3.5" />Journey</Link>
+            <Link href="/analytics/growth-plan" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><TrendingUp className="h-3.5 w-3.5" />Growth Plan</Link>
             <Link href="/analytics/category-mastery" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><Trophy className="h-3.5 w-3.5" />Category Mastery</Link>
             <Link href="/analytics/territory" className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"><Compass className="h-3.5 w-3.5" />Territory Map</Link>
             <Link href="/analytics/opposition" className="flex items-center gap-1 text-xs text-against-400 hover:text-against-300 transition-colors font-mono font-semibold"><Swords className="h-3.5 w-3.5" />Opposition Intel</Link>
@@ -712,6 +713,21 @@ export default function AnalyticsPage() {
                   <div>
                     <div className="text-sm font-mono font-semibold text-white">Argument Velocity</div>
                     <div className="text-xs font-mono text-surface-500 mt-0.5">Upvotes per day — which arguments are evergreen, surging, or peaked</div>
+                  </div>
+                </div>
+                <ChevronRight className="h-4 w-4 text-surface-500 group-hover:text-for-400 transition-colors flex-shrink-0" />
+              </Link>
+            </motion.div>
+            {/* Growth Plan card */}
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.4147 }}>
+              <Link href="/analytics/growth-plan" className="flex items-center justify-between rounded-2xl bg-surface-100 border border-for-500/20 p-5 hover:border-for-500/40 hover:bg-for-500/5 transition-colors group">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center justify-center h-10 w-10 rounded-xl bg-for-500/10 border border-for-500/30 flex-shrink-0">
+                    <TrendingUp className="h-5 w-5 text-for-400" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-mono font-semibold text-white">Civic Growth Plan</div>
+                    <div className="text-xs font-mono text-surface-500 mt-0.5">AI-powered improvement roadmap — specific tasks to level up your weakest civic dimensions</div>
                   </div>
                 </div>
                 <ChevronRight className="h-4 w-4 text-surface-500 group-hover:text-for-400 transition-colors flex-shrink-0" />
