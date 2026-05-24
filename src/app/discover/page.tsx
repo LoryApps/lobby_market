@@ -9,6 +9,7 @@ import {
   BookOpen,
   Check,
   Cpu,
+  Gem,
   FlaskConical,
   Gavel,
   Globe,
@@ -664,6 +665,7 @@ export default function DiscoverPage() {
                     { href: '/debate', label: 'Debates', icon: Mic, color: 'text-purple', bg: 'bg-purple/10', border: 'border-purple/30' },
                     { href: '/law', label: 'The Codex', icon: Gavel, color: 'text-gold', bg: 'bg-gold/10', border: 'border-gold/30' },
                     { href: '/predictions', label: 'Predictions', icon: Zap, color: 'text-emerald', bg: 'bg-emerald/10', border: 'border-emerald/30' },
+                    { href: '/gems', label: 'Civic Gems', icon: Gem, color: 'text-gold', bg: 'bg-gold/10', border: 'border-gold/30' },
                     { href: '/leaderboard', label: 'Leaderboard', icon: BarChart2, color: 'text-for-300', bg: 'bg-for-400/10', border: 'border-for-400/30' },
                   ].map(({ href, label, icon: Icon, color, bg, border }) => (
                     <Link

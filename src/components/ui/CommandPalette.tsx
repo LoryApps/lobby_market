@@ -216,6 +216,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'gems',
+    label: 'Civic Gems',
+    sublabel: 'Hidden debates, rising voices, and quiet laws that deserve more attention',
+    href: '/gems',
+    icon: Sparkles,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'spotlight',
     label: 'Civic Spotlight',
     sublabel: 'Best argument, closest call, rising star, and newest law this week',
