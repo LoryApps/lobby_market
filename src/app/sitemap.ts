@@ -127,6 +127,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/badges`, changeFrequency: 'monthly', priority: 0.5 },
   { url: `${BASE_URL}/help`, changeFrequency: 'monthly', priority: 0.55 },
   { url: `${BASE_URL}/glossary`, changeFrequency: 'monthly', priority: 0.65 },
+  { url: `${BASE_URL}/civic-index`, changeFrequency: 'daily', priority: 0.75 },
   { url: `${BASE_URL}/guidelines`, changeFrequency: 'monthly', priority: 0.5 },
   { url: `${BASE_URL}/messages`, changeFrequency: 'always', priority: 0.7 },
   { url: `${BASE_URL}/senate`, changeFrequency: 'always', priority: 0.85 },

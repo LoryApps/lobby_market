@@ -676,6 +676,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'topic-index',
+    label: 'Topic Index',
+    sublabel: 'A–Z encyclopedic reference of every debate topic',
+    href: '/civic-index',
+    icon: BookOpen,
+    iconColor: 'text-for-300',
+    iconBg: 'bg-for-400/10',
+  },
+  {
+    type: 'link',
     id: 'categories',
     label: 'Categories',
     sublabel: 'Browse topics by category',
