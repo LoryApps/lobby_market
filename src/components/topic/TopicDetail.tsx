@@ -664,6 +664,13 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
                       <Target className="h-3.5 w-3.5" />
                       Prediction market
                     </Link>
+                    <Link
+                      href={`/topic/${topic.id}/resolution`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-gold hover:text-gold/80 transition-colors"
+                    >
+                      <Gavel className="h-3.5 w-3.5" />
+                      Resolution criteria
+                    </Link>
                   </div>
                 )}
                 <VoteButton
