@@ -18,6 +18,7 @@ import {
   FileText,
   Shuffle,
   Activity,
+  Radio,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -418,6 +419,7 @@ export default function AnalyticsPage() {
             <Link href="/analytics/timing" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><Clock className="h-3.5 w-3.5" />Timing</Link>
             <Link href="/analytics/influence" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><Zap className="h-3.5 w-3.5" />Influence</Link>
             <Link href="/analytics/audience" className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"><Users className="h-3.5 w-3.5" />Audience</Link>
+            <Link href="/analytics/reach" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><Radio className="h-3.5 w-3.5" />Reach Report</Link>
             <Link href="/analytics/depth" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><Layers className="h-3.5 w-3.5" />Depth Score</Link>
             <Link href="/analytics/consistency" className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"><GitMerge className="h-3.5 w-3.5" />Consistency</Link>
             <Link href="/analytics/clout" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><Coins className="h-3.5 w-3.5" />Clout Economy</Link>
