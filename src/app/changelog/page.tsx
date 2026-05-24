@@ -1749,10 +1749,10 @@ const CHAPTERS: Chapter[] = [
 ]
 
 const STATS = [
-  { value: '138', label: 'chapters shipped' },
-  { value: '481+', label: 'features built' },
-  { value: '80', label: 'DB migrations' },
-  { value: '464+', label: 'API routes' },
+  { value: '163', label: 'chapters shipped' },
+  { value: '520+', label: 'features built' },
+  { value: '82', label: 'DB migrations' },
+  { value: '520+', label: 'API routes' },
 ]
 
 interface RecentBuild {
@@ -1765,6 +1765,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Civic Audience Analytics',
+    description: 'New /analytics/audience page: shows WHO engages with your arguments — top supporters ranked by upvote count with role badges, role breakdown bars (Elder → Citizen), category affinity chart (which topics resonate), FOR vs AGAINST engagement split, and a 12-month monthly engagement trend chart. Audience tier system (Micro → Rising → Established → Prominent → Civic Voice) based on unique supporters and total upvotes. API route /api/analytics/audience queries topic_argument_votes with profile joins, excludes self-upvotes, and aggregates into per-user, per-role, per-category, and per-month stats. Linked from the analytics hub quick-nav and as a new card. No new DB migration.',
+    href: '/analytics/audience',
+    icon: Users,
+    color: 'text-purple',
+    tag: 'Ch. 163',
+  },
   {
     title: 'The Civic Annual',
     description: 'New /annual page: the complete all-time record of Lobby Market. Shows 8 platform stats (total topics, laws, votes, arguments, debates, citizens, law pass rate, avg votes/topic) in an animated stat grid. Monthly activity chart showing the last 12 months of topic proposals and laws as a bar chart with per-bar tooltips. All-time records section (most voted, most argued, most viewed topic; most upvoted argument). Laws Hall of Fame: top 8 laws by vote count with vote-split bars. Top Contributors: ranked by argument count with clout display. Most Upvoted Argument showcase with full text and author. Category breakdown with vote volume bars and law pass rates. API route /api/annual aggregates all-time platform data with a 1-hour CDN cache. Linked from /insights and /changelog. No new DB migration.',
