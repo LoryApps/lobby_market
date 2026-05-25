@@ -358,6 +358,7 @@ export default function DevelopersPage() {
             <EndpointPill method="GET" path="/api/rss/laws" />
             <EndpointPill method="GET" path="/api/rss/debates" />
             <EndpointPill method="GET" path="/api/rss/category/{slug}" />
+            <EndpointPill method="GET" path="/api/rss/tag/{tag}" />
           </div>
 
           <CodeBlock
@@ -375,13 +376,19 @@ https://lobby.market/api/rss/debates
 # Category feeds (replace {slug} with lowercase category)
 # Valid slugs: economics, politics, technology, science,
 #              ethics, philosophy, culture, health, environment, education
-https://lobby.market/api/rss/category/{slug}`}
+https://lobby.market/api/rss/category/{slug}
+
+# Tag feeds — follow any civic keyword tag
+# Examples: climate, ai, democracy, tax, immigration, healthcare,
+#           housing, energy, privacy, guns, labor, free-speech
+https://lobby.market/api/rss/tag/{tag}`}
           />
 
           <div className="mt-4 rounded-xl border border-surface-300 bg-surface-100 p-4 font-mono text-xs text-surface-500 space-y-1">
             <p><span className="text-white">Format:</span> RSS 2.0 with full item descriptions and category tags.</p>
-            <p><span className="text-white">Update frequency:</span> Main feed revalidates every 5 min; laws every 10 min; debates every 2 min.</p>
-            <p><span className="text-white">Items included:</span> Established laws and active/voting topics, ordered by date.</p>
+            <p><span className="text-white">Update frequency:</span> All feeds cache for 5 minutes at the CDN.</p>
+            <p><span className="text-white">Items included:</span> Established laws and active/voting/proposed topics tagged with the keyword.</p>
+            <p><span className="text-white">Tag feeds:</span> Returns 404 if no topics match the tag — useful for existence-checking integrations.</p>
           </div>
 
           <div className="mt-4 flex items-center gap-3 flex-wrap">

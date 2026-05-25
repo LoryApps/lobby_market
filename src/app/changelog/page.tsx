@@ -69,6 +69,8 @@ import {
   Scroll,
   Pin,
   Megaphone,
+  AlertTriangle,
+  Rss,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -1750,8 +1752,8 @@ const CHAPTERS: Chapter[] = [
 ]
 
 const STATS = [
-  { value: '174', label: 'chapters shipped' },
-  { value: '543+', label: 'features built' },
+  { value: '178', label: 'chapters shipped' },
+  { value: '548+', label: 'features built' },
   { value: '84', label: 'DB migrations' },
   { value: '492+', label: 'API routes' },
 ]
@@ -1766,6 +1768,22 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Tag RSS Feeds + Feeds Hub Update',
+    description: 'New /api/rss/tag/[tag] endpoint: every civic keyword tag (climate, ai, democracy, tax, immigration, healthcare, housing, energy, privacy, guns, labor, free-speech, and 40+ others) now has its own RSS feed. Returns laws + active/voting/proposed topics tagged with that keyword, sorted by recency. Returns 404 when no topics match — useful for integration existence-checks. Updated /feeds page with a new "Tag Feeds" section showcasing 12 featured tag feeds, plus a developer tip showing the parameterized URL pattern. Updated /developers docs with the new /api/rss/tag/{tag} endpoint entry, updated code example, and updated feed-info callout. No new DB migration — relies on the existing topics.tags GIN index.',
+    href: '/feeds',
+    icon: Rss,
+    color: 'text-gold',
+    tag: 'Ch. 178',
+  },
+  {
+    title: 'Civic Triage — Urgency-Ranked Action Board',
+    description: 'New /triage page: ranks every active debate by urgency across four tiers — Near Threshold (within 8% of law or failure), Deadlocked (within 4% of 50/50), Starved (active but <40 votes), and Expiring (voting phase ending within 48 hours). Each tier has a distinct color, icon, and urgency description. Topics within each tier are further sorted by urgency score. Cards show vote bar, tier badge, vote count, and direct vote link. Collapsible tier groups with per-tier counts. Load-more pagination per tier. Auto-refreshes every 90 seconds. New /api/triage route computes urgency in SQL using blue_pct, total_votes, status, and voting_ends_at. Added to ⌘K Command Palette under Live Signals. Distinct from /tipping-point (threshold proximity only), /surge (high velocity, not urgency), /recommended (personalised interest, not civic need), and /daily-quorum (3 pre-selected daily topics).',
+    href: '/triage',
+    icon: AlertTriangle,
+    color: 'text-against-400',
+    tag: 'Ch. 177',
+  },
   {
     title: 'Civic Heat Index — Live Debate Temperature Rankings',
     description: 'New /heat page: ranks every active and voting topic by a composite heat score derived from four live signals measured over the last 24 hours — Vote Velocity (40%), Argument Burst (25%), Reply Surge (15%), and Controversy (20%). Topics are grouped into five temperature tiers: Inferno (≥90), Blazing (70–89), Heating (45–69), Warm, and Cool. Each card shows the heat progress bar with color-coded tier, vote split, and four signal pills (votes/24h, args/24h, replies/24h, controversy). Expandable "How is heat calculated?" legend with formula breakdown. Category filter across all 10 civic categories. Auto-refreshes every 60 s. New /api/stats/heat route aggregates votes, topic_arguments, and argument_replies in the last 24 h and applies the weighted scoring formula server-side. Added to ⌘K Command Palette under Live Signals. Distinct from /hotspot (point-in-time contested topics), /velocity (category-level vote flow), /surge (support-threshold proximity), and /momentum (single-signal vote velocity).',

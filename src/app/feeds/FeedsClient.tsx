@@ -5,19 +5,22 @@
  *
  * Lists every available RSS feed so users can subscribe in their
  * preferred reader. Covers: the combined feed, laws-only, debates,
- * and per-category feeds for all 10 civic categories.
+ * per-category feeds for all 10 civic categories, and per-tag feeds.
  */
 
 import { useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import {
+  Bot,
   Check,
   Copy,
   Cpu,
   DollarSign,
   FlaskConical,
+  Globe,
   GraduationCap,
+  Hash,
   Heart,
   Landmark,
   Leaf,
@@ -27,6 +30,10 @@ import {
   Music2,
   Rss,
   Scale,
+  Shield,
+  Thermometer,
+  TreePine,
+  Zap,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -83,6 +90,143 @@ const MAIN_FEEDS: FeedEntry[] = [
     iconBorder: 'border-purple/30',
     tag: 'Debates',
     tagColor: 'bg-purple/20 text-purple border-purple/40',
+  },
+]
+
+// ─── Tag feeds — most popular civic keyword tags ──────────────────────────────
+
+const TAG_FEEDS: FeedEntry[] = [
+  {
+    title: '#climate',
+    description: 'Climate change, carbon, emissions, renewable energy, and environmental policy.',
+    url: `${BASE}/api/rss/tag/climate`,
+    icon: Thermometer,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+    iconBorder: 'border-emerald/30',
+    tag: 'Climate',
+    tagColor: 'bg-emerald/20 text-emerald border-emerald/40',
+  },
+  {
+    title: '#ai',
+    description: 'Artificial intelligence, machine learning, automation, and algorithm governance.',
+    url: `${BASE}/api/rss/tag/ai`,
+    icon: Bot,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+    iconBorder: 'border-purple/30',
+    tag: 'AI',
+    tagColor: 'bg-purple/20 text-purple border-purple/40',
+  },
+  {
+    title: '#democracy',
+    description: 'Elections, voting rights, democratic processes, and civic participation.',
+    url: `${BASE}/api/rss/tag/democracy`,
+    icon: Landmark,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+    iconBorder: 'border-for-500/30',
+    tag: 'Democracy',
+    tagColor: 'bg-for-500/20 text-for-300 border-for-500/40',
+  },
+  {
+    title: '#tax',
+    description: 'Taxation, fiscal policy, revenue, and public finance debates.',
+    url: `${BASE}/api/rss/tag/tax`,
+    icon: DollarSign,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+    iconBorder: 'border-gold/30',
+    tag: 'Tax',
+    tagColor: 'bg-gold/20 text-gold border-gold/40',
+  },
+  {
+    title: '#immigration',
+    description: 'Immigration policy, border security, asylum, and citizenship debates.',
+    url: `${BASE}/api/rss/tag/immigration`,
+    icon: Globe,
+    iconColor: 'text-for-300',
+    iconBg: 'bg-for-400/10',
+    iconBorder: 'border-for-400/30',
+    tag: 'Immigration',
+    tagColor: 'bg-for-400/20 text-for-300 border-for-400/40',
+  },
+  {
+    title: '#healthcare',
+    description: 'Healthcare systems, insurance, pharmaceuticals, and public health.',
+    url: `${BASE}/api/rss/tag/healthcare`,
+    icon: Heart,
+    iconColor: 'text-against-300',
+    iconBg: 'bg-against-400/10',
+    iconBorder: 'border-against-400/30',
+    tag: 'Health',
+    tagColor: 'bg-against-400/20 text-against-300 border-against-400/40',
+  },
+  {
+    title: '#housing',
+    description: 'Housing costs, rent control, homelessness, and affordable housing policy.',
+    url: `${BASE}/api/rss/tag/housing`,
+    icon: TreePine,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+    iconBorder: 'border-emerald/30',
+    tag: 'Housing',
+    tagColor: 'bg-emerald/20 text-emerald border-emerald/40',
+  },
+  {
+    title: '#energy',
+    description: 'Energy policy, renewables, nuclear, oil, and the green transition.',
+    url: `${BASE}/api/rss/tag/energy`,
+    icon: Zap,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+    iconBorder: 'border-gold/30',
+    tag: 'Energy',
+    tagColor: 'bg-gold/20 text-gold border-gold/40',
+  },
+  {
+    title: '#privacy',
+    description: 'Data privacy, surveillance, digital rights, and platform accountability.',
+    url: `${BASE}/api/rss/tag/privacy`,
+    icon: Shield,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+    iconBorder: 'border-purple/30',
+    tag: 'Privacy',
+    tagColor: 'bg-purple/20 text-purple border-purple/40',
+  },
+  {
+    title: '#guns',
+    description: 'Gun policy, Second Amendment rights, firearm regulations, and public safety.',
+    url: `${BASE}/api/rss/tag/guns`,
+    icon: Scale,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-500/10',
+    iconBorder: 'border-against-500/30',
+    tag: 'Guns',
+    tagColor: 'bg-against-500/20 text-against-300 border-against-500/40',
+  },
+  {
+    title: '#labor',
+    description: 'Workers\' rights, unions, minimum wage, employment, and collective bargaining.',
+    url: `${BASE}/api/rss/tag/labor`,
+    icon: Cpu,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+    iconBorder: 'border-for-500/30',
+    tag: 'Labor',
+    tagColor: 'bg-for-500/20 text-for-300 border-for-500/40',
+  },
+  {
+    title: '#free-speech',
+    description: 'Free expression, censorship, content moderation, and platform governance.',
+    url: `${BASE}/api/rss/tag/free-speech`,
+    icon: Mic,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+    iconBorder: 'border-gold/30',
+    tag: 'Speech',
+    tagColor: 'bg-gold/20 text-gold border-gold/40',
   },
 ]
 
@@ -330,7 +474,7 @@ export function FeedsClient() {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, ease: 'easeOut', delay: 0.1 }}
-          className="mb-10"
+          className="mb-8"
         >
           <SectionHeader
             title="Category Feeds"
@@ -343,11 +487,42 @@ export function FeedsClient() {
           </div>
         </motion.section>
 
+        {/* Tag feeds */}
+        <motion.section
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, ease: 'easeOut', delay: 0.15 }}
+          className="mb-10"
+        >
+          <SectionHeader
+            title="Tag Feeds"
+            description="Subscribe by civic keyword tag — get only the debates that match your specific interest."
+          />
+          <div className="flex items-center gap-2 mb-3 flex-wrap">
+            <Hash className="h-3.5 w-3.5 text-surface-500 flex-shrink-0" />
+            <p className="text-xs font-mono text-surface-500">
+              Any tag works — use{' '}
+              <code className="bg-surface-200 text-for-300 px-1 rounded text-[10px]">
+                /api/rss/tag/[your-tag]
+              </code>{' '}
+              for custom tags like{' '}
+              <code className="bg-surface-200 text-for-300 px-1 rounded text-[10px]">/api/rss/tag/policing</code>
+              {' '}or{' '}
+              <code className="bg-surface-200 text-for-300 px-1 rounded text-[10px]">/api/rss/tag/abortion</code>.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {TAG_FEEDS.map((feed) => (
+              <FeedCard key={feed.url} feed={feed} />
+            ))}
+          </div>
+        </motion.section>
+
         {/* How-to callout */}
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35, ease: 'easeOut', delay: 0.15 }}
+          transition={{ duration: 0.35, ease: 'easeOut', delay: 0.2 }}
           className="rounded-2xl border border-surface-300 bg-surface-100 p-5"
         >
           <h3 className="font-mono text-sm font-bold text-white mb-2">

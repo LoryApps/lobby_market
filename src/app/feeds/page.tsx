@@ -4,11 +4,11 @@ import { FeedsClient } from './FeedsClient'
 export const metadata: Metadata = {
   title: 'Feeds · Lobby Market',
   description:
-    'Subscribe to Lobby Market via RSS — every law established, active debate, and category feed in one place.',
+    'Subscribe to Lobby Market via RSS — every law established, active debate, category feed, and topic tag feed in one place.',
   openGraph: {
     title: 'Feeds · Lobby Market',
     description:
-      'RSS feeds for every corner of the Lobby: laws, debates, and all 10 civic categories.',
+      'RSS feeds for every corner of the Lobby: laws, debates, all 10 civic categories, and keyword tag feeds like #climate, #ai, and #democracy.',
     type: 'website',
     siteName: 'Lobby Market',
   },
