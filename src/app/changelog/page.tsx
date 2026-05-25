@@ -1750,10 +1750,10 @@ const CHAPTERS: Chapter[] = [
 ]
 
 const STATS = [
-  { value: '172', label: 'chapters shipped' },
-  { value: '540+', label: 'features built' },
+  { value: '173', label: 'chapters shipped' },
+  { value: '542+', label: 'features built' },
   { value: '83', label: 'DB migrations' },
-  { value: '490+', label: 'API routes' },
+  { value: '491+', label: 'API routes' },
 ]
 
 interface RecentBuild {
@@ -1766,6 +1766,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Civic Synthesis Hub — Global AI Synthesis Browse',
+    description: 'New /synthesis page: a platform-wide browse for all AI-generated topic syntheses — common ground both sides share, core tensions driving disagreement, and nuanced synthesis positions. Each card shows the full vote split, category, status, and three synthesis sections (Common Ground, Core Tensions, Synthesis) expandable in-place. Filter by all 10 civic categories; sort by Most Recent, Most Voted, or Most Divided (near 50/50 first). Load-more pagination with total count. Info banner explains the difference between synthesis (common ground + nuanced position) vs steelman (strongest advocacy). Footer links to Steelman Engine, Polarization Index, and Convergence Tracker. Added to ⌘K Command Palette under AI & Analysis. New /api/synthesis route joins topic_synthesis with topics, supports category filter and three sort modes. No new DB migration.',
+    href: '/synthesis',
+    icon: GitMerge,
+    color: 'text-purple',
+    tag: 'Ch. 173',
+  },
   {
     title: 'Command Palette Completeness — 15+ Pages Surfaced',
     description: 'Added 15 fully-built but undiscoverable pages to the ⌘K Command Palette: Civic Galaxy (/galaxy, star-map D3 visualization), The Civic Frontier (/frontier, newest proposals), Breaking Civic News (/breaking), Right Now (/now), Following Feed (/following), Platform Insights (/insights), Weekly Civic Report (/weekly), Civic Vitals (/vitals, discourse quality dashboard), Civic Gauge (/gauge, daily estimation game), The Civic Cascade (/cascade, law-triggered debate surge), The Civic Recoil (/recoil, failed-topic backlash), The Civic Watershed (/watershed, hall of decisive mandates), Civic Ambassador (/ambassador), Civic Polls (/polls), and Topic Reactions (/reactions). Updated the changelog stats counter to reflect 172 chapters, 540+ features, and 83 DB migrations. All pages were fully implemented in prior chapters but were unreachable via search or keyboard navigation.',

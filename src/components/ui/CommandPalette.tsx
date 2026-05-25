@@ -1226,6 +1226,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'synthesis',
+    label: 'Synthesis Hub',
+    sublabel: 'Browse all AI-generated syntheses — common ground, core tensions, and nuanced positions across every major debate',
+    href: '/synthesis',
+    icon: GitMerge,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
     id: 'convergence',
     label: 'Civic Convergence',
     sublabel: 'Where consensus is building — and where it\'s cracking. Recent voters vs. the platform average.',
