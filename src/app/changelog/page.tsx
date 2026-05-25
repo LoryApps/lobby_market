@@ -1750,10 +1750,10 @@ const CHAPTERS: Chapter[] = [
 ]
 
 const STATS = [
-  { value: '173', label: 'chapters shipped' },
-  { value: '542+', label: 'features built' },
-  { value: '83', label: 'DB migrations' },
-  { value: '491+', label: 'API routes' },
+  { value: '174', label: 'chapters shipped' },
+  { value: '543+', label: 'features built' },
+  { value: '84', label: 'DB migrations' },
+  { value: '492+', label: 'API routes' },
 ]
 
 interface RecentBuild {
@@ -1766,6 +1766,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Civic Correlation Atlas — Cross-Topic Opinion Topology',
+    description: 'New /correlations page: reveals which civic topics are ideologically linked by computing pairwise vote-alignment across the platform\'s most-voted topics. For each pair (A, B) where ≥5 users voted on both, shows the alignment rate (% who chose the same side on both) and a correlation score (−1 perfectly opposed → +1 perfectly aligned). Cards show both topic statements, a correlation bar, the breakdown of both-FOR / both-AGAINST / split voters, and an ideological interpretation. Filter by all 10 civic categories; view modes for All / Aligned / Opposed. Expandable cards with deep links to each topic and to the side-by-side Compare view. New PostgreSQL function get_topic_correlations() in migration 00084 — scans top 60 popular topics for shared voters and ranks pairs by |correlation|. New /api/stats/correlations route with category and limit params. Added to ⌘K Command Palette under Platform Intelligence. Graceful empty state with explanation when data is sparse.',
+    href: '/correlations',
+    icon: Zap,
+    color: 'text-for-400',
+    tag: 'Ch. 174',
+  },
   {
     title: 'Civic Synthesis Hub — Global AI Synthesis Browse',
     description: 'New /synthesis page: a platform-wide browse for all AI-generated topic syntheses — common ground both sides share, core tensions driving disagreement, and nuanced synthesis positions. Each card shows the full vote split, category, status, and three synthesis sections (Common Ground, Core Tensions, Synthesis) expandable in-place. Filter by all 10 civic categories; sort by Most Recent, Most Voted, or Most Divided (near 50/50 first). Load-more pagination with total count. Info banner explains the difference between synthesis (common ground + nuanced position) vs steelman (strongest advocacy). Footer links to Steelman Engine, Polarization Index, and Convergence Tracker. Added to ⌘K Command Palette under AI & Analysis. New /api/synthesis route joins topic_synthesis with topics, supports category filter and three sort modes. No new DB migration.',

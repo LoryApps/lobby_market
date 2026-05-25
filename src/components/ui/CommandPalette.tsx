@@ -2414,6 +2414,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'correlations',
+    label: 'Correlation Atlas',
+    sublabel: 'Which civic topics are ideologically linked? See how voting on one topic predicts voting on another — the hidden opinion topology of the Lobby',
+    href: '/correlations',
+    icon: Zap,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
     id: 'polarization',
     label: 'Polarization Index',
     sublabel: 'Platform health dashboard — how divided or united is the Lobby? Per-category and platform-wide',
