@@ -1226,6 +1226,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'triage',
+    label: 'Civic Triage',
+    sublabel: 'Where your vote is most needed — near the line, deadlocked, neglected, and expiring debates',
+    href: '/triage',
+    icon: Zap,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-500/10',
+  },
+  {
+    type: 'link',
     id: 'tipping-point',
     label: 'The Tipping Point',
     sublabel: 'Debates within striking distance of consensus — or about to be definitively rejected',
