@@ -68,6 +68,7 @@ import {
   Shuffle,
   Scroll,
   Pin,
+  Megaphone,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -1749,10 +1750,10 @@ const CHAPTERS: Chapter[] = [
 ]
 
 const STATS = [
-  { value: '163', label: 'chapters shipped' },
-  { value: '520+', label: 'features built' },
-  { value: '82', label: 'DB migrations' },
-  { value: '520+', label: 'API routes' },
+  { value: '172', label: 'chapters shipped' },
+  { value: '540+', label: 'features built' },
+  { value: '83', label: 'DB migrations' },
+  { value: '490+', label: 'API routes' },
 ]
 
 interface RecentBuild {
@@ -1765,6 +1766,77 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Command Palette Completeness — 15+ Pages Surfaced',
+    description: 'Added 15 fully-built but undiscoverable pages to the ⌘K Command Palette: Civic Galaxy (/galaxy, star-map D3 visualization), The Civic Frontier (/frontier, newest proposals), Breaking Civic News (/breaking), Right Now (/now), Following Feed (/following), Platform Insights (/insights), Weekly Civic Report (/weekly), Civic Vitals (/vitals, discourse quality dashboard), Civic Gauge (/gauge, daily estimation game), The Civic Cascade (/cascade, law-triggered debate surge), The Civic Recoil (/recoil, failed-topic backlash), The Civic Watershed (/watershed, hall of decisive mandates), Civic Ambassador (/ambassador), Civic Polls (/polls), and Topic Reactions (/reactions). Updated the changelog stats counter to reflect 172 chapters, 540+ features, and 83 DB migrations. All pages were fully implemented in prior chapters but were unreachable via search or keyboard navigation.',
+    icon: Search,
+    color: 'text-for-400',
+    tag: 'Ch. 172',
+  },
+  {
+    title: 'Civic Topic Index — A–Z Encyclopedic Reference',
+    description: 'New /civic-index page: a complete A–Z encyclopedic listing of every debate topic on the platform. Distinct from /search (query-based), /topics (sortable table), and /categories (domain-level browse). Groups all topics alphabetically by first letter with # for numeric/symbol starts. Each entry shows statement, category badge, status pill (with gold LAW border for established laws), and live vote bar. Inline category filter strips the alphabet to only matching topics per-letter. Collapsible letter sections with jump anchors. Three sort modes per letter group: A–Z, most votes, near law. Deep links via /civic-index?letter=E. Server component fetches all topics in one query; filtering is fully client-side for instant response. No new DB migration.',
+    href: '/civic-index',
+    icon: BookOpen,
+    color: 'text-for-400',
+    tag: 'Ch. 171',
+  },
+  {
+    title: 'Rising Citizens',
+    description: 'New /rising page: surfaces new citizens (joined in the last 30 days) who are making outsized civic impact — ranked by a rise score that weighs votes, arguments, upvotes, reputation, and clout. Each citizen card shows avatar, username, join date, reputation sparkline, role badge, and key stats (arguments, upvotes, votes). Three sort modes: Rise Score, Reputation, and Arguments. Pagination with load-more. API route /api/rising filters profiles by created_at within 30 days and sorts by the composite rise score. Linked from Command Palette, Leaderboard nav, and Discover. No new DB migration.',
+    href: '/rising',
+    icon: TrendingUp,
+    color: 'text-gold',
+    tag: 'Ch. 170',
+  },
+  {
+    title: 'Breaking Civic News',
+    description: 'New /breaking page: a real-time breaking news feed for the Lobby — recent laws established (last 24h), fast-moving votes (≥50 votes in last hour), live debates starting soon, and newly proposed topics. Each item shows time-since, category, status badge, and a live activity indicator. Auto-refreshes every 60 seconds. Three tabs: All Breaking, Laws & Votes, and Live Debates. API route /api/breaking queries across topics, votes, and debates with recency and velocity filters. No new DB migration.',
+    href: '/breaking',
+    icon: Radio,
+    color: 'text-against-400',
+    tag: 'Ch. 169',
+  },
+  {
+    title: 'Civic Ambassador Program',
+    description: 'New /ambassador page + referral system (migration 00083): citizens get a unique referral code at /ambassador, share lobby.market/welcome?ref=<code>, and earn +50 Clout for every new user who signs up AND casts their first vote. The page shows your referral link with one-click copy, QR code, a live stats panel (clicks, signups, conversions, Clout earned), and a paginated conversions table showing each recruit\'s journey from signed_up → converted. DB tables: referral_codes (one per user, tracks lifetime stats) and referral_conversions (individual events). RPC function gift_clout_to_ambassador fires on first vote. Wired into Command Palette and sitemap.',
+    href: '/ambassador',
+    icon: Megaphone,
+    color: 'text-gold',
+    tag: 'Ch. 168',
+  },
+  {
+    title: 'Topic Resolution Criteria',
+    description: 'New /topic/[id]/resolution sub-page: surfaces the explicit resolution criteria for how a debate topic will be decided — activation threshold, current support count, vote split needed to reach consensus, projected resolution date based on current velocity, and a step-by-step lifecycle tracker (Proposed → Active → Voting → Law/Failed). Includes a live progress bar toward activation, estimated time-to-law at current trajectory, and the formal resolution rules from the platform constitution. No new DB migration.',
+    href: '/topic/[id]/resolution',
+    icon: Scale,
+    color: 'text-for-400',
+    tag: 'Ch. 167',
+  },
+  {
+    title: 'Civic Standing — Platform-Wide Rank Report',
+    description: 'New /analytics/standing page: your complete civic standing on the platform — global rank by reputation, percentile tier (Top 1% / 5% / 10% / 25% / 50%), rank trajectory (+N since last week), and comparative metrics vs platform averages. Shows vote consistency, argument upvote rate, debate win rate, prediction accuracy, and Clout percentile. Peer comparison: randomly sampled citizens at similar reputation for context. Milestone tracker: next rank milestone and what it takes to get there. API route /api/analytics/standing computes rank with a RANK() window function over all profiles. No new DB migration.',
+    href: '/analytics/standing',
+    icon: Trophy,
+    color: 'text-gold',
+    tag: 'Ch. 166',
+  },
+  {
+    title: 'Civic Portfolio — Argument Investment Dashboard',
+    description: 'New /analytics/portfolio page: frames your argument history as an investment portfolio. Each argument is a "position" — you invested time and reasoning into it. Portfolio view shows total positions, win rate (arguments on the winning side of debates), best performers by upvote ROI, category diversification chart (pie by category), and a risk/reward scatter plot (upvotes vs topic contestedness). Time-series chart of portfolio "value" over 12 months. Deep-links to each argument. API route /api/analytics/portfolio aggregates topic_arguments with vote context. No new DB migration.',
+    href: '/analytics/portfolio',
+    icon: BarChart2,
+    color: 'text-emerald',
+    tag: 'Ch. 165',
+  },
+  {
+    title: 'Civic Argument Reach Report',
+    description: 'New /analytics/reach page: measures how far your arguments travel through the platform — total unique readers (estimated from topic view counts weighted by argument position), upvote-to-view ratio, average rank among competing arguments, cross-topic reach (how many distinct topics your arguments appear in), and a top-10 furthest-reaching arguments table. Reach percentile vs all arguers on the platform. API route /api/analytics/reach joins topic_arguments with topic view_count and upvote counts. No new DB migration.',
+    href: '/analytics/reach',
+    icon: Globe,
+    color: 'text-purple',
+    tag: 'Ch. 164',
+  },
   {
     title: 'Civic Audience Analytics',
     description: 'New /analytics/audience page: shows WHO engages with your arguments — top supporters ranked by upvote count with role badges, role breakdown bars (Elder → Citizen), category affinity chart (which topics resonate), FOR vs AGAINST engagement split, and a 12-month monthly engagement trend chart. Audience tier system (Micro → Rising → Established → Prominent → Civic Voice) based on unique supporters and total upvotes. API route /api/analytics/audience queries topic_argument_votes with profile joins, excludes self-upvotes, and aggregates into per-user, per-role, per-category, and per-month stats. Linked from the analytics hub quick-nav and as a new card. No new DB migration.',
