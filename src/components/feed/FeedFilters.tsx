@@ -1,10 +1,12 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { TrendingUp, Clock, Flame, Scale, FileText, Zap, Gavel, Tag, LayoutGrid, Globe, Users, MapPin, Sparkles, History, X, Hash } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { useFeedStore } from '@/lib/stores/feed-store'
 import type { FeedSort, FeedStatus, FeedMode, FeedScope } from '@/lib/stores/feed-store'
+import type { TrendingTag } from '@/app/api/tags/trending/route'
 
 const SORT_OPTIONS: { id: FeedSort; label: string; icon: typeof TrendingUp }[] = [
   { id: 'top', label: 'Top', icon: TrendingUp },
@@ -106,6 +108,26 @@ const FEED_MODES: { id: FeedMode; label: string; icon: typeof Globe; activeClass
   { id: 'mytags', label: 'My Tags', icon: Hash, activeClass: 'bg-for-500/20 text-for-300 border border-for-500/30 shadow-sm' },
 ]
 
+// Module-level cache so all FeedFilters instances share the same fetch
+let _cachedTags: TrendingTag[] = []
+let _tagsFetchedAt = 0
+const TAGS_TTL_MS = 5 * 60 * 1000 // 5 minutes
+
+async function fetchTrendingTags(): Promise<TrendingTag[]> {
+  const now = Date.now()
+  if (_cachedTags.length > 0 && now - _tagsFetchedAt < TAGS_TTL_MS) return _cachedTags
+  try {
+    const res = await fetch('/api/tags/trending', { cache: 'no-store' })
+    if (!res.ok) return _cachedTags
+    const json = await res.json()
+    _cachedTags = (json.tags ?? []).slice(0, 20)
+    _tagsFetchedAt = now
+  } catch {
+    // keep stale cache
+  }
+  return _cachedTags
+}
+
 export function FeedFilters() {
   const {
     sort,
@@ -125,6 +147,17 @@ export function FeedFilters() {
     setFeedMode,
     clearFilters,
   } = useFeedStore()
+
+  const [liveTags, setLiveTags] = useState<TrendingTag[]>(_cachedTags)
+
+  useEffect(() => {
+    fetchTrendingTags().then(setLiveTags)
+  }, [])
+
+  // Merge: live tags take priority; fall back to static POPULAR_TAGS shape
+  const displayTags: { id: string; label: string }[] = liveTags.length > 0
+    ? liveTags.map((t) => ({ id: t.tag, label: t.tag }))
+    : POPULAR_TAGS
 
   // Count non-default active filters in discover mode
   const activeFilterCount = feedMode === 'discover'
@@ -333,7 +366,7 @@ export function FeedFilters() {
         >
           All
         </button>
-        {POPULAR_TAGS.map(({ id, label }) => (
+        {displayTags.map(({ id, label }) => (
           <button
             key={id}
             onClick={() => setTagFilter(tagFilter === id ? null : id)}
@@ -346,7 +379,7 @@ export function FeedFilters() {
                 : 'bg-transparent text-surface-500 border-surface-500/40 hover:text-surface-400 hover:border-surface-400'
             )}
           >
-            {label}
+            #{label}
           </button>
         ))}
         {/* Separator + browse all tags link */}

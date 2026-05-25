@@ -7,7 +7,8 @@
  *   1. Live battles — the most contested topics (vote split closest to 50/50)
  *   2. Latest laws — the 3–4 most recently established laws
  *   3. Live & upcoming debates
- *   4. A vote-activity pulse strip
+ *   4. Trending tags — top active tags that filter the feed on click
+ *   5. A vote-activity pulse strip
  *
  * Designed to sit in the dead space to the right of the max-w-lg
  * snap-scroll feed cards. Only rendered on xl+ screens (≥1280px).
@@ -20,6 +21,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   Crown,
   Gavel,
+  Hash,
   Mic,
   Scale,
   Zap,
@@ -27,10 +29,13 @@ import {
   ChevronRight,
   Flame,
   RefreshCw,
+  X,
 } from 'lucide-react'
 import { PulseDot } from '@/components/simulation/PulseDot'
+import { useFeedStore } from '@/lib/stores/feed-store'
 import { cn } from '@/lib/utils/cn'
 import type { LobbyRailData } from '@/app/api/lobby-rail/route'
+import type { TrendingTag } from '@/app/api/tags/trending/route'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -106,6 +111,10 @@ function SectionHeader({
 export function LobbyRail() {
   const [data, setData] = useState<LobbyRailData | null>(null)
   const [refreshing, setRefreshing] = useState(false)
+  const [trendingTags, setTrendingTags] = useState<TrendingTag[]>([])
+
+  const tagFilter = useFeedStore((s) => s.tagFilter)
+  const setTagFilter = useFeedStore((s) => s.setTagFilter)
 
   const fetch_ = useCallback(async (showSpinner = false) => {
     if (showSpinner) setRefreshing(true)
@@ -122,11 +131,30 @@ export function LobbyRail() {
     }
   }, [])
 
+  // Fetch trending tags separately — they change less often so cache for 5 min
+  const fetchTags = useCallback(async () => {
+    try {
+      const res = await fetch('/api/tags/trending', { next: { revalidate: 300 } })
+      if (res.ok) {
+        const json = await res.json()
+        setTrendingTags((json.tags ?? []).slice(0, 10))
+      }
+    } catch {
+      // best-effort
+    }
+  }, [])
+
   useEffect(() => {
     fetch_()
+    fetchTags()
     const timer = setInterval(() => fetch_(), 30_000)
-    return () => clearInterval(timer)
-  }, [fetch_])
+    // Refresh tags every 5 minutes
+    const tagTimer = setInterval(() => fetchTags(), 300_000)
+    return () => {
+      clearInterval(timer)
+      clearInterval(tagTimer)
+    }
+  }, [fetch_, fetchTags])
 
   // Don't render until we have data
   if (!data) return null
@@ -362,6 +390,75 @@ export function LobbyRail() {
               )
             })}
           </ul>
+        </div>
+      )}
+
+      {/* ── Trending Tags ────────────────────────────────────────────────── */}
+      {trendingTags.length > 0 && (
+        <div className="rounded-xl border border-surface-300/50 bg-surface-100/80 backdrop-blur-sm p-3">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-1.5">
+              <Hash className="h-3.5 w-3.5 text-purple" aria-hidden="true" />
+              <span className="text-[10px] font-mono font-semibold uppercase tracking-wider text-surface-500">
+                Trending Tags
+              </span>
+            </div>
+            {tagFilter && (
+              <button
+                type="button"
+                onClick={() => setTagFilter(null)}
+                className="flex items-center gap-0.5 text-[10px] font-mono text-surface-600 hover:text-white transition-colors"
+                aria-label="Clear tag filter"
+              >
+                <X className="h-2.5 w-2.5" />
+                Clear
+              </button>
+            )}
+            {!tagFilter && (
+              <Link
+                href="/tags"
+                className="text-[10px] font-mono text-surface-600 hover:text-surface-500 transition-colors flex items-center gap-0.5"
+                aria-label="View all tags"
+              >
+                All
+                <ChevronRight className="h-2.5 w-2.5" />
+              </Link>
+            )}
+          </div>
+          <div className="flex flex-wrap gap-1.5" aria-label="Trending topic tags">
+            {trendingTags.map((t) => {
+              const isActive = tagFilter === t.tag
+              return (
+                <button
+                  key={t.tag}
+                  type="button"
+                  onClick={() => setTagFilter(isActive ? null : t.tag)}
+                  aria-pressed={isActive}
+                  aria-label={`Filter by ${t.tag} (${t.topic_count} topic${t.topic_count !== 1 ? 's' : ''})`}
+                  className={cn(
+                    'flex items-center gap-1 px-2 py-0.5 rounded-full',
+                    'text-[10px] font-mono font-medium border transition-all',
+                    isActive
+                      ? 'bg-emerald/20 border-emerald/40 text-emerald'
+                      : 'bg-surface-200/60 border-surface-300/60 text-surface-500 hover:text-white hover:border-surface-400/80',
+                  )}
+                >
+                  <span>#{t.tag}</span>
+                  <span className={cn(
+                    'text-[9px] opacity-60',
+                    isActive ? 'text-emerald' : 'text-surface-600',
+                  )}>
+                    {t.topic_count}
+                  </span>
+                </button>
+              )
+            })}
+          </div>
+          {tagFilter && (
+            <p className="mt-2 text-[9px] font-mono text-emerald/70 leading-tight">
+              Feed filtered by #{tagFilter}
+            </p>
+          )}
         </div>
       )}
 
