@@ -716,6 +716,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'continuations',
+    label: 'Continuations Hub',
+    sublabel: 'Boost, vote on, and track platform-wide "...but/and" continuation proposals',
+    href: '/continuations',
+    icon: GitBranch,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
     id: 'all-topics',
     label: 'All Topics',
     sublabel: 'Browse, filter, and sort every civic debate on the platform',

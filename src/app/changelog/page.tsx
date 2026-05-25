@@ -1752,10 +1752,10 @@ const CHAPTERS: Chapter[] = [
 ]
 
 const STATS = [
-  { value: '178', label: 'chapters shipped' },
-  { value: '548+', label: 'features built' },
+  { value: '179', label: 'chapters shipped' },
+  { value: '550+', label: 'features built' },
   { value: '84', label: 'DB migrations' },
-  { value: '492+', label: 'API routes' },
+  { value: '493+', label: 'API routes' },
 ]
 
 interface RecentBuild {
@@ -1768,6 +1768,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Civic Continuations Hub',
+    description: 'New /continuations page: a platform-wide discovery hub for the "...but/and" chain system. Three sections — Authoring Now (topics with an open continuation window where citizens can propose and boost "...but X" or "...and X" follow-ups), Community Vote (finalist continuations in their plurality vote phase — one wins and becomes the next chain link), and Recent Winners (continuations that won in the last 30 days). Each topic group is collapsible, shows vote split, time remaining, and continuation count. Boost buttons work optimistically; vote buttons are deduplicated per topic. Stats row shows total authoring, total voting, winners this month, and all-time proposed count. "How it works" explainer panel demystifies the 3-step chain mechanic. New /api/continuations/hub route fetches all active-phase topics + their continuations + author profiles + winner history in a single request. Added to ⌘K Command Palette under Topic Chains. Distinct from /chains (full lineage browser) and /topic/[id] continuation section (single-topic view).',
+    href: '/continuations',
+    icon: GitBranch,
+    color: 'text-purple',
+    tag: 'Ch. 179',
+  },
   {
     title: 'Tag RSS Feeds + Feeds Hub Update',
     description: 'New /api/rss/tag/[tag] endpoint: every civic keyword tag (climate, ai, democracy, tax, immigration, healthcare, housing, energy, privacy, guns, labor, free-speech, and 40+ others) now has its own RSS feed. Returns laws + active/voting/proposed topics tagged with that keyword, sorted by recency. Returns 404 when no topics match — useful for integration existence-checks. Updated /feeds page with a new "Tag Feeds" section showcasing 12 featured tag feeds, plus a developer tip showing the parameterized URL pattern. Updated /developers docs with the new /api/rss/tag/{tag} endpoint entry, updated code example, and updated feed-info callout. No new DB migration — relies on the existing topics.tags GIN index.',
