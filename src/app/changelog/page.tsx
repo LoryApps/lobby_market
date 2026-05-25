@@ -1767,6 +1767,14 @@ interface RecentBuild {
 
 const RECENT_BUILDS: RecentBuild[] = [
   {
+    title: 'Civic Heat Index — Live Debate Temperature Rankings',
+    description: 'New /heat page: ranks every active and voting topic by a composite heat score derived from four live signals measured over the last 24 hours — Vote Velocity (40%), Argument Burst (25%), Reply Surge (15%), and Controversy (20%). Topics are grouped into five temperature tiers: Inferno (≥90), Blazing (70–89), Heating (45–69), Warm, and Cool. Each card shows the heat progress bar with color-coded tier, vote split, and four signal pills (votes/24h, args/24h, replies/24h, controversy). Expandable "How is heat calculated?" legend with formula breakdown. Category filter across all 10 civic categories. Auto-refreshes every 60 s. New /api/stats/heat route aggregates votes, topic_arguments, and argument_replies in the last 24 h and applies the weighted scoring formula server-side. Added to ⌘K Command Palette under Live Signals. Distinct from /hotspot (point-in-time contested topics), /velocity (category-level vote flow), /surge (support-threshold proximity), and /momentum (single-signal vote velocity).',
+    href: '/heat',
+    icon: Flame,
+    color: 'text-against-400',
+    tag: 'Ch. 176',
+  },
+  {
     title: 'Civic Correlation Atlas — Cross-Topic Opinion Topology',
     description: 'New /correlations page: reveals which civic topics are ideologically linked by computing pairwise vote-alignment across the platform\'s most-voted topics. For each pair (A, B) where ≥5 users voted on both, shows the alignment rate (% who chose the same side on both) and a correlation score (−1 perfectly opposed → +1 perfectly aligned). Cards show both topic statements, a correlation bar, the breakdown of both-FOR / both-AGAINST / split voters, and an ideological interpretation. Filter by all 10 civic categories; view modes for All / Aligned / Opposed. Expandable cards with deep links to each topic and to the side-by-side Compare view. New PostgreSQL function get_topic_correlations() in migration 00084 — scans top 60 popular topics for shared voters and ranks pairs by |correlation|. New /api/stats/correlations route with category and limit params. Added to ⌘K Command Palette under Platform Intelligence. Graceful empty state with explanation when data is sparse.',
     href: '/correlations',

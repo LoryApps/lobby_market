@@ -1126,6 +1126,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'heat',
+    label: 'Civic Heat Index',
+    sublabel: 'Live temperature for every debate — vote velocity, argument bursts, controversy',
+    href: '/heat',
+    icon: Flame,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-500/10',
+  },
+  {
+    type: 'link',
     id: 'hotspot',
     label: 'Civic Hotspot',
     sublabel: 'Critical moments: final votes, deadlocks, flash laws, live debates',
