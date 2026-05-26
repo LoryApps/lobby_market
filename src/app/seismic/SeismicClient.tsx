@@ -37,6 +37,7 @@ import {
   Flame,
   Layers,
   RefreshCw,
+  Rss,
   Radio,
   Waves,
 } from 'lucide-react'
@@ -283,16 +284,29 @@ export function SeismicClient() {
                 </p>
               </div>
             </div>
-            <button
-              onClick={fetchData}
-              className="flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-white transition-colors"
-              aria-label="Refresh"
-            >
-              <RefreshCw className="h-3.5 w-3.5" />
-              {lastRefresh && (
-                <span>{lastRefresh.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-              )}
-            </button>
+            <div className="flex items-center gap-3">
+              <a
+                href="/api/rss/seismic"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-orange-400 transition-colors"
+                aria-label="Subscribe to Seismic RSS Feed"
+                title="RSS Alert Feed"
+              >
+                <Rss className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">RSS</span>
+              </a>
+              <button
+                onClick={fetchData}
+                className="flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-white transition-colors"
+                aria-label="Refresh"
+              >
+                <RefreshCw className="h-3.5 w-3.5" />
+                {lastRefresh && (
+                  <span>{lastRefresh.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                )}
+              </button>
+            </div>
           </div>
           <p className="text-sm font-mono text-surface-500 max-w-2xl leading-relaxed">
             When a debate suddenly erupts with activity far above its normal pace, the Seismic
