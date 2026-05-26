@@ -1769,6 +1769,14 @@ interface RecentBuild {
 
 const RECENT_BUILDS: RecentBuild[] = [
   {
+    title: 'Arguments Hall of Fame',
+    description: 'New /arguments/hall-of-fame page: a prestige showcase of the most impactful arguments in Lobby Market history — those that earned top AI grades on debates that became law. Two wings: Law Architects (FOR/blue arguments that helped shape laws, ranked by quality grade + upvotes composite score) and Noble Dissent (AGAINST/red arguments on winning topics — the best cases made by the losing side). Category filter chips let you explore hall-of-fame arguments by policy area. Each argument card shows rank, author, the full argument text in a blockquote, the law context with vote margin, AI grade badge (gold A, emerald B, blue C), upvote count, and source link. New /api/arguments/hall-of-fame route filters topic_arguments by side and by topic status=law, orders by composite score, and returns available categories. Load-more pagination. Added to ⌘K Command Palette under Arguments. Distinct from /arguments/top-scored (all arguments regardless of outcome), /arguments/champions (faceoff win rates), and /spotlight (weekly platform highlights).',
+    href: '/arguments/hall-of-fame',
+    icon: Award,
+    color: 'text-gold',
+    tag: 'Ch. 180',
+  },
+  {
     title: 'Civic Continuations Hub',
     description: 'New /continuations page: a platform-wide discovery hub for the "...but/and" chain system. Three sections — Authoring Now (topics with an open continuation window where citizens can propose and boost "...but X" or "...and X" follow-ups), Community Vote (finalist continuations in their plurality vote phase — one wins and becomes the next chain link), and Recent Winners (continuations that won in the last 30 days). Each topic group is collapsible, shows vote split, time remaining, and continuation count. Boost buttons work optimistically; vote buttons are deduplicated per topic. Stats row shows total authoring, total voting, winners this month, and all-time proposed count. "How it works" explainer panel demystifies the 3-step chain mechanic. New /api/continuations/hub route fetches all active-phase topics + their continuations + author profiles + winner history in a single request. Added to ⌘K Command Palette under Topic Chains. Distinct from /chains (full lineage browser) and /topic/[id] continuation section (single-topic view).',
     href: '/continuations',

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   ArrowRight,
+  Award,
   Brain,
   ChevronDown,
   ChevronUp,
@@ -438,6 +439,13 @@ export default function ArgumentsPage() {
               >
                 <Trophy className="h-3 w-3" aria-hidden />
                 Champions
+              </Link>
+              <Link
+                href="/arguments/hall-of-fame"
+                className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-gold/10 border border-gold/30 text-[11px] font-mono font-semibold text-gold hover:bg-gold/20 transition-colors flex-shrink-0"
+              >
+                <Award className="h-3 w-3" aria-hidden />
+                Hall of Fame
               </Link>
               <Link
                 href="/arguments/dna"

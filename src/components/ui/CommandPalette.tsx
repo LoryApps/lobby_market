@@ -3004,6 +3004,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'arguments-hall-of-fame',
+    label: 'Arguments Hall of Fame',
+    sublabel: 'The most impactful arguments in Lobby history — law architects and noble dissenters from established laws',
+    href: '/arguments/hall-of-fame',
+    icon: Award,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'topic-wiki-recent',
     label: 'Recent Wiki Edits',
     sublabel: "Latest changes to topic wiki articles — who's been writing and revising civic knowledge",
