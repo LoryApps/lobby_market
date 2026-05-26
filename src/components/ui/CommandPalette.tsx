@@ -1237,6 +1237,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'frontlines',
+    label: 'The Civic Frontlines',
+    sublabel: 'Live battle map of the closest debates — Battle Zone (±5%), Contested (±15%), Leaning. Where your vote matters most.',
+    href: '/frontlines',
+    icon: Swords,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-500/10',
+  },
+  {
+    type: 'link',
     id: 'triage',
     label: 'Civic Triage',
     sublabel: 'Where your vote is most needed — near the line, deadlocked, neglected, and expiring debates',

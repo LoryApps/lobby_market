@@ -1770,6 +1770,22 @@ interface RecentBuild {
 
 const RECENT_BUILDS: RecentBuild[] = [
   {
+    title: 'The Civic Frontlines',
+    description: 'New /frontlines page: a live battle map of the most contested debates on Lobby Market — sorted by how close the vote split is right now. Three tiers: Battle Zone (±5% of 50/50 — every vote is decisive), Contested (±5–15% — no majority secured), and Leaning (±15–25% — a majority emerging). Each tier is collapsible and shows topic cards with a live FOR/AGAINST split bar, margin indicator, vote count, category badge, and a "votes needed to tip" insight for debates where a small number of votes could genuinely shift the balance. Stats strip shows total battle-zone debates, combined contested count, narrowest margin live, and total votes at stake. Filter by category (only categories with active frontline debates appear), sort by narrowest margin or most voted. Category breakdown panel shows per-category counts of battle-zone, contested, and leaning debates. Auto-refreshes every 60 seconds. New /api/frontlines route fetches all active and voting topics with 3+ votes, computes the margin from 50/50 for each, classifies into tiers, and returns sorted results with platform stats and category breakdown. "How it works" explainer panel clarifies the difference between Battle Zone, Contested, and Leaning tiers. Added to ⌘K Command Palette under Live Signals alongside /triage. Distinct from /triage (urgency ranking), /seismic (burst anomalies), /surge (velocity), /canary (early warnings), /signals (broad dashboard), and /heat (composite score).',
+    href: '/frontlines',
+    icon: Swords,
+    color: 'text-against-400',
+    tag: 'Ch. 187',
+  },
+  {
+    title: 'The Civic Tide',
+    description: 'New /tide page: a 30-day macro view of platform-wide civic sentiment. Three sections: a Temperature gauge (0–100) measuring how contested vs. consensual the Lobby is right now — 50 = all deadlocked, 100 = all at 100% consensus; a 30-day law-establishment timeline showing when and how often debates reached consensus, with a daily chart of laws passed and topics created; and a Category Sentiment breakdown showing which policy domains are trending FOR or AGAINST. Platform health stats row shows active debates, contested races, mandate strength, and law count vs. prior period with trend arrows. Category rows show active topic count, law count in last 30 days vs prior 30 days, average FOR% across live topics, and contested-topic count per category. Auto-refreshes via CDN at 5-minute intervals. New /api/tide route computes a 30-day grid of law-per-day stats, joins with topic-creation data, aggregates category-level active/voting sentiment, and derives a platform temperature score. Added to ⌘K Command Palette under Platform Overview. Distinct from /rhythm (temporal patterns), /seismic (anomaly detection), /momentum (per-topic velocity), /shifts (vote-split movement), and /correlations (cross-topic ideological alignment).',
+    href: '/tide',
+    icon: Activity,
+    color: 'text-for-400',
+    tag: 'Ch. 186',
+  },
+  {
     title: 'The Civic Dispatch',
     description: 'New /civic-dispatch page: a category-curated "tonight\'s top stories" for democracy — the single most significant active debate per policy domain, selected by a composite signal score that weighs threshold proximity (35%), vote volume (25%), consensus decisiveness (25%), and recency (15%). Each of the 10 civic categories gets its own dispatch card showing the urgency level (BREAKING / DEVELOPING / WATCH / LIVE), the topic statement, the current FOR/AGAINST vote split with an animated bar, and a one-liner explanation of why this topic is significant right now. The TOP STORY banner highlights the highest-signal dispatch across all categories. A summary strip shows total active debates, categories covered, and the hottest category. Auto-refreshes every 60 seconds. New /api/civic-dispatch route fetches all active and voting topics, groups them by category, scores each topic with the composite signal formula, and returns one winner per category with a computed urgency label and detail. Related pages panel links to /breaking, /triage, /heat, /canary, /signals, and /lens. Added to ⌘K Command Palette under Live Signals. Distinct from /breaking (chronological multi-event list), /triage (cross-category urgency ranking), /signals (aggregate platform metrics), /heat (composite score for all topics), and /lens (static category overview).',
     href: '/civic-dispatch',
