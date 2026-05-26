@@ -1770,6 +1770,14 @@ interface RecentBuild {
 
 const RECENT_BUILDS: RecentBuild[] = [
   {
+    title: 'Civic Rhythm',
+    description: 'New /rhythm page: a 7×24 temporal heatmap revealing when the platform is most alive — votes and arguments aggregated by day-of-week and hour-of-day (UTC) over the past 90 days. Answers the question: when should I show up for maximum civic impact? Three view modes (Combined, Votes-only, Arguments-only) toggle the heatmap between blue and purple colour ramps. Click any cell to see exact counts for that day/hour combination. Peak stat cards highlight the busiest hour, the quietest hour, and the best hour for arguments (highest argument-to-vote ratio). Day-of-week and time-of-day bar charts break activity into digestible segments. Platform-wide totals row shows 90-day vote count, argument count, combined total, and daily average. Interpretation tip explains the UTC basis and how to use the data to time your civic participation. New /api/stats/rhythm route fetches vote and argument timestamps from the last 90 days (up to 50k rows each), groups them by DOW+hour in TypeScript, returns a flat 168-cell matrix plus peak/summary stats. Cached for 30 minutes at the CDN. Added to ⌘K Command Palette under Live Signals and to TopBar navigation. Distinct from /activity-calendar (personal daily calendar), /now (real-time heartbeat), /pulse (live argument stream), and /live (real-time feed).',
+    href: '/rhythm',
+    icon: Activity,
+    color: 'text-for-400',
+    tag: 'Ch. 182',
+  },
+  {
     title: 'The Civic Canary',
     description: 'New /canary page: an early-warning detection hub that surfaces debates about to become significant — before they appear in /trending, /triage, or /surge. Four signal sections: Rising Fast (topics gaining votes faster than their age warrants, ranked by vote velocity), Quiet Storm (topics with high view counts but few votes — eyeballs about to convert), Activation Imminent (proposed topics ≥65% of the way to their support threshold), and Argument Surge (topics with the most new arguments in the last 24h). Platform Pulse stats row shows active debate count, average vote velocity, hottest category, and total canary alerts. Signal strength bar on each card shows a composite score weighted by velocity, argument rate, and view-to-vote ratio. Color-coded borders per signal type (red=rising, gold=quiet, emerald=imminent, purple=surge). Auto-refreshes every 90 seconds. New /api/canary route fetches live topics from the last 30 days, joins recent topic_arguments for 24h argument counts, computes velocity and signal strength in TypeScript, and returns four ranked buckets. Related pages panel links to /triage, /trending, /heat, /tipping-point, /pulse, and /discover. Distinct from /triage (urgency of current deadlines), /surge (already-high velocity), /trending (already popular), and /heat (category aggregate).',
     href: '/canary',

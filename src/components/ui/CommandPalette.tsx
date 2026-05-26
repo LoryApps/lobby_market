@@ -1257,6 +1257,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'rhythm',
+    label: 'Civic Rhythm',
+    sublabel: 'When democracy happens — 7×24 temporal heatmap of votes and arguments by day and hour',
+    href: '/rhythm',
+    icon: Activity,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
     id: 'tipping-point',
     label: 'The Tipping Point',
     sublabel: 'Debates within striking distance of consensus — or about to be definitively rejected',
