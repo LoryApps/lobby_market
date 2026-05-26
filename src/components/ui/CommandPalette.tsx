@@ -1287,6 +1287,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'tide',
+    label: 'The Civic Tide',
+    sublabel: '30-day macro view of platform sentiment — laws established, category trends, and whether civic consensus is rising or falling',
+    href: '/tide',
+    icon: Activity,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
     id: 'tipping-point',
     label: 'The Tipping Point',
     sublabel: 'Debates within striking distance of consensus — or about to be definitively rejected',
