@@ -1267,6 +1267,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'civic-dispatch',
+    label: 'The Civic Dispatch',
+    sublabel: 'Tonight\'s top story per category — the single most significant active debate across all 10 policy domains',
+    href: '/civic-dispatch',
+    icon: Radio,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-500/10',
+  },
+  {
+    type: 'link',
     id: 'seismic',
     label: 'Civic Seismic',
     sublabel: 'Anomaly detection for sudden vote bursts — Richter-scale magnitude ratings for unexpected civic activity spikes',

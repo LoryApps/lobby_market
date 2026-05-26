@@ -1770,6 +1770,22 @@ interface RecentBuild {
 
 const RECENT_BUILDS: RecentBuild[] = [
   {
+    title: 'The Civic Dispatch',
+    description: 'New /civic-dispatch page: a category-curated "tonight\'s top stories" for democracy — the single most significant active debate per policy domain, selected by a composite signal score that weighs threshold proximity (35%), vote volume (25%), consensus decisiveness (25%), and recency (15%). Each of the 10 civic categories gets its own dispatch card showing the urgency level (BREAKING / DEVELOPING / WATCH / LIVE), the topic statement, the current FOR/AGAINST vote split with an animated bar, and a one-liner explanation of why this topic is significant right now. The TOP STORY banner highlights the highest-signal dispatch across all categories. A summary strip shows total active debates, categories covered, and the hottest category. Auto-refreshes every 60 seconds. New /api/civic-dispatch route fetches all active and voting topics, groups them by category, scores each topic with the composite signal formula, and returns one winner per category with a computed urgency label and detail. Related pages panel links to /breaking, /triage, /heat, /canary, /signals, and /lens. Added to ⌘K Command Palette under Live Signals. Distinct from /breaking (chronological multi-event list), /triage (cross-category urgency ranking), /signals (aggregate platform metrics), /heat (composite score for all topics), and /lens (static category overview).',
+    href: '/civic-dispatch',
+    icon: Radio,
+    color: 'text-against-400',
+    tag: 'Ch. 185',
+  },
+  {
+    title: 'Civic Seismic RSS Alert Feed',
+    description: 'New /api/rss/seismic route: an RSS/Atom feed of the platform\'s civic anomaly alerts — every time a debate crosses the "Aftershock" magnitude threshold (3.0+), it appears as a feed entry. Entry titles include the magnitude rating ("⚡ M5.2 Quake — Topic Statement"), descriptions include vote burst details and category, and links go directly to the debate. RSS 2.0 compliant with proper Content-Type, pubDate, and GUID. Updated /feeds page with a new "Seismic Alert Feed" entry in the "Platform Signals" section with a subscribe button and copy-URL functionality. Updated /developers docs with the /api/rss/seismic endpoint entry. The seismic feed is designed for integration with monitoring tools and real-time civic dashboards — use it to track when civic debate suddenly erupts on the platform.',
+    href: '/feeds',
+    icon: Rss,
+    color: 'text-gold',
+    tag: 'Ch. 184',
+  },
+  {
     title: 'Civic Seismic',
     description: 'New /seismic page: anomaly detection for unexpected vote bursts — a Richter-scale magnitude monitor that detects when a debate suddenly erupts far above its normal activity baseline. Three tiers: Quakes (magnitude 6.0+, major burst 5× baseline), Aftershocks (magnitude 3.0–5.9, significant deviation), and Rumbles (magnitude 1.0–2.9, noticeable uptick). Platform stats row shows active quakes, highest magnitude, total anomalies, and hottest category. Each event card shows magnitude rating (0.0–10.0), animated magnitude bar, multiplier vs baseline (e.g. "3.2× baseline"), category badge, and vote count. Expandable sections with collapse/expand controls. Auto-refreshes every 90 seconds. New /api/seismic route fetches active/voting/proposed topics from the last 90 days, cross-joins with recent topic_arguments for a 48h window, computes baseline rate (votes/hour over full lifetime), estimates recent rate via updated_at heuristic + argument density signal, then ranks by log-scale magnitude formula. How-it-works panel explains baseline, anomaly detection, and magnitude formula. Related pages link to /canary, /surge, /momentum, /trending, and /tipping-point. Distinct from /canary (trend signals), /surge (threshold proximity), /momentum (raw velocity), and /rhythm (temporal patterns).',
     href: '/seismic',
