@@ -71,6 +71,7 @@ import {
   Megaphone,
   AlertTriangle,
   Rss,
+  Bird,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -1752,8 +1753,8 @@ const CHAPTERS: Chapter[] = [
 ]
 
 const STATS = [
-  { value: '179', label: 'chapters shipped' },
-  { value: '550+', label: 'features built' },
+  { value: '181', label: 'chapters shipped' },
+  { value: '555+', label: 'features built' },
   { value: '84', label: 'DB migrations' },
   { value: '493+', label: 'API routes' },
 ]
@@ -1768,6 +1769,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'The Civic Canary',
+    description: 'New /canary page: an early-warning detection hub that surfaces debates about to become significant — before they appear in /trending, /triage, or /surge. Four signal sections: Rising Fast (topics gaining votes faster than their age warrants, ranked by vote velocity), Quiet Storm (topics with high view counts but few votes — eyeballs about to convert), Activation Imminent (proposed topics ≥65% of the way to their support threshold), and Argument Surge (topics with the most new arguments in the last 24h). Platform Pulse stats row shows active debate count, average vote velocity, hottest category, and total canary alerts. Signal strength bar on each card shows a composite score weighted by velocity, argument rate, and view-to-vote ratio. Color-coded borders per signal type (red=rising, gold=quiet, emerald=imminent, purple=surge). Auto-refreshes every 90 seconds. New /api/canary route fetches live topics from the last 30 days, joins recent topic_arguments for 24h argument counts, computes velocity and signal strength in TypeScript, and returns four ranked buckets. Related pages panel links to /triage, /trending, /heat, /tipping-point, /pulse, and /discover. Distinct from /triage (urgency of current deadlines), /surge (already-high velocity), /trending (already popular), and /heat (category aggregate).',
+    href: '/canary',
+    icon: Bird,
+    color: 'text-gold',
+    tag: 'Ch. 181',
+  },
   {
     title: 'Arguments Hall of Fame',
     description: 'New /arguments/hall-of-fame page: a prestige showcase of the most impactful arguments in Lobby Market history — those that earned top AI grades on debates that became law. Two wings: Law Architects (FOR/blue arguments that helped shape laws, ranked by quality grade + upvotes composite score) and Noble Dissent (AGAINST/red arguments on winning topics — the best cases made by the losing side). Category filter chips let you explore hall-of-fame arguments by policy area. Each argument card shows rank, author, the full argument text in a blockquote, the law context with vote margin, AI grade badge (gold A, emerald B, blue C), upvote count, and source link. New /api/arguments/hall-of-fame route filters topic_arguments by side and by topic status=law, orders by composite score, and returns available categories. Load-more pagination. Added to ⌘K Command Palette under Arguments. Distinct from /arguments/top-scored (all arguments regardless of outcome), /arguments/champions (faceoff win rates), and /spotlight (weekly platform highlights).',

@@ -105,6 +105,7 @@ import {
   Gauge,
   Shuffle,
   Wand2,
+  Bird,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -1243,6 +1244,16 @@ const QUICK_LINKS: QuickLink[] = [
     icon: Zap,
     iconColor: 'text-against-400',
     iconBg: 'bg-against-500/10',
+  },
+  {
+    type: 'link',
+    id: 'canary',
+    label: 'The Civic Canary',
+    sublabel: 'Early-warning signals — debates rising fast, quiet storms building, and argument surges before they trend',
+    href: '/canary',
+    icon: Bird,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
   },
   {
     type: 'link',
