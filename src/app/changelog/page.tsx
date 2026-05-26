@@ -1770,6 +1770,14 @@ interface RecentBuild {
 
 const RECENT_BUILDS: RecentBuild[] = [
   {
+    title: 'Civic Seismic',
+    description: 'New /seismic page: anomaly detection for unexpected vote bursts — a Richter-scale magnitude monitor that detects when a debate suddenly erupts far above its normal activity baseline. Three tiers: Quakes (magnitude 6.0+, major burst 5× baseline), Aftershocks (magnitude 3.0–5.9, significant deviation), and Rumbles (magnitude 1.0–2.9, noticeable uptick). Platform stats row shows active quakes, highest magnitude, total anomalies, and hottest category. Each event card shows magnitude rating (0.0–10.0), animated magnitude bar, multiplier vs baseline (e.g. "3.2× baseline"), category badge, and vote count. Expandable sections with collapse/expand controls. Auto-refreshes every 90 seconds. New /api/seismic route fetches active/voting/proposed topics from the last 90 days, cross-joins with recent topic_arguments for a 48h window, computes baseline rate (votes/hour over full lifetime), estimates recent rate via updated_at heuristic + argument density signal, then ranks by log-scale magnitude formula. How-it-works panel explains baseline, anomaly detection, and magnitude formula. Related pages link to /canary, /surge, /momentum, /trending, and /tipping-point. Distinct from /canary (trend signals), /surge (threshold proximity), /momentum (raw velocity), and /rhythm (temporal patterns).',
+    href: '/seismic',
+    icon: Activity,
+    color: 'text-against-400',
+    tag: 'Ch. 183',
+  },
+  {
     title: 'Civic Rhythm',
     description: 'New /rhythm page: a 7×24 temporal heatmap revealing when the platform is most alive — votes and arguments aggregated by day-of-week and hour-of-day (UTC) over the past 90 days. Answers the question: when should I show up for maximum civic impact? Three view modes (Combined, Votes-only, Arguments-only) toggle the heatmap between blue and purple colour ramps. Click any cell to see exact counts for that day/hour combination. Peak stat cards highlight the busiest hour, the quietest hour, and the best hour for arguments (highest argument-to-vote ratio). Day-of-week and time-of-day bar charts break activity into digestible segments. Platform-wide totals row shows 90-day vote count, argument count, combined total, and daily average. Interpretation tip explains the UTC basis and how to use the data to time your civic participation. New /api/stats/rhythm route fetches vote and argument timestamps from the last 90 days (up to 50k rows each), groups them by DOW+hour in TypeScript, returns a flat 168-cell matrix plus peak/summary stats. Cached for 30 minutes at the CDN. Added to ⌘K Command Palette under Live Signals and to TopBar navigation. Distinct from /activity-calendar (personal daily calendar), /now (real-time heartbeat), /pulse (live argument stream), and /live (real-time feed).',
     href: '/rhythm',

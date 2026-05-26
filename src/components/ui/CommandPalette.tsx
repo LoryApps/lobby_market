@@ -1267,6 +1267,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'seismic',
+    label: 'Civic Seismic',
+    sublabel: 'Anomaly detection for sudden vote bursts — Richter-scale magnitude ratings for unexpected civic activity spikes',
+    href: '/seismic',
+    icon: Activity,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-500/10',
+  },
+  {
+    type: 'link',
     id: 'tipping-point',
     label: 'The Tipping Point',
     sublabel: 'Debates within striking distance of consensus — or about to be definitively rejected',
