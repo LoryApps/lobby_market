@@ -2507,6 +2507,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'lore',
+    label: 'Civic Lore',
+    sublabel: 'Platform records, hall-of-fame arguments, established laws, and legendary citizens — the defining moments of Lobby Market',
+    href: '/lore',
+    icon: Crown,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'legacy',
     label: 'Civic Legacy',
     sublabel: 'Your permanent civic record — laws authored, signature arguments, debate wins, milestones, and legacy score',
