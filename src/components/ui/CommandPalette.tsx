@@ -106,6 +106,7 @@ import {
   Shuffle,
   Wand2,
   Bird,
+  CalendarClock,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -494,6 +495,16 @@ const QUICK_LINKS: QuickLink[] = [
     icon: FlaskConical,
     iconColor: 'text-purple',
     iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
+    id: 'futures',
+    label: 'Civic Futures',
+    sublabel: 'Upcoming debates, vote deadlines, and high-momentum active topics',
+    href: '/futures',
+    icon: CalendarClock,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
   },
   {
     type: 'link',
