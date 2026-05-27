@@ -1439,6 +1439,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'standoff',
+    label: 'The Civic Standoff',
+    sublabel: 'Debates locked in persistent deadlock — topics stuck near 50/50 with active recent voting on both sides',
+    href: '/standoff',
+    icon: Swords,
+    iconColor: 'text-yellow-400',
+    iconBg: 'bg-yellow-400/10',
+  },
+  {
+    type: 'link',
     id: 'trending',
     label: 'Trending',
     sublabel: 'Most active topics in the last 24 hours',

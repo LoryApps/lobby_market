@@ -1765,13 +1765,28 @@ const CHAPTERS: Chapter[] = [
       { icon: Activity, label: 'Category filter, 2-minute auto-refresh, skeleton loading states, and empty states for each panel. Added to ⌘K Command Palette under Live Signals.', href: '/undertow', color: 'text-surface-400' },
     ],
   },
+  {
+    number: 'Ch. 195',
+    title: 'The Civic Standoff',
+    subtitle: 'Persistent deadlocks where neither side can tip the balance',
+    accent: 'text-yellow-400',
+    borderColor: 'border-yellow-400/30',
+    bgColor: 'bg-yellow-400/5',
+    textColor: 'text-yellow-400',
+    items: [
+      { icon: Swords, label: '/standoff: surfaces topics locked in persistent 50/50 deadlock — verified by checking both overall blue_pct AND recent 48h vote percentage fall within the deadlock band.', href: '/standoff', color: 'text-yellow-400' },
+      { icon: Swords, label: '/api/standoff: fetches last-48h votes, aggregates per topic, filters for topics where both overall AND recent FOR% are within 8pp of 50. Attaches top FOR and AGAINST arguments to each topic.', href: '/standoff', color: 'text-surface-400' },
+      { icon: Swords, label: 'Each card shows the split bar with centre marker, deadlock severity label (DEADLOCK / GRIDLOCK / STANDOFF / CONTESTED), top FOR and AGAINST argument snippets, and "Break it" vote buttons.', href: '/standoff', color: 'text-surface-400' },
+      { icon: Swords, label: 'Category filter, 90-second auto-refresh, skeleton loader, empty states. Added to ⌘K Command Palette. Distinct from /extremes (current state only) and /battleground (argument volume).', href: '/standoff', color: 'text-surface-400' },
+    ],
+  },
 ]
 
 const STATS = [
-  { value: '194', label: 'chapters shipped' },
-  { value: '645+', label: 'features built' },
+  { value: '195', label: 'chapters shipped' },
+  { value: '649+', label: 'features built' },
   { value: '84', label: 'DB migrations' },
-  { value: '512+', label: 'API routes' },
+  { value: '513+', label: 'API routes' },
 ]
 
 interface RecentBuild {
