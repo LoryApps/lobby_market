@@ -17,6 +17,7 @@ import {
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { Badge } from '@/components/ui/Badge'
+import { haptics } from '@/lib/hooks/useHaptics'
 import { cn } from '@/lib/utils/cn'
 import type { RapidTopic, RapidResponse } from '@/app/api/rapid/route'
 
@@ -421,6 +422,8 @@ export default function RapidPage() {
       if (!res.ok) return null
       const data = await res.json() as { topic: { blue_pct: number; total_votes: number } }
       setSessionVotes((n) => n + 1)
+      if (side === 'blue') haptics.voteFor()
+      else haptics.voteAgainst()
       return { blue_pct: data.topic?.blue_pct ?? topic.blue_pct, total_votes: data.topic?.total_votes ?? topic.total_votes }
     } catch {
       return null

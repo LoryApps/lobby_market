@@ -43,6 +43,7 @@ import {
   Zap,
 } from 'lucide-react'
 import { useVoteStore } from '@/lib/stores/vote-store'
+import { haptics } from '@/lib/hooks/useHaptics'
 import { Badge } from '@/components/ui/Badge'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -529,12 +530,15 @@ export function SwipeClient() {
       })
 
       if (votedSide === 'blue') {
+        haptics.voteFor()
         setStats((s) => ({ ...s, for: s.for + 1 }))
         showToast('Voted FOR', 'blue')
       } else if (votedSide === 'red') {
+        haptics.voteAgainst()
         setStats((s) => ({ ...s, against: s.against + 1 }))
         showToast('Voted AGAINST', 'red')
       } else {
+        haptics.dismiss()
         setStats((s) => ({ ...s, skipped: s.skipped + 1 }))
       }
     },
@@ -543,6 +547,21 @@ export function SwipeClient() {
 
   const handleVote = useCallback((side: 'blue' | 'red') => advance(side), [advance])
   const handleSkip = useCallback(() => advance('skip'), [advance])
+
+  // Keyboard navigation: ← = Against, → = For, ↑/Space = Skip
+  useEffect(() => {
+    function onKeyDown(e: KeyboardEvent) {
+      if (done || deck.length === 0) return
+      // Don't trigger when user is typing in an input
+      const tag = (e.target as HTMLElement).tagName
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return
+      if (e.key === 'ArrowRight') { e.preventDefault(); advance('blue') }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); advance('red') }
+      else if (e.key === 'ArrowUp' || e.key === ' ') { e.preventDefault(); advance('skip') }
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [advance, done, deck.length])
 
   const handleReset = useCallback(() => {
     try { sessionStorage.removeItem(SEEN_KEY) } catch { /* noop */ }

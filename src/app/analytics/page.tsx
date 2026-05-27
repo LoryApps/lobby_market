@@ -378,7 +378,7 @@ export default function AnalyticsPage() {
             <Link href="/compass" className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"><Compass className="h-3.5 w-3.5" />Compass</Link>
             <Link href="/influence" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><Network className="h-3.5 w-3.5" />Influence</Link>
             <Link href="/bridge" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><GitCompare className="h-3.5 w-3.5" />Civic Bridge</Link>
-            <Link href="/diversity" className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"><Globe className="h-3.5 w-3.5" />Diversity Score</Link>
+            <Link href="/analytics/diversity" className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"><Globe className="h-3.5 w-3.5" />Diversity Score</Link>
             <Link href="/accord" className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"><Scale className="h-3.5 w-3.5" />The Accord</Link>
             <Link href="/fingerprint" className="flex items-center gap-1 text-xs text-against-400 hover:text-against-300 transition-colors font-mono font-semibold"><Fingerprint className="h-3.5 w-3.5" />Fingerprint</Link>
             <Link href="/mindmap" className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"><Network className="h-3.5 w-3.5" />Mind Map</Link>
