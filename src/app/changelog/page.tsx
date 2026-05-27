@@ -1751,13 +1751,27 @@ const CHAPTERS: Chapter[] = [
       { icon: LayoutGrid, label: 'Spotlight nudge banner above the argument list shows current pin count (X/3) and links back to the profile Spotlight section.', href: '/profile/me', color: 'text-surface-400' },
     ],
   },
+  {
+    number: 'Ch. 194',
+    title: 'The Civic Undertow',
+    subtitle: 'Detect hidden momentum reversals: false summits and rising underdogs',
+    accent: 'text-for-300',
+    borderColor: 'border-for-300/30',
+    bgColor: 'bg-for-300/5',
+    textColor: 'text-for-300',
+    items: [
+      { icon: Activity, label: '/undertow: False Summits (FOR% ≥ 55% but losing 24h momentum) and Rising Underdogs (FOR% ≤ 45% but gaining momentum). Each card shows current vs recent FOR%, gap magnitude, and undertow severity label.', href: '/undertow', color: 'text-for-300' },
+      { icon: Activity, label: '/api/undertow: aggregates last-24h votes per topic, computes recent_blue_pct, filters for ≥ 8 pt gap against qualifying overall FOR% thresholds. Returns two ranked lists.', href: '/undertow', color: 'text-surface-400' },
+      { icon: Activity, label: 'Category filter, 2-minute auto-refresh, skeleton loading states, and empty states for each panel. Added to ⌘K Command Palette under Live Signals.', href: '/undertow', color: 'text-surface-400' },
+    ],
+  },
 ]
 
 const STATS = [
-  { value: '193', label: 'chapters shipped' },
-  { value: '640+', label: 'features built' },
+  { value: '194', label: 'chapters shipped' },
+  { value: '645+', label: 'features built' },
   { value: '84', label: 'DB migrations' },
-  { value: '510+', label: 'API routes' },
+  { value: '512+', label: 'API routes' },
 ]
 
 interface RecentBuild {
@@ -1770,6 +1784,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'The Civic Undertow',
+    description: 'New /undertow page: reveals topics where the surface consensus is moving in the opposite direction to recent momentum. Two panels — False Summits (topics with overall FOR% ≥ 55% but recent 24-hour votes trending against, gap ≥ 8 percentage points) and Rising Underdogs (topics with overall FOR% ≤ 45% but recent votes surging for). Each card shows the current overall bar, the 24-hour momentum bar, the gap magnitude, and an undertow severity label (moderate / strong / severe / extreme). Category filter lets you focus on a single civic domain. New /api/undertow route fetches recent votes in a 24h window, aggregates per topic, then compares recent_blue_pct against the stored overall blue_pct — topics that qualify on both criteria are classified and ranked by gap size. Auto-refreshes every 2 minutes. Added to ⌘K Command Palette. Distinct from /convergence (consensus direction vs deadlock), /flux (single biggest swing), /shifts (week-scale changes), /pendulum (resolved topic arcs), and /momentum (raw velocity).',
+    href: '/undertow',
+    icon: Activity,
+    color: 'text-for-300',
+    tag: 'Ch. 194',
+  },
   {
     title: 'The Opinion Arc',
     description: 'New /pendulum page: a line-chart visualization of how each debate\'s FOR% evolved day-by-day from proposal through to resolution. Blue lines are topics that became law; red lines failed. The x-axis is days elapsed from first vote, the y-axis is the running FOR% based on all votes cast up to that day. The dashed 50% line is the consensus boundary. Hover any topic card to highlight its arc — a steep early rise that held means strong from the start; a gradual climb means the platform built consensus over time; a line that fell below 50% means opinion turned against it. Filter by all 10 civic categories. New /api/topics/arcs route fetches top resolved topics, groups votes by day in SQL, and computes running cumulative FOR% entirely in TypeScript. Added to ⌘K Command Palette under Live Signals alongside /flip. Distinct from /flip (final dramatic reversals), /shifts (current changes), /convergence (current trajectory), and /drift (category-level drift).',

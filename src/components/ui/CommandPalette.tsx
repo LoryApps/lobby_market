@@ -1429,6 +1429,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'undertow',
+    label: 'Civic Undertow',
+    sublabel: 'False summits (winning but losing momentum) and rising underdogs (losing but surging) — hidden currents beneath the consensus',
+    href: '/undertow',
+    icon: Activity,
+    iconColor: 'text-for-300',
+    iconBg: 'bg-for-300/10',
+  },
+  {
+    type: 'link',
     id: 'trending',
     label: 'Trending',
     sublabel: 'Most active topics in the last 24 hours',
