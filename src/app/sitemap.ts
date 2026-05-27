@@ -201,6 +201,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/dashboard`, changeFrequency: 'hourly', priority: 0.8 },
   { url: `${BASE_URL}/report-card`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/dossier`, changeFrequency: 'daily', priority: 0.65 },
+  { url: `${BASE_URL}/legacy`, changeFrequency: 'daily', priority: 0.72 },
   { url: `${BASE_URL}/my-week`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/tally`, changeFrequency: 'hourly', priority: 0.7 },
   { url: `${BASE_URL}/verdicts`, changeFrequency: 'hourly', priority: 0.75 },

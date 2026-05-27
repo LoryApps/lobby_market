@@ -2507,6 +2507,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'legacy',
+    label: 'Civic Legacy',
+    sublabel: 'Your permanent civic record — laws authored, signature arguments, debate wins, milestones, and legacy score',
+    href: '/legacy',
+    icon: Crown,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'match',
     label: 'Priority Match',
     sublabel: 'Head-to-head: pick which topic deserves more urgent attention — builds a community urgency ranking',
