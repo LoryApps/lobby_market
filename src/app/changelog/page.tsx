@@ -67,6 +67,7 @@ import {
   FileText,
   Shuffle,
   Scroll,
+  ListChecks,
   Pin,
   Megaphone,
   AlertTriangle,
@@ -1753,10 +1754,10 @@ const CHAPTERS: Chapter[] = [
 ]
 
 const STATS = [
-  { value: '181', label: 'chapters shipped' },
-  { value: '555+', label: 'features built' },
+  { value: '193', label: 'chapters shipped' },
+  { value: '640+', label: 'features built' },
   { value: '84', label: 'DB migrations' },
-  { value: '493+', label: 'API routes' },
+  { value: '510+', label: 'API routes' },
 ]
 
 interface RecentBuild {
@@ -1769,6 +1770,54 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'The Opinion Arc',
+    description: 'New /pendulum page: a line-chart visualization of how each debate\'s FOR% evolved day-by-day from proposal through to resolution. Blue lines are topics that became law; red lines failed. The x-axis is days elapsed from first vote, the y-axis is the running FOR% based on all votes cast up to that day. The dashed 50% line is the consensus boundary. Hover any topic card to highlight its arc — a steep early rise that held means strong from the start; a gradual climb means the platform built consensus over time; a line that fell below 50% means opinion turned against it. Filter by all 10 civic categories. New /api/topics/arcs route fetches top resolved topics, groups votes by day in SQL, and computes running cumulative FOR% entirely in TypeScript. Added to ⌘K Command Palette under Live Signals alongside /flip. Distinct from /flip (final dramatic reversals), /shifts (current changes), /convergence (current trajectory), and /drift (category-level drift).',
+    href: '/pendulum',
+    icon: Activity,
+    color: 'text-for-400',
+    tag: 'Ch. 193',
+  },
+  {
+    title: 'Civic Lore — Hall of Fame',
+    description: 'New /lore page: the legendary moments, record-breaking votes, and greatest arguments in Lobby Market history. Platform records section shows the all-time most-voted law, most-contested topic, most-upvoted argument, and earliest law established. Hall of fame arguments wing features the top FOR and AGAINST arguments from laws, each with author profile, vote margin context, and upvote count. Legendary citizens section honours the top contributors by reputation, with role badge and stats. New laws gallery shows the 12 most recent laws with category pills, vote percentages, and establishment dates. Related pages link to /analytics, /records, /legacy, and /arguments/hall-of-fame. Distinct from /legacy (your personal civic record), /records (dry platform stats), /lore (narrative history), and /watershed (all-time milestone comparisons).',
+    href: '/lore',
+    icon: Trophy,
+    color: 'text-gold',
+    tag: 'Ch. 192',
+  },
+  {
+    title: 'Civic Legacy — Personal Record',
+    description: 'New /legacy page: your permanent civic record — laws you helped pass, arguments that shaped debate, milestones along the journey. Three panels: Laws I Helped Pass (topics that became law where you voted FOR, with your vote cast date and the final margin), Arguments That Moved People (your top-upvoted arguments, sorted by community reception), and Your Civic Timeline (a chronological trail of major personal milestones — first vote, first argument, first debate, first law contribution). A "legacy score" header summarises your contribution across all three dimensions. Shareable via link. Added to TopBar navigation under your profile menu. Distinct from /analytics (raw stats dashboard), /achievements (badge collection), and /dossier (compact identity card).',
+    href: '/legacy',
+    icon: Scroll,
+    color: 'text-emerald',
+    tag: 'Ch. 191',
+  },
+  {
+    title: 'Civic Action Queue',
+    description: 'New /queue page: your personalised civic to-do list — the most urgent actions you can take right now, ranked by impact. Five categories of actionable items: Urgent Votes (topics nearing their threshold where your vote could tip the outcome), Arguments to Write (topics with few arguments where your voice is most needed), Debates to RSVP (upcoming scheduled debates in your interest areas), Predictions to Make (topics with open prediction markets you haven\'t staked), and Topics to Subscribe (high-activity topics you haven\'t followed yet). Each queue item shows urgency level, estimated impact, and a direct action button. Respects your category preferences and voting history for personalisation. New /api/queue route runs five parallel Supabase queries and merges results into a ranked action list. Added to ⌘K Command Palette. Distinct from /agenda (unvoted topics only), /recommended (interest-based discovery), and /dashboard (read-only stats view).',
+    href: '/queue',
+    icon: ListChecks,
+    color: 'text-for-400',
+    tag: 'Ch. 190',
+  },
+  {
+    title: 'Civic Futures Board',
+    description: 'New /futures page: a forward-looking events calendar for the platform — what\'s coming up on Lobby Market. Four sections: Upcoming Scheduled Debates (next 30 days with RSVP counts and topic links), Topics in Final Vote (voting-phase topics with countdown to deadline and current FOR% bar), High-Momentum Active Topics (topics approaching the support threshold, ordered by momentum signal), and Recent Laws (topics resolved in the last 14 days for context). A summary strip shows total upcoming events, voting deadlines, and topics in final hours. Each item links to its full debate or topic page. New /api/futures route fetches scheduled debates, voting-phase topics ordered by threshold proximity, and active topics ordered by momentum. Added to ⌘K Command Palette under Platform Overview. Distinct from /forecast (pass-probability model), /predictions (user bets), /triage (urgency ranking), and /calendar (personal engagement view).',
+    href: '/futures',
+    icon: CalendarClock,
+    color: 'text-purple',
+    tag: 'Ch. 189',
+  },
+  {
+    title: 'Civic Diversity Score',
+    description: 'New /diversity page: an echo-chamber detector for civic engagement. Measures three dimensions: Category Coverage (how many of the 10 civic domains you vote in), Category Balance (how evenly distributed your votes are using Shannon entropy), and Position Independence (how often you vote against the current majority). The composite score labels you Echo Chamber → Leaning → Balanced → Curious → Free Thinker. Each dimension is shown as an animated dial with a percentage breakdown. A "broaden your civic diet" section recommends specific categories you underengage with, with the strongest argument on each side to get you started. Shareable via link. New /api/analytics/diversity route computes all three dimensions server-side. Also shipped in this chapter: mobile haptics polish — smooth vibration feedback on vote cast, argument posted, achievement unlocked, and debate RSVP actions via the Web Vibration API with graceful fallback for unsupported devices.',
+    href: '/diversity',
+    icon: Globe,
+    color: 'text-emerald',
+    tag: 'Ch. 188',
+  },
   {
     title: 'The Civic Frontlines',
     description: 'New /frontlines page: a live battle map of the most contested debates on Lobby Market — sorted by how close the vote split is right now. Three tiers: Battle Zone (±5% of 50/50 — every vote is decisive), Contested (±5–15% — no majority secured), and Leaning (±15–25% — a majority emerging). Each tier is collapsible and shows topic cards with a live FOR/AGAINST split bar, margin indicator, vote count, category badge, and a "votes needed to tip" insight for debates where a small number of votes could genuinely shift the balance. Stats strip shows total battle-zone debates, combined contested count, narrowest margin live, and total votes at stake. Filter by category (only categories with active frontline debates appear), sort by narrowest margin or most voted. Category breakdown panel shows per-category counts of battle-zone, contested, and leaning debates. Auto-refreshes every 60 seconds. New /api/frontlines route fetches all active and voting topics with 3+ votes, computes the margin from 50/50 for each, classifies into tiers, and returns sorted results with platform stats and category breakdown. "How it works" explainer panel clarifies the difference between Battle Zone, Contested, and Leaning tiers. Added to ⌘K Command Palette under Live Signals alongside /triage. Distinct from /triage (urgency ranking), /seismic (burst anomalies), /surge (velocity), /canary (early warnings), /signals (broad dashboard), and /heat (composite score).',

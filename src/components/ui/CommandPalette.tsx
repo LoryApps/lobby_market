@@ -1419,6 +1419,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'pendulum',
+    label: 'Opinion Arc',
+    sublabel: 'How debates evolved day-by-day — full vote-trajectory arcs for every resolved topic',
+    href: '/pendulum',
+    icon: Activity,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
     id: 'trending',
     label: 'Trending',
     sublabel: 'Most active topics in the last 24 hours',
