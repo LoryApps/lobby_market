@@ -107,6 +107,7 @@ import {
   Wand2,
   Bird,
   CalendarClock,
+  ListChecks,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -515,6 +516,16 @@ const QUICK_LINKS: QuickLink[] = [
     icon: Target,
     iconColor: 'text-emerald',
     iconBg: 'bg-emerald/10',
+  },
+  {
+    type: 'link',
+    id: 'queue',
+    label: 'Action Queue',
+    sublabel: 'Personalised civic to-do list — urgent votes, arguments, RSVPs',
+    href: '/queue',
+    icon: ListChecks,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
   },
   {
     type: 'link',
