@@ -43,6 +43,7 @@ import {
   Gauge,
   Shuffle,
   CalendarClock,
+  GlassWater,
 } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { createClient } from '@/lib/supabase/client'
@@ -66,6 +67,7 @@ const navItems: NavItem[] = [
   { href: '/futures', label: 'Civic Futures', icon: CalendarClock },
   { href: '/surge', label: 'Surge', icon: Flame },
   { href: '/groundswell', label: 'Groundswell', icon: Activity },
+  { href: '/drought',     label: 'Drought',     icon: GlassWater },
   { href: '/velocity', label: 'Velocity', icon: Zap },
   { href: '/flux', label: 'Civic Flux', icon: Shuffle },
   { href: '/tipping-point', label: 'Tipping Point', icon: Gauge },
