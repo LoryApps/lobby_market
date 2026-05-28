@@ -68,6 +68,7 @@ const navItems: NavItem[] = [
   { href: '/surge', label: 'Surge', icon: Flame },
   { href: '/groundswell', label: 'Groundswell', icon: Activity },
   { href: '/drought',     label: 'Drought',     icon: GlassWater },
+  { href: '/flash',       label: 'Civic Flash', icon: Zap },
   { href: '/velocity', label: 'Velocity', icon: Zap },
   { href: '/flux', label: 'Civic Flux', icon: Shuffle },
   { href: '/tipping-point', label: 'Tipping Point', icon: Gauge },
