@@ -1599,6 +1599,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'barometer',
+    label: 'Civic Barometer',
+    sublabel: 'Platform-wide sentiment gauge — where does the Lobby stand right now? FOR vs AGAINST by category',
+    href: '/barometer',
+    icon: Activity,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
     id: 'vitals',
     label: 'Civic Vitals',
     sublabel: 'Live discourse quality dashboard — argument grades, deliberation depth, consensus health',
