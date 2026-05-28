@@ -2255,6 +2255,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'meridian',
+    label: 'The Civic Meridian',
+    sublabel: 'Society\'s great unresolved questions — most engaged topics locked at 50/50, ranked by Meridian Score',
+    href: '/meridian',
+    icon: GitFork,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
     id: 'crossfire',
     label: 'Crossfire',
     sublabel: 'Battle of Ideas — most contested topics with best FOR vs AGAINST arguments head-to-head',
