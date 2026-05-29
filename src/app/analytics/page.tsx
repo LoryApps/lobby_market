@@ -19,6 +19,7 @@ import {
   Shuffle,
   Activity,
   Radio,
+  Map,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -443,6 +444,7 @@ export default function AnalyticsPage() {
             <Link href="/analytics/momentum" className="flex items-center gap-1 text-xs text-for-300 hover:text-for-200 transition-colors font-mono font-semibold"><Activity className="h-3.5 w-3.5" />Momentum Report</Link>
             <Link href="/analytics/report-card" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><Award className="h-3.5 w-3.5" />Report Card</Link>
             <Link href="/analytics/fingerprint" className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"><Fingerprint className="h-3.5 w-3.5" />Fingerprint</Link>
+            <Link href="/analytics/coverage" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><Map className="h-3.5 w-3.5" />Civic Coverage</Link>
             <Link href="/karma" className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"><Sparkles className="h-3.5 w-3.5" />Karma</Link>
             <Link href="/profile/me" className="flex items-center gap-1 text-xs text-surface-500 hover:text-white transition-colors">Profile<ChevronRight className="h-3.5 w-3.5" /></Link>
           </div>
@@ -991,6 +993,21 @@ export default function AnalyticsPage() {
                 <Zap className="h-5 w-5 text-gold flex-shrink-0" />
               </div>
               <p className="text-xs text-surface-500 mt-3">Reputation increases with accurate votes, quality arguments, and consistent participation.</p>
+            </motion.div>
+            {/* Civic Coverage card */}
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.448 }}>
+              <Link href="/analytics/coverage" className="flex items-center justify-between rounded-2xl bg-surface-100 border border-for-500/20 p-5 hover:border-for-500/40 hover:bg-for-500/5 transition-colors group">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center justify-center h-10 w-10 rounded-xl bg-for-500/10 border border-for-500/30 flex-shrink-0">
+                    <Map className="h-5 w-5 text-for-400" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-mono font-semibold text-white">Civic Coverage</div>
+                    <div className="text-xs font-mono text-surface-500 mt-0.5">Of all the Lobby debates, what share have you actually weighed in on? Category coverage with tier and trend</div>
+                  </div>
+                </div>
+                <ChevronRight className="h-4 w-4 text-surface-500 group-hover:text-for-400 transition-colors flex-shrink-0" />
+              </Link>
             </motion.div>
             <PredictionHistorySection />
             {data.predictions && data.predictions.total > 0 && (
