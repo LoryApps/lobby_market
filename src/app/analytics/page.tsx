@@ -438,6 +438,7 @@ export default function AnalyticsPage() {
             <Link href="/analytics/territory" className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"><Compass className="h-3.5 w-3.5" />Territory Map</Link>
             <Link href="/analytics/opposition" className="flex items-center gap-1 text-xs text-against-400 hover:text-against-300 transition-colors font-mono font-semibold"><Swords className="h-3.5 w-3.5" />Opposition Intel</Link>
             <Link href="/analytics/velocity" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><Activity className="h-3.5 w-3.5" />Arg. Velocity</Link>
+            <Link href="/persuasion" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><MessageSquare className="h-3.5 w-3.5" />Persuasion Map</Link>
             <Link href="/analytics/persuasion" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><Sparkles className="h-3.5 w-3.5" />Persuasion Power</Link>
             <Link href="/analytics/momentum" className="flex items-center gap-1 text-xs text-for-300 hover:text-for-200 transition-colors font-mono font-semibold"><Activity className="h-3.5 w-3.5" />Momentum Report</Link>
             <Link href="/analytics/report-card" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><Award className="h-3.5 w-3.5" />Report Card</Link>
@@ -720,6 +721,21 @@ export default function AnalyticsPage() {
                   </div>
                 </div>
                 <ChevronRight className="h-4 w-4 text-surface-500 group-hover:text-emerald transition-colors flex-shrink-0" />
+              </Link>
+            </motion.div>
+            {/* Civic Persuasion card */}
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.4132 }}>
+              <Link href="/persuasion" className="flex items-center justify-between rounded-2xl bg-surface-100 border border-gold/20 p-5 hover:border-gold/40 hover:bg-gold/5 transition-colors group">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center justify-center h-10 w-10 rounded-xl bg-gold/10 border border-gold/30 flex-shrink-0">
+                    <MessageSquare className="h-5 w-5 text-gold" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-mono font-semibold text-white">Civic Persuasion</div>
+                    <div className="text-xs font-mono text-surface-500 mt-0.5">Your argument territory — which categories you fight in, your side split, and persuasion archetype</div>
+                  </div>
+                </div>
+                <ChevronRight className="h-4 w-4 text-surface-500 group-hover:text-gold transition-colors flex-shrink-0" />
               </Link>
             </motion.div>
             {/* Audience card */}
