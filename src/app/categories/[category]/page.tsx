@@ -12,6 +12,7 @@ import {
   Clock,
   Flame,
   TrendingUp,
+  Trophy,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
@@ -248,6 +249,26 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
             </div>
           </div>
         </div>
+
+        {/* ── Experts CTA ────────────────────────────────────────────── */}
+        <Link
+          href={`/categories/${params.category}/experts`}
+          className={cn(
+            'flex items-center justify-between gap-3 p-3.5 rounded-xl mb-4',
+            'bg-surface-100 border border-surface-300 hover:border-surface-400 transition-colors'
+          )}
+        >
+          <div className="flex items-center gap-2.5">
+            <div className={cn('flex items-center justify-center h-8 w-8 rounded-lg border flex-shrink-0', colors.badge.replace('text-', '').includes('gold') ? 'bg-gold/10 border-gold/30' : 'bg-surface-200 border-surface-300')}>
+              <Trophy className={cn('h-4 w-4', colors.text)} />
+            </div>
+            <div>
+              <p className="text-xs font-mono font-bold text-white">Top {name} Voices</p>
+              <p className="text-[10px] font-mono text-surface-500">See who shapes this debate</p>
+            </div>
+          </div>
+          <ChevronRight className="h-4 w-4 text-surface-500 flex-shrink-0" />
+        </Link>
 
         {/* ── Filters ────────────────────────────────────────────────── */}
         <div className="flex flex-col gap-3 mb-6">
