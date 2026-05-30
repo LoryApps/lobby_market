@@ -2375,6 +2375,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'ballot',
+    label: 'Civic Ballot',
+    sublabel: 'Your personal ballot — every active topic waiting for your vote, one at a time with context',
+    href: '/ballot',
+    icon: Vote,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
     id: 'reel',
     label: 'Civic Reel',
     sublabel: 'TikTok-style argument feed — swipe through the best FOR and AGAINST arguments one at a time',

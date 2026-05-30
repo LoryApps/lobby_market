@@ -16,6 +16,7 @@ import { SetupChecklist } from '@/components/feed/SetupChecklist'
 import { FeedInsightStrip } from '@/components/feed/FeedInsightStrip'
 import { FeedFilters } from '@/components/feed/FeedFilters'
 import { LivePlatformBanner } from '@/components/feed/LivePlatformBanner'
+import { PersonalDailyBar } from '@/components/feed/PersonalDailyBar'
 import { DebateCountdownBanner } from '@/components/debate/DebateCountdownBanner'
 import { PulseDot } from '@/components/simulation/PulseDot'
 import { Avatar } from '@/components/ui/Avatar'
@@ -804,6 +805,7 @@ export function FeedContainer() {
       </button>
 
       <div ref={scrollRef} className="feed-scroll" aria-label="Topic feed">
+        <PersonalDailyBar />
         <FeedTutorial />
         <SetupChecklist />
         <DailyQuorumNudge />

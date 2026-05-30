@@ -1991,6 +1991,20 @@ const CHAPTERS: Chapter[] = [
     ],
   },
   {
+    number: 'Ch. 212',
+    title: 'Personal Daily Bar',
+    subtitle: 'Persistent personal context strip in the feed — streak, vote progress, clout, and a suggested unvoted topic',
+    accent: 'text-for-400',
+    borderColor: 'border-for-500/30',
+    bgColor: 'bg-for-500/5',
+    textColor: 'text-for-400',
+    items: [
+      { icon: Flame, label: 'PersonalDailyBar: a slim persistent strip above the feed showing your vote streak tier (common/rare/epic/legendary), today\'s vote progress as coloured dots, and your clout balance.', color: 'text-for-400' },
+      { icon: Zap, label: 'Suggested unvoted topic from your top engagement category — pulls from /api/me/today which computes your most-voted category and finds the highest feed-score active topic you haven\'t voted on.', color: 'text-for-300' },
+      { icon: Vote, label: '/ballot added to ⌘K Command Palette (Civic Ballot — one-at-a-time voting with context). /ballot added to sitemap.ts. /api/me/today new lightweight endpoint: streak, votes today, daily limit, clout, and suggested topic in one request.', color: 'text-surface-400' },
+    ],
+  },
+  {
     number: 'Ch. 211',
     title: 'The Civic Apex',
     subtitle: 'All-time record holders per category — consensus champion, dissent leader, most engaged, most argued, most contested, fastest law',
@@ -2007,10 +2021,10 @@ const CHAPTERS: Chapter[] = [
 ]
 
 const STATS = [
-  { value: '211', label: 'chapters shipped' },
-  { value: '680+', label: 'features built' },
+  { value: '212', label: 'chapters shipped' },
+  { value: '685+', label: 'features built' },
   { value: '84', label: 'DB migrations' },
-  { value: '540+', label: 'API routes' },
+  { value: '542+', label: 'API routes' },
 ]
 
 interface RecentBuild {
@@ -2023,6 +2037,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Personal Daily Bar',
+    description: 'New <PersonalDailyBar> component injected at the top of the main feed for logged-in users. Shows your vote streak with tier colouring (common/rare/epic/legendary), today\'s vote usage as coloured dot-progress, and clout balance. Right side: a suggested unvoted topic from your most-engaged civic category linking directly to the topic page, plus a quick "Vote" button linking to /ballot. New /api/me/today endpoint returns all this data in one request — computes top category from vote history, finds the highest feed-score active topic the user hasn\'t voted on, and includes streak/clout/daily-vote progress. /ballot added to ⌘K Command Palette under Voting Modes. /ballot added to sitemap.ts. Changelog stats updated to Ch. 212.',
+    href: '/',
+    icon: Flame,
+    color: 'text-for-400',
+    tag: 'Ch. 212',
+  },
   {
     title: 'The Civic Apex',
     description: 'New /apex page: all-time record holders across every civic category. For each of the 10 civic domains, shows 6 records — Consensus Champion (highest FOR% among topics with ≥20 votes), Dissent Leader (lowest FOR%), Most Engaged (most total votes), Most Argued (most arguments written), Most Contested (closest to 50/50), and Fastest Law (passed in fewest days from creation). Platform tab shows absolute all-time records across every topic. Each record card shows a FOR% bar, status pill (Law/Active/Failed), vote count, and a direct link to the topic. Category tabs for all 10 domains with per-category stats strip (total topics, law count, law rate). Refreshes every 10 minutes. Also updated: ⌘K Command Palette now includes /apex plus 15 previously missing pages from Ch. 196–210 (pressure, drought, flash, horizon, vortex, magnitude, blindspots, resonance, conviction, persuasion, analytics/coverage). Sitemap.ts updated with all recent pages. Changelog stats updated to 211 chapters.',
