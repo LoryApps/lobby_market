@@ -250,6 +250,27 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   ),
   { url: `${BASE_URL}/common-threads`, changeFrequency: 'hourly', priority: 0.72 },
   { url: `${BASE_URL}/feeds`, changeFrequency: 'monthly', priority: 0.55 },
+  // Ch. 194–211 — live signal & analytics pages
+  { url: `${BASE_URL}/undertow`, changeFrequency: 'always', priority: 0.78 },
+  { url: `${BASE_URL}/standoff`, changeFrequency: 'always', priority: 0.78 },
+  { url: `${BASE_URL}/pressure`, changeFrequency: 'always', priority: 0.77 },
+  { url: `${BASE_URL}/barometer`, changeFrequency: 'hourly', priority: 0.76 },
+  { url: `${BASE_URL}/drought`, changeFrequency: 'hourly', priority: 0.72 },
+  { url: `${BASE_URL}/flash`, changeFrequency: 'always', priority: 0.80 },
+  { url: `${BASE_URL}/horizon`, changeFrequency: 'hourly', priority: 0.76 },
+  { url: `${BASE_URL}/meridian`, changeFrequency: 'daily', priority: 0.72 },
+  { url: `${BASE_URL}/vortex`, changeFrequency: 'always', priority: 0.78 },
+  { url: `${BASE_URL}/chronicle`, changeFrequency: 'daily', priority: 0.70 },
+  { url: `${BASE_URL}/magnitude`, changeFrequency: 'hourly', priority: 0.74 },
+  { url: `${BASE_URL}/blindspots`, changeFrequency: 'daily', priority: 0.72 },
+  { url: `${BASE_URL}/resonance`, changeFrequency: 'daily', priority: 0.70 },
+  { url: `${BASE_URL}/conviction`, changeFrequency: 'daily', priority: 0.70 },
+  { url: `${BASE_URL}/rhetoric`, changeFrequency: 'daily', priority: 0.68 },
+  { url: `${BASE_URL}/timing`, changeFrequency: 'daily', priority: 0.68 },
+  { url: `${BASE_URL}/persuasion`, changeFrequency: 'daily', priority: 0.70 },
+  { url: `${BASE_URL}/analytics/coverage`, changeFrequency: 'daily', priority: 0.68 },
+  { url: `${BASE_URL}/awards`, changeFrequency: 'hourly', priority: 0.82 },
+  { url: `${BASE_URL}/apex`, changeFrequency: 'hourly', priority: 0.80 },
 ]
 
 export const dynamic = 'force-dynamic'
