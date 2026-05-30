@@ -279,6 +279,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'awards',
+    label: 'Civic Awards Hall',
+    sublabel: 'Weekly recognition for top arguments, bridge builders, and debate masters',
+    href: '/awards',
+    icon: Award,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'season',
     label: 'Civic Season',
     sublabel: 'Monthly championship — earn Season Points for every vote, argument, and law',
