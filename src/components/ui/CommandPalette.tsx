@@ -2516,6 +2516,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'bias',
+    label: 'Civic Bias Checker',
+    sublabel: 'Four-dimension cognitive bias report — confirmation, social proof, negativity, and category tunnel vision',
+    href: '/bias',
+    icon: Brain,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-400/10',
+  },
+  {
+    type: 'link',
     id: 'analytics-groups',
     label: 'Civic Groups Analytics',
     sublabel: 'How different civic roles (Citizens → Elders) vote, argue, and engage — platform-wide group breakdown',

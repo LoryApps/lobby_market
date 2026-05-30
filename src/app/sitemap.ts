@@ -102,6 +102,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/analytics/timing`, changeFrequency: 'daily', priority: 0.7 },
   { url: `${BASE_URL}/analytics/influence`, changeFrequency: 'daily', priority: 0.72 },
   { url: `${BASE_URL}/analytics/consistency`, changeFrequency: 'daily', priority: 0.68 },
+  { url: `${BASE_URL}/bias`, changeFrequency: 'daily', priority: 0.72 },
   { url: `${BASE_URL}/analytics/clout`, changeFrequency: 'daily', priority: 0.7 },
   { url: `${BASE_URL}/analytics/groups`, changeFrequency: 'daily', priority: 0.68 },
   { url: `${BASE_URL}/analytics/following`, changeFrequency: 'daily', priority: 0.68 },

@@ -2021,10 +2021,10 @@ const CHAPTERS: Chapter[] = [
 ]
 
 const STATS = [
-  { value: '212', label: 'chapters shipped' },
-  { value: '685+', label: 'features built' },
+  { value: '213', label: 'chapters shipped' },
+  { value: '689+', label: 'features built' },
   { value: '84', label: 'DB migrations' },
-  { value: '542+', label: 'API routes' },
+  { value: '543+', label: 'API routes' },
 ]
 
 interface RecentBuild {
@@ -2037,6 +2037,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Civic Bias Checker',
+    description: 'New /bias page with four-dimension cognitive bias report. Confirmation Bias: ratio of argument upvotes matching user\'s vote side. Social Proof Bias: % of votes cast with the majority. Negativity Bias: deviation of FOR/AGAINST ratio from 50/50 baseline. Category Tunnel Vision: Shannon entropy of category distribution (low entropy = high tunnel score). SVG arc gauges per metric, expandable detail cards with evidence + actionable tips, composite overall score, and linked cross-analytics. New /api/analytics/bias route — zero new DB schema, uses existing votes + argument_upvotes tables. Added to sitemap, ⌘K Command Palette, and changelog. Changelog stats updated to Ch. 213.',
+    href: '/bias',
+    icon: Brain,
+    color: 'text-against-400',
+    tag: 'Ch. 213',
+  },
   {
     title: 'Personal Daily Bar',
     description: 'New <PersonalDailyBar> component injected at the top of the main feed for logged-in users. Shows your vote streak with tier colouring (common/rare/epic/legendary), today\'s vote usage as coloured dot-progress, and clout balance. Right side: a suggested unvoted topic from your most-engaged civic category linking directly to the topic page, plus a quick "Vote" button linking to /ballot. New /api/me/today endpoint returns all this data in one request — computes top category from vote history, finds the highest feed-score active topic the user hasn\'t voted on, and includes streak/clout/daily-vote progress. /ballot added to ⌘K Command Palette under Voting Modes. /ballot added to sitemap.ts. Changelog stats updated to Ch. 212.',
