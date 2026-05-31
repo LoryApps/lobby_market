@@ -34,6 +34,7 @@ const PATTERNS = {
   error:        [90],                            // long single — blocked / failed
   dismiss:      [18],                            // subtle tick — sheet dismissed
   light:        [12],                            // barely-there touch feedback
+  selection:    [15],                            // gentle tap — item selected / option chosen
 } as const
 
 export type HapticPattern = keyof typeof PATTERNS
@@ -61,6 +62,7 @@ export const haptics = {
   error()        { vibrate(PATTERNS.error)         },
   dismiss()      { vibrate(PATTERNS.dismiss)       },
   light()        { vibrate(PATTERNS.light)         },
+  selection()    { vibrate(PATTERNS.selection)     },
 } as const
 
 /** Hook alias — returns the same singleton. */
