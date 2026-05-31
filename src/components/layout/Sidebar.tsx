@@ -71,6 +71,7 @@ const navItems: NavItem[] = [
   { href: '/flash',       label: 'Civic Flash', icon: Zap },
   { href: '/velocity', label: 'Velocity', icon: Zap },
   { href: '/flux', label: 'Civic Flux', icon: Shuffle },
+  { href: '/volatility', label: 'Volatility Index', icon: Activity },
   { href: '/tipping-point', label: 'Tipping Point', icon: Gauge },
   { href: '/tally', label: 'Tally Board', icon: Radio },
   { href: '/shifts', label: 'Opinion Shifts', icon: BarChart2 },

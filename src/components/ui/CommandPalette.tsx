@@ -1339,6 +1339,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'volatility',
+    label: 'Volatility Index',
+    sublabel: 'Debates where the community keeps changing its mind — ranked by standard deviation of daily FOR% over 7 days',
+    href: '/volatility',
+    icon: Activity,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-500/10',
+  },
+  {
+    type: 'link',
     id: 'tide',
     label: 'The Civic Tide',
     sublabel: '30-day macro view of platform sentiment — laws established, category trends, and whether civic consensus is rising or falling',
