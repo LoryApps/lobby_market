@@ -2088,13 +2088,27 @@ const CHAPTERS: Chapter[] = [
       { icon: Zap, label: 'Bug fix: haptics.selection() was called in QuickArgueSheet and TopicCard but missing from useHaptics.ts — added selection pattern [15ms]. Added /depth, /zeitgeist, and /epoch to ⌘K CommandPalette and sitemap.', href: '/depth', color: 'text-surface-400' },
     ],
   },
+  {
+    number: 'Ch. 218',
+    title: 'Civic Uncertainty Index',
+    subtitle: 'Debates where society is most genuinely unsure — ranked by closeness of vote split, balance of arguments on both sides, and engagement weight',
+    accent: 'text-against-400',
+    borderColor: 'border-against-500/30',
+    bgColor: 'bg-against-500/5',
+    textColor: 'text-against-400',
+    items: [
+      { icon: Shuffle, label: '/uncertainty: composite 0–100 Uncertainty Score per topic. Three dimensions — vote contestedness (50%): how close to 50/50; argument balance (30%): whether FOR and AGAINST arguments are equally matched; engagement weight (20%): log-scaled vote count ensuring high-uncertainty ≠ low-participation.', href: '/uncertainty', color: 'text-against-400' },
+      { icon: BarChart2, label: 'Category uncertainty breakdown grid (click to filter by category), stat bar (topics scored, near-50/50 count, avg margin, most uncertain category), sort modes (score / closest split / most voted / most argued), search filter, and info panel explaining the scoring methodology.', href: '/uncertainty', color: 'text-surface-400' },
+      { icon: AlertTriangle, label: 'Sitemap fix: /volatility, /zeitgeist, /epoch, /watershed, /frontlines, /canary, /seismic were built in prior chapters but missing from sitemap.ts — all added with appropriate frequencies and priorities.', href: '/uncertainty', color: 'text-surface-400' },
+    ],
+  },
 ]
 
 const STATS = [
-  { value: '217', label: 'chapters shipped' },
-  { value: '689+', label: 'features built' },
+  { value: '218', label: 'chapters shipped' },
+  { value: '693+', label: 'features built' },
   { value: '84', label: 'DB migrations' },
-  { value: '543+', label: 'API routes' },
+  { value: '544+', label: 'API routes' },
 ]
 
 interface RecentBuild {
@@ -2107,6 +2121,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Civic Uncertainty Index',
+    description: 'New /uncertainty page ranking debates by how genuinely unsure the community is — not just contested, but topics where vote split is near 50/50, arguments are balanced on both sides, and many people have weighed in. Uncertainty Score = vote contestedness (50%) + argument balance (30%) + engagement weight (20%). Category breakdown grid (click to filter), stat bar, four sort modes (score / closest split / most voted / most argued), search, and info panel explaining methodology. New /api/uncertainty route — zero new DB migrations. Sitemap fix: added /volatility, /zeitgeist, /epoch, /watershed, /frontlines, /canary, /seismic which were missing. Added /uncertainty to ⌘K CommandPalette and sitemap.',
+    href: '/uncertainty',
+    icon: Shuffle,
+    color: 'text-against-400',
+    tag: 'Ch. 218',
+  },
   {
     title: 'Civic Depth Index',
     description: 'New /depth page ranking debates by intellectual richness using a 0–100 composite Depth Score. Six dimensions: argument density (30pts), citation rate (20pts), AI quality score (25pts), wiki richness (15pts), prediction engagement (10pts), reply depth (10pts). Expandable topic rows show animated per-dimension bars, category breakdown grid, sort/search controls, and an info panel explaining the scoring formula. New /api/depth route — zero new DB migrations, aggregates from existing tables. Bug fix: haptics.selection() was called in QuickArgueSheet.tsx and TopicCard.tsx but was missing from useHaptics.ts — added selection pattern [15ms]. Added /depth, /zeitgeist, and /epoch to ⌘K Command Palette and sitemap.',

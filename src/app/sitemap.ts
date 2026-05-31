@@ -274,6 +274,15 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/analytics/coverage`, changeFrequency: 'daily', priority: 0.68 },
   { url: `${BASE_URL}/awards`, changeFrequency: 'hourly', priority: 0.82 },
   { url: `${BASE_URL}/apex`, changeFrequency: 'hourly', priority: 0.80 },
+  // Ch. 213–218 — newer analytical pages missing from earlier sitemap builds
+  { url: `${BASE_URL}/volatility`, changeFrequency: 'hourly', priority: 0.74 },
+  { url: `${BASE_URL}/zeitgeist`, changeFrequency: 'hourly', priority: 0.76 },
+  { url: `${BASE_URL}/epoch`, changeFrequency: 'daily', priority: 0.72 },
+  { url: `${BASE_URL}/watershed`, changeFrequency: 'daily', priority: 0.72 },
+  { url: `${BASE_URL}/frontlines`, changeFrequency: 'always', priority: 0.78 },
+  { url: `${BASE_URL}/canary`, changeFrequency: 'hourly', priority: 0.74 },
+  { url: `${BASE_URL}/seismic`, changeFrequency: 'hourly', priority: 0.74 },
+  { url: `${BASE_URL}/uncertainty`, changeFrequency: 'hourly', priority: 0.74 },
 ]
 
 export const dynamic = 'force-dynamic'

@@ -2453,6 +2453,16 @@ const QUICK_LINKS: QuickLink[] = [
     iconColor: 'text-against-300',
     iconBg: 'bg-against-500/10',
   },
+  {
+    type: 'link',
+    id: 'uncertainty',
+    label: 'Civic Uncertainty Index',
+    sublabel: 'Topics where society is most genuinely unsure — near-equal votes, balanced arguments, and high engagement',
+    href: '/uncertainty',
+    icon: Shuffle,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-500/10',
+  },
   // ── Analytics & Personal ───────────────────────────────────────────────────────────────────
   {
     type: 'link',
