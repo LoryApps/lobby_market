@@ -1519,6 +1519,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'inertia',
+    label: 'Civic Inertia Index',
+    sublabel: 'Debates that absorbed the most argument without budging — the bedrock beliefs of the platform',
+    href: '/inertia',
+    icon: Activity,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'vortex',
     label: 'The Civic Vortex',
     sublabel: 'Topics pulling maximum platform attention — dominating the debate sphere right now',
