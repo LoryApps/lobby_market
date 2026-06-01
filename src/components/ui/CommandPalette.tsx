@@ -108,6 +108,7 @@ import {
   Bird,
   CalendarClock,
   ListChecks,
+  Lock,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -1346,6 +1347,16 @@ const QUICK_LINKS: QuickLink[] = [
     icon: Activity,
     iconColor: 'text-against-400',
     iconBg: 'bg-against-500/10',
+  },
+  {
+    type: 'link',
+    id: 'friction',
+    label: 'Civic Friction Index',
+    sublabel: 'Debates that refuse to resolve — high votes, long lifespan, stuck near 50/50. The immovable controversies of the Lobby.',
+    href: '/friction',
+    icon: Lock,
+    iconColor: 'text-orange-400',
+    iconBg: 'bg-orange-500/10',
   },
   {
     type: 'link',

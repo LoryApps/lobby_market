@@ -44,6 +44,7 @@ import {
   Shuffle,
   CalendarClock,
   GlassWater,
+  Lock,
 } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { createClient } from '@/lib/supabase/client'
@@ -72,6 +73,7 @@ const navItems: NavItem[] = [
   { href: '/velocity', label: 'Velocity', icon: Zap },
   { href: '/flux', label: 'Civic Flux', icon: Shuffle },
   { href: '/volatility', label: 'Volatility Index', icon: Activity },
+  { href: '/friction', label: 'Friction Index', icon: Lock },
   { href: '/tipping-point', label: 'Tipping Point', icon: Gauge },
   { href: '/tally', label: 'Tally Board', icon: Radio },
   { href: '/shifts', label: 'Opinion Shifts', icon: BarChart2 },
