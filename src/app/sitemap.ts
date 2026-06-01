@@ -283,6 +283,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/canary`, changeFrequency: 'hourly', priority: 0.74 },
   { url: `${BASE_URL}/seismic`, changeFrequency: 'hourly', priority: 0.74 },
   { url: `${BASE_URL}/uncertainty`, changeFrequency: 'hourly', priority: 0.74 },
+  { url: `${BASE_URL}/entropy`, changeFrequency: 'hourly', priority: 0.74 },
 ]
 
 export const dynamic = 'force-dynamic'

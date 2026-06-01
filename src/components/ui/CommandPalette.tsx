@@ -2473,6 +2473,16 @@ const QUICK_LINKS: QuickLink[] = [
     iconColor: 'text-against-400',
     iconBg: 'bg-against-500/10',
   },
+  {
+    type: 'link',
+    id: 'entropy',
+    label: 'Civic Entropy Index',
+    sublabel: 'Shannon entropy applied to vote splits — maximum democratic disorder, ranked by split closeness × voter turnout',
+    href: '/entropy',
+    icon: Shuffle,
+    iconColor: 'text-against-300',
+    iconBg: 'bg-against-500/10',
+  },
   // ── Analytics & Personal ───────────────────────────────────────────────────────────────────
   {
     type: 'link',

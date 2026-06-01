@@ -2102,11 +2102,25 @@ const CHAPTERS: Chapter[] = [
       { icon: AlertTriangle, label: 'Sitemap fix: /volatility, /zeitgeist, /epoch, /watershed, /frontlines, /canary, /seismic were built in prior chapters but missing from sitemap.ts — all added with appropriate frequencies and priorities.', href: '/uncertainty', color: 'text-surface-400' },
     ],
   },
+  {
+    number: 'Ch. 223',
+    title: 'Civic Entropy Index',
+    subtitle: 'Shannon information entropy applied to vote splits — surfaces the debates where democratic disagreement is sharpest and most consequential',
+    accent: 'text-against-300',
+    borderColor: 'border-against-500/30',
+    bgColor: 'bg-against-500/5',
+    textColor: 'text-against-300',
+    items: [
+      { icon: Shuffle, label: '/entropy: Shannon entropy H(p) = -p·log₂(p) - (1-p)·log₂(1-p) per topic. Maximum (1.0) at perfect 50/50 split; zero at unanimous consensus. Composite entropy_score = raw entropy × log-volume weight so high-turnout contested debates outrank obscure 50/50 splits.', href: '/entropy', color: 'text-against-300' },
+      { icon: BarChart2, label: 'Five entropy tiers: Schism (≥80), Discord (60–79), Contest (40–59), Lean (20–39), Resolve (<20). SVG arc gauge per topic shows entropy % at a glance. Tier distribution bar visualises platform-wide breakdown. Category breakdown with per-domain entropy bars.', href: '/entropy', color: 'text-surface-400' },
+      { icon: Activity, label: 'Filter by tier or category; four sort modes: entropy score, raw entropy, vote count, closest to 50/50. Stats header (platform entropy %, schism count, avg split gap, topics scored). Cross-links to /inertia, /equilibrium, /tipping-point, /volatility. New /api/entropy route — zero new DB migrations.', href: '/entropy', color: 'text-surface-400' },
+    ],
+  },
 ]
 
 const STATS = [
-  { value: '218', label: 'chapters shipped' },
-  { value: '693+', label: 'features built' },
+  { value: '223', label: 'chapters shipped' },
+  { value: '696+', label: 'features built' },
   { value: '84', label: 'DB migrations' },
   { value: '544+', label: 'API routes' },
 ]
@@ -2121,6 +2135,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Civic Entropy Index',
+    description: 'New /entropy page applying Shannon information entropy (H(p) = -p·log₂(p) - (1-p)·log₂(1-p)) to binary vote splits. Maximum entropy at 50/50; zero at unanimity. Composite entropy_score = raw entropy × log-volume weight so high-turnout contested debates outrank obscure splits. Five tiers: Schism / Discord / Contest / Lean / Resolve. SVG arc gauge per topic, tier distribution bar, category entropy breakdown, four sort modes, tier + category filters, info panel explaining the methodology. New /api/entropy route — zero new DB migrations. Cross-links to /inertia, /equilibrium, /tipping-point, /volatility. Changelog stats updated to Ch. 223.',
+    href: '/entropy',
+    icon: Shuffle,
+    color: 'text-against-300',
+    tag: 'Ch. 223',
+  },
   {
     title: 'Civic Uncertainty Index',
     description: 'New /uncertainty page ranking debates by how genuinely unsure the community is — not just contested, but topics where vote split is near 50/50, arguments are balanced on both sides, and many people have weighed in. Uncertainty Score = vote contestedness (50%) + argument balance (30%) + engagement weight (20%). Category breakdown grid (click to filter), stat bar, four sort modes (score / closest split / most voted / most argued), search, and info panel explaining methodology. New /api/uncertainty route — zero new DB migrations. Sitemap fix: added /volatility, /zeitgeist, /epoch, /watershed, /frontlines, /canary, /seismic which were missing. Added /uncertainty to ⌘K CommandPalette and sitemap.',
