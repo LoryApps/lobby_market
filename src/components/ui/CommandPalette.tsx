@@ -1340,6 +1340,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'tremor',
+    label: 'Civic Tremor',
+    sublabel: 'Opinion seismograph — where recent voters deviate from all-time consensus, revealing surges, reversals, deepening majorities, and eroding leads',
+    href: '/tremor',
+    icon: Activity,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-500/10',
+  },
+  {
+    type: 'link',
     id: 'volatility',
     label: 'Volatility Index',
     sublabel: 'Debates where the community keeps changing its mind — ranked by standard deviation of daily FOR% over 7 days',
