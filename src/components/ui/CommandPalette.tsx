@@ -1540,6 +1540,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'amplitude',
+    label: 'Civic Amplitude Index',
+    sublabel: 'How decisively has the community swung? Topics ranked by the force of their consensus verdict',
+    href: '/amplitude',
+    icon: Activity,
+    iconColor: 'text-for-300',
+    iconBg: 'bg-for-400/10',
+  },
+  {
+    type: 'link',
     id: 'vortex',
     label: 'The Civic Vortex',
     sublabel: 'Topics pulling maximum platform attention — dominating the debate sphere right now',
