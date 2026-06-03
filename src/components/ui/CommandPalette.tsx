@@ -300,6 +300,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'zenith',
+    label: 'The Civic Zenith',
+    sublabel: 'All-time peak moments — most voted debate, fastest law, highest consensus, category champions',
+    href: '/zenith',
+    icon: Crown,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'season',
     label: 'Civic Season',
     sublabel: 'Monthly championship — earn Season Points for every vote, argument, and law',
