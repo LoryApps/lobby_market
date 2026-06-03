@@ -2868,6 +2868,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'overton',
+    label: 'The Overton Window',
+    sublabel: 'Map every active topic onto the spectrum of civic acceptability — inside the window, leaning, or extreme consensus',
+    href: '/overton',
+    icon: Scale,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
     id: 'memories',
     label: 'Civic Memories',
     sublabel: 'On this day in civic history — your past votes and arguments, plus laws passed on this date in prior years',
