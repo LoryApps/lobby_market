@@ -110,6 +110,7 @@ import {
   ListChecks,
   Lock,
   Lightbulb,
+  Waves,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -1328,6 +1329,16 @@ const QUICK_LINKS: QuickLink[] = [
     icon: Bird,
     iconColor: 'text-gold',
     iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'influx',
+    label: 'The Civic Influx',
+    sublabel: 'Topics where viewer interest has outpaced voter participation — debates on the verge of a democratic wave',
+    href: '/influx',
+    icon: Waves,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
   },
   {
     type: 'link',

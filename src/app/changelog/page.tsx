@@ -2119,10 +2119,10 @@ const CHAPTERS: Chapter[] = [
 ]
 
 const STATS = [
-  { value: '223', label: 'chapters shipped' },
-  { value: '696+', label: 'features built' },
+  { value: '241', label: 'chapters shipped' },
+  { value: '740+', label: 'features built' },
   { value: '84', label: 'DB migrations' },
-  { value: '544+', label: 'API routes' },
+  { value: '560+', label: 'API routes' },
 ]
 
 interface RecentBuild {
@@ -2135,6 +2135,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'The Civic Influx',
+    description: 'New /influx page revealing topics where viewer interest has dramatically outpaced voter participation. Influx Score = viewer_gap × (1 − conversion_rate), where viewer_gap = view_count − total_votes and conversion_rate = total_votes / view_count. Four intensity tiers: Flood (≥5,000) / Surge (2,000–5,000) / Rising (800–2,000) / Swell (<800). Each card shows the raw viewer gap, animated conversion meter, vote bar, and a "Vote now" CTA. Category filter, animated stat strip (total untapped votes + avg conversion rate), related-pages nav. New /api/topics/influx route — zero new DB migrations. Added to ⌘K CommandPalette (Waves icon) and sitemap. Changelog stats updated to Ch. 241.',
+    href: '/influx',
+    icon: Eye,
+    color: 'text-for-400',
+    tag: 'Ch. 241',
+  },
   {
     title: 'Civic Entropy Index',
     description: 'New /entropy page applying Shannon information entropy (H(p) = -p·log₂(p) - (1-p)·log₂(1-p)) to binary vote splits. Maximum entropy at 50/50; zero at unanimity. Composite entropy_score = raw entropy × log-volume weight so high-turnout contested debates outrank obscure splits. Five tiers: Schism / Discord / Contest / Lean / Resolve. SVG arc gauge per topic, tier distribution bar, category entropy breakdown, four sort modes, tier + category filters, info panel explaining the methodology. New /api/entropy route — zero new DB migrations. Cross-links to /inertia, /equilibrium, /tipping-point, /volatility. Changelog stats updated to Ch. 223.',

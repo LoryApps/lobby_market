@@ -286,6 +286,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/uncertainty`, changeFrequency: 'hourly', priority: 0.74 },
   { url: `${BASE_URL}/entropy`, changeFrequency: 'hourly', priority: 0.74 },
   { url: `${BASE_URL}/amplitude`, changeFrequency: 'hourly', priority: 0.75 },
+  { url: `${BASE_URL}/influx`, changeFrequency: 'hourly', priority: 0.76 },
 ]
 
 export const dynamic = 'force-dynamic'
