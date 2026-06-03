@@ -109,6 +109,7 @@ import {
   CalendarClock,
   ListChecks,
   Lock,
+  Lightbulb,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -235,6 +236,16 @@ const QUICK_LINKS: QuickLink[] = [
     sublabel: 'Best argument, closest call, rising star, and newest law this week',
     href: '/spotlight',
     icon: Sparkles,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
+    id: 'lighthouse',
+    label: 'Civic Lighthouse',
+    sublabel: 'Neglected debates gone dark — topics with few votes waiting for your voice',
+    href: '/lighthouse',
+    icon: Lightbulb,
     iconColor: 'text-gold',
     iconBg: 'bg-gold/10',
   },
