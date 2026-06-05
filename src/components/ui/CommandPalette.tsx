@@ -3470,6 +3470,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'civic-wiki',
+    label: 'Civic Wiki Portal',
+    sublabel: 'Browse featured articles, recent changes, top editors, and category coverage',
+    href: '/wiki',
+    icon: BookOpen,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
     id: 'topic-wiki-recent',
     label: 'Recent Wiki Edits',
     sublabel: "Latest changes to topic wiki articles — who's been writing and revising civic knowledge",

@@ -2119,7 +2119,7 @@ const CHAPTERS: Chapter[] = [
 ]
 
 const STATS = [
-  { value: '251', label: 'chapters shipped' },
+  { value: '252', label: 'chapters shipped' },
   { value: '750+', label: 'features built' },
   { value: '84', label: 'DB migrations' },
   { value: '560+', label: 'API routes' },
@@ -2135,6 +2135,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Civic Wiki Portal',
+    description: 'New /wiki page (Ch. 252) — a Wikipedia-style gateway into the Lobby\'s collective knowledge base. Features: Featured Article (most-viewed topic with a rich wiki description), Recent Changes feed (last 8 wiki edits with editor attribution), Top Editors leaderboard (ranked by total edits from topic_wiki_history), Category Coverage bars (article count + coverage % per civic domain), stats strip (total articles / coverage % / total topics), and six quick-link cards to related features (recent edits, wiki leaderboard, topic graph, source library, established laws, propose a topic). New /api/wiki route — aggregates from topics, topic_wiki_history, and profiles. Zero new DB migrations. Added to TopBar menu (BookOpen icon near Civic Almanac) and ⌘K CommandPalette. Sitemap updated. Changelog stats updated to Ch. 252.',
+    href: '/wiki',
+    icon: BookOpen,
+    color: 'text-for-400',
+    tag: 'Ch. 252',
+  },
   {
     title: 'The Civic Fulcrum',
     description: 'New /fulcrum page (Ch. 251) surfacing the platform\'s most perfectly balanced 50/50 debates — topics where FOR and AGAINST hold equal ground and a single decisive argument could tip everything. Fulcrum Score = proximity-to-50/50 × log₁₀(vote volume), so well-debated balanced topics rank above fringe splits. Each card shows the balance meter with a gold centre-tick, vote breakdown, and an expandable panel revealing the top FOR and AGAINST arguments ranked by upvotes (60%) + AI quality score (40%). New /api/fulcrum route — zero new DB migrations, aggregates from topics and topic_arguments. Added to TopBar menu (gold Scale icon) near Civic Fracture and Civic Schism. Changelog stats updated to Ch. 251.',

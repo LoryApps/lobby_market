@@ -119,6 +119,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/calibration`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/compare`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/compare-users`, changeFrequency: 'daily', priority: 0.65 },
+  { url: `${BASE_URL}/wiki`, changeFrequency: 'hourly', priority: 0.75 },
   { url: `${BASE_URL}/topic/wiki/recent`, changeFrequency: 'hourly', priority: 0.65 },
   { url: `${BASE_URL}/transparency`, changeFrequency: 'hourly', priority: 0.7 },
   { url: `${BASE_URL}/vitals`, changeFrequency: 'hourly', priority: 0.68 },
