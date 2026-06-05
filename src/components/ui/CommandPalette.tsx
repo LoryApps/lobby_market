@@ -1342,6 +1342,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'fulcrum',
+    label: 'The Civic Fulcrum',
+    sublabel: 'Near-perfect 50/50 splits — the most balanced debates where one decisive argument holds the scales. Your vote matters most here.',
+    href: '/fulcrum',
+    icon: Scale,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'rhythm',
     label: 'Civic Rhythm',
     sublabel: 'When democracy happens — 7×24 temporal heatmap of votes and arguments by day and hour',

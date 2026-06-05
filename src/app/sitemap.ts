@@ -287,6 +287,8 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/entropy`, changeFrequency: 'hourly', priority: 0.74 },
   { url: `${BASE_URL}/amplitude`, changeFrequency: 'hourly', priority: 0.75 },
   { url: `${BASE_URL}/influx`, changeFrequency: 'hourly', priority: 0.76 },
+  // Ch. 251 — The Civic Fulcrum
+  { url: `${BASE_URL}/fulcrum`, changeFrequency: 'hourly', priority: 0.77 },
 ]
 
 export const dynamic = 'force-dynamic'

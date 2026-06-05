@@ -2119,8 +2119,8 @@ const CHAPTERS: Chapter[] = [
 ]
 
 const STATS = [
-  { value: '241', label: 'chapters shipped' },
-  { value: '740+', label: 'features built' },
+  { value: '251', label: 'chapters shipped' },
+  { value: '750+', label: 'features built' },
   { value: '84', label: 'DB migrations' },
   { value: '560+', label: 'API routes' },
 ]
@@ -2135,6 +2135,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'The Civic Fulcrum',
+    description: 'New /fulcrum page (Ch. 251) surfacing the platform\'s most perfectly balanced 50/50 debates — topics where FOR and AGAINST hold equal ground and a single decisive argument could tip everything. Fulcrum Score = proximity-to-50/50 × log₁₀(vote volume), so well-debated balanced topics rank above fringe splits. Each card shows the balance meter with a gold centre-tick, vote breakdown, and an expandable panel revealing the top FOR and AGAINST arguments ranked by upvotes (60%) + AI quality score (40%). New /api/fulcrum route — zero new DB migrations, aggregates from topics and topic_arguments. Added to TopBar menu (gold Scale icon) near Civic Fracture and Civic Schism. Changelog stats updated to Ch. 251.',
+    href: '/fulcrum',
+    icon: Scale,
+    color: 'text-gold',
+    tag: 'Ch. 251',
+  },
   {
     title: 'The Civic Influx',
     description: 'New /influx page revealing topics where viewer interest has dramatically outpaced voter participation. Influx Score = viewer_gap × (1 − conversion_rate), where viewer_gap = view_count − total_votes and conversion_rate = total_votes / view_count. Four intensity tiers: Flood (≥5,000) / Surge (2,000–5,000) / Rising (800–2,000) / Swell (<800). Each card shows the raw viewer gap, animated conversion meter, vote bar, and a "Vote now" CTA. Category filter, animated stat strip (total untapped votes + avg conversion rate), related-pages nav. New /api/topics/influx route — zero new DB migrations. Added to ⌘K CommandPalette (Waves icon) and sitemap. Changelog stats updated to Ch. 241.',
