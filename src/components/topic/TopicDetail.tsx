@@ -83,6 +83,7 @@ import { TopicChat } from '@/components/topic/TopicChat'
 import { TopicEvidencePanel } from '@/components/topic/TopicEvidencePanel'
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary'
 import { ArgumentQualityPanel } from '@/components/topic/ArgumentQualityPanel'
+import { TopicCorrelationsPanel } from '@/components/topic/TopicCorrelationsPanel'
 
 const SIGNAL_ICONS_DETAIL: Record<string, typeof Flame> = {
   ending_soon:     Clock,
@@ -931,6 +932,11 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
             {/* Related topics — discovery section */}
             <ErrorBoundary size="sm" label="Couldn't load related topics" className="mt-8">
               <RelatedTopics topicId={topic.id} className="mt-8" />
+            </ErrorBoundary>
+
+            {/* Ideological correlations — topics voters tend to pair with this one */}
+            <ErrorBoundary size="sm" label="Couldn't load correlations" className="mt-8">
+              <TopicCorrelationsPanel topicId={topic.id} className="mt-8" />
             </ErrorBoundary>
 
             {/* Connections hub link */}
