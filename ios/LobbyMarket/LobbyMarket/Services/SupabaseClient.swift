@@ -245,6 +245,66 @@ final class SupabaseClient {
         return list.first
     }
 
+    // MARK: - Search
+
+    func searchTopics(query: String, limit: Int = 20) async throws -> [Topic] {
+        var q = QueryParams()
+        q.select("*")
+        q.ilike("statement", "*\(query)*")
+        q.order("total_votes", ascending: false)
+        q.limit(limit)
+        let req = try buildRequest(method: "GET", path: "topics", query: q)
+        return try await execute(req)
+    }
+
+    func searchProfiles(query: String, limit: Int = 20) async throws -> [SearchProfile] {
+        var q = QueryParams()
+        q.select("id,username,display_name,clout,votes_cast")
+        q.ilike("username", "*\(query)*")
+        q.order("clout", ascending: false)
+        q.limit(limit)
+        let req = try buildRequest(method: "GET", path: "profiles", query: q)
+
+        // Decode raw JSON into SearchProfile
+        let (data, response) = try await URLSession.shared.data(for: req)
+        guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
+            throw SupabaseError.invalidResponse
+        }
+        struct RawProfile: Codable {
+            let id: String
+            let username: String
+            let display_name: String?
+            let clout: Int?
+            let votes_cast: Int?
+        }
+        let raw = try JSONDecoder().decode([RawProfile].self, from: data)
+        return raw.map {
+            SearchProfile(
+                id: $0.id,
+                username: $0.username,
+                displayName: $0.display_name,
+                clout: $0.clout ?? 0,
+                votesCast: $0.votes_cast ?? 0
+            )
+        }
+    }
+
+    // MARK: - Arguments
+
+    func fetchArguments(topicId: String, limit: Int = 20) async throws -> [Argument] {
+        var q = QueryParams()
+        q.select("id,topic_id,author_id,content,side,upvotes,created_at")
+        q.eq("topic_id", topicId)
+        q.order("upvotes", ascending: false)
+        q.limit(limit)
+        let req = try buildRequest(method: "GET", path: "arguments", query: q)
+        do {
+            return try await execute(req)
+        } catch {
+            return Argument.sampleData.filter { $0.topicId == topicId }
+        }
+    }
+
     // MARK: - Profiles
 
     func fetchProfile(id: String) async throws -> Profile? {

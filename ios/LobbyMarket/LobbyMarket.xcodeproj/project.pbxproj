@@ -32,6 +32,8 @@
 		F5B5363AE9354A37274D2D3B /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D1D2976198B01CA88582A90 /* ProfileView.swift */; };
 		342EF6B759840733B0D6971A /* CreateTopicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9DC7B837A9125F61BA33E2E /* CreateTopicView.swift */; };
 		642B5EEFF878DFEF0D29E2B5 /* TopicDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2889D11EA4ED0E7B7895CE0 /* TopicDetailView.swift */; };
+		A9F3B21C1D4E7A8B2C6F0E35 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7C8E45F3A2B1F9E4B0D6C78 /* SearchView.swift */; };
+		B2E4F7A9C3D1E6B8A0F5D2C4 /* Argument.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8F2C1A4B6D3E7F9A0B5C8D2 /* Argument.swift */; };
 		14394479B75708F8FF2E238F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 37E4D4511D6DE1D83D37BF1C /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
@@ -64,6 +66,8 @@
 		6D1D2976198B01CA88582A90 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		F9DC7B837A9125F61BA33E2E /* CreateTopicView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTopicView.swift; sourceTree = "<group>"; };
 		E2889D11EA4ED0E7B7895CE0 /* TopicDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopicDetailView.swift; sourceTree = "<group>"; };
+		D7C8E45F3A2B1F9E4B0D6C78 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
+		E8F2C1A4B6D3E7F9A0B5C8D2 /* Argument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Argument.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,6 +114,7 @@
 		BF657CFE8769AAE6C0570C29 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				E8F2C1A4B6D3E7F9A0B5C8D2 /* Argument.swift */,
 				753FAE4761225EF46D2BE44B /* Law.swift */,
 				C2950F14670FE883E18320E2 /* Profile.swift */,
 				6475FA375C2FC00A6F769FF1 /* Topic.swift */,
@@ -166,6 +171,7 @@
 				5B6692E5497C049293E4FA7C /* TopicCardView.swift */,
 				889DA91F469A20B1F280417A /* VoteBarView.swift */,
 				23732444B906FEFC3F0D1985 /* VoteButtonsView.swift */,
+				D7C8E45F3A2B1F9E4B0D6C78 /* SearchView.swift */,
 			);
 			path = Feed;
 			sourceTree = "<group>";
@@ -301,6 +307,8 @@
 				F5B5363AE9354A37274D2D3B /* ProfileView.swift in Sources */,
 				342EF6B759840733B0D6971A /* CreateTopicView.swift in Sources */,
 				642B5EEFF878DFEF0D29E2B5 /* TopicDetailView.swift in Sources */,
+				A9F3B21C1D4E7A8B2C6F0E35 /* SearchView.swift in Sources */,
+				B2E4F7A9C3D1E6B8A0F5D2C4 /* Argument.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

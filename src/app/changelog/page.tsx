@@ -2119,10 +2119,10 @@ const CHAPTERS: Chapter[] = [
 ]
 
 const STATS = [
-  { value: '252', label: 'chapters shipped' },
-  { value: '750+', label: 'features built' },
-  { value: '84', label: 'DB migrations' },
-  { value: '560+', label: 'API routes' },
+  { value: '264', label: 'chapters shipped' },
+  { value: '800+', label: 'features built' },
+  { value: '85', label: 'DB migrations' },
+  { value: '580+', label: 'API routes' },
 ]
 
 interface RecentBuild {
@@ -2135,6 +2135,13 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'iOS Search + Arguments',
+    description: 'iOS app Ch. 264 — added full global search to the iOS native app: topics (by statement via Supabase ilike), laws (by title), and citizens (by username, showing clout + votes). SearchView.swift with debounced search, three-scope picker (Topics/Laws/Citizens), animated loading state, empty-state prompts, and mini vote bars in topic results. New Search tab added to ContentView with a magnifyingglass icon. SupabaseClient extended with searchTopics() and searchProfiles() methods. New Argument.swift model (id, topicId, authorId, content, side blue/red, upvotes, createdAt). TopicDetailView.swift enhanced: arguments section below voting with FOR/AGAINST/All filter pills, ArgumentRow cards with side-coloured borders, upvote counts, animated skeleton loading states. SupabaseClient extended with fetchArguments(topicId:) — queries the arguments table ordered by upvotes. Xcode project.pbxproj updated to include both new files.',
+    icon: Search,
+    color: 'text-for-400',
+    tag: 'Ch. 264',
+  },
   {
     title: 'Civic Wiki Portal',
     description: 'New /wiki page (Ch. 252) — a Wikipedia-style gateway into the Lobby\'s collective knowledge base. Features: Featured Article (most-viewed topic with a rich wiki description), Recent Changes feed (last 8 wiki edits with editor attribution), Top Editors leaderboard (ranked by total edits from topic_wiki_history), Category Coverage bars (article count + coverage % per civic domain), stats strip (total articles / coverage % / total topics), and six quick-link cards to related features (recent edits, wiki leaderboard, topic graph, source library, established laws, propose a topic). New /api/wiki route — aggregates from topics, topic_wiki_history, and profiles. Zero new DB migrations. Added to TopBar menu (BookOpen icon near Civic Almanac) and ⌘K CommandPalette. Sitemap updated. Changelog stats updated to Ch. 252.',
