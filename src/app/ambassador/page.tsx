@@ -640,6 +640,7 @@ export default function AmbassadorPage() {
                   { href: '/clout',    label: 'Clout Wallet',    color: 'text-gold border-gold/30 bg-gold/5 hover:bg-gold/10' },
                   { href: '/profile/me', label: 'My Profile',   color: 'text-for-400 border-for-500/30 bg-for-500/5 hover:bg-for-500/10' },
                   { href: '/leaderboard', label: 'Leaderboard', color: 'text-purple border-purple/30 bg-purple/5 hover:bg-purple/10' },
+                  { href: '/leaderboard/ambassadors', label: 'Ambassador Rankings', color: 'text-emerald border-emerald/30 bg-emerald/5 hover:bg-emerald/10' },
                 ].map((l) => (
                   <Link
                     key={l.href}
