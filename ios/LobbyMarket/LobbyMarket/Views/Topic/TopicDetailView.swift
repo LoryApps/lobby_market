@@ -15,6 +15,8 @@ struct TopicDetailView: View {
     @State private var arguments: [Argument] = []
     @State private var loadingArguments = false
     @State private var argumentSideFilter: ArgumentSideFilter = .all
+    @State private var showPostSheet = false
+    @State private var postSheetSide: Argument.ArgumentSide = .blue
 
     enum ArgumentSideFilter: String, CaseIterable {
         case all = "All"
@@ -103,6 +105,24 @@ struct TopicDetailView: View {
                                 .font(.lmMono)
                                 .foregroundStyle(.textTertiary)
                         }
+                        // Compose button — only if signed in
+                        if auth.isAuthenticated {
+                            Button {
+                                Haptics.impact(.light)
+                                postSheetSide = currentVote == .red ? .red : .blue
+                                showPostSheet = true
+                            } label: {
+                                Image(systemName: "square.and.pencil")
+                                    .font(.system(size: 16, weight: .semibold))
+                                    .foregroundStyle(.forBlue)
+                            }
+                            .padding(.leading, Spacing.xs)
+                        }
+                    }
+                    .sheet(isPresented: $showPostSheet, onDismiss: {
+                        Task { await loadArguments() }
+                    }) {
+                        PostArgumentSheet(topic: topic, initialSide: postSheetSide)
                     }
 
                     // Side filter
@@ -209,8 +229,12 @@ struct TopicDetailView: View {
     // MARK: - Data loading
 
     private func loadAll() async {
-        loadingArguments = true
         realtime.subscribe(topicId: topic.id)
+        await loadArguments()
+    }
+
+    private func loadArguments() async {
+        loadingArguments = true
         do {
             let result = try await SupabaseClient.shared.fetchArguments(topicId: topic.id)
             await MainActor.run {

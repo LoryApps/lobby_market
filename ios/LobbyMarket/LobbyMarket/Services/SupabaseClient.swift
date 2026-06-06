@@ -316,6 +316,70 @@ final class SupabaseClient {
         let list: [Profile] = try await execute(req)
         return list.first
     }
+
+    // MARK: - Notifications
+
+    func fetchNotifications(userId: String, limit: Int = 60) async throws -> [LMNotification] {
+        var q = QueryParams()
+        q.select("id,user_id,type,title,body,topic_id,is_read,created_at")
+        q.eq("user_id", userId)
+        q.order("created_at", ascending: false)
+        q.limit(limit)
+        let req = try buildRequest(method: "GET", path: "notifications", query: q)
+        do {
+            return try await execute(req)
+        } catch {
+            return LMNotification.sampleData
+        }
+    }
+
+    func markAllNotificationsRead(userId: String) async throws {
+        // PATCH /notifications?user_id=eq.<userId> with is_read = true
+        guard var components = URLComponents(
+            url: Config.restURL.appendingPathComponent("notifications"),
+            resolvingAgainstBaseURL: false
+        ) else { throw SupabaseError.invalidURL }
+        components.queryItems = [URLQueryItem(name: "user_id", value: "eq.\(userId)")]
+        guard let url = components.url else { throw SupabaseError.invalidURL }
+
+        var req = URLRequest(url: url)
+        req.httpMethod = "PATCH"
+        req.setValue(Config.anonKey, forHTTPHeaderField: "apikey")
+        req.setValue("Bearer \(accessToken ?? Config.anonKey)", forHTTPHeaderField: "Authorization")
+        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        req.httpBody = try encoder.encode(["is_read": true])
+
+        let (_, response) = try await URLSession.shared.data(for: req)
+        guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
+            throw SupabaseError.invalidResponse
+        }
+    }
+
+    // MARK: - Post Argument
+
+    func postArgument(
+        topicId: String,
+        side: Argument.ArgumentSide,
+        content: String,
+        userId: String
+    ) async throws -> Argument {
+        let payload = NewArgumentPayload(
+            topic_id: topicId,
+            author_id: userId,
+            side: side.rawValue,
+            content: content
+        )
+        let body = try encoder.encode(payload)
+        let req = try buildRequest(
+            method: "POST",
+            path: "topic_arguments",
+            body: body,
+            preferReturn: true
+        )
+        let list: [Argument] = try await execute(req)
+        guard let first = list.first else { throw SupabaseError.invalidResponse }
+        return first
+    }
 }
 
 /// Dummy type for endpoints that don't return a body.
@@ -327,4 +391,12 @@ struct NewTopicPayload: Encodable {
     let description: String?
     let category: String?
     let author_id: String?
+}
+
+/// Payload for posting an argument.
+struct NewArgumentPayload: Encodable {
+    let topic_id: String
+    let author_id: String
+    let side: String
+    let content: String
 }

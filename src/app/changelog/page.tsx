@@ -2119,8 +2119,8 @@ const CHAPTERS: Chapter[] = [
 ]
 
 const STATS = [
-  { value: '264', label: 'chapters shipped' },
-  { value: '800+', label: 'features built' },
+  { value: '265', label: 'chapters shipped' },
+  { value: '810+', label: 'features built' },
   { value: '85', label: 'DB migrations' },
   { value: '580+', label: 'API routes' },
 ]
@@ -2135,6 +2135,13 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'iOS Notifications + Post Argument',
+    description: 'iOS app Ch. 265 — two high-engagement iOS features. (1) NotificationsView.swift: full notifications tab with grouped Today/Earlier sections, 15 notification types (achievement_earned, debate_starting, law_established, reply_received, streak_reminder, etc.), skeleton loading, mark-all-as-read (PATCH /notifications), empty state, and per-type icons/accent colors. Notification.swift model added to Models group. New "Alerts" tab added as 6th tab in ContentView. (2) PostArgumentSheet.swift: compose sheet for FOR/AGAINST argument submission from TopicDetailView — side selector pills, TextEditor with 500-char limit, live remaining counter, submit state. Triggered by new pencil button in the arguments section header (only shown when signed in). SupabaseClient extended with fetchNotifications(), markAllNotificationsRead() (PATCH), and postArgument() (POST to topic_arguments). TopicDetailView refactored to extract loadArguments() so sheet can refresh the list on dismiss. project.pbxproj updated with all three new files.',
+    icon: Bell,
+    color: 'text-for-400',
+    tag: 'Ch. 265',
+  },
   {
     title: 'iOS Search + Arguments',
     description: 'iOS app Ch. 264 — added full global search to the iOS native app: topics (by statement via Supabase ilike), laws (by title), and citizens (by username, showing clout + votes). SearchView.swift with debounced search, three-scope picker (Topics/Laws/Citizens), animated loading state, empty-state prompts, and mini vote bars in topic results. New Search tab added to ContentView with a magnifyingglass icon. SupabaseClient extended with searchTopics() and searchProfiles() methods. New Argument.swift model (id, topicId, authorId, content, side blue/red, upvotes, createdAt). TopicDetailView.swift enhanced: arguments section below voting with FOR/AGAINST/All filter pills, ArgumentRow cards with side-coloured borders, upvote counts, animated skeleton loading states. SupabaseClient extended with fetchArguments(topicId:) — queries the arguments table ordered by upvotes. Xcode project.pbxproj updated to include both new files.',
