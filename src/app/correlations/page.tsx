@@ -696,6 +696,9 @@ export default function CorrelationsPage() {
               <Link href="/compare" className="text-[11px] font-mono text-surface-500 hover:text-white transition-colors">
                 Compare topics →
               </Link>
+              <Link href="/matrix" className="text-[11px] font-mono text-surface-500 hover:text-white transition-colors">
+                Category matrix →
+              </Link>
             </div>
           </div>
         )}
