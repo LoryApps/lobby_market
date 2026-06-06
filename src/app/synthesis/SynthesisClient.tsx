@@ -497,7 +497,7 @@ export function SynthesisClient() {
                 ? `No topics in ${category} have been synthesized yet. Visit an active topic and generate a synthesis to be the first.`
                 : 'No topics have been synthesized yet. Visit any active topic and click "Generate synthesis" to kick things off.'
             }
-            action={{ label: 'Browse topics', href: '/topics' }}
+            actions={[{ label: 'Browse topics', href: '/topics' }]}
           />
         ) : (
           <>

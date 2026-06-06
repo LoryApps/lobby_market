@@ -613,7 +613,7 @@ export function AlignmentNetworkClient() {
             icon={Zap}
             title="Cast some votes first"
             description="Vote on at least 3 topics to see your alignment network."
-            action={{ label: 'Browse topics', href: '/' }}
+            actions={[{ label: 'Browse topics', href: '/' }]}
             className="mb-6"
           />
         ) : allUsers.length === 0 ? (
@@ -621,7 +621,7 @@ export function AlignmentNetworkClient() {
             icon={Users}
             title="No network yet"
             description="Follow people or join coalitions to see your alignment network."
-            action={{ label: 'Find people', href: '/discover' }}
+            actions={[{ label: 'Find people', href: '/discover' }]}
             className="mb-6"
           />
         ) : (

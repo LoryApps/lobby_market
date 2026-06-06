@@ -517,11 +517,7 @@ export function InfluxClient() {
                 ? `No ${category} topics show a significant viewer-to-voter gap right now.`
                 : 'All active topics have strong voter participation right now.'
             }
-            action={
-              category
-                ? { label: 'Clear filter', onClick: () => setCategory(null) }
-                : undefined
-            }
+            actions={ category ? [{ label: 'Clear filter', onClick: () => setCategory(null) }] : undefined }
           />
         )}
 

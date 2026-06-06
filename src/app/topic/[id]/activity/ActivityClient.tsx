@@ -443,15 +443,7 @@ export function ActivityClient({ topicId, topicStatement }: Props) {
                     ? 'Be the first to vote or post an argument on this topic.'
                     : `No ${filter} recorded yet.`
                 }
-                action={
-                  <Link
-                    href={`/topic/${topicId}`}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-for-600 text-white text-sm font-mono font-semibold hover:bg-for-700 transition-colors"
-                  >
-                    Go to topic
-                    <ChevronRight className="h-4 w-4" aria-hidden="true" />
-                  </Link>
-                }
+                actions={[{ label: 'Go to topic', href: `/topic/${topicId}` }]}
               />
             </div>
           ) : (

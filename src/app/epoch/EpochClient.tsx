@@ -490,10 +490,10 @@ export function EpochClient() {
 
         {error && !loading && (
           <EmptyState
-            icon={<Scale className="h-8 w-8 text-surface-500" />}
+            icon={Scale}
             title="Unable to load epochs"
             description={error}
-            action={{ label: 'Retry', onClick: () => load() }}
+            actions={[{ label: 'Retry', onClick: () => load() }]}
           />
         )}
 
@@ -547,10 +547,10 @@ export function EpochClient() {
             {/* Epoch list */}
             {filtered.length === 0 ? (
               <EmptyState
-                icon={<Sparkles className="h-8 w-8 text-surface-500" />}
+                icon={Sparkles}
                 title="No epochs match this filter"
                 description="Try a different epoch type or clear the filter to see all periods."
-                action={{ label: 'Show All', onClick: () => setCharFilter(null) }}
+                actions={[{ label: 'Show All', onClick: () => setCharFilter(null) }]}
               />
             ) : (
               <div className="space-y-4">

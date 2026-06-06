@@ -520,7 +520,7 @@ export function CatalystClient() {
             icon={Flame}
             title="Failed to load catalyst data"
             description="Could not fetch topic link data. Try refreshing."
-            action={{ label: 'Retry', onClick: () => fetchData(activeCategory) }}
+            actions={[{ label: 'Retry', onClick: () => fetchData(activeCategory) }]}
           />
         )}
 

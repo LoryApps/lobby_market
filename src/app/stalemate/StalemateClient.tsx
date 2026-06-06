@@ -642,7 +642,7 @@ export function StalemateClient() {
             </div>
           ) : sortedTopics.length === 0 ? (
             <EmptyState
-              icon={<Swords className="w-8 h-8 text-surface-600" />}
+              icon={Swords}
               title="No deadlocked debates found"
               description={
                 activeCategory

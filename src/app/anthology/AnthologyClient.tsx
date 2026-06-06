@@ -226,14 +226,7 @@ function EditionPanel({ edition, isLoading }: { edition: AnthologyEdition | null
         icon={BookOpen}
         title="No entries yet"
         description="Arguments will appear here once they've earned enough community votes and quality scores."
-        action={
-          <Link
-            href="/"
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-for-600 text-white text-sm font-semibold hover:bg-for-500 transition-colors"
-          >
-            Browse Topics <ArrowRight className="h-4 w-4" />
-          </Link>
-        }
+        actions={[{ label: 'Browse Topics', href: '/' }]}
       />
     )
   }

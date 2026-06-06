@@ -522,7 +522,7 @@ export function FuturesClient() {
             icon={Info}
             title="Couldn't load futures"
             description={error}
-            action={{ label: 'Retry', onClick: load }}
+            actions={[{ label: 'Retry', onClick: load }]}
           />
         ) : !data ? null : (
           <AnimatePresence mode="wait">
@@ -547,7 +547,7 @@ export function FuturesClient() {
                     icon={Mic}
                     title="No debates scheduled"
                     description="No debates scheduled in the next 30 days. Be the first to organise one."
-                    action={{ label: 'Browse debates', href: '/debate' }}
+                    actions={[{ label: 'Browse debates', href: '/debate' }]}
                   />
                 ) : (
                   <div className="space-y-3">
@@ -586,7 +586,7 @@ export function FuturesClient() {
                     icon={Scale}
                     title="No active votes"
                     description="No topics are currently in their voting phase. Check back soon."
-                    action={{ label: 'Browse topics', href: '/topics' }}
+                    actions={[{ label: 'Browse topics', href: '/topics' }]}
                   />
                 ) : (
                   <div className="space-y-3">
@@ -619,7 +619,7 @@ export function FuturesClient() {
                     icon={TrendingUp}
                     title="No active topics"
                     description="No active topics found. Propose one to start a debate."
-                    action={{ label: 'Propose a topic', href: '/topic/create' }}
+                    actions={[{ label: 'Propose a topic', href: '/topic/create' }]}
                   />
                 ) : (
                   <div className="space-y-2">
@@ -658,7 +658,7 @@ export function FuturesClient() {
                     icon={Gavel}
                     title="No recent laws"
                     description="No laws passed in the last 14 days. Keep voting to build consensus."
-                    action={{ label: 'Browse laws', href: '/law' }}
+                    actions={[{ label: 'Browse laws', href: '/law' }]}
                   />
                 ) : (
                   <div className="bg-surface-200 border border-surface-300 rounded-xl px-4 py-2">

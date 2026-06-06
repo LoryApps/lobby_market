@@ -508,7 +508,7 @@ export function FlipClient() {
             icon={Trophy}
             title="No flip data yet"
             description="Flip data appears once enough debates have been resolved. Come back once more topics have completed their voting phase."
-            action={{ label: 'Browse all topics', href: '/topic/categories' }}
+            actions={[{ label: 'Browse all topics', href: '/topic/categories' }]}
           />
         ) : (
           <div className="space-y-3">

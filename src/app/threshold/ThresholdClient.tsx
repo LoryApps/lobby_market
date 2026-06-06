@@ -716,7 +716,7 @@ export function ThresholdClient() {
             icon={AlertTriangle}
             title="Could not load threshold data"
             description="Check your connection and try refreshing."
-            action={{ label: 'Retry', onClick: () => load() }}
+            actions={[{ label: 'Retry', onClick: () => load() }]}
           />
         )}
 

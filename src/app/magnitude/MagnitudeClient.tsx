@@ -505,7 +505,7 @@ export function MagnitudeClient() {
               icon={Activity}
               title="Magnitude unavailable"
               description={error}
-              action={{ label: 'Try again', onClick: load }}
+              actions={[{ label: 'Try again', onClick: load }]}
             />
           )}
 

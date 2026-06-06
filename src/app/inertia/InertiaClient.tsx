@@ -630,7 +630,7 @@ export function InertiaClient() {
             <InertiaSkeleton />
           ) : topics.length === 0 ? (
             <EmptyState
-              icon={<Mountain className="h-8 w-8 text-surface-600" />}
+              icon={Mountain}
               title="No inertia data yet"
               description={
                 category !== 'All'
@@ -654,7 +654,7 @@ export function InertiaClient() {
             </div>
           ) : categories.length === 0 ? (
             <EmptyState
-              icon={<Mountain className="h-8 w-8 text-surface-600" />}
+              icon={Mountain}
               title="No category data yet"
               description="Not enough topics with votes yet to compute category inertia."
             />

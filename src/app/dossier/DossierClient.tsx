@@ -279,7 +279,7 @@ function DossierInner() {
             icon={FileText}
             title="Dossier unavailable"
             description={error ?? 'Could not load civic dossier.'}
-            action={{ label: 'Try again', onClick: load }}
+            actions={[{ label: 'Try again', onClick: load }]}
           />
         </main>
         <BottomNav />

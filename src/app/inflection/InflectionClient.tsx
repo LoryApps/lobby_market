@@ -478,10 +478,10 @@ export function InflectionClient() {
           <PageSkeleton />
         ) : error ? (
           <EmptyState
-            icon={<Activity className="w-8 h-8 text-surface-500" />}
+            icon={Activity}
             title="Could not load inflection data"
             description={error}
-            action={{ label: 'Retry', onClick: () => load() }}
+            actions={[{ label: 'Retry', onClick: () => load() }]}
           />
         ) : data ? (
           <>

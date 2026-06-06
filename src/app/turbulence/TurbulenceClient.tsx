@@ -429,7 +429,7 @@ export function TurbulenceClient() {
             icon={AlertTriangle}
             title="Turbulence data unavailable"
             description="Could not load the turbulence index. Try refreshing."
-            action={{ label: 'Retry', onClick: load }}
+            actions={[{ label: 'Retry', onClick: load }]}
           />
         )}
 

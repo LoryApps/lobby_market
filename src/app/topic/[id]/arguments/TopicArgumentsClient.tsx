@@ -30,7 +30,6 @@ import {
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { Avatar } from '@/components/ui/Avatar'
-import { Button } from '@/components/ui/Button'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { ArgumentReactionPanel } from '@/components/arguments/ArgumentReactionPanel'
 import { cn } from '@/lib/utils/cn'
@@ -547,21 +546,14 @@ export function TopicArgumentsClient({ topic, initialArguments, currentUserId }:
         {/* Empty state */}
         {!loading && filtered.length === 0 && (
           <EmptyState
-            icon={<MessageSquare className="h-8 w-8 text-surface-400" />}
+            icon={MessageSquare}
             title={side === 'all' ? 'No arguments yet' : `No ${side === 'blue' ? 'FOR' : 'AGAINST'} arguments yet`}
             description={
               side === 'all'
                 ? 'Be the first to make a case on this topic.'
                 : `No one has argued ${side === 'blue' ? 'for' : 'against'} this yet. Be the first.`
             }
-            action={
-              <Link href={`/topic/${topic.id}/argue${side !== 'all' ? `?side=${side === 'blue' ? 'for' : 'against'}` : ''}`}>
-                <Button variant={side === 'red' ? 'against' : 'for'} size="md">
-                  <PenLine className="h-4 w-4" />
-                  Write an argument
-                </Button>
-              </Link>
-            }
+            actions={[{ label: 'Write an argument', href: `/topic/${topic.id}/argue${side !== 'all' ? `?side=${side === 'blue' ? 'for' : 'against'}` : ''}` }]}
           />
         )}
 

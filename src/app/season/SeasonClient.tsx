@@ -682,11 +682,7 @@ export function SeasonClient() {
                             ? 'Be the first citizen to earn season points. Cast a vote to get started.'
                             : 'The leaderboard will populate when a season is active.'
                         }
-                        action={
-                          season
-                            ? { label: 'Vote now', href: '/' }
-                            : undefined
-                        }
+                        actions={ season ? [{ label: 'Vote now', href: '/' }] : undefined }
                       />
                     ) : (
                       <>

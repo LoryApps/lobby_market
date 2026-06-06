@@ -503,7 +503,7 @@ export function FrontlinesClient() {
             icon={Scale}
             title="Couldn't load the frontlines"
             description={error}
-            action={{ label: 'Retry', onClick: () => load() }}
+            actions={[{ label: 'Retry', onClick: () => load() }]}
           />
         )}
 
@@ -616,7 +616,7 @@ export function FrontlinesClient() {
                 icon={Scale}
                 title={`No contested ${categoryFilter} debates right now`}
                 description="All debates in this category have a clear majority. Try another category."
-                action={{ label: 'Show all', onClick: () => setCategoryFilter(null) }}
+                actions={[{ label: 'Show all', onClick: () => setCategoryFilter(null) }]}
               />
             )}
 

@@ -745,7 +745,7 @@ export function PivotClient() {
             icon={TriangleAlert}
             title="Could not load pivoting topics"
             description="There was a problem fetching data. Please try again."
-            action={{ label: 'Retry', onClick: handleRefresh }}
+            actions={[{ label: 'Retry', onClick: handleRefresh }]}
           />
         ) : sorted.length === 0 ? (
           <EmptyState

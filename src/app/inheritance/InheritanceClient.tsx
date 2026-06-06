@@ -589,7 +589,7 @@ export function InheritanceClient() {
                 icon={Scale}
                 title="Could not load inheritance data"
                 description={error}
-                action={{ label: 'Try again', onClick: load }}
+                actions={[{ label: 'Try again', onClick: load }]}
               />
             )}
 

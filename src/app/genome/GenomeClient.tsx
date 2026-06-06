@@ -367,7 +367,7 @@ export function GenomeClient() {
             icon={Activity}
             title="Genome unavailable"
             description={error}
-            action={{ label: 'Retry', onClick: load }}
+            actions={[{ label: 'Retry', onClick: load }]}
           />
         )}
 
@@ -427,7 +427,7 @@ export function GenomeClient() {
                   icon={Dna}
                   title="Not enough data"
                   description="Vote on at least 5 topics to generate your civic genome sequence."
-                  action={{ label: 'Browse topics', href: '/' }}
+                  actions={[{ label: 'Browse topics', href: '/' }]}
                 />
               )}
 

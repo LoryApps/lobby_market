@@ -520,7 +520,7 @@ export function TimeMachineClient() {
                 icon={RefreshCw}
                 title="Could not load snapshot"
                 description="Something went wrong fetching the data for this date."
-                action={{ label: 'Retry', onClick: () => load(date) }}
+                actions={[{ label: 'Retry', onClick: () => load(date) }]}
               />
             </motion.div>
           ) : !snapshot?.has_data ? (
@@ -533,7 +533,7 @@ export function TimeMachineClient() {
                     ? 'The Lobby didn\'t exist yet on this date. Try a more recent day.'
                     : 'No civic activity was recorded on this date.'
                 }
-                action={{ label: 'Go to today', onClick: () => goToDate(today) }}
+                actions={[{ label: 'Go to today', onClick: () => goToDate(today) }]}
               />
             </motion.div>
           ) : (

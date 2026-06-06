@@ -24,7 +24,6 @@ import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   ArrowLeft,
-  ArrowRight,
   BarChart2,
   CheckCircle2,
   Circle,
@@ -421,29 +420,17 @@ export function RadarClient() {
             </motion.div>
           ) : !data?.is_authenticated ? (
             <EmptyState
-              icon={<Tag className="h-10 w-10" />}
+              icon={Tag}
               title="Sign in to see your Tag Radar"
               description="Follow some tags first, then come back to visualise your civic interests."
-              action={<Link href="/login" className="btn-primary">Sign in</Link>}
+              actions={[{ label: 'Sign in', href: '/login' }]}
             />
           ) : data.total_followed === 0 ? (
             <EmptyState
-              icon={<Hash className="h-10 w-10" />}
+              icon={Hash}
               title="No followed tags yet"
               description="Follow at least one tag to see your personalised engagement radar."
-              action={
-                <Link
-                  href="/tags"
-                  className={cn(
-                    'inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-mono font-semibold',
-                    'bg-for-500/20 text-for-300 border border-for-500/40 hover:bg-for-500/30 transition-colors',
-                  )}
-                >
-                  <Hash className="h-4 w-4" />
-                  Browse tags
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-              }
+              actions={[{ label: 'Browse tags', href: '/tags' }]}
             />
           ) : (
             <motion.div

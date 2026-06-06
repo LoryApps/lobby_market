@@ -17,7 +17,6 @@ import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   ArrowLeft,
-  ArrowRight,
   Award,
   BarChart2,
   ChevronRight,
@@ -431,15 +430,10 @@ export function TopArgumentsClient() {
           </div>
         ) : args.length === 0 ? (
           <EmptyState
-            icon={<MessageSquare className="h-8 w-8" />}
+            icon={MessageSquare}
             title="No graded arguments yet"
             description="Arguments earn a grade when the author runs the AI critique before submitting. Check back as the community starts using it."
-            action={
-              <Link href="/" className="inline-flex items-center gap-1.5 px-4 py-2 bg-surface-200 hover:bg-surface-300 border border-surface-300 rounded-xl text-sm text-surface-300 transition-colors">
-                Browse debates
-                <ArrowRight className="h-3.5 w-3.5" />
-              </Link>
-            }
+            actions={[{ label: 'Browse debates', href: '/' }]}
           />
         ) : (
           <>

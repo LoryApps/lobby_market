@@ -532,7 +532,7 @@ export function MilestonesClient() {
             icon={Trophy}
             title="Could not load milestones"
             description="Please try again in a moment."
-            action={{ label: 'Retry', onClick: () => load() }}
+            actions={[{ label: 'Retry', onClick: () => load() }]}
           />
         ) : (
           <>

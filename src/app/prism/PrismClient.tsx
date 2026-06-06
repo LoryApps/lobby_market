@@ -540,7 +540,7 @@ export function PrismClient() {
                 ? `No topics in ${category} have arguments from both sides yet.`
                 : 'No topics currently have robust arguments from both sides.'
             }
-            action={{ label: 'Clear filter', onClick: () => setCategory(null) }}
+            actions={[{ label: 'Clear filter', onClick: () => setCategory(null) }]}
           />
         ) : (
           <div className="space-y-4">

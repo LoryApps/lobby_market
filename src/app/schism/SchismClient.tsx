@@ -608,7 +608,7 @@ export function SchismClient() {
             icon={Scissors}
             title="Couldn't load schism data"
             description="Couldn't fetch schism data. Check your connection and try again."
-            action={{ label: 'Retry', onClick: load }}
+            actions={[{ label: 'Retry', onClick: load }]}
           />
         ) : loading && !data ? (
           <SchismSkeleton />

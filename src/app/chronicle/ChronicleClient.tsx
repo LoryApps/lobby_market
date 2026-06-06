@@ -524,7 +524,7 @@ export function ChronicleClient() {
               icon={MessageSquare}
               title="Chronicle unavailable"
               description={error}
-              action={{ label: 'Try again', onClick: load }}
+              actions={[{ label: 'Try again', onClick: load }]}
             />
           )}
 
@@ -533,7 +533,7 @@ export function ChronicleClient() {
               icon={BookOpen}
               title="No records yet"
               description="The Chronicle grows with each law, debate, and proposal on the platform."
-              action={{ label: 'Explore Topics', href: '/' }}
+              actions={[{ label: 'Explore Topics', href: '/' }]}
             />
           )}
 

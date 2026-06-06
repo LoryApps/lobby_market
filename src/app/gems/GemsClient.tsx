@@ -446,7 +446,7 @@ export function GemsClient() {
                 icon={Gem}
                 title="Couldn't load gems"
                 description={error}
-                action={{ label: 'Try again', onClick: () => load() }}
+                actions={[{ label: 'Try again', onClick: () => load() }]}
               />
             </motion.div>
           ) : !hasContent ? (
@@ -460,7 +460,7 @@ export function GemsClient() {
                 icon={Sparkles}
                 title="No gems yet"
                 description="Check back as the platform grows — gems appear once there's enough activity to surface quality hidden content."
-                action={{ label: 'Browse topics', href: '/' }}
+                actions={[{ label: 'Browse topics', href: '/' }]}
               />
             </motion.div>
           ) : (

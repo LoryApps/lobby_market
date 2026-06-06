@@ -24,7 +24,6 @@ import {
   Filter,
   Loader2,
   MessageSquare,
-  RefreshCw,
   Sparkles,
   ThumbsDown,
   ThumbsUp,
@@ -593,34 +592,19 @@ export function ReelClient() {
         ) : error ? (
           <div className="flex items-center justify-center h-full">
             <EmptyState
-              icon={<X className="h-8 w-8" />}
+              icon={X}
               title="Couldn't load the reel"
               description="Check your connection and try again."
-              action={
-                <button
-                  onClick={() => fetchArgs(true)}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-for-600 text-white font-mono text-sm font-semibold hover:bg-for-700 transition-colors"
-                >
-                  <RefreshCw className="h-4 w-4" />
-                  Retry
-                </button>
-              }
+              actions={[{ label: 'Retry', onClick: () => fetchArgs(true) }]}
             />
           </div>
         ) : args.length === 0 ? (
           <div className="flex items-center justify-center h-full">
             <EmptyState
-              icon={<Sparkles className="h-8 w-8" />}
+              icon={Sparkles}
               title="No arguments found"
               description="Try a different filter or category."
-              action={
-                <button
-                  onClick={() => { setFilter('all'); setCategory('All') }}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-for-600 text-white font-mono text-sm font-semibold hover:bg-for-700 transition-colors"
-                >
-                  Clear filters
-                </button>
-              }
+              actions={[{ label: 'Clear filters', onClick: () => { setFilter('all'); setCategory('All') } }]}
             />
           </div>
         ) : current ? (

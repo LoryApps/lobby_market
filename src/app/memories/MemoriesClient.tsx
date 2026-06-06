@@ -386,17 +386,10 @@ export function MemoriesClient() {
               >
                 {!data.has_personal_history ? (
                   <EmptyState
-                    icon={<Calendar className="h-10 w-10 text-surface-500" />}
+                    icon={Calendar}
                     title="No memories yet"
                     description={`Come back on ${data.today_label} next year to see what you were debating today. Your civic journey is just beginning.`}
-                    action={
-                      <Link
-                        href="/"
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-for-600 hover:bg-for-500 text-white text-sm font-mono font-semibold transition-colors"
-                      >
-                        Start voting today
-                      </Link>
-                    }
+                    actions={[{ label: 'Start voting today', href: '/' }]}
                   />
                 ) : (
                   <div className="space-y-8">
@@ -454,18 +447,10 @@ export function MemoriesClient() {
               >
                 {data.platform.length === 0 ? (
                   <EmptyState
-                    icon={<Loader2 className="h-10 w-10 text-surface-500 animate-spin" />}
+                    icon={Loader2}
                     title="No platform history yet"
                     description={`The Lobby is still young. Check back later — as the platform grows, ${data.today_label} will accumulate its own civic history.`}
-                    action={
-                      <Link
-                        href="/timeline"
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-for-600 hover:bg-for-500 text-white text-sm font-mono font-semibold transition-colors"
-                      >
-                        View full timeline
-                        <ArrowRight className="h-4 w-4" />
-                      </Link>
-                    }
+                    actions={[{ label: 'View full timeline', href: '/timeline' }]}
                   />
                 ) : (
                   <div className="space-y-3">

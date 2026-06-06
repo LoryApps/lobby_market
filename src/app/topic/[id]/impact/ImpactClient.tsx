@@ -6,7 +6,6 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   Activity,
   ArrowLeft,
-  ArrowRight,
   Award,
   BarChart2,
   BookOpen,
@@ -531,15 +530,7 @@ export function ImpactClient({ topicId }: Props) {
                 icon={MessageSquare}
                 title="No arguments yet"
                 description="Once the community posts arguments, their impact scores will appear here."
-                action={
-                  <Link
-                    href={`/topic/${topicId}/argue`}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-for-600 text-white text-sm font-semibold hover:bg-for-500 transition-colors"
-                  >
-                    Write the first argument
-                    <ArrowRight className="h-3.5 w-3.5" />
-                  </Link>
-                }
+                actions={[{ label: 'Write the first argument', href: `/topic/${topicId}/argue` }]}
               />
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
