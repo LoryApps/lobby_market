@@ -418,6 +418,73 @@ final class SupabaseClient {
         }
     }
 
+    // MARK: - Recent votes with topic titles (ProfileView activity feed)
+
+    func fetchRecentVotesWithTopics(userId: String, limit: Int = 10) async throws -> [RecentActivityVote] {
+        var q = QueryParams()
+        q.select("id,topic_id,side,created_at,topics(statement,category)")
+        q.eq("user_id", userId)
+        q.order("created_at", ascending: false)
+        q.limit(limit)
+        let req = try buildRequest(method: "GET", path: "votes", query: q)
+        do {
+            return try await execute(req)
+        } catch {
+            return []
+        }
+    }
+
+    // MARK: - Topics authored by user (ProfileView)
+
+    func fetchTopicsByAuthor(authorId: String, limit: Int = 8) async throws -> [Topic] {
+        var q = QueryParams()
+        q.select("id,statement,category,created_at,total_votes")
+        q.eq("author_id", authorId)
+        q.order("created_at", ascending: false)
+        q.limit(limit)
+        let req = try buildRequest(method: "GET", path: "topics", query: q)
+        do {
+            return try await execute(req)
+        } catch {
+            return []
+        }
+    }
+
+    // MARK: - Update profile (bio / display name)
+
+    func updateProfile(id: String, displayName: String?, bio: String?) async throws {
+        struct Payload: Encodable {
+            let display_name: String?
+            let bio: String?
+        }
+        let payload = Payload(
+            display_name: displayName?.isEmpty == true ? nil : displayName,
+            bio: bio?.isEmpty == true ? nil : bio
+        )
+        let body: Data
+        do { body = try encoder.encode(payload) }
+        catch { throw SupabaseError.encoding(error) }
+
+        guard var components = URLComponents(
+            url: Config.restURL.appendingPathComponent("profiles"),
+            resolvingAgainstBaseURL: false
+        ) else { throw SupabaseError.invalidURL }
+        components.queryItems = [URLQueryItem(name: "id", value: "eq.\(id)")]
+        guard let url = components.url else { throw SupabaseError.invalidURL }
+
+        var req = URLRequest(url: url)
+        req.httpMethod = "PATCH"
+        req.setValue(Config.supabaseAnonKey, forHTTPHeaderField: "apikey")
+        req.setValue("Bearer \(accessToken ?? Config.supabaseAnonKey)", forHTTPHeaderField: "Authorization")
+        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        req.httpBody = body
+
+        let (_, response) = try await URLSession.shared.data(for: req)
+        guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
+            throw SupabaseError.invalidResponse
+        }
+    }
+
     // MARK: - Post Argument
 
     func postArgument(
@@ -462,6 +529,39 @@ struct NewArgumentPayload: Encodable {
     let author_id: String
     let side: String
     let content: String
+}
+
+/// A vote record with embedded topic statement + category — used by ProfileView.
+struct RecentActivityVote: Decodable, Identifiable {
+    let id: String
+    let topicId: String
+    let side: String
+    let createdAt: Date
+    let topicStatement: String?
+    let topicCategory: String?
+
+    private struct TopicJoin: Decodable {
+        let statement: String?
+        let category: String?
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case id, side
+        case topicId   = "topic_id"
+        case createdAt = "created_at"
+        case topicJoin = "topics"
+    }
+
+    init(from decoder: Decoder) throws {
+        let c   = try decoder.container(keyedBy: CodingKeys.self)
+        id      = try c.decodeIfPresent(String.self, forKey: .id) ?? UUID().uuidString
+        topicId = try c.decodeIfPresent(String.self, forKey: .topicId) ?? ""
+        side    = try c.decodeIfPresent(String.self, forKey: .side) ?? "blue"
+        createdAt = (try? c.decode(Date.self, forKey: .createdAt)) ?? Date()
+        let join      = try? c.decode(TopicJoin.self, forKey: .topicJoin)
+        topicStatement = join?.statement
+        topicCategory  = join?.category
+    }
 }
 
 /// A vote record returned with its topic's category — used by StatsView.
