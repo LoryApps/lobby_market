@@ -547,6 +547,53 @@ final class SupabaseClient {
         }
     }
 
+    // MARK: - Notification Preferences
+
+    func fetchNotifPrefs(userId: String) async throws -> NotifPrefs {
+        var q = QueryParams()
+        q.select("achievement_earned,debate_starting,law_established,topic_activated,vote_threshold,reply_received,role_promoted,lobby_update,new_topic_in_tag,streak_reminder,weekly_digest")
+        q.eq("user_id", userId)
+        q.limit(1)
+        let req = try buildRequest(method: "GET", path: "user_notification_prefs", query: q)
+        let list: [NotifPrefs] = try await execute(req)
+        return list.first ?? NotifPrefs()
+    }
+
+    func upsertNotifPrefs(userId: String, prefs: NotifPrefs) async throws {
+        struct UpsertPayload: Encodable {
+            let user_id: String
+            let achievement_earned: Bool
+            let debate_starting: Bool
+            let law_established: Bool
+            let topic_activated: Bool
+            let vote_threshold: Bool
+            let reply_received: Bool
+            let role_promoted: Bool
+            let lobby_update: Bool
+            let new_topic_in_tag: Bool
+            let streak_reminder: Bool
+            let weekly_digest: Bool
+        }
+        let payload = UpsertPayload(
+            user_id: userId,
+            achievement_earned: prefs.achievementEarned,
+            debate_starting: prefs.debateStarting,
+            law_established: prefs.lawEstablished,
+            topic_activated: prefs.topicActivated,
+            vote_threshold: prefs.voteThreshold,
+            reply_received: prefs.replyReceived,
+            role_promoted: prefs.rolePromoted,
+            lobby_update: prefs.lobbyUpdate,
+            new_topic_in_tag: prefs.newTopicInTag,
+            streak_reminder: prefs.streakReminder,
+            weekly_digest: prefs.weeklyDigest
+        )
+        let data = try encoder.encode(payload)
+        var req = try buildRequest(method: "POST", path: "user_notification_prefs", body: data)
+        req.setValue("resolution=merge-duplicates", forHTTPHeaderField: "Prefer")
+        let _: EmptyResponse = try await execute(req)
+    }
+
     // MARK: - Post Argument
 
     func postArgument(
@@ -576,6 +623,35 @@ final class SupabaseClient {
 
 /// Dummy type for endpoints that don't return a body.
 struct EmptyResponse: Decodable {}
+
+/// User notification preferences — mirrors the `user_notification_prefs` table.
+struct NotifPrefs: Codable {
+    var achievementEarned: Bool = true
+    var debateStarting: Bool    = true
+    var lawEstablished: Bool    = true
+    var topicActivated: Bool    = true
+    var voteThreshold: Bool     = true
+    var replyReceived: Bool     = true
+    var rolePromoted: Bool      = true
+    var lobbyUpdate: Bool       = false
+    var newTopicInTag: Bool     = true
+    var streakReminder: Bool    = true
+    var weeklyDigest: Bool      = true
+
+    enum CodingKeys: String, CodingKey {
+        case achievementEarned = "achievement_earned"
+        case debateStarting    = "debate_starting"
+        case lawEstablished    = "law_established"
+        case topicActivated    = "topic_activated"
+        case voteThreshold     = "vote_threshold"
+        case replyReceived     = "reply_received"
+        case rolePromoted      = "role_promoted"
+        case lobbyUpdate       = "lobby_update"
+        case newTopicInTag     = "new_topic_in_tag"
+        case streakReminder    = "streak_reminder"
+        case weeklyDigest      = "weekly_digest"
+    }
+}
 
 /// Payload for creating a topic.
 struct NewTopicPayload: Encodable {

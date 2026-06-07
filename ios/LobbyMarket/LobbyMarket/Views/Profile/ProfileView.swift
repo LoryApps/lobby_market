@@ -192,6 +192,7 @@ struct ProfileView: View {
     @State private var authoredTopics: [Topic] = []
     @State private var isLoading = false
     @State private var showEdit = false
+    @State private var showSettings = false
 
     // MARK: Computed
 
@@ -265,15 +266,29 @@ struct ProfileView: View {
             .toolbar {
                 if auth.isAuthenticated {
                     ToolbarItem(placement: .navigationBarTrailing) {
-                        Button {
-                            showEdit = true
-                        } label: {
-                            Image(systemName: "pencil")
-                                .font(.system(size: 15, weight: .semibold))
-                                .foregroundStyle(.forBlue)
+                        HStack(spacing: Spacing.xs) {
+                            Button {
+                                showEdit = true
+                            } label: {
+                                Image(systemName: "pencil")
+                                    .font(.system(size: 15, weight: .semibold))
+                                    .foregroundStyle(.forBlue)
+                            }
+                            Button {
+                                Haptics.impact(.light)
+                                showSettings = true
+                            } label: {
+                                Image(systemName: "gearshape.fill")
+                                    .font(.system(size: 15, weight: .semibold))
+                                    .foregroundStyle(.textTertiary)
+                            }
                         }
                     }
                 }
+            }
+            .sheet(isPresented: $showSettings) {
+                SettingsView()
+                    .environmentObject(auth)
             }
             .sheet(isPresented: $showEdit) {
                 EditProfileSheet(currentProfile: profile) { newName, newBio in
