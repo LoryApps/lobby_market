@@ -2119,8 +2119,8 @@ const CHAPTERS: Chapter[] = [
 ]
 
 const STATS = [
-  { value: '266', label: 'chapters shipped' },
-  { value: '815+', label: 'features built' },
+  { value: '267', label: 'chapters shipped' },
+  { value: '820+', label: 'features built' },
   { value: '85', label: 'DB migrations' },
   { value: '580+', label: 'API routes' },
 ]
@@ -2135,6 +2135,13 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'iOS Leaderboard View',
+    description: 'iOS app Ch. 267 — native Leaderboard tab + Profile enhancements. LeaderboardView.swift: full ranked leaderboard with three metric segments (Influence/clout, Civic Duty/votes, Topics Created). Animated podium for #1, #2, #3 with gold/silver/bronze gradients and crown icon for the top spot. Ranked list cards for positions 4–50 with avatar initials, username, displayName, and metric value. Pull-to-refresh via .refreshable. Shimmer skeleton loading state. Tap any entry to open their public profile in Safari. LeaderboardEntry model (id, username, displayName, clout, votesCast, topicsCreated) with convenient sampleData. LeaderboardMetric enum (influence/civic/topics) drives the sort column, display label, and accent colour. SupabaseClient.fetchLeaderboard(metric:) added — queries profiles table with dynamic order by metric.column. Profile.swift extended with clout field. ProfileView.swift updated: 2×2 stat grid now shows Clout (gold), Votes (blue), Topics (purple), Reputation (emerald). "View Full Profile" button opens the web profile via Config.webURL deep link. ContentView.swift: new "Ranks" tab (trophy.fill) added between Codex and Alerts. project.pbxproj: Leaderboard group registered under Views with LeaderboardView.swift.',
+    icon: Trophy,
+    color: 'text-gold',
+    tag: 'Ch. 267',
+  },
   {
     title: 'iOS Debates View',
     description: 'iOS app Ch. 266 — native Debates tab for the iOS app. Debate.swift model: id, topicId, type (quick/grand/tribunal), status (scheduled/live/ended/cancelled), title, description, scheduledAt, viewerCount, blueSway/redSway with sort helpers and sampleData. DebatesView.swift: full debates browser with Live Now / Today / Coming Up / Recently Ended sections, DebateCard component with type badge, live pulse pill, sway bar for active debates, viewer count, and tap-to-open in Safari. DebateSkeletonCard animated loading state. SwayBar component shows real-time FOR/AGAINST sway percentages. SupabaseClient.fetchDebates() — queries debates table ordered by status priority (live first) then by scheduledAt. ContentView updated with new Debates tab (mic.fill icon, positioned after Search). Colors.swift extended: surface400, surface500, against (alias for againstRed), purple accent. Theme.swift: lmHeadline font added. Config.swift: anonKey alias + webURL for deep links. project.pbxproj updated with Debate.swift (Models group) and DebatesView.swift (new Debates group under Views).',

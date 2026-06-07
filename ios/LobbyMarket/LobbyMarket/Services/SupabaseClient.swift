@@ -387,6 +387,21 @@ final class SupabaseClient {
         }
     }
 
+    // MARK: - Leaderboard
+
+    func fetchLeaderboard(metric: LeaderboardMetric, limit: Int = 50) async throws -> [LeaderboardEntry] {
+        var q = QueryParams()
+        q.select("id,username,display_name,clout,votes_cast,topics_created")
+        q.order(metric.column, ascending: false)
+        q.limit(limit)
+        let req = try buildRequest(method: "GET", path: "profiles", query: q)
+        do {
+            return try await execute(req)
+        } catch {
+            return LeaderboardEntry.sampleData
+        }
+    }
+
     // MARK: - Post Argument
 
     func postArgument(

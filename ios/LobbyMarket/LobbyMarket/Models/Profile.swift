@@ -15,6 +15,7 @@ struct Profile: Identifiable, Codable, Equatable, Hashable {
     let topicsCreated: Int
     let votesCast: Int
     let reputation: Int
+    let clout: Int
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -26,6 +27,7 @@ struct Profile: Identifiable, Codable, Equatable, Hashable {
         case topicsCreated = "topics_created"
         case votesCast = "votes_cast"
         case reputation
+        case clout
     }
 
     init(from decoder: Decoder) throws {
@@ -39,6 +41,7 @@ struct Profile: Identifiable, Codable, Equatable, Hashable {
         topicsCreated = try c.decodeIfPresent(Int.self, forKey: .topicsCreated) ?? 0
         votesCast = try c.decodeIfPresent(Int.self, forKey: .votesCast) ?? 0
         reputation = try c.decodeIfPresent(Int.self, forKey: .reputation) ?? 0
+        clout = try c.decodeIfPresent(Int.self, forKey: .clout) ?? 0
     }
 
     init(
@@ -50,7 +53,8 @@ struct Profile: Identifiable, Codable, Equatable, Hashable {
         joinedAt: Date = Date(),
         topicsCreated: Int = 0,
         votesCast: Int = 0,
-        reputation: Int = 0
+        reputation: Int = 0,
+        clout: Int = 0
     ) {
         self.id = id
         self.username = username
@@ -61,6 +65,7 @@ struct Profile: Identifiable, Codable, Equatable, Hashable {
         self.topicsCreated = topicsCreated
         self.votesCast = votesCast
         self.reputation = reputation
+        self.clout = clout
     }
 }
 

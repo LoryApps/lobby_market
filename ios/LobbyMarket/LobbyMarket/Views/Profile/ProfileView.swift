@@ -71,10 +71,15 @@ struct ProfileView: View {
     }
 
     private var statsGrid: some View {
-        HStack(spacing: Spacing.sm) {
-            statCard("TOPICS", value: "\(profile?.topicsCreated ?? 0)", color: .gold)
-            statCard("VOTES", value: "\(profile?.votesCast ?? 0)", color: .forBlue)
-            statCard("REPUTATION", value: "\(profile?.reputation ?? 0)", color: .emerald)
+        VStack(spacing: Spacing.xs) {
+            HStack(spacing: Spacing.sm) {
+                statCard("CLOUT", value: "\(profile?.clout ?? 0)", color: .gold)
+                statCard("VOTES", value: "\(profile?.votesCast ?? 0)", color: .forBlue)
+            }
+            HStack(spacing: Spacing.sm) {
+                statCard("TOPICS", value: "\(profile?.topicsCreated ?? 0)", color: .purple)
+                statCard("REPUTATION", value: "\(profile?.reputation ?? 0)", color: .emerald)
+            }
         }
     }
 
@@ -102,6 +107,38 @@ struct ProfileView: View {
 
     private var actionsBlock: some View {
         VStack(spacing: Spacing.xs) {
+            // View full profile on web
+            if let username = profile?.username ?? auth.currentUsername {
+                Button {
+                    Haptics.impact(.light)
+                    let urlStr = "\(Config.webURL)/profile/\(username)"
+                    if let url = URL(string: urlStr) {
+                        UIApplication.shared.open(url)
+                    }
+                } label: {
+                    HStack {
+                        Image(systemName: "safari")
+                        Text("View Full Profile")
+                            .font(.lmBodyBold)
+                        Spacer()
+                        Image(systemName: "arrow.up.right")
+                            .font(.system(size: 13))
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 14)
+                    .padding(.horizontal, Spacing.md)
+                    .background(
+                        RoundedRectangle(cornerRadius: Radii.md)
+                            .fill(Color.surface200)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: Radii.md)
+                                    .stroke(Color.forBlue.opacity(0.3), lineWidth: 1)
+                            )
+                    )
+                    .foregroundStyle(.forBlue)
+                }
+            }
+
             Button(role: .destructive) {
                 auth.signOut()
             } label: {
