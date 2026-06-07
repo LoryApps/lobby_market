@@ -37,6 +37,8 @@
 		C1D2E3F4A5B6C7D8E9F0A1B2 /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A7B2C1D4E5F6A7B8C9D0E1 /* Notification.swift */; };
 		E5F6A7B8C9D0E1F2A3B4C5D6 /* NotificationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E5F6A7B8C9D0E1F2A3B4C5 /* NotificationsView.swift */; };
 		A7B8C9D0E1F2A3B4C5D6E7F8 /* PostArgumentSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A7B8C9D0E1F2A3B4C5D6E7 /* PostArgumentSheet.swift */; };
+		B3C4D5E6F7A8B9C0D1E2F3A4 /* Debate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4B5C6D7E8F9A0B1C2D3E4F5 /* Debate.swift */; };
+		F0A1B2C3D4E5F6A7B8C9D0E1 /* DebatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F2A3B4C5D6E7F8A9B0C1D2 /* DebatesView.swift */; };
 		14394479B75708F8FF2E238F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 37E4D4511D6DE1D83D37BF1C /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
@@ -74,6 +76,8 @@
 		F3A7B2C1D4E5F6A7B8C9D0E1 /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		D4E5F6A7B8C9D0E1F2A3B4C5 /* NotificationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsView.swift; sourceTree = "<group>"; };
 		F6A7B8C9D0E1F2A3B4C5D6E7 /* PostArgumentSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostArgumentSheet.swift; sourceTree = "<group>"; };
+		A4B5C6D7E8F9A0B1C2D3E4F5 /* Debate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debate.swift; sourceTree = "<group>"; };
+		E1F2A3B4C5D6E7F8A9B0C1D2 /* DebatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebatesView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,6 +126,7 @@
 			children = (
 				E8F2C1A4B6D3E7F9A0B5C8D2 /* Argument.swift */,
 				753FAE4761225EF46D2BE44B /* Law.swift */,
+				A4B5C6D7E8F9A0B1C2D3E4F5 /* Debate.swift */,
 				F3A7B2C1D4E5F6A7B8C9D0E1 /* Notification.swift */,
 				C2950F14670FE883E18320E2 /* Profile.swift */,
 				6475FA375C2FC00A6F769FF1 /* Topic.swift */,
@@ -149,10 +154,19 @@
 			path = Services;
 			sourceTree = "<group>";
 		};
+		D2E3F4A5B6C7D8E9F0A1B2C3 /* Debates */ = {
+			isa = PBXGroup;
+			children = (
+				E1F2A3B4C5D6E7F8A9B0C1D2 /* DebatesView.swift */,
+			);
+			path = Debates;
+			sourceTree = "<group>";
+		};
 		58492F208780FA5EF3807E8F /* Views */ = {
 			isa = PBXGroup;
 			children = (
 				06DF2DE32E51B747E03B0433 /* Common */,
+				D2E3F4A5B6C7D8E9F0A1B2C3 /* Debates */,
 				F9C473AD93A48987A906C200 /* Feed */,
 				4E77C66987590AE78F7067AA /* Floor */,
 				B86067F145C354A582459B03 /* Law */,
@@ -321,6 +335,8 @@
 				C1D2E3F4A5B6C7D8E9F0A1B2 /* Notification.swift in Sources */,
 				E5F6A7B8C9D0E1F2A3B4C5D6 /* NotificationsView.swift in Sources */,
 				A7B8C9D0E1F2A3B4C5D6E7F8 /* PostArgumentSheet.swift in Sources */,
+				B3C4D5E6F7A8B9C0D1E2F3A4 /* Debate.swift in Sources */,
+				F0A1B2C3D4E5F6A7B8C9D0E1 /* DebatesView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

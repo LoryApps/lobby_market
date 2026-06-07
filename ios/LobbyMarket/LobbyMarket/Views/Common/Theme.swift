@@ -31,6 +31,7 @@ extension Font {
     static let lmTitle = Font.system(size: 22, weight: .semibold, design: .rounded)
     static let lmBody = Font.system(size: 16, weight: .regular, design: .default)
     static let lmBodyBold = Font.system(size: 16, weight: .semibold, design: .default)
+    static let lmHeadline = Font.system(size: 15, weight: .semibold, design: .default)
     static let lmCaption = Font.system(size: 12, weight: .medium, design: .default)
     static let lmMono = Font.system(size: 13, weight: .medium, design: .monospaced)
 }

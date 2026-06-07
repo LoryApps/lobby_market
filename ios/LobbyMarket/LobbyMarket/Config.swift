@@ -32,6 +32,12 @@ enum Config {
         return components.url!
     }
 
+    /// Alias for supabaseAnonKey — convenience shorthand.
+    static var anonKey: String { supabaseAnonKey }
+
+    /// Lobby Market production web URL — used for deep links and Share sheets.
+    static let webURL = "https://lobby.market"
+
     /// App display name.
     static let appName = "Lobby Market"
 

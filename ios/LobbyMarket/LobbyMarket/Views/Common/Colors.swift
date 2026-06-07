@@ -19,10 +19,14 @@ extension Color {
     static let surface100 = Color(red: 17/255, green: 17/255, blue: 23/255)  // #111117
     static let surface200 = Color(red: 26/255, green: 26/255, blue: 34/255)  // #1a1a22
     static let surface300 = Color(red: 36/255, green: 36/255, blue: 46/255)  // #24242e
+    static let surface400 = Color(red: 66/255, green: 66/255, blue: 80/255)  // muted border/icon
+    static let surface500 = Color(red: 110/255, green: 110/255, blue: 126/255) // dim text
 
     // MARK: - Accents
     static let gold    = Color(red: 245/255, green: 158/255, blue: 11/255) // #f59e0b
     static let emerald = Color(red: 16/255,  green: 185/255, blue: 129/255) // #10b981
+    static let against = againstRed
+    static let purple  = Color(red: 168/255, green: 85/255, blue: 247/255) // #a855f7
 
     // MARK: - Text
     static let textPrimary   = Color.white

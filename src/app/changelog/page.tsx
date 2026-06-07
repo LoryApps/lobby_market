@@ -2119,8 +2119,8 @@ const CHAPTERS: Chapter[] = [
 ]
 
 const STATS = [
-  { value: '265', label: 'chapters shipped' },
-  { value: '810+', label: 'features built' },
+  { value: '266', label: 'chapters shipped' },
+  { value: '815+', label: 'features built' },
   { value: '85', label: 'DB migrations' },
   { value: '580+', label: 'API routes' },
 ]
@@ -2135,6 +2135,13 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'iOS Debates View',
+    description: 'iOS app Ch. 266 — native Debates tab for the iOS app. Debate.swift model: id, topicId, type (quick/grand/tribunal), status (scheduled/live/ended/cancelled), title, description, scheduledAt, viewerCount, blueSway/redSway with sort helpers and sampleData. DebatesView.swift: full debates browser with Live Now / Today / Coming Up / Recently Ended sections, DebateCard component with type badge, live pulse pill, sway bar for active debates, viewer count, and tap-to-open in Safari. DebateSkeletonCard animated loading state. SwayBar component shows real-time FOR/AGAINST sway percentages. SupabaseClient.fetchDebates() — queries debates table ordered by status priority (live first) then by scheduledAt. ContentView updated with new Debates tab (mic.fill icon, positioned after Search). Colors.swift extended: surface400, surface500, against (alias for againstRed), purple accent. Theme.swift: lmHeadline font added. Config.swift: anonKey alias + webURL for deep links. project.pbxproj updated with Debate.swift (Models group) and DebatesView.swift (new Debates group under Views).',
+    icon: Mic,
+    color: 'text-against-400',
+    tag: 'Ch. 266',
+  },
   {
     title: 'iOS Notifications + Post Argument',
     description: 'iOS app Ch. 265 — two high-engagement iOS features. (1) NotificationsView.swift: full notifications tab with grouped Today/Earlier sections, 15 notification types (achievement_earned, debate_starting, law_established, reply_received, streak_reminder, etc.), skeleton loading, mark-all-as-read (PATCH /notifications), empty state, and per-type icons/accent colors. Notification.swift model added to Models group. New "Alerts" tab added as 6th tab in ContentView. (2) PostArgumentSheet.swift: compose sheet for FOR/AGAINST argument submission from TopicDetailView — side selector pills, TextEditor with 500-char limit, live remaining counter, submit state. Triggered by new pencil button in the arguments section header (only shown when signed in). SupabaseClient extended with fetchNotifications(), markAllNotificationsRead() (PATCH), and postArgument() (POST to topic_arguments). TopicDetailView refactored to extract loadArguments() so sheet can refresh the list on dismiss. project.pbxproj updated with all three new files.',

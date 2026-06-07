@@ -355,6 +355,38 @@ final class SupabaseClient {
         }
     }
 
+    // MARK: - Debates
+
+    func fetchDebates(limit: Int = 50) async throws -> [Debate] {
+        var q = QueryParams()
+        q.select("id,topic_id,creator_id,type,status,title,description,scheduled_at,started_at,ended_at,viewer_count,blue_sway,red_sway,created_at")
+        q.order("scheduled_at", ascending: true)
+        q.limit(limit)
+        let req = try buildRequest(method: "GET", path: "debates", query: q)
+        do {
+            let all: [Debate] = try await execute(req)
+            // Sort: live first, then scheduled by time, then ended most-recent-first
+            return all.sorted { a, b in
+                let order: (Debate.DebateStatusKind) -> Int = {
+                    switch $0 {
+                    case .live:      return 0
+                    case .scheduled: return 1
+                    case .ended:     return 2
+                    case .cancelled: return 3
+                    }
+                }
+                let oa = order(a.status), ob = order(b.status)
+                if oa != ob { return oa < ob }
+                if a.status == .ended {
+                    return (a.endedAt ?? a.scheduledAt) > (b.endedAt ?? b.scheduledAt)
+                }
+                return a.scheduledAt < b.scheduledAt
+            }
+        } catch {
+            return Debate.sampleData
+        }
+    }
+
     // MARK: - Post Argument
 
     func postArgument(
