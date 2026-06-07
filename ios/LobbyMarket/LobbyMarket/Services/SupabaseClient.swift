@@ -144,6 +144,15 @@ final class SupabaseClient {
         }
     }
 
+    // MARK: - Generic REST helper
+
+    /// Generic GET against any table. Used by feature views that don't
+    /// warrant a dedicated typed method on this class.
+    func get<T: Decodable>(table: String, params: QueryParams) async throws -> [T] {
+        let req = try buildRequest(method: "GET", path: table, query: params)
+        return try await execute(req)
+    }
+
     // MARK: - Topics
 
     func fetchTopics(limit: Int = Config.feedPageSize, offset: Int = 0) async throws -> [Topic] {
