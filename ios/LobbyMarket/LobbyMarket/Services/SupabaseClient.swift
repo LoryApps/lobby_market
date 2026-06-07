@@ -305,6 +305,22 @@ final class SupabaseClient {
         }
     }
 
+    // MARK: - Vote history (used by StatsView)
+
+    func fetchVoteHistory(userId: String, limit: Int = 300) async throws -> [VoteHistory] {
+        var q = QueryParams()
+        q.select("id,topic_id,side,created_at,topics(category)")
+        q.eq("user_id", userId)
+        q.order("created_at", ascending: false)
+        q.limit(limit)
+        let req = try buildRequest(method: "GET", path: "votes", query: q)
+        do {
+            return try await execute(req)
+        } catch {
+            return []
+        }
+    }
+
     // MARK: - Profiles
 
     func fetchProfile(id: String) async throws -> Profile? {
@@ -446,4 +462,25 @@ struct NewArgumentPayload: Encodable {
     let author_id: String
     let side: String
     let content: String
+}
+
+/// A vote record returned with its topic's category — used by StatsView.
+struct VoteHistory: Decodable {
+    let id: String
+    let topicId: String
+    let side: String
+    let createdAt: Date
+    let topics: TopicRef?
+
+    struct TopicRef: Decodable {
+        let category: String?
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case topicId  = "topic_id"
+        case side
+        case createdAt = "created_at"
+        case topics
+    }
 }

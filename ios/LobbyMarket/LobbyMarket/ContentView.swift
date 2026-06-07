@@ -12,7 +12,7 @@ struct ContentView: View {
     @State private var selectedTab: Tab = .feed
 
     enum Tab: Hashable {
-        case feed, search, debates, floor, create, codex, leaderboard, notifications, profile
+        case feed, search, debates, floor, create, codex, leaderboard, stats, notifications, profile
     }
 
     var body: some View {
@@ -58,6 +58,12 @@ struct ContentView: View {
                     Label("Ranks", systemImage: "trophy.fill")
                 }
                 .tag(Tab.leaderboard)
+
+            StatsView()
+                .tabItem {
+                    Label("Stats", systemImage: "chart.bar.fill")
+                }
+                .tag(Tab.stats)
 
             NotificationsView()
                 .tabItem {
