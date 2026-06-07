@@ -485,6 +485,59 @@ final class SupabaseClient {
         }
     }
 
+    // MARK: - Coalitions
+
+    func fetchCoalitions(limit: Int = 50) async throws -> [Coalition] {
+        var params = QueryParams()
+        params.select("id,name,creator_id,description,member_count,coalition_influence,wins,losses,is_public,max_members,created_at")
+        params.eq("is_public", "true")
+        params.order("coalition_influence", ascending: false)
+        params.limit(limit)
+        let req = try buildRequest(method: "GET", path: "coalitions", query: params)
+        return try await execute(req)
+    }
+
+    func fetchMyCoalitionIds(userId: String) async throws -> [String] {
+        var params = QueryParams()
+        params.select("coalition_id")
+        params.eq("user_id", userId)
+        let req = try buildRequest(method: "GET", path: "coalition_members", query: params)
+        let rows: [[String: String]] = try await execute(req)
+        return rows.compactMap { $0["coalition_id"] }
+    }
+
+    func joinCoalition(coalitionId: String, userId: String) async throws {
+        struct Payload: Encodable {
+            let coalition_id: String
+            let user_id: String
+            let role: String
+        }
+        let body = try encoder.encode(Payload(coalition_id: coalitionId, user_id: userId, role: "member"))
+        let req = try buildRequest(method: "POST", path: "coalition_members", body: body)
+        let (_, response) = try await session.data(for: req)
+        guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
+            throw SupabaseError.invalidResponse
+        }
+        // Increment member_count via RPC-like PATCH — best-effort
+        let updateReq = try buildRequest(
+            method: "POST",
+            path: "rpc/increment_coalition_member_count",
+            body: try encoder.encode(["coalition_id": coalitionId])
+        )
+        _ = try? await session.data(for: updateReq)
+    }
+
+    func leaveCoalition(coalitionId: String, userId: String) async throws {
+        var params = QueryParams()
+        params.eq("coalition_id", coalitionId)
+        params.eq("user_id", userId)
+        let req = try buildRequest(method: "DELETE", path: "coalition_members", query: params)
+        let (_, response) = try await session.data(for: req)
+        guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
+            throw SupabaseError.invalidResponse
+        }
+    }
+
     // MARK: - Post Argument
 
     func postArgument(
