@@ -550,6 +550,57 @@ final class SupabaseClient {
         }
     }
 
+    // MARK: - Debate RSVPs
+
+    /// Fetch the number of RSVPs for a debate.
+    func fetchDebateRSVPCount(debateId: String) async throws -> Int {
+        var q = QueryParams()
+        q.select("id")
+        q.eq("debate_id", debateId)
+        q.limit(500)
+        let req = try buildRequest(method: "GET", path: "debate_rsvps", query: q)
+        struct IDOnly: Decodable { let id: String }
+        let rows: [IDOnly] = (try? await execute(req)) ?? []
+        return rows.count
+    }
+
+    /// Returns true if the given user has RSVP'd to the debate.
+    func isUserRSVPed(debateId: String, userId: String) async throws -> Bool {
+        var q = QueryParams()
+        q.select("id")
+        q.eq("debate_id", debateId)
+        q.eq("user_id", userId)
+        q.limit(1)
+        let req = try buildRequest(method: "GET", path: "debate_rsvps", query: q)
+        struct IDOnly: Decodable { let id: String }
+        let rows: [IDOnly] = (try? await execute(req)) ?? []
+        return !rows.isEmpty
+    }
+
+    /// RSVP the current user to a debate (upsert — safe to call if already RSVP'd).
+    func rsvpToDebate(debateId: String, userId: String) async throws {
+        struct Payload: Encodable {
+            let debate_id: String
+            let user_id: String
+        }
+        let body = try encoder.encode(Payload(debate_id: debateId, user_id: userId))
+        var req = try buildRequest(method: "POST", path: "debate_rsvps", body: body)
+        req.setValue("resolution=ignore-duplicates", forHTTPHeaderField: "Prefer")
+        let _: EmptyResponse = try await execute(req)
+    }
+
+    /// Remove the current user's RSVP from a debate.
+    func unrsvpFromDebate(debateId: String, userId: String) async throws {
+        var q = QueryParams()
+        q.eq("debate_id", debateId)
+        q.eq("user_id", userId)
+        let req = try buildRequest(method: "DELETE", path: "debate_rsvps", query: q)
+        let (_, response) = try await session.data(for: req)
+        guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
+            throw SupabaseError.invalidResponse
+        }
+    }
+
     // MARK: - Notification Preferences
 
     func fetchNotifPrefs(userId: String) async throws -> NotifPrefs {

@@ -2,9 +2,8 @@
 //  DebatesView.swift
 //  LobbyMarket
 //
-//  Browse and watch live debates — grouped by status: Live Now, Today,
-//  Upcoming, and Recently Ended. Tap a card to open the full debate page
-//  in Safari (web app). Pull to refresh. Skeleton loading.
+//  Browse debates — grouped by status: Live Now, Today, Upcoming, Ended.
+//  Tap a card to open the native DebateDetailView (RSVP, countdown, sway).
 //
 
 import SwiftUI
@@ -71,6 +70,9 @@ struct DebatesView: View {
             }
             .task { await loadDebates() }
             .refreshable { await loadDebates() }
+            .navigationDestination(for: Debate.self) { debate in
+                DebateDetailView(debate: debate)
+            }
         }
     }
 
@@ -82,7 +84,7 @@ struct DebatesView: View {
                 if !liveDebates.isEmpty {
                     sectionHeader("Live Now", accent: .red, icon: "circle.fill")
                     ForEach(liveDebates) { debate in
-                        DebateCard(debate: debate)
+                        NavigationLink(value: debate) { DebateCard(debate: debate) }
                         divider
                     }
                 }
@@ -90,7 +92,7 @@ struct DebatesView: View {
                 if !upcomingToday.isEmpty {
                     sectionHeader("Today", accent: .forBlue, icon: "calendar")
                     ForEach(upcomingToday) { debate in
-                        DebateCard(debate: debate)
+                        NavigationLink(value: debate) { DebateCard(debate: debate) }
                         divider
                     }
                 }
@@ -98,7 +100,7 @@ struct DebatesView: View {
                 if !upcomingLater.isEmpty {
                     sectionHeader("Coming Up", accent: .surface400, icon: "clock")
                     ForEach(upcomingLater) { debate in
-                        DebateCard(debate: debate)
+                        NavigationLink(value: debate) { DebateCard(debate: debate) }
                         divider
                     }
                 }
@@ -106,7 +108,7 @@ struct DebatesView: View {
                 if !recentlyEnded.isEmpty {
                     sectionHeader("Recently Ended", accent: .surface400, icon: "checkmark.circle")
                     ForEach(recentlyEnded) { debate in
-                        DebateCard(debate: debate)
+                        NavigationLink(value: debate) { DebateCard(debate: debate) }
                         divider
                     }
                 }
@@ -211,7 +213,6 @@ struct DebatesView: View {
 
 private struct DebateCard: View {
     let debate: Debate
-    @Environment(\.openURL) private var openURL
 
     private var typeColor: Color {
         switch debate.type {
@@ -222,73 +223,65 @@ private struct DebateCard: View {
     }
 
     var body: some View {
-        Button {
-            let urlStr = "\(Config.webURL)/debate/\(debate.id)"
-            if let url = URL(string: urlStr) {
-                openURL(url)
-            }
-        } label: {
-            HStack(alignment: .top, spacing: Spacing.sm) {
-                // Type indicator stripe
-                RoundedRectangle(cornerRadius: 2)
-                    .fill(typeColor)
-                    .frame(width: 3)
-                    .padding(.vertical, 2)
+        HStack(alignment: .top, spacing: Spacing.sm) {
+            // Type indicator stripe
+            RoundedRectangle(cornerRadius: 2)
+                .fill(typeColor)
+                .frame(width: 3)
+                .padding(.vertical, 2)
 
-                VStack(alignment: .leading, spacing: 6) {
-                    // Header row
-                    HStack(spacing: 6) {
-                        typeBadge
-                        if debate.status == .live {
-                            livePill
-                        }
-                        Spacer()
-                        Text(debate.timeLabel)
-                            .font(.system(size: 11, weight: .medium))
-                            .foregroundStyle(debate.status == .live ? .red : .surface500)
-                    }
-
-                    // Title
-                    Text(debate.title)
-                        .font(.lmHeadline)
-                        .foregroundStyle(.white)
-                        .lineLimit(2)
-                        .multilineTextAlignment(.leading)
-
-                    // Description (if any)
-                    if let desc = debate.description, !desc.isEmpty {
-                        Text(desc)
-                            .font(.lmCaption)
-                            .foregroundStyle(.surface400)
-                            .lineLimit(2)
-                    }
-
-                    // Live sway meter
+            VStack(alignment: .leading, spacing: 6) {
+                // Header row
+                HStack(spacing: 6) {
+                    typeBadge
                     if debate.status == .live {
-                        SwayBar(blue: debate.blueSway, red: debate.redSway)
-                            .padding(.top, 2)
+                        livePill
                     }
+                    Spacer()
+                    Text(debate.timeLabel)
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundStyle(debate.status == .live ? .red : .surface500)
+                }
 
-                    // Footer
-                    HStack(spacing: 12) {
-                        if debate.status == .live || debate.status == .ended {
-                            Label("\(debate.viewerCount)", systemImage: "eye.fill")
-                                .font(.system(size: 11, weight: .medium))
-                                .foregroundStyle(.surface500)
-                        }
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                            .font(.system(size: 10, weight: .semibold))
+                // Title
+                Text(debate.title)
+                    .font(.lmHeadline)
+                    .foregroundStyle(.white)
+                    .lineLimit(2)
+                    .multilineTextAlignment(.leading)
+
+                // Description (if any)
+                if let desc = debate.description, !desc.isEmpty {
+                    Text(desc)
+                        .font(.lmCaption)
+                        .foregroundStyle(.surface400)
+                        .lineLimit(2)
+                }
+
+                // Live sway meter
+                if debate.status == .live {
+                    SwayBar(blue: debate.blueSway, red: debate.redSway)
+                        .padding(.top, 2)
+                }
+
+                // Footer
+                HStack(spacing: 12) {
+                    if debate.status == .live || debate.status == .ended {
+                        Label("\(debate.viewerCount)", systemImage: "eye.fill")
+                            .font(.system(size: 11, weight: .medium))
                             .foregroundStyle(.surface500)
                     }
-                    .padding(.top, 2)
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 10, weight: .semibold))
+                        .foregroundStyle(.surface500)
                 }
+                .padding(.top, 2)
             }
-            .padding(.horizontal, Spacing.md)
-            .padding(.vertical, Spacing.sm + 2)
-            .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
+        .padding(.horizontal, Spacing.md)
+        .padding(.vertical, Spacing.sm + 2)
+        .contentShape(Rectangle())
     }
 
     private var typeBadge: some View {
