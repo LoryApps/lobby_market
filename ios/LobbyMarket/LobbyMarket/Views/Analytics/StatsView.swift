@@ -44,6 +44,7 @@ struct StatsView: View {
 
     @State private var profile: Profile?
     @State private var votes: [VoteHistory] = []
+    @State private var predictionStats: PredictionUserStats?
     @State private var isLoading = false
     @State private var hasLoaded = false
     @State private var errorMessage: String?
@@ -133,6 +134,9 @@ struct StatsView: View {
                             activityChart
                             if !categoryStats.isEmpty {
                                 categoryBreakdown
+                            }
+                            if let ps = predictionStats, ps.total > 0 {
+                                predictionCard(ps)
                             }
                             webLink
                             Spacer(minLength: 40)
@@ -385,6 +389,69 @@ struct StatsView: View {
         .lmCard()
     }
 
+    // MARK: - Prediction card
+
+    private func predictionCard(_ ps: PredictionUserStats) -> some View {
+        VStack(alignment: .leading, spacing: Spacing.sm) {
+            HStack(spacing: Spacing.xs) {
+                Image(systemName: "chart.line.uptrend.xyaxis")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(.gold)
+                Text("Prediction Record")
+                    .font(.lmTitle)
+                    .foregroundStyle(.textPrimary)
+                Spacer()
+                if let acc = ps.accuracy {
+                    Text("\(Int(acc * 100))% accurate")
+                        .font(.lmCaption)
+                        .foregroundStyle(.emerald)
+                        .padding(.horizontal, Spacing.xs)
+                        .padding(.vertical, 3)
+                        .background(Capsule().fill(Color.emerald.opacity(0.12)))
+                }
+            }
+
+            HStack(spacing: 0) {
+                predictionStatCell(value: "\(ps.total)", label: "Total")
+                Divider().frame(width: 1, height: 36).background(Color.white.opacity(0.08))
+                predictionStatCell(value: "\(ps.resolved)", label: "Resolved")
+                Divider().frame(width: 1, height: 36).background(Color.white.opacity(0.08))
+                predictionStatCell(value: "\(ps.correct)", label: "Correct")
+                if let brier = ps.avgBrier {
+                    Divider().frame(width: 1, height: 36).background(Color.white.opacity(0.08))
+                    predictionStatCell(
+                        value: String(format: "%.2f", brier),
+                        label: "Brier"
+                    )
+                }
+            }
+
+            if ps.cloutEarned > 0 {
+                HStack(spacing: 4) {
+                    Image(systemName: "bolt.fill")
+                        .font(.system(size: 11))
+                        .foregroundStyle(.gold)
+                    Text("+\(ps.cloutEarned) clout earned from correct forecasts")
+                        .font(.lmCaption)
+                        .foregroundStyle(.textTertiary)
+                }
+            }
+        }
+        .lmCard()
+    }
+
+    private func predictionStatCell(value: String, label: String) -> some View {
+        VStack(spacing: 2) {
+            Text(value)
+                .font(.lmMono)
+                .foregroundStyle(.textPrimary)
+            Text(label)
+                .font(.system(size: 10))
+                .foregroundStyle(.textTertiary)
+        }
+        .frame(maxWidth: .infinity)
+    }
+
     // MARK: - Shimmer skeleton
 
     private var shimmer: some View {
@@ -421,8 +488,9 @@ struct StatsView: View {
             hasLoaded = true
         }
         guard let uid = auth.currentUserId else { return }
-        async let profileTask = SupabaseClient.shared.fetchProfile(id: uid)
-        async let votesTask   = SupabaseClient.shared.fetchVoteHistory(userId: uid)
+        async let profileTask    = SupabaseClient.shared.fetchProfile(id: uid)
+        async let votesTask      = SupabaseClient.shared.fetchVoteHistory(userId: uid)
+        async let predStatsTask  = SupabaseClient.shared.fetchPredictionUserStats(userId: uid)
         do {
             let (p, v) = try await (profileTask, votesTask)
             profile = p
@@ -430,6 +498,7 @@ struct StatsView: View {
         } catch {
             errorMessage = "Could not load stats — \(error.localizedDescription)"
         }
+        predictionStats = try? await predStatsTask
     }
 }
 

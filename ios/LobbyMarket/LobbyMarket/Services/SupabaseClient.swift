@@ -777,6 +777,83 @@ final class SupabaseClient {
         let _: EmptyResponse = try await execute(req)
     }
 
+    // MARK: - Predictions
+
+    /// Fetch crowd-aggregate prediction stats for a single topic.
+    func fetchTopicPredictionStats(topicId: String) async throws -> TopicPredictionStats? {
+        var q = QueryParams()
+        q.select("topic_id,total_predictions,law_confidence")
+        q.eq("topic_id", topicId)
+        q.limit(1)
+        let req = try buildRequest(method: "GET", path: "topic_prediction_stats", query: q)
+        let list: [TopicPredictionStats] = (try? await execute(req)) ?? []
+        return list.first
+    }
+
+    /// Fetch the current user's prediction on a specific topic (nil = no prediction yet).
+    func fetchMyPrediction(topicId: String, userId: String) async throws -> Prediction? {
+        var q = QueryParams()
+        q.select("id,topic_id,user_id,predicted_law,confidence,resolved_at,correct,brier_score,clout_earned,created_at,updated_at")
+        q.eq("topic_id", topicId)
+        q.eq("user_id", userId)
+        q.limit(1)
+        let req = try buildRequest(method: "GET", path: "topic_predictions", query: q)
+        let list: [Prediction] = (try? await execute(req)) ?? []
+        return list.first
+    }
+
+    /// Upsert a prediction (insert or update on conflict).
+    func upsertPrediction(
+        topicId: String,
+        userId: String,
+        predictedLaw: Bool,
+        confidence: Int
+    ) async throws -> Prediction {
+        let payload = UpsertPredictionPayload(
+            topic_id: topicId,
+            user_id: userId,
+            predicted_law: predictedLaw,
+            confidence: confidence
+        )
+        let data = try encoder.encode(payload)
+        var req = try buildRequest(method: "POST", path: "topic_predictions", body: data, preferReturn: true)
+        req.setValue("resolution=merge-duplicates,return=representation", forHTTPHeaderField: "Prefer")
+        let list: [Prediction] = try await execute(req)
+        guard let first = list.first else { throw SupabaseError.invalidResponse }
+        return first
+    }
+
+    /// Fetch aggregated prediction stats for a user (accuracy, total, brier score).
+    func fetchPredictionUserStats(userId: String) async throws -> PredictionUserStats {
+        var q = QueryParams()
+        q.select("predicted_law,confidence,resolved_at,correct,brier_score,clout_earned")
+        q.eq("user_id", userId)
+        q.limit(500)
+        let req = try buildRequest(method: "GET", path: "topic_predictions", query: q)
+        let list: [Prediction] = (try? await execute(req)) ?? []
+
+        let total     = list.count
+        let resolved  = list.filter { $0.resolvedAt != nil }
+        let correct   = resolved.filter { $0.correct == true }.count
+        let clout     = list.reduce(0) { $0 + $1.cloutEarned }
+
+        let accuracy: Double? = resolved.isEmpty ? nil
+            : Double(correct) / Double(resolved.count)
+
+        let briersArray = resolved.compactMap { $0.brierScore }
+        let avgBrier: Double? = briersArray.isEmpty ? nil
+            : briersArray.reduce(0, +) / Double(briersArray.count)
+
+        return PredictionUserStats(
+            total: total,
+            resolved: resolved.count,
+            correct: correct,
+            accuracy: accuracy,
+            avgBrier: avgBrier,
+            cloutEarned: clout
+        )
+    }
+
     // MARK: - Post Argument
 
     func postArgument(

@@ -18,6 +18,9 @@ struct TopicDetailView: View {
     @State private var showPostSheet = false
     @State private var postSheetSide: Argument.ArgumentSide = .blue
     @State private var showArena = false
+    @State private var showPredictionSheet = false
+    @State private var crowdStats: TopicPredictionStats?
+    @State private var myPrediction: Prediction?
 
     enum ArgumentSideFilter: String, CaseIterable {
         case all = "All"
@@ -85,6 +88,10 @@ struct TopicDetailView: View {
                     statChip(icon: "clock", value: topic.timeRemaining, label: "")
                 }
                 .padding(.top, Spacing.xs)
+
+                // ── Prediction Market ───────────────────────────────────────
+                predictionRow
+                    .padding(.top, Spacing.xs)
 
                 // ── Arguments ───────────────────────────────────────────────
                 Divider().background(Color.white.opacity(0.1))
@@ -186,6 +193,75 @@ struct TopicDetailView: View {
 
     // MARK: - Subviews
 
+    private var predictionRow: some View {
+        Button {
+            Haptics.impact(.light)
+            showPredictionSheet = true
+        } label: {
+            HStack(spacing: Spacing.sm) {
+                Image(systemName: "chart.line.uptrend.xyaxis")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(.gold)
+
+                VStack(alignment: .leading, spacing: 2) {
+                    if let stats = crowdStats, stats.totalPredictions > 0 {
+                        Text("Crowd predicts \(Int(stats.lawConfidence))% chance of law")
+                            .font(.lmCaption)
+                            .foregroundStyle(.textSecondary)
+                    } else {
+                        Text("No forecasts yet")
+                            .font(.lmCaption)
+                            .foregroundStyle(.textTertiary)
+                    }
+                    if let pred = myPrediction {
+                        Text("Your forecast: \(pred.predictedLaw ? "Law" : "Fail") · \(pred.confidence)% confident")
+                            .font(.system(size: 10, weight: .medium))
+                            .foregroundStyle(pred.predictedLaw ? .forBlue : .againstRed)
+                    } else {
+                        Text("Tap to place your forecast")
+                            .font(.system(size: 10))
+                            .foregroundStyle(.textTertiary)
+                    }
+                }
+
+                Spacer()
+
+                if let stats = crowdStats, stats.totalPredictions > 0 {
+                    // Mini bar
+                    GeometryReader { geo in
+                        HStack(spacing: 0) {
+                            Rectangle().fill(Color.forBlue)
+                                .frame(width: geo.size.width * stats.lawConfidence / 100)
+                            Rectangle().fill(Color.againstRed)
+                        }
+                    }
+                    .frame(width: 50, height: 6)
+                    .clipShape(Capsule())
+                }
+
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(.textTertiary)
+            }
+            .padding(Spacing.sm)
+            .background(
+                RoundedRectangle(cornerRadius: Radii.md)
+                    .fill(Color.surface200)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: Radii.md)
+                            .stroke(Color.gold.opacity(0.2), lineWidth: 1)
+                    )
+            )
+        }
+        .buttonStyle(.plain)
+        .sheet(isPresented: $showPredictionSheet, onDismiss: {
+            Task { await loadPredictionData() }
+        }) {
+            PredictionSheet(topic: topic)
+                .environmentObject(auth)
+        }
+    }
+
     private var argumentSidePicker: some View {
         HStack(spacing: Spacing.xs) {
             ForEach(ArgumentSideFilter.allCases, id: \.self) { filter in
@@ -261,6 +337,23 @@ struct TopicDetailView: View {
     private func loadAll() async {
         realtime.subscribe(topicId: topic.id)
         await loadArguments()
+        await loadPredictionData()
+    }
+
+    private func loadPredictionData() async {
+        async let statsTask = SupabaseClient.shared.fetchTopicPredictionStats(topicId: topic.id)
+        if let uid = auth.currentUserId {
+            async let predTask = SupabaseClient.shared.fetchMyPrediction(topicId: topic.id, userId: uid)
+            let stats = try? await statsTask
+            let pred  = try? await predTask
+            await MainActor.run {
+                crowdStats   = stats
+                myPrediction = pred
+            }
+        } else {
+            let stats = try? await statsTask
+            await MainActor.run { crowdStats = stats }
+        }
     }
 
     private func loadArguments() async {
