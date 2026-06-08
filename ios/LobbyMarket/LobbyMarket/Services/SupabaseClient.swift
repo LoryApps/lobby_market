@@ -879,6 +879,121 @@ final class SupabaseClient {
         guard let first = list.first else { throw SupabaseError.invalidResponse }
         return first
     }
+
+    // MARK: - Direct Messages
+
+    /// Fetch all conversations for the current user, grouped by partner.
+    func fetchConversations(userId: String) async throws -> [DmConversation] {
+        guard var components = URLComponents(
+            url: Config.restURL.appendingPathComponent("direct_messages"),
+            resolvingAgainstBaseURL: false
+        ) else { throw SupabaseError.invalidURL }
+
+        let cols = "id,sender_id,receiver_id,content,is_read,created_at," +
+            "sender:profiles!direct_messages_sender_id_fkey(id,username,display_name,avatar_url,role)," +
+            "receiver:profiles!direct_messages_receiver_id_fkey(id,username,display_name,avatar_url,role)"
+
+        components.queryItems = [
+            URLQueryItem(name: "select", value: cols),
+            URLQueryItem(name: "or",     value: "(sender_id.eq.\(userId),receiver_id.eq.\(userId))"),
+            URLQueryItem(name: "order",  value: "created_at.desc"),
+            URLQueryItem(name: "limit",  value: "300"),
+        ]
+        guard let url = components.url else { throw SupabaseError.invalidURL }
+        let req = buildAuthRequest(url: url, method: "GET")
+        let rows: [DirectMessage] = try await execute(req)
+
+        var threadMap: [String: DmConversation] = [:]
+        for row in rows {
+            let isIncoming = row.receiverId == userId
+            guard let partner = isIncoming ? row.sender : row.receiver else { continue }
+            if let existing = threadMap[partner.id] {
+                if isIncoming && !row.isRead {
+                    threadMap[partner.id] = DmConversation(
+                        partner: existing.partner,
+                        lastMessage: existing.lastMessage,
+                        lastMessageAt: existing.lastMessageAt,
+                        unreadCount: existing.unreadCount + 1,
+                        lastSenderId: existing.lastSenderId
+                    )
+                }
+            } else {
+                threadMap[partner.id] = DmConversation(
+                    partner: partner,
+                    lastMessage: row.content,
+                    lastMessageAt: row.createdAt,
+                    unreadCount: isIncoming && !row.isRead ? 1 : 0,
+                    lastSenderId: row.senderId
+                )
+            }
+        }
+        return Array(threadMap.values).sorted { $0.lastMessageAt > $1.lastMessageAt }
+    }
+
+    /// Fetch messages between the current user and a specific partner.
+    func fetchDirectMessages(myId: String, partnerId: String, limit: Int = 100) async throws -> [DirectMessage] {
+        guard var components = URLComponents(
+            url: Config.restURL.appendingPathComponent("direct_messages"),
+            resolvingAgainstBaseURL: false
+        ) else { throw SupabaseError.invalidURL }
+
+        let cols = "id,sender_id,receiver_id,content,is_read,created_at," +
+            "sender:profiles!direct_messages_sender_id_fkey(id,username,display_name,avatar_url,role)"
+        let orFilter = "(and(sender_id.eq.\(myId),receiver_id.eq.\(partnerId))," +
+            "and(sender_id.eq.\(partnerId),receiver_id.eq.\(myId)))"
+
+        components.queryItems = [
+            URLQueryItem(name: "select", value: cols),
+            URLQueryItem(name: "or",     value: orFilter),
+            URLQueryItem(name: "order",  value: "created_at.asc"),
+            URLQueryItem(name: "limit",  value: "\(limit)"),
+        ]
+        guard let url = components.url else { throw SupabaseError.invalidURL }
+        let req = buildAuthRequest(url: url, method: "GET")
+        return try await execute(req)
+    }
+
+    /// Send a direct message from senderId to receiverId.
+    func sendDirectMessage(senderId: String, receiverId: String, content: String) async throws -> DirectMessage {
+        struct Payload: Encodable {
+            let sender_id: String
+            let receiver_id: String
+            let content: String
+        }
+        let body = try encoder.encode(Payload(sender_id: senderId, receiver_id: receiverId, content: content))
+        let req  = try buildRequest(method: "POST", path: "direct_messages", body: body, preferReturn: true)
+        let list: [DirectMessage] = try await execute(req)
+        guard let first = list.first else { throw SupabaseError.invalidResponse }
+        return first
+    }
+
+    /// Mark all incoming messages in a conversation as read.
+    func markConversationRead(myId: String, partnerId: String) async throws {
+        guard var components = URLComponents(
+            url: Config.restURL.appendingPathComponent("direct_messages"),
+            resolvingAgainstBaseURL: false
+        ) else { throw SupabaseError.invalidURL }
+        components.queryItems = [
+            URLQueryItem(name: "receiver_id", value: "eq.\(myId)"),
+            URLQueryItem(name: "sender_id",   value: "eq.\(partnerId)"),
+            URLQueryItem(name: "is_read",     value: "eq.false"),
+        ]
+        guard let url = components.url else { throw SupabaseError.invalidURL }
+        var req = buildAuthRequest(url: url, method: "PATCH")
+        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        req.httpBody = try encoder.encode(["is_read": true])
+        _ = try? await session.data(for: req)
+    }
+
+    /// Build an authenticated URLRequest without a body (for manual queries).
+    private func buildAuthRequest(url: URL, method: String) -> URLRequest {
+        var req = URLRequest(url: url)
+        req.httpMethod = method
+        req.setValue(Config.supabaseAnonKey, forHTTPHeaderField: "apikey")
+        req.setValue("Bearer \(accessToken ?? Config.supabaseAnonKey)", forHTTPHeaderField: "Authorization")
+        req.setValue("application/json", forHTTPHeaderField: "Accept")
+        return req
+    }
 }
 
 /// Dummy type for endpoints that don't return a body.
