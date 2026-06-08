@@ -30,11 +30,14 @@ enum SupabaseError: LocalizedError {
 
 /// PostgREST query params — a lightweight builder.
 struct QueryParams {
-    private var items: [URLQueryItem] = []
+    var items: [URLQueryItem] = []
 
     mutating func select(_ columns: String) { items.append(.init(name: "select", value: columns)) }
     mutating func eq(_ column: String, _ value: String) {
         items.append(.init(name: column, value: "eq.\(value)"))
+    }
+    mutating func inFilter(_ column: String, values: [String]) {
+        items.append(.init(name: column, value: "in.(\(values.joined(separator: ",")))"))
     }
     mutating func order(_ column: String, ascending: Bool = false) {
         items.append(.init(name: "order", value: "\(column).\(ascending ? "asc" : "desc")"))
@@ -594,6 +597,106 @@ final class SupabaseClient {
         let _: EmptyResponse = try await execute(req)
     }
 
+    // MARK: - Argument Arena (Faceoffs)
+
+    func fetchArenaMatchup(topicId: String, userId: String?) async throws -> ArenaMatchup? {
+        // 1. Fetch arguments for the topic
+        var q = QueryParams()
+        q.select("id,content,side,upvotes,author_id")
+        q.eq("topic_id", topicId)
+        q.order("upvotes", ascending: false)
+        q.limit(50)
+        let argsReq = try buildRequest(method: "GET", path: "topic_arguments", query: q)
+        let rawArgs: [RawArenaArg] = (try? await execute(argsReq)) ?? []
+        guard rawArgs.count >= 2 else { return nil }
+
+        // 2. Fetch seen pairs for current user
+        var seenPairs: Set<String> = []
+        if let uid = userId {
+            var sq = QueryParams()
+            sq.select("argument_a_id,argument_b_id")
+            sq.eq("user_id", uid)
+            let seenReq = try buildRequest(method: "GET", path: "argument_faceoff_votes", query: sq)
+            let seen: [RawSeenPair] = (try? await execute(seenReq)) ?? []
+            for p in seen {
+                let key = [p.argument_a_id, p.argument_b_id].sorted().joined(separator: "|")
+                seenPairs.insert(key)
+            }
+        }
+
+        // 3. Fetch author usernames in one batch
+        let authorIds = Array(Set(rawArgs.compactMap { $0.author_id }))
+        var usernameMap: [String: String] = [:]
+        if !authorIds.isEmpty {
+            var pq = QueryParams()
+            pq.select("id,username")
+            pq.inFilter("id", values: authorIds)
+            let pReq = try buildRequest(method: "GET", path: "profiles", query: pq)
+            let profiles: [RawProfile] = (try? await execute(pReq)) ?? []
+            for p in profiles { usernameMap[p.id] = p.username }
+        }
+
+        func makeArena(_ raw: RawArenaArg) -> ArenaArgument {
+            ArenaArgument(
+                id: raw.id,
+                content: raw.content,
+                side: raw.side,
+                upvotes: raw.upvotes ?? 0,
+                authorUsername: raw.author_id.flatMap { usernameMap[$0] }
+            )
+        }
+
+        let blues  = rawArgs.filter { $0.side == "blue" }
+        let reds   = rawArgs.filter { $0.side == "red" }
+
+        // 4. Cross-side unseen pair first (most interesting matchups)
+        for b in blues {
+            for r in reds {
+                let key = [b.id, r.id].sorted().joined(separator: "|")
+                if !seenPairs.contains(key) {
+                    return ArenaMatchup(argA: makeArena(b), argB: makeArena(r))
+                }
+            }
+        }
+
+        // 5. Same-side fallback
+        for i in 0..<rawArgs.count {
+            for j in (i + 1)..<rawArgs.count {
+                let key = [rawArgs[i].id, rawArgs[j].id].sorted().joined(separator: "|")
+                if !seenPairs.contains(key) {
+                    return ArenaMatchup(argA: makeArena(rawArgs[i]), argB: makeArena(rawArgs[j]))
+                }
+            }
+        }
+
+        return nil
+    }
+
+    func submitFaceoffVote(
+        argumentAId: String,
+        argumentBId: String,
+        winnerId: String,
+        userId: String
+    ) async throws {
+        let (canonA, canonB) = argumentAId < argumentBId
+            ? (argumentAId, argumentBId)
+            : (argumentBId, argumentAId)
+        struct Payload: Encodable {
+            let user_id: String
+            let argument_a_id: String
+            let argument_b_id: String
+            let winner_id: String
+        }
+        let body = try encoder.encode(Payload(
+            user_id: userId,
+            argument_a_id: canonA,
+            argument_b_id: canonB,
+            winner_id: winnerId
+        ))
+        let req = try buildRequest(method: "POST", path: "argument_faceoff_votes", body: body)
+        let _: EmptyResponse = try await execute(req)
+    }
+
     // MARK: - Post Argument
 
     func postArgument(
@@ -700,6 +803,26 @@ struct RecentActivityVote: Decodable, Identifiable {
         topicStatement = join?.statement
         topicCategory  = join?.category
     }
+}
+
+// MARK: - Arena raw decodable types (used by fetchArenaMatchup)
+
+struct RawArenaArg: Decodable {
+    let id: String
+    let content: String
+    let side: String
+    let upvotes: Int?
+    let author_id: String?
+}
+
+struct RawSeenPair: Decodable {
+    let argument_a_id: String
+    let argument_b_id: String
+}
+
+struct RawProfile: Decodable {
+    let id: String
+    let username: String?
 }
 
 /// A vote record returned with its topic's category — used by StatsView.

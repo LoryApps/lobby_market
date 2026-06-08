@@ -17,6 +17,7 @@ struct TopicDetailView: View {
     @State private var argumentSideFilter: ArgumentSideFilter = .all
     @State private var showPostSheet = false
     @State private var postSheetSide: Argument.ArgumentSide = .blue
+    @State private var showArena = false
 
     enum ArgumentSideFilter: String, CaseIterable {
         case all = "All"
@@ -105,6 +106,31 @@ struct TopicDetailView: View {
                                 .font(.lmMono)
                                 .foregroundStyle(.textTertiary)
                         }
+                        // Arena button (≥2 arguments needed for faceoff)
+                        if arguments.count >= 2 {
+                            Button {
+                                Haptics.impact(.medium)
+                                showArena = true
+                            } label: {
+                                HStack(spacing: 4) {
+                                    Image(systemName: "bolt.fill")
+                                        .font(.system(size: 11, weight: .bold))
+                                    Text("Arena")
+                                        .font(.lmCaption)
+                                }
+                                .foregroundStyle(.gold)
+                                .padding(.horizontal, Spacing.xs)
+                                .padding(.vertical, 4)
+                                .background(
+                                    Capsule()
+                                        .fill(Color.gold.opacity(0.1))
+                                        .overlay(Capsule().stroke(Color.gold.opacity(0.3), lineWidth: 1))
+                                )
+                            }
+                            .buttonStyle(.plain)
+                            .padding(.leading, Spacing.xs)
+                        }
+
                         // Compose button — only if signed in
                         if auth.isAuthenticated {
                             Button {
@@ -123,6 +149,10 @@ struct TopicDetailView: View {
                         Task { await loadArguments() }
                     }) {
                         PostArgumentSheet(topic: topic, initialSide: postSheetSide)
+                    }
+                    .fullScreenCover(isPresented: $showArena) {
+                        ArenaView(topic: topic)
+                            .environmentObject(auth)
                     }
 
                     // Side filter
