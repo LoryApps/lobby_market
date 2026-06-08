@@ -3,6 +3,7 @@
 //  LobbyMarket
 //
 //  TikTok-style vertical paging feed of topics.
+//  Includes a mode toggle to switch to SwipeVoteView (card-stack swipe voting).
 //
 
 import SwiftUI
@@ -17,34 +18,20 @@ struct FeedView: View {
     @State private var hasLoadedOnce: Bool = false
     @State private var errorMessage: String?
 
+    /// When true, shows the card-stack SwipeVoteView instead of the paging feed.
+    @State private var swipeMode: Bool = false
+
     var body: some View {
         ZStack {
             Color.surface0.ignoresSafeArea()
 
-            if topics.isEmpty && isLoading {
-                ProgressView()
-                    .progressViewStyle(.circular)
-                    .tint(.white)
+            if swipeMode {
+                SwipeVoteView()
             } else {
-                GeometryReader { geo in
-                    VerticalPagingFeed(
-                        topics: topics,
-                        currentIndex: $currentIndex,
-                        pageHeight: geo.size.height
-                    ) { index in
-                        Haptics.selection()
-                        if index >= topics.count - 3 {
-                            Task { await loadMore() }
-                        }
-                        if topics.indices.contains(index) {
-                            realtime.subscribe(topicId: topics[index].id)
-                        }
-                    }
-                }
-                .ignoresSafeArea()
+                feedContent
             }
 
-            // Top overlay — brand + refresh
+            // Top overlay — brand + mode toggle + refresh
             VStack {
                 HStack {
                     HStack(spacing: 6) {
@@ -56,6 +43,28 @@ struct FeedView: View {
                             .foregroundStyle(.white)
                     }
                     Spacer()
+
+                    // Mode toggle: feed ↔ swipe
+                    Button {
+                        Haptics.impact(.light)
+                        withAnimation(.spring(response: 0.35, dampingFraction: 0.80)) {
+                            swipeMode.toggle()
+                        }
+                    } label: {
+                        Image(systemName: swipeMode ? "rectangle.stack.fill" : "hand.point.right.fill")
+                            .font(.system(size: 15, weight: .semibold))
+                            .foregroundStyle(swipeMode ? .forBlue : .white)
+                            .frame(width: 36, height: 36)
+                            .background(
+                                Circle().fill(
+                                    swipeMode
+                                        ? Color.forBlue.opacity(0.18)
+                                        : Color.surface300.opacity(0.55)
+                                )
+                            )
+                    }
+                    .padding(.trailing, Spacing.xs)
+
                     Button {
                         Task { await refresh() }
                     } label: {
@@ -71,7 +80,7 @@ struct FeedView: View {
                 Spacer()
             }
 
-            if let errorMessage {
+            if let errorMessage, !swipeMode {
                 VStack {
                     Spacer()
                     Text(errorMessage)
@@ -88,6 +97,34 @@ struct FeedView: View {
                 await refresh()
                 hasLoadedOnce = true
             }
+        }
+    }
+
+    // MARK: - Feed content (vertical paging)
+
+    @ViewBuilder
+    private var feedContent: some View {
+        if topics.isEmpty && isLoading {
+            ProgressView()
+                .progressViewStyle(.circular)
+                .tint(.white)
+        } else {
+            GeometryReader { geo in
+                VerticalPagingFeed(
+                    topics: topics,
+                    currentIndex: $currentIndex,
+                    pageHeight: geo.size.height
+                ) { index in
+                    Haptics.selection()
+                    if index >= topics.count - 3 {
+                        Task { await loadMore() }
+                    }
+                    if topics.indices.contains(index) {
+                        realtime.subscribe(topicId: topics[index].id)
+                    }
+                }
+            }
+            .ignoresSafeArea()
         }
     }
 
