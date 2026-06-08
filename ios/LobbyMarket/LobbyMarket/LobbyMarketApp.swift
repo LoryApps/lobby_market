@@ -12,6 +12,9 @@ struct LobbyMarketApp: App {
     @StateObject private var auth = AuthService()
     @StateObject private var realtime = RealtimeService()
 
+    /// Persisted across app launches. Set to true once onboarding is completed.
+    @AppStorage("lm_onboarding_done") private var onboardingDone: Bool = false
+
     init() {
         // Force dark-tinted navigation appearance.
         let appearance = UINavigationBarAppearance()
@@ -31,11 +34,21 @@ struct LobbyMarketApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .environmentObject(auth)
-                .environmentObject(realtime)
-                .preferredColorScheme(.dark)
-                .tint(.forBlue)
+            ZStack {
+                ContentView()
+                    .environmentObject(auth)
+                    .environmentObject(realtime)
+                    .preferredColorScheme(.dark)
+                    .tint(.forBlue)
+
+                if !onboardingDone {
+                    OnboardingView(isComplete: $onboardingDone)
+                        .environmentObject(auth)
+                        .zIndex(100)
+                        .transition(.opacity)
+                }
+            }
+            .animation(.easeInOut(duration: 0.5), value: onboardingDone)
         }
     }
 }

@@ -497,6 +497,35 @@ final class SupabaseClient {
         }
     }
 
+    // MARK: - Onboarding
+
+    func completeOnboarding(userId: String, categoryPreferences: [String]) async throws {
+        struct Payload: Encodable {
+            let onboarding_complete: Bool
+            let category_preferences: [String]
+        }
+        let body = try encoder.encode(Payload(onboarding_complete: true, category_preferences: categoryPreferences))
+
+        guard var components = URLComponents(
+            url: Config.restURL.appendingPathComponent("profiles"),
+            resolvingAgainstBaseURL: false
+        ) else { throw SupabaseError.invalidURL }
+        components.queryItems = [URLQueryItem(name: "id", value: "eq.\(userId)")]
+        guard let url = components.url else { throw SupabaseError.invalidURL }
+
+        var req = URLRequest(url: url)
+        req.httpMethod = "PATCH"
+        req.setValue(Config.supabaseAnonKey, forHTTPHeaderField: "apikey")
+        req.setValue("Bearer \(accessToken ?? Config.supabaseAnonKey)", forHTTPHeaderField: "Authorization")
+        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        req.httpBody = body
+
+        let (_, response) = try await URLSession.shared.data(for: req)
+        guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
+            throw SupabaseError.invalidResponse
+        }
+    }
+
     // MARK: - Coalitions
 
     func fetchCoalitions(limit: Int = 50) async throws -> [Coalition] {

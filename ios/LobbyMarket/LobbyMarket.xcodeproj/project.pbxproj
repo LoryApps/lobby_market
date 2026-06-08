@@ -42,6 +42,12 @@
 		F0A1B2C3D4E5F6A7B8C9D0E1 /* DebatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F2A3B4C5D6E7F8A9B0C1D2 /* DebatesView.swift */; };
 		A1B2C3D4E5F6A7B8C9D0E1F2 /* LeaderboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D4E5F6A7B8C9D0E1F2A3 /* LeaderboardView.swift */; };
 		C2D3E4F5A6B7C8D9E0F1A2B3 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3E4F5A6B7C8D9E0F1A2B3C4 /* StatsView.swift */; };
+		AB1CD2EF3456789A0BCDEF01 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD2EF3456789AB0CDEF01234 /* OnboardingView.swift */; };
+		F1A2B3C4D5E6F7A8B9C0D1E2 /* AchievementsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2B3C4D5E6F7A8B9C0D1E2F3 /* AchievementsView.swift */; };
+		B4C5D6E7F8A9B0C1D2E3F4A5 /* CoalitionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5D6E7F8A9B0C1D2E3F4A5B6 /* CoalitionDetailView.swift */; };
+		D6E7F8A9B0C1D2E3F4A5B6C7 /* CoalitionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7F8A9B0C1D2E3F4A5B6C7D8 /* CoalitionsView.swift */; };
+		F8A9B0C1D2E3F4A5B6C7D8E9 /* DebateDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B0C1D2E3F4A5B6C7D8E9F0 /* DebateDetailView.swift */; };
+		B0C1D2E3F4A5B6C7D8E9F0A1 /* ArenaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D2E3F4A5B6C7D8E9F0A1B2 /* ArenaView.swift */; };
 		14394479B75708F8FF2E238F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 37E4D4511D6DE1D83D37BF1C /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
@@ -84,6 +90,12 @@
 		E1F2A3B4C5D6E7F8A9B0C1D2 /* DebatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebatesView.swift; sourceTree = "<group>"; };
 		B2C3D4E5F6A7B8C9D0E1F2A3 /* LeaderboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardView.swift; sourceTree = "<group>"; };
 		D3E4F5A6B7C8D9E0F1A2B3C4 /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
+		CD2EF3456789AB0CDEF01234 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		A2B3C4D5E6F7A8B9C0D1E2F3 /* AchievementsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementsView.swift; sourceTree = "<group>"; };
+		C5D6E7F8A9B0C1D2E3F4A5B6 /* CoalitionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoalitionDetailView.swift; sourceTree = "<group>"; };
+		E7F8A9B0C1D2E3F4A5B6C7D8 /* CoalitionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoalitionsView.swift; sourceTree = "<group>"; };
+		A9B0C1D2E3F4A5B6C7D8E9F0 /* DebateDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebateDetailView.swift; sourceTree = "<group>"; };
+		C1D2E3F4A5B6C7D8E9F0A1B2 /* ArenaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArenaView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -164,6 +176,7 @@
 			isa = PBXGroup;
 			children = (
 				E1F2A3B4C5D6E7F8A9B0C1D2 /* DebatesView.swift */,
+				A9B0C1D2E3F4A5B6C7D8E9F0 /* DebateDetailView.swift */,
 			);
 			path = Debates;
 			sourceTree = "<group>";
@@ -176,6 +189,14 @@
 			path = Leaderboard;
 			sourceTree = "<group>";
 		};
+		F0A1B2C3D4E5F6A7B8C9D0E1 /* Achievements */ = {
+			isa = PBXGroup;
+			children = (
+				A2B3C4D5E6F7A8B9C0D1E2F3 /* AchievementsView.swift */,
+			);
+			path = Achievements;
+			sourceTree = "<group>";
+		};
 		E4F5A6B7C8D9E0F1A2B3C4D5 /* Analytics */ = {
 			isa = PBXGroup;
 			children = (
@@ -184,16 +205,36 @@
 			path = Analytics;
 			sourceTree = "<group>";
 		};
+		A3B4C5D6E7F8A9B0C1D2E3F4 /* Coalitions */ = {
+			isa = PBXGroup;
+			children = (
+				E7F8A9B0C1D2E3F4A5B6C7D8 /* CoalitionsView.swift */,
+				C5D6E7F8A9B0C1D2E3F4A5B6 /* CoalitionDetailView.swift */,
+			);
+			path = Coalitions;
+			sourceTree = "<group>";
+		};
+		EF0123456789ABCDEF012345 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				CD2EF3456789AB0CDEF01234 /* OnboardingView.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
 		58492F208780FA5EF3807E8F /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				F0A1B2C3D4E5F6A7B8C9D0E1 /* Achievements */,
 				E4F5A6B7C8D9E0F1A2B3C4D5 /* Analytics */,
+				A3B4C5D6E7F8A9B0C1D2E3F4 /* Coalitions */,
 				06DF2DE32E51B747E03B0433 /* Common */,
 				D2E3F4A5B6C7D8E9F0A1B2C3 /* Debates */,
 				F9C473AD93A48987A906C200 /* Feed */,
 				4E77C66987590AE78F7067AA /* Floor */,
 				C3D4E5F6A7B8C9D0E1F2A3B4 /* Leaderboard */,
 				B86067F145C354A582459B03 /* Law */,
+				EF0123456789ABCDEF012345 /* Onboarding */,
 				C7B4E15247184FDCE1394240 /* Profile */,
 				BCE137D7564D54A1A3AF496E /* Topic */,
 			);
@@ -254,6 +295,7 @@
 		BCE137D7564D54A1A3AF496E /* Topic */ = {
 			isa = PBXGroup;
 			children = (
+				C1D2E3F4A5B6C7D8E9F0A1B2 /* ArenaView.swift */,
 				F9DC7B837A9125F61BA33E2E /* CreateTopicView.swift */,
 				F6A7B8C9D0E1F2A3B4C5D6E7 /* PostArgumentSheet.swift */,
 				E2889D11EA4ED0E7B7895CE0 /* TopicDetailView.swift */,
@@ -365,6 +407,12 @@
 				F0A1B2C3D4E5F6A7B8C9D0E1 /* DebatesView.swift in Sources */,
 				A1B2C3D4E5F6A7B8C9D0E1F2 /* LeaderboardView.swift in Sources */,
 				C2D3E4F5A6B7C8D9E0F1A2B3 /* StatsView.swift in Sources */,
+				AB1CD2EF3456789A0BCDEF01 /* OnboardingView.swift in Sources */,
+				F1A2B3C4D5E6F7A8B9C0D1E2 /* AchievementsView.swift in Sources */,
+				B4C5D6E7F8A9B0C1D2E3F4A5 /* CoalitionDetailView.swift in Sources */,
+				D6E7F8A9B0C1D2E3F4A5B6C7 /* CoalitionsView.swift in Sources */,
+				F8A9B0C1D2E3F4A5B6C7D8E9 /* DebateDetailView.swift in Sources */,
+				B0C1D2E3F4A5B6C7D8E9F0A1 /* ArenaView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
