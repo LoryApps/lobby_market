@@ -880,6 +880,81 @@ final class SupabaseClient {
         return first
     }
 
+    // MARK: - Bookmarks
+
+    /// Returns all bookmarked topic rows with embedded topic data.
+    func fetchBookmarkedTopics(userId: String) async throws -> [BookmarkedTopicRow] {
+        var q = QueryParams()
+        q.select("topic_id,created_at,topics(id,statement,category,status,blue_pct,total_votes)")
+        q.eq("user_id", userId)
+        q.order("created_at", ascending: false)
+        q.limit(100)
+        let req = try buildRequest(method: "GET", path: "topic_bookmarks", query: q)
+        return (try? await execute(req)) ?? []
+    }
+
+    /// Returns true if the user has bookmarked this topic.
+    func isTopicBookmarked(topicId: String, userId: String) async throws -> Bool {
+        struct CheckRow: Decodable { let topic_id: String }
+        var q = QueryParams()
+        q.select("topic_id")
+        q.eq("user_id", userId)
+        q.eq("topic_id", topicId)
+        q.limit(1)
+        let req = try buildRequest(method: "GET", path: "topic_bookmarks", query: q)
+        let list: [CheckRow] = (try? await execute(req)) ?? []
+        return !list.isEmpty
+    }
+
+    /// Toggle a topic bookmark — POST to add, DELETE to remove.
+    func toggleTopicBookmark(topicId: String, userId: String, add: Bool) async throws {
+        if add {
+            struct Payload: Encodable { let user_id: String; let topic_id: String }
+            let body = try encoder.encode(Payload(user_id: userId, topic_id: topicId))
+            var req = try buildRequest(method: "POST", path: "topic_bookmarks", body: body)
+            req.setValue("resolution=ignore-duplicates", forHTTPHeaderField: "Prefer")
+            let (_, resp) = try await session.data(for: req)
+            guard let http = resp as? HTTPURLResponse, (200..<300).contains(http.statusCode) else { return }
+        } else {
+            var q = QueryParams()
+            q.eq("user_id", userId)
+            q.eq("topic_id", topicId)
+            let req = try buildRequest(method: "DELETE", path: "topic_bookmarks", query: q)
+            let (_, resp) = try await session.data(for: req)
+            guard let http = resp as? HTTPURLResponse, (200..<300).contains(http.statusCode) else { return }
+        }
+    }
+
+    /// Returns all bookmarked argument rows with embedded argument + topic data.
+    func fetchBookmarkedArguments(userId: String) async throws -> [BookmarkedArgumentRow] {
+        var q = QueryParams()
+        q.select("argument_id,created_at,topic_arguments(id,content,side,upvotes,topic_id,topics(statement,category,status))")
+        q.eq("user_id", userId)
+        q.order("created_at", ascending: false)
+        q.limit(100)
+        let req = try buildRequest(method: "GET", path: "argument_bookmarks", query: q)
+        return (try? await execute(req)) ?? []
+    }
+
+    /// Toggle an argument bookmark — POST to add, DELETE to remove.
+    func toggleArgumentBookmark(argumentId: String, userId: String, add: Bool) async throws {
+        if add {
+            struct Payload: Encodable { let user_id: String; let argument_id: String }
+            let body = try encoder.encode(Payload(user_id: userId, argument_id: argumentId))
+            var req = try buildRequest(method: "POST", path: "argument_bookmarks", body: body)
+            req.setValue("resolution=ignore-duplicates", forHTTPHeaderField: "Prefer")
+            let (_, resp) = try await session.data(for: req)
+            guard let http = resp as? HTTPURLResponse, (200..<300).contains(http.statusCode) else { return }
+        } else {
+            var q = QueryParams()
+            q.eq("user_id", userId)
+            q.eq("argument_id", argumentId)
+            let req = try buildRequest(method: "DELETE", path: "argument_bookmarks", query: q)
+            let (_, resp) = try await session.data(for: req)
+            guard let http = resp as? HTTPURLResponse, (200..<300).contains(http.statusCode) else { return }
+        }
+    }
+
     // MARK: - Direct Messages
 
     /// Fetch all conversations for the current user, grouped by partner.
@@ -1095,6 +1170,71 @@ struct RawSeenPair: Decodable {
 struct RawProfile: Decodable {
     let id: String
     let username: String?
+}
+
+// MARK: - Bookmark row models
+
+/// A row from topic_bookmarks with embedded topic data.
+struct BookmarkedTopicRow: Decodable, Identifiable {
+    var id: String { topicId }
+    let topicId: String
+    let createdAt: Date
+    let topics: EmbeddedTopic?
+
+    struct EmbeddedTopic: Decodable {
+        let id: String
+        let statement: String
+        let category: String?
+        let status: String
+        let bluePct: Double
+        let totalVotes: Int
+
+        enum CodingKeys: String, CodingKey {
+            case id, statement, category, status
+            case bluePct   = "blue_pct"
+            case totalVotes = "total_votes"
+        }
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case topicId  = "topic_id"
+        case createdAt = "created_at"
+        case topics
+    }
+}
+
+/// A row from argument_bookmarks with embedded argument + topic data.
+struct BookmarkedArgumentRow: Decodable, Identifiable {
+    var id: String { argumentId }
+    let argumentId: String
+    let createdAt: Date
+    let topic_arguments: EmbeddedArgument?
+
+    struct EmbeddedArgument: Decodable {
+        let id: String
+        let content: String
+        let side: String
+        let upvotes: Int
+        let topicId: String
+        let topics: EmbeddedTopic?
+
+        struct EmbeddedTopic: Decodable {
+            let statement: String
+            let category: String?
+            let status: String
+        }
+
+        enum CodingKeys: String, CodingKey {
+            case id, content, side, upvotes, topics
+            case topicId = "topic_id"
+        }
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case argumentId = "argument_id"
+        case createdAt  = "created_at"
+        case topic_arguments
+    }
 }
 
 /// A vote record returned with its topic's category — used by StatsView.

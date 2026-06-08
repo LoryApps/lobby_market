@@ -11,6 +11,7 @@ struct TopicCardView: View {
     let topic: Topic
     @State private var currentVote: VoteSide?
     @State private var liked = false
+    @State private var bookmarked = false
     @State private var showShare = false
     @EnvironmentObject var auth: AuthService
 
@@ -163,6 +164,14 @@ struct TopicCardView: View {
             actionButton(icon: "bubble.right", count: topic.commentCount, tint: .white) {
                 Haptics.selection()
             }
+            actionButton(
+                icon: bookmarked ? "bookmark.fill" : "bookmark",
+                count: nil,
+                tint: bookmarked ? .gold : .white
+            ) {
+                Haptics.impact(.light)
+                Task { await toggleBookmark() }
+            }
             actionButton(icon: "arrowshape.turn.up.right", count: nil, tint: .white) {
                 Haptics.selection()
                 showShare = true
@@ -171,6 +180,23 @@ struct TopicCardView: View {
         .sheet(isPresented: $showShare) {
             ShareSheet(items: ["Lobby Market: \(topic.statement)"])
         }
+        .task { await loadBookmarkState() }
+    }
+
+    private func loadBookmarkState() async {
+        guard let userId = auth.currentUserId else { return }
+        bookmarked = (try? await SupabaseClient.shared.isTopicBookmarked(
+            topicId: topic.id, userId: userId
+        )) ?? false
+    }
+
+    private func toggleBookmark() async {
+        guard let userId = auth.currentUserId else { return }
+        let next = !bookmarked
+        withAnimation(.spring(duration: 0.25)) { bookmarked = next }
+        try? await SupabaseClient.shared.toggleTopicBookmark(
+            topicId: topic.id, userId: userId, add: next
+        )
     }
 
     @ViewBuilder
