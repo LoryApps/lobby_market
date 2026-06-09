@@ -7,12 +7,14 @@
 //
 
 import SwiftUI
+import UserNotifications
 
 // MARK: - SettingsView
 
 struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var auth: AuthService
+    @StateObject private var push = PushNotificationService.shared
 
     // Notification prefs
     @State private var prefs = NotifPrefs()
@@ -90,6 +92,18 @@ struct SettingsView: View {
                                 .font(.lmCaption)
                                 .foregroundStyle(.emerald)
                         }
+                    }
+                    .listRowBackground(Color.surface200)
+
+                    // ── Push Notifications ───────────────────────────────────
+                    Section {
+                        pushStatusRow
+                    } header: {
+                        sectionHeader("Push Notifications")
+                    } footer: {
+                        Text("Enable push notifications to receive real-time alerts for votes, debates, and laws.")
+                            .font(.lmCaption)
+                            .foregroundStyle(.textTertiary)
                     }
                     .listRowBackground(Color.surface200)
 
@@ -189,7 +203,10 @@ struct SettingsView: View {
                     }
                 }
             }
-            .task { await loadPrefs() }
+            .task {
+                await push.refreshStatus()
+                await loadPrefs()
+            }
             .onChange(of: prefs.achievementEarned) { _, _ in savePrefsDebounced() }
             .onChange(of: prefs.debateStarting)    { _, _ in savePrefsDebounced() }
             .onChange(of: prefs.lawEstablished)    { _, _ in savePrefsDebounced() }
@@ -254,6 +271,54 @@ struct SettingsView: View {
             Text(text)
                 .font(.lmBody)
                 .foregroundStyle(.textPrimary)
+        }
+    }
+
+    @ViewBuilder
+    private var pushStatusRow: some View {
+        switch push.authStatus {
+        case .notDetermined:
+            Button {
+                Haptics.impact(.light)
+                Task { await push.requestAuthorization() }
+            } label: {
+                HStack(spacing: Spacing.sm) {
+                    prefLabel(icon: "bell.badge.fill", color: .forBlue, text: "Enable Push Alerts")
+                    Spacer()
+                    Text("Turn On")
+                        .font(.lmCaption)
+                        .foregroundStyle(.forBlue)
+                }
+            }
+        case .authorized, .provisional:
+            HStack(spacing: Spacing.sm) {
+                prefLabel(icon: "bell.fill", color: .emerald, text: "Push Alerts")
+                Spacer()
+                Text("Enabled")
+                    .font(.lmCaption)
+                    .foregroundStyle(.emerald)
+                Image(systemName: "checkmark.circle.fill")
+                    .foregroundStyle(.emerald)
+                    .font(.system(size: 14))
+            }
+        case .denied, .ephemeral:
+            Button {
+                Haptics.impact(.light)
+                push.openSettings()
+            } label: {
+                HStack(spacing: Spacing.sm) {
+                    prefLabel(icon: "bell.slash.fill", color: .againstRed, text: "Push Alerts Disabled")
+                    Spacer()
+                    Text("Open Settings")
+                        .font(.lmCaption)
+                        .foregroundStyle(.forBlue)
+                    Image(systemName: "arrow.up.right")
+                        .font(.system(size: 11))
+                        .foregroundStyle(.textTertiary)
+                }
+            }
+        @unknown default:
+            EmptyView()
         }
     }
 

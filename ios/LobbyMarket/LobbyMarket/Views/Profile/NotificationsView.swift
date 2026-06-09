@@ -4,12 +4,15 @@
 //
 //  Full notifications screen — grouped by today/earlier, skeleton loading,
 //  mark-all-as-read, empty state, and topic navigation on tap.
+//  Includes a push notification enable banner when permission is not granted.
 //
 
 import SwiftUI
+import UserNotifications
 
 struct NotificationsView: View {
     @EnvironmentObject var auth: AuthService
+    @StateObject private var push = PushNotificationService.shared
     @State private var notifications: [LMNotification] = []
     @State private var loading = true
     @State private var markingRead = false
@@ -34,34 +37,43 @@ struct NotificationsView: View {
             ZStack {
                 Color.surface0.ignoresSafeArea()
 
-                if loading {
-                    skeletonList
-                } else if notifications.isEmpty {
-                    emptyState
-                } else {
-                    ScrollView {
-                        LazyVStack(alignment: .leading, spacing: 0, pinnedViews: []) {
-                            if !todayNotifs.isEmpty {
-                                sectionHeader("Today")
-                                ForEach(todayNotifs) { notif in
-                                    NotificationRow(notification: notif)
-                                    Divider()
-                                        .background(Color.surface200)
-                                        .padding(.leading, 56)
-                                }
-                            }
+                VStack(spacing: 0) {
+                    // Push notification enable banner
+                    if push.authStatus == .notDetermined || push.authStatus == .denied {
+                        pushEnableBanner
+                            .padding(.horizontal, Spacing.md)
+                            .padding(.top, Spacing.sm)
+                    }
 
-                            if !earlierNotifs.isEmpty {
-                                sectionHeader("Earlier")
-                                ForEach(earlierNotifs) { notif in
-                                    NotificationRow(notification: notif)
-                                    Divider()
-                                        .background(Color.surface200)
-                                        .padding(.leading, 56)
+                    if loading {
+                        skeletonList
+                    } else if notifications.isEmpty {
+                        emptyState
+                    } else {
+                        ScrollView {
+                            LazyVStack(alignment: .leading, spacing: 0, pinnedViews: []) {
+                                if !todayNotifs.isEmpty {
+                                    sectionHeader("Today")
+                                    ForEach(todayNotifs) { notif in
+                                        NotificationRow(notification: notif)
+                                        Divider()
+                                            .background(Color.surface200)
+                                            .padding(.leading, 56)
+                                    }
+                                }
+
+                                if !earlierNotifs.isEmpty {
+                                    sectionHeader("Earlier")
+                                    ForEach(earlierNotifs) { notif in
+                                        NotificationRow(notification: notif)
+                                        Divider()
+                                            .background(Color.surface200)
+                                            .padding(.leading, 56)
+                                    }
                                 }
                             }
+                            .padding(.bottom, 24)
                         }
-                        .padding(.bottom, 24)
                     }
                 }
             }
@@ -88,8 +100,67 @@ struct NotificationsView: View {
                     }
                 }
             }
-            .task { await loadNotifications() }
+            .task {
+                await push.refreshStatus()
+                await loadNotifications()
+            }
         }
+    }
+
+    // MARK: - Push enable banner
+
+    @ViewBuilder
+    private var pushEnableBanner: some View {
+        HStack(spacing: Spacing.sm) {
+            ZStack {
+                RoundedRectangle(cornerRadius: Radii.sm)
+                    .fill(Color.forBlue.opacity(0.15))
+                    .frame(width: 38, height: 38)
+                Image(systemName: "bell.badge.fill")
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundStyle(.forBlue)
+            }
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Stay in the loop")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(.textPrimary)
+                Text("Get alerts for votes, debates, and laws.")
+                    .font(.system(size: 12))
+                    .foregroundStyle(.textSecondary)
+                    .lineLimit(1)
+            }
+
+            Spacer()
+
+            Button {
+                Haptics.impact(.light)
+                if push.authStatus == .denied {
+                    push.openSettings()
+                } else {
+                    Task { await push.requestAuthorization() }
+                }
+            } label: {
+                Text(push.authStatus == .denied ? "Settings" : "Enable")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, Spacing.sm)
+                    .padding(.vertical, 7)
+                    .background(
+                        Capsule().fill(Color.forBlue)
+                    )
+            }
+        }
+        .padding(Spacing.sm)
+        .background(
+            RoundedRectangle(cornerRadius: Radii.md)
+                .fill(Color.surface200)
+                .overlay(
+                    RoundedRectangle(cornerRadius: Radii.md)
+                        .stroke(Color.forBlue.opacity(0.25), lineWidth: 1)
+                )
+        )
+        .padding(.bottom, Spacing.sm)
     }
 
     // MARK: - Subviews

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 /// Errors thrown by the Supabase client.
 enum SupabaseError: LocalizedError {
@@ -819,6 +820,41 @@ final class SupabaseClient {
         var req = try buildRequest(method: "POST", path: "user_notification_prefs", body: data)
         req.setValue("resolution=merge-duplicates", forHTTPHeaderField: "Prefer")
         let _: EmptyResponse = try await execute(req)
+    }
+
+    // MARK: - APNs Token Registration
+
+    /// Upsert an APNs device token for the given user.
+    /// Uses INSERT ON CONFLICT DO UPDATE so re-registration is idempotent.
+    func registerAPNsToken(_ token: String, userId: String, deviceName: String? = nil) async throws {
+        struct Payload: Encodable {
+            let user_id: String
+            let token: String
+            let bundle_id: String
+            let device_name: String?
+        }
+        let payload = Payload(
+            user_id: userId,
+            token: token,
+            bundle_id: Bundle.main.bundleIdentifier ?? "com.lobbymarket.app",
+            device_name: deviceName
+        )
+        let data = try encoder.encode(payload)
+        var req = try buildRequest(method: "POST", path: "apns_tokens", body: data)
+        req.setValue("resolution=merge-duplicates", forHTTPHeaderField: "Prefer")
+        let _: EmptyResponse = try await execute(req)
+    }
+
+    /// Delete an APNs device token (called on sign-out).
+    func deregisterAPNsToken(_ token: String, userId: String) async throws {
+        var q = QueryParams()
+        q.eq("token", token)
+        q.eq("user_id", userId)
+        let req = try buildRequest(method: "DELETE", path: "apns_tokens", query: q)
+        let (_, response) = try await session.data(for: req)
+        guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
+            throw SupabaseError.invalidResponse
+        }
     }
 
     // MARK: - Argument Arena (Faceoffs)

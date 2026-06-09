@@ -9,6 +9,8 @@ import SwiftUI
 
 @main
 struct LobbyMarketApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+
     @StateObject private var auth = AuthService()
     @StateObject private var realtime = RealtimeService()
 
@@ -49,6 +51,26 @@ struct LobbyMarketApp: App {
                 }
             }
             .animation(.easeInOut(duration: 0.5), value: onboardingDone)
+            // Wire up push notifications when authentication state changes.
+            .onChange(of: auth.isAuthenticated) { _, isAuth in
+                Task { @MainActor in
+                    if isAuth, let userId = auth.currentUserId {
+                        await PushNotificationService.shared.onSignIn(userId: userId)
+                    }
+                }
+            }
+            .onChange(of: auth.currentUserId) { oldId, newId in
+                // If userId transitions to nil the user signed out.
+                if let oldId, newId == nil {
+                    Task { @MainActor in
+                        await PushNotificationService.shared.onSignOut(userId: oldId)
+                    }
+                }
+            }
+            .task {
+                // Refresh push permission status on every launch.
+                await PushNotificationService.shared.refreshStatus()
+            }
         }
     }
 }
