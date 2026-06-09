@@ -117,6 +117,136 @@ struct CoalitionMembership: Codable {
     }
 }
 
+// MARK: - Coalition Post
+
+struct CoalitionPost: Identifiable, Codable {
+    let id: String
+    let coalitionId: String
+    let authorId: String
+    let content: String
+    let isPinned: Bool
+    let createdAt: Date
+
+    // Enriched after profile fetch — not in JSON response
+    var authorUsername: String?
+    var authorDisplayName: String?
+    var authorAvatarUrl: String?
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case coalitionId = "coalition_id"
+        case authorId    = "author_id"
+        case content
+        case isPinned    = "is_pinned"
+        case createdAt   = "created_at"
+    }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id          = try c.decodeIfPresent(String.self, forKey: .id) ?? UUID().uuidString
+        coalitionId = try c.decodeIfPresent(String.self, forKey: .coalitionId) ?? ""
+        authorId    = try c.decodeIfPresent(String.self, forKey: .authorId) ?? ""
+        content     = try c.decodeIfPresent(String.self, forKey: .content) ?? ""
+        isPinned    = try c.decodeIfPresent(Bool.self, forKey: .isPinned) ?? false
+        createdAt   = (try? c.decode(Date.self, forKey: .createdAt)) ?? Date()
+        authorUsername = nil; authorDisplayName = nil; authorAvatarUrl = nil
+    }
+
+    init(
+        id: String = UUID().uuidString,
+        coalitionId: String,
+        authorId: String,
+        content: String,
+        isPinned: Bool = false,
+        createdAt: Date = Date(),
+        authorUsername: String? = nil,
+        authorDisplayName: String? = nil,
+        authorAvatarUrl: String? = nil
+    ) {
+        self.id = id; self.coalitionId = coalitionId; self.authorId = authorId
+        self.content = content; self.isPinned = isPinned; self.createdAt = createdAt
+        self.authorUsername = authorUsername; self.authorDisplayName = authorDisplayName
+        self.authorAvatarUrl = authorAvatarUrl
+    }
+
+    var authorName: String { authorDisplayName ?? authorUsername ?? "Member" }
+    var authorInitials: String {
+        let n = authorName
+        let parts = n.split(separator: " ")
+        if parts.count >= 2 { return "\(parts[0].prefix(1))\(parts[1].prefix(1))".uppercased() }
+        return String(n.prefix(2)).uppercased()
+    }
+}
+
+// MARK: - Coalition Member Row
+
+struct CoalitionMemberRow: Identifiable, Codable {
+    let id: String
+    let coalitionId: String
+    let userId: String
+    let role: String
+    let joinedAt: Date
+
+    // Enriched after profile fetch
+    var username: String?
+    var displayName: String?
+    var avatarUrl: String?
+    var clout: Int?
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case coalitionId = "coalition_id"
+        case userId      = "user_id"
+        case role
+        case joinedAt    = "joined_at"
+    }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id          = try c.decodeIfPresent(String.self, forKey: .id) ?? UUID().uuidString
+        coalitionId = try c.decodeIfPresent(String.self, forKey: .coalitionId) ?? ""
+        userId      = try c.decodeIfPresent(String.self, forKey: .userId) ?? ""
+        role        = try c.decodeIfPresent(String.self, forKey: .role) ?? "member"
+        joinedAt    = (try? c.decode(Date.self, forKey: .joinedAt)) ?? Date()
+        username = nil; displayName = nil; avatarUrl = nil; clout = nil
+    }
+
+    init(
+        id: String = UUID().uuidString,
+        coalitionId: String,
+        userId: String,
+        role: String = "member",
+        joinedAt: Date = Date(),
+        username: String? = nil,
+        displayName: String? = nil,
+        avatarUrl: String? = nil,
+        clout: Int? = nil
+    ) {
+        self.id = id; self.coalitionId = coalitionId; self.userId = userId
+        self.role = role; self.joinedAt = joinedAt
+        self.username = username; self.displayName = displayName
+        self.avatarUrl = avatarUrl; self.clout = clout
+    }
+
+    var memberName: String { displayName ?? username ?? "Member" }
+    var memberInitials: String {
+        let n = memberName
+        let parts = n.split(separator: " ")
+        if parts.count >= 2 { return "\(parts[0].prefix(1))\(parts[1].prefix(1))".uppercased() }
+        return String(n.prefix(2)).uppercased()
+    }
+    var roleLabel: String {
+        switch role {
+        case "leader": return "Leader"
+        case "officer": return "Officer"
+        default: return "Member"
+        }
+    }
+    var roleSortOrder: Int {
+        switch role { case "leader": return 0; case "officer": return 1; default: return 2 }
+    }
+}
+
 extension Coalition {
     static let sampleData: [Coalition] = [
         Coalition(

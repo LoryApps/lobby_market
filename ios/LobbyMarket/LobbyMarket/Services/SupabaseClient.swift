@@ -628,6 +628,101 @@ final class SupabaseClient {
         }
     }
 
+    // MARK: - Coalition Posts
+
+    private struct ProfileBriefRow: Decodable {
+        let id: String
+        let username: String?
+        let display_name: String?
+        let avatar_url: String?
+        let clout: Int?
+    }
+
+    func fetchCoalitionPosts(coalitionId: String, limit: Int = 40) async throws -> [CoalitionPost] {
+        var q = QueryParams()
+        q.select("id,coalition_id,author_id,content,is_pinned,created_at")
+        q.eq("coalition_id", coalitionId)
+        q.order("is_pinned", ascending: false)
+        q.order("created_at", ascending: false)
+        q.limit(limit)
+        let req = try buildRequest(method: "GET", path: "coalition_posts", query: q)
+        var posts: [CoalitionPost] = (try? await execute(req)) ?? []
+        guard !posts.isEmpty else { return [] }
+
+        let authorIds = Array(Set(posts.map { $0.authorId }))
+        var pq = QueryParams()
+        pq.select("id,username,display_name,avatar_url")
+        pq.inFilter("id", values: authorIds)
+        let profileReq = try buildRequest(method: "GET", path: "profiles", query: pq)
+        let profiles: [ProfileBriefRow] = (try? await execute(profileReq)) ?? []
+        let pmap = Dictionary(uniqueKeysWithValues: profiles.map { ($0.id, $0) })
+        for i in posts.indices {
+            if let p = pmap[posts[i].authorId] {
+                posts[i].authorUsername = p.username
+                posts[i].authorDisplayName = p.display_name
+                posts[i].authorAvatarUrl = p.avatar_url
+            }
+        }
+        return posts
+    }
+
+    func createCoalitionPost(coalitionId: String, authorId: String, content: String) async throws -> CoalitionPost {
+        struct Payload: Encodable {
+            let coalition_id: String
+            let author_id: String
+            let content: String
+        }
+        let body = try encoder.encode(Payload(coalition_id: coalitionId, author_id: authorId, content: content))
+        let req = try buildRequest(method: "POST", path: "coalition_posts", body: body, preferReturn: true)
+        let rows: [CoalitionPost] = try await execute(req)
+        guard let post = rows.first else { throw SupabaseError.invalidResponse }
+        return post
+    }
+
+    // MARK: - Coalition Members
+
+    func fetchCoalitionMembers(coalitionId: String) async throws -> [CoalitionMemberRow] {
+        var q = QueryParams()
+        q.select("id,coalition_id,user_id,role,joined_at")
+        q.eq("coalition_id", coalitionId)
+        q.limit(100)
+        let req = try buildRequest(method: "GET", path: "coalition_members", query: q)
+        var members: [CoalitionMemberRow] = (try? await execute(req)) ?? []
+        guard !members.isEmpty else { return [] }
+
+        let userIds = Array(Set(members.map { $0.userId }))
+        var pq = QueryParams()
+        pq.select("id,username,display_name,avatar_url,clout")
+        pq.inFilter("id", values: userIds)
+        let profileReq = try buildRequest(method: "GET", path: "profiles", query: pq)
+        let profiles: [ProfileBriefRow] = (try? await execute(profileReq)) ?? []
+        let pmap = Dictionary(uniqueKeysWithValues: profiles.map { ($0.id, $0) })
+        for i in members.indices {
+            if let p = pmap[members[i].userId] {
+                members[i].username = p.username
+                members[i].displayName = p.display_name
+                members[i].avatarUrl = p.avatar_url
+                members[i].clout = p.clout
+            }
+        }
+        return members.sorted {
+            if $0.roleSortOrder != $1.roleSortOrder { return $0.roleSortOrder < $1.roleSortOrder }
+            return $0.joinedAt < $1.joinedAt
+        }
+    }
+
+    func fetchMyCoalitionRole(coalitionId: String, userId: String) async throws -> String? {
+        var q = QueryParams()
+        q.select("role")
+        q.eq("coalition_id", coalitionId)
+        q.eq("user_id", userId)
+        q.limit(1)
+        let req = try buildRequest(method: "GET", path: "coalition_members", query: q)
+        struct RoleRow: Decodable { let role: String }
+        let rows: [RoleRow] = (try? await execute(req)) ?? []
+        return rows.first?.role
+    }
+
     // MARK: - Debate RSVPs
 
     /// Fetch the number of RSVPs for a debate.
