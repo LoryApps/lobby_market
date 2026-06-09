@@ -21,6 +21,7 @@ struct TopicDetailView: View {
     @State private var showPredictionSheet = false
     @State private var crowdStats: TopicPredictionStats?
     @State private var myPrediction: Prediction?
+    @State private var showWiki = false
 
     enum ArgumentSideFilter: String, CaseIterable {
         case all = "All"
@@ -86,6 +87,27 @@ struct TopicDetailView: View {
                     statChip(icon: "bubble.right", value: "\(topic.commentCount)", label: "comments")
                     statChip(icon: "heart", value: "\(topic.likeCount)", label: "likes")
                     statChip(icon: "clock", value: topic.timeRemaining, label: "")
+                    Spacer()
+                    // Wiki button — opens the native wiki article reader
+                    Button {
+                        Haptics.impact(.light)
+                        showWiki = true
+                    } label: {
+                        HStack(spacing: 4) {
+                            Image(systemName: "doc.text.fill")
+                                .font(.system(size: 11, weight: .semibold))
+                            Text("Wiki")
+                                .font(.lmCaption)
+                        }
+                        .foregroundStyle(.white.opacity(0.7))
+                        .padding(.horizontal, Spacing.sm)
+                        .padding(.vertical, 5)
+                        .background(
+                            Capsule().fill(Color.surface300)
+                                .overlay(Capsule().stroke(Color.white.opacity(0.1), lineWidth: 1))
+                        )
+                    }
+                    .buttonStyle(.plain)
                 }
                 .padding(.top, Spacing.xs)
 
@@ -188,6 +210,10 @@ struct TopicDetailView: View {
         .task { await loadAll() }
         .onReceive(realtime.$tallies) { tallies in
             liveTally = tallies[topic.id]
+        }
+        .sheet(isPresented: $showWiki) {
+            TopicWikiView(topic: topic)
+                .environmentObject(auth)
         }
     }
 

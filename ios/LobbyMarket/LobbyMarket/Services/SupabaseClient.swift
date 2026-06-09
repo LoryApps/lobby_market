@@ -1213,6 +1213,66 @@ final class SupabaseClient {
         req.setValue("application/json", forHTTPHeaderField: "Accept")
         return req
     }
+
+    // MARK: - Topic Wiki
+
+    /// Fetch the last N edit revisions for a topic's wiki description.
+    func fetchTopicWikiHistory(topicId: String, limit: Int = 5) async throws -> [WikiRevision] {
+        var q = QueryParams()
+        q.select("id,topic_id,editor_id,char_delta,created_at")
+        q.eq("topic_id", topicId)
+        q.order("created_at", ascending: false)
+        q.limit(limit)
+        let req = try buildRequest(method: "GET", path: "topic_wiki_history", query: q)
+        let rows: [RawWikiRev] = (try? await execute(req)) ?? []
+        guard !rows.isEmpty else { return [] }
+
+        let editorIds = Array(Set(rows.compactMap { $0.editor_id }))
+        var profileMap: [String: ProfileBriefRow] = [:]
+        if !editorIds.isEmpty {
+            var pq = QueryParams()
+            pq.select("id,username,display_name,avatar_url")
+            pq.inFilter("id", values: editorIds)
+            let pReq = try buildRequest(method: "GET", path: "profiles", query: pq)
+            let profiles: [ProfileBriefRow] = (try? await execute(pReq)) ?? []
+            for p in profiles { profileMap[p.id] = p }
+        }
+
+        return rows.map { raw in
+            var rev = WikiRevision(
+                id: raw.id,
+                topicId: raw.topic_id,
+                editorId: raw.editor_id,
+                charDelta: raw.char_delta ?? 0,
+                createdAt: raw.created_at
+            )
+            if let eid = raw.editor_id, let p = profileMap[eid] {
+                rev.editorUsername    = p.username
+                rev.editorDisplayName = p.display_name
+                rev.editorAvatarUrl   = p.avatar_url
+            }
+            return rev
+        }
+    }
+
+    /// Fetch topics this topic links to via [[wikilinks]] in its description.
+    func fetchTopicOutgoingLinks(topicId: String, limit: Int = 10) async throws -> [TopicLinkEntry] {
+        var q = QueryParams()
+        q.select("target_topic_id")
+        q.eq("source_topic_id", topicId)
+        q.limit(limit)
+        let req = try buildRequest(method: "GET", path: "topic_links", query: q)
+        let rows: [RawTopicLinkRow] = (try? await execute(req)) ?? []
+        let ids = rows.map { $0.target_topic_id }
+        guard !ids.isEmpty else { return [] }
+
+        var tq = QueryParams()
+        tq.select("id,statement,category,total_votes")
+        tq.inFilter("id", values: ids)
+        tq.limit(limit)
+        let tReq = try buildRequest(method: "GET", path: "topics", query: tq)
+        return (try? await execute(tReq)) ?? []
+    }
 }
 
 /// Dummy type for endpoints that don't return a body.
@@ -1400,4 +1460,45 @@ struct VoteHistory: Decodable {
         case createdAt = "created_at"
         case topics
     }
+}
+
+// MARK: - Wiki types
+
+/// One revision from topic_wiki_history — used by TopicWikiView.
+struct WikiRevision: Identifiable {
+    let id: String
+    let topicId: String
+    let editorId: String?
+    let charDelta: Int
+    let createdAt: Date
+    var editorUsername: String? = nil
+    var editorDisplayName: String? = nil
+    var editorAvatarUrl: String? = nil
+}
+
+/// A topic referenced via [[wikilinks]] — used by TopicWikiView.
+struct TopicLinkEntry: Identifiable, Decodable {
+    let id: String
+    let statement: String
+    let category: String?
+    let totalVotes: Int?
+
+    enum CodingKeys: String, CodingKey {
+        case id, statement, category
+        case totalVotes = "total_votes"
+    }
+}
+
+/// Raw row from topic_wiki_history (before profile enrichment).
+struct RawWikiRev: Decodable {
+    let id: String
+    let topic_id: String
+    let editor_id: String?
+    let char_delta: Int?
+    let created_at: Date
+}
+
+/// Raw row from topic_links — just the target topic ID.
+struct RawTopicLinkRow: Decodable {
+    let target_topic_id: String
 }
