@@ -5,6 +5,23 @@
 
 import Foundation
 
+// MARK: - ArgumentReply
+
+struct ArgumentReply: Identifiable {
+    let id: String
+    let argumentId: String
+    let topicId: String
+    let userId: String
+    let content: String
+    let createdAt: Date
+    let authorUsername: String?
+    let authorDisplayName: String?
+
+    var displayName: String {
+        authorDisplayName ?? (authorUsername.map { "@\($0)" } ?? "Anonymous")
+    }
+}
+
 struct Argument: Identifiable, Codable, Equatable, Hashable {
     let id: String
     let topicId: String

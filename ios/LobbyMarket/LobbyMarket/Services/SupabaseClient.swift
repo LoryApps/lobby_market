@@ -1089,6 +1089,104 @@ final class SupabaseClient {
         return first
     }
 
+    // MARK: - Argument Replies
+
+    func fetchArgumentReplies(argumentId: String, limit: Int = 80) async throws -> [ArgumentReply] {
+        struct RawReply: Decodable {
+            struct RawProfile: Decodable {
+                let username: String?
+                let display_name: String?
+            }
+            let id: String
+            let argument_id: String
+            let topic_id: String
+            let user_id: String
+            let content: String
+            let created_at: Date
+            let profiles: RawProfile?
+        }
+        var q = QueryParams()
+        q.select("id,argument_id,topic_id,user_id,content,created_at,profiles(username,display_name)")
+        q.eq("argument_id", argumentId)
+        q.order("created_at", ascending: true)
+        q.limit(limit)
+        let req = try buildRequest(method: "GET", path: "argument_replies", query: q)
+        let rows: [RawReply] = (try? await execute(req)) ?? []
+        return rows.map { row in
+            ArgumentReply(
+                id: row.id,
+                argumentId: row.argument_id,
+                topicId: row.topic_id,
+                userId: row.user_id,
+                content: row.content,
+                createdAt: row.created_at,
+                authorUsername: row.profiles?.username,
+                authorDisplayName: row.profiles?.display_name
+            )
+        }
+    }
+
+    func postArgumentReply(argumentId: String, topicId: String, userId: String, content: String) async throws -> ArgumentReply {
+        struct Payload: Encodable {
+            let argument_id: String
+            let topic_id: String
+            let user_id: String
+            let content: String
+        }
+        struct RawReply: Decodable {
+            let id: String
+            let argument_id: String
+            let topic_id: String
+            let user_id: String
+            let content: String
+            let created_at: Date
+        }
+        let body = try encoder.encode(Payload(argument_id: argumentId, topic_id: topicId, user_id: userId, content: content))
+        let req = try buildRequest(method: "POST", path: "argument_replies", body: body, preferReturn: true)
+        let rows: [RawReply] = try await execute(req)
+        guard let row = rows.first else { throw SupabaseError.invalidResponse }
+        return ArgumentReply(
+            id: row.id,
+            argumentId: row.argument_id,
+            topicId: row.topic_id,
+            userId: row.user_id,
+            content: row.content,
+            createdAt: row.created_at,
+            authorUsername: nil,
+            authorDisplayName: nil
+        )
+    }
+
+    func hasUpvotedArgument(argumentId: String, userId: String) async throws -> Bool {
+        struct CheckRow: Decodable { let argument_id: String }
+        var q = QueryParams()
+        q.select("argument_id")
+        q.eq("argument_id", argumentId)
+        q.eq("user_id", userId)
+        q.limit(1)
+        let req = try buildRequest(method: "GET", path: "topic_argument_votes", query: q)
+        let list: [CheckRow] = (try? await execute(req)) ?? []
+        return !list.isEmpty
+    }
+
+    func toggleArgumentUpvote(argumentId: String, userId: String, add: Bool) async throws {
+        if add {
+            struct Payload: Encodable { let argument_id: String; let user_id: String }
+            let body = try encoder.encode(Payload(argument_id: argumentId, user_id: userId))
+            var req = try buildRequest(method: "POST", path: "topic_argument_votes", body: body)
+            req.setValue("resolution=ignore-duplicates", forHTTPHeaderField: "Prefer")
+            let (_, resp) = try await session.data(for: req)
+            guard let http = resp as? HTTPURLResponse, (200..<300).contains(http.statusCode) else { return }
+        } else {
+            var q = QueryParams()
+            q.eq("argument_id", argumentId)
+            q.eq("user_id", userId)
+            let req = try buildRequest(method: "DELETE", path: "topic_argument_votes", query: q)
+            let (_, resp) = try await session.data(for: req)
+            guard let http = resp as? HTTPURLResponse, (200..<300).contains(http.statusCode) else { return }
+        }
+    }
+
     // MARK: - Bookmarks
 
     /// Returns all bookmarked topic rows with embedded topic data.

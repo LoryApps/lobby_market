@@ -22,6 +22,7 @@ struct TopicDetailView: View {
     @State private var crowdStats: TopicPredictionStats?
     @State private var myPrediction: Prediction?
     @State private var showWiki = false
+    @State private var selectedArgument: Argument?
 
     enum ArgumentSideFilter: String, CaseIterable {
         case all = "All"
@@ -198,7 +199,10 @@ struct TopicDetailView: View {
                         emptyArgumentsView
                     } else {
                         ForEach(filteredArguments) { arg in
-                            ArgumentRow(argument: arg)
+                            ArgumentRow(argument: arg) {
+                                Haptics.impact(.light)
+                                selectedArgument = arg
+                            }
                         }
                     }
                 }
@@ -213,6 +217,10 @@ struct TopicDetailView: View {
         }
         .sheet(isPresented: $showWiki) {
             TopicWikiView(topic: topic)
+                .environmentObject(auth)
+        }
+        .sheet(item: $selectedArgument) { arg in
+            ArgumentDetailSheet(argument: arg, topicId: topic.id)
                 .environmentObject(auth)
         }
     }
@@ -400,6 +408,7 @@ struct TopicDetailView: View {
 
 struct ArgumentRow: View {
     let argument: Argument
+    var onTap: (() -> Void)? = nil
 
     private var sideColor: Color {
         argument.side == .blue ? .forBlue : .againstRed
@@ -410,50 +419,61 @@ struct ArgumentRow: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Spacing.xs) {
-            HStack(spacing: Spacing.xs) {
-                // Side indicator pill
-                Text(sideLabel)
-                    .font(.system(size: 9, weight: .heavy))
-                    .foregroundStyle(sideColor)
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 2)
-                    .background(Capsule().fill(sideColor.opacity(0.14)))
-                    .overlay(Capsule().stroke(sideColor.opacity(0.35), lineWidth: 1))
+        Button {
+            onTap?()
+        } label: {
+            VStack(alignment: .leading, spacing: Spacing.xs) {
+                HStack(spacing: Spacing.xs) {
+                    Text(sideLabel)
+                        .font(.system(size: 9, weight: .heavy))
+                        .foregroundStyle(sideColor)
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(Capsule().fill(sideColor.opacity(0.14)))
+                        .overlay(Capsule().stroke(sideColor.opacity(0.35), lineWidth: 1))
 
-                if let username = argument.authorUsername {
-                    Text("@\(username)")
-                        .font(.lmCaption)
-                        .foregroundStyle(.textTertiary)
+                    if let username = argument.authorUsername {
+                        Text("@\(username)")
+                            .font(.lmCaption)
+                            .foregroundStyle(.textTertiary)
+                    }
+
+                    Spacer()
+
+                    HStack(spacing: Spacing.xs) {
+                        HStack(spacing: 3) {
+                            Image(systemName: "chevron.up")
+                                .font(.system(size: 10, weight: .semibold))
+                                .foregroundStyle(.textTertiary)
+                            Text("\(argument.upvotes)")
+                                .font(.lmMono)
+                                .foregroundStyle(.textTertiary)
+                        }
+                        if onTap != nil {
+                            Image(systemName: "bubble.left")
+                                .font(.system(size: 11))
+                                .foregroundStyle(.textTertiary.opacity(0.6))
+                        }
+                    }
                 }
 
-                Spacer()
-
-                HStack(spacing: 3) {
-                    Image(systemName: "chevron.up")
-                        .font(.system(size: 10, weight: .semibold))
-                        .foregroundStyle(.textTertiary)
-                    Text("\(argument.upvotes)")
-                        .font(.lmMono)
-                        .foregroundStyle(.textTertiary)
-                }
+                Text(argument.content)
+                    .font(.lmBody)
+                    .foregroundStyle(.textSecondary)
+                    .lineLimit(6)
+                    .fixedSize(horizontal: false, vertical: true)
             }
-
-            Text(argument.content)
-                .font(.lmBody)
-                .foregroundStyle(.textSecondary)
-                .lineLimit(6)
-                .fixedSize(horizontal: false, vertical: true)
+            .padding(Spacing.md)
+            .background(
+                RoundedRectangle(cornerRadius: Radii.lg)
+                    .fill(Color.surface200)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: Radii.lg)
+                            .stroke(sideColor.opacity(0.12), lineWidth: 1)
+                    )
+            )
         }
-        .padding(Spacing.md)
-        .background(
-            RoundedRectangle(cornerRadius: Radii.lg)
-                .fill(Color.surface200)
-                .overlay(
-                    RoundedRectangle(cornerRadius: Radii.lg)
-                        .stroke(sideColor.opacity(0.12), lineWidth: 1)
-                )
-        )
+        .buttonStyle(.plain)
     }
 }
 
