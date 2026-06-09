@@ -51,6 +51,8 @@
 		1122334455667788AABBCCDD /* Prediction.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABBCCDD1122334455667788 /* Prediction.swift */; };
 		BBCCDDEE1122334455667788 /* PredictionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCDDEE11223344556677889A /* PredictionSheet.swift */; };
 		14394479B75708F8FF2E238F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 37E4D4511D6DE1D83D37BF1C /* Assets.xcassets */; };
+		AA11BB22CC33DD44EE55FF66 /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF6600AA /* Tag.swift */; };
+		CC33DD44EE55FF6677889900 /* TagBrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD44EE55FF66778899001122 /* TagBrowserView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -100,6 +102,8 @@
 		C1D2E3F4A5B6C7D8E9F0A1B2 /* ArenaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArenaView.swift; sourceTree = "<group>"; };
 		AABBCCDD1122334455667788 /* Prediction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Prediction.swift; sourceTree = "<group>"; };
 		CCDDEE11223344556677889A /* PredictionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredictionSheet.swift; sourceTree = "<group>"; };
+		BB22CC33DD44EE55FF6600AA /* Tag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tag.swift; sourceTree = "<group>"; };
+		DD44EE55FF66778899001122 /* TagBrowserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagBrowserView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -152,6 +156,7 @@
 				F3A7B2C1D4E5F6A7B8C9D0E1 /* Notification.swift */,
 				C2950F14670FE883E18320E2 /* Profile.swift */,
 				AABBCCDD1122334455667788 /* Prediction.swift */,
+				BB22CC33DD44EE55FF6600AA /* Tag.swift */,
 				6475FA375C2FC00A6F769FF1 /* Topic.swift */,
 				C03957F49B6B788072BB9A1F /* Vote.swift */,
 			);
@@ -263,6 +268,7 @@
 				889DA91F469A20B1F280417A /* VoteBarView.swift */,
 				23732444B906FEFC3F0D1985 /* VoteButtonsView.swift */,
 				D7C8E45F3A2B1F9E4B0D6C78 /* SearchView.swift */,
+				DD44EE55FF66778899001122 /* TagBrowserView.swift */,
 			);
 			path = Feed;
 			sourceTree = "<group>";
@@ -421,6 +427,8 @@
 				B0C1D2E3F4A5B6C7D8E9F0A1 /* ArenaView.swift in Sources */,
 				1122334455667788AABBCCDD /* Prediction.swift in Sources */,
 				BBCCDDEE1122334455667788 /* PredictionSheet.swift in Sources */,
+				AA11BB22CC33DD44EE55FF66 /* Tag.swift in Sources */,
+				CC33DD44EE55FF6677889900 /* TagBrowserView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

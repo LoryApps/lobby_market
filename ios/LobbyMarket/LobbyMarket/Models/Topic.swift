@@ -21,6 +21,7 @@ struct Topic: Identifiable, Codable, Equatable, Hashable {
     let commentCount: Int
     let likeCount: Int
     let isLocked: Bool
+    let tags: [String]
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -38,6 +39,7 @@ struct Topic: Identifiable, Codable, Equatable, Hashable {
         case commentCount = "comment_count"
         case likeCount = "like_count"
         case isLocked = "is_locked"
+        case tags
     }
 
     init(from decoder: Decoder) throws {
@@ -57,6 +59,7 @@ struct Topic: Identifiable, Codable, Equatable, Hashable {
         commentCount = try c.decodeIfPresent(Int.self, forKey: .commentCount) ?? 0
         likeCount = try c.decodeIfPresent(Int.self, forKey: .likeCount) ?? 0
         isLocked = try c.decodeIfPresent(Bool.self, forKey: .isLocked) ?? false
+        tags = (try? c.decodeIfPresent([String].self, forKey: .tags)) ?? []
     }
 
     init(
@@ -74,7 +77,8 @@ struct Topic: Identifiable, Codable, Equatable, Hashable {
         totalVotes: Int = 0,
         commentCount: Int = 0,
         likeCount: Int = 0,
-        isLocked: Bool = false
+        isLocked: Bool = false,
+        tags: [String] = []
     ) {
         self.id = id
         self.statement = statement
@@ -91,6 +95,7 @@ struct Topic: Identifiable, Codable, Equatable, Hashable {
         self.commentCount = commentCount
         self.likeCount = likeCount
         self.isLocked = isLocked
+        self.tags = tags
     }
 
     /// Percentage (0-100) of votes that are FOR.

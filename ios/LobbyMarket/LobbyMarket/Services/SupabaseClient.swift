@@ -47,6 +47,13 @@ struct QueryParams {
     mutating func ilike(_ column: String, _ pattern: String) {
         items.append(.init(name: column, value: "ilike.\(pattern)"))
     }
+    /// PostgREST array-contains filter: column @> {v1,v2,...}
+    mutating func cs(_ column: String, values: [String]) {
+        items.append(.init(name: column, value: "cs.{\(values.joined(separator: ","))}"))
+    }
+    mutating func neq(_ column: String, _ value: String) {
+        items.append(.init(name: column, value: "neq.\(value)"))
+    }
 
     var queryItems: [URLQueryItem] { items }
 }
@@ -158,9 +165,12 @@ final class SupabaseClient {
 
     // MARK: - Topics
 
-    func fetchTopics(limit: Int = Config.feedPageSize, offset: Int = 0) async throws -> [Topic] {
+    func fetchTopics(limit: Int = Config.feedPageSize, offset: Int = 0, category: String? = nil) async throws -> [Topic] {
         var q = QueryParams()
         q.select("*")
+        if let category {
+            q.eq("category", category)
+        }
         q.order("created_at", ascending: false)
         q.limit(limit)
         q.offset(offset)
@@ -169,7 +179,46 @@ final class SupabaseClient {
             return try await execute(req)
         } catch {
             // Graceful fallback: if the table isn't accessible, return local samples.
-            return Topic.sampleData
+            let fallback = category == nil ? Topic.sampleData : Topic.sampleData.filter { $0.category == category }
+            return fallback
+        }
+    }
+
+    /// Fetch the top trending tags by counting their occurrences across topics.
+    func fetchTrendingTags(limit: Int = 60) async throws -> [TrendingTag] {
+        var q = QueryParams()
+        q.select("tags")
+        q.neq("tags", "{}")
+        q.limit(500)
+        let req = try buildRequest(method: "GET", path: "topics", query: q)
+        struct TagsRow: Decodable { let tags: [String] }
+        let rows: [TagsRow] = (try? await execute(req)) ?? []
+        var counts: [String: Int] = [:]
+        for row in rows {
+            for tag in row.tags where !tag.isEmpty {
+                counts[tag, default: 0] += 1
+            }
+        }
+        return counts
+            .map { TrendingTag(name: $0.key, topicCount: $0.value) }
+            .filter { $0.topicCount >= 1 }
+            .sorted { $0.topicCount > $1.topicCount }
+            .prefix(limit)
+            .map { $0 }
+    }
+
+    /// Fetch topics that contain a given tag.
+    func fetchTopicsByTag(_ tag: String, limit: Int = 30) async throws -> [Topic] {
+        var q = QueryParams()
+        q.select("*")
+        q.cs("tags", values: [tag])
+        q.order("total_votes", ascending: false)
+        q.limit(limit)
+        let req = try buildRequest(method: "GET", path: "topics", query: q)
+        do {
+            return try await execute(req)
+        } catch {
+            return []
         }
     }
 

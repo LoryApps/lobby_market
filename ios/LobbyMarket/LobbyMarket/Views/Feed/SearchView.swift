@@ -44,6 +44,7 @@ struct SearchView: View {
     @State private var isSearching: Bool = false
     @State private var hasSearched: Bool = false
     @State private var errorMessage: String?
+    @State private var showTagBrowser: Bool = false
 
     @FocusState private var searchFocused: Bool
 
@@ -236,6 +237,29 @@ struct SearchView: View {
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, Spacing.xl)
             }
+            NavigationLink {
+                TagBrowserView()
+            } label: {
+                HStack(spacing: Spacing.xs) {
+                    Image(systemName: "tag.fill")
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(.forBlue)
+                    Text("Browse by Tag")
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundStyle(.white)
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 11, weight: .semibold))
+                        .foregroundStyle(.textTertiary)
+                }
+                .padding(.horizontal, Spacing.md)
+                .padding(.vertical, Spacing.sm)
+                .background(
+                    RoundedRectangle(cornerRadius: Radii.md)
+                        .fill(Color.forBlue.opacity(0.12))
+                        .overlay(RoundedRectangle(cornerRadius: Radii.md).stroke(Color.forBlue.opacity(0.3), lineWidth: 1))
+                )
+            }
+            .buttonStyle(.plain)
             Spacer()
         }
     }
