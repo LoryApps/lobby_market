@@ -45,6 +45,7 @@ struct FeedView: View {
     @State private var selectedFilter: CategoryFilter = .all
     @State private var showFilterStrip: Bool = true
     @State private var lastScrollY: CGFloat = 0
+    @State private var showBriefing: Bool = false
 
     private var activeCategory: String? {
         selectedFilter.id == "all" ? nil : selectedFilter.id
@@ -89,6 +90,17 @@ struct FeedView: View {
                             .foregroundStyle(.white)
                     }
                     Spacer()
+                    // Daily Brief shortcut
+                    Button {
+                        showBriefing = true
+                        Haptics.selection()
+                    } label: {
+                        Image(systemName: "sun.horizon.fill")
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundStyle(.gold)
+                            .frame(width: 36, height: 36)
+                            .background(Circle().fill(Color.surface300.opacity(0.55)))
+                    }
                     Button {
                         Task { await refresh() }
                     } label: {
@@ -128,6 +140,9 @@ struct FeedView: View {
                 await refresh()
                 hasLoadedOnce = true
             }
+        }
+        .sheet(isPresented: $showBriefing) {
+            BriefingView()
         }
     }
 

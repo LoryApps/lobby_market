@@ -193,6 +193,7 @@ struct ProfileView: View {
     @State private var isLoading = false
     @State private var showEdit = false
     @State private var showSettings = false
+    @State private var showWallet = false
 
     // MARK: Computed
 
@@ -395,7 +396,24 @@ struct ProfileView: View {
     private var statsGrid: some View {
         VStack(spacing: Spacing.xs) {
             HStack(spacing: Spacing.xs) {
-                statCard("CLOUT", value: formatNum(profile?.clout ?? 0), color: .gold)
+                // Tappable clout card → CloutWalletView
+                Button {
+                    showWallet = true
+                    Haptics.selection()
+                } label: {
+                    statCard("CLOUT", value: formatNum(profile?.clout ?? 0), color: .gold)
+                        .overlay(alignment: .topTrailing) {
+                            Image(systemName: "chevron.right")
+                                .font(.system(size: 9, weight: .bold))
+                                .foregroundStyle(.gold.opacity(0.5))
+                                .padding(Spacing.xs)
+                        }
+                }
+                .buttonStyle(.plain)
+                .navigationDestination(isPresented: $showWallet) {
+                    CloutWalletView()
+                }
+
                 statCard("VOTES", value: formatNum(profile?.votesCast ?? 0), color: .forBlue)
             }
             HStack(spacing: Spacing.xs) {
