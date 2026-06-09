@@ -115,6 +115,33 @@ struct StatsView: View {
 
     private var weekMax: Int { weekActivity.map(\.count).max() ?? 1 }
 
+    // 13 × 7 = 91 days. Each cell: (date, count)
+    private var heatmapCells: [(date: Date, count: Int)] {
+        let cal = Calendar.current
+        let today = cal.startOfDay(for: Date())
+        // Align grid start to the most-recent Sunday at-or-before 91 days ago
+        let startCandidate = cal.date(byAdding: .day, value: -90, to: today)!
+        let weekday = cal.component(.weekday, from: startCandidate) - 1 // 0=Sun
+        let gridStart = cal.date(byAdding: .day, value: -weekday, to: startCandidate)!
+
+        // Build day-count lookup
+        var lookup: [Date: Int] = [:]
+        for v in votes {
+            let d = cal.startOfDay(for: v.createdAt)
+            lookup[d, default: 0] += 1
+        }
+
+        var cells: [(Date, Int)] = []
+        var cursor = gridStart
+        while cursor <= today {
+            cells.append((cursor, lookup[cursor] ?? 0))
+            cursor = cal.date(byAdding: .day, value: 1, to: cursor)!
+        }
+        return cells
+    }
+
+    private var heatmapMax: Int { heatmapCells.map(\.count).max() ?? 1 }
+
     // MARK: Body
 
     var body: some View {
@@ -132,6 +159,9 @@ struct StatsView: View {
                             headerCard
                             statsGrid
                             activityChart
+                            if !heatmapCells.isEmpty {
+                                voteHeatmap
+                            }
                             if !categoryStats.isEmpty {
                                 categoryBreakdown
                             }
@@ -326,6 +356,88 @@ struct StatsView: View {
             .frame(height: 90)
         }
         .lmCard()
+    }
+
+    // MARK: - 13-week vote heatmap
+
+    // Groups the 91-day cells into 7-cell columns (one column per week)
+    private var heatmapColumns: [[(date: Date, count: Int)]] {
+        let cells = heatmapCells
+        var result: [[(Date, Int)]] = []
+        var col: [(Date, Int)] = []
+        for cell in cells {
+            col.append(cell)
+            if col.count == 7 {
+                result.append(col)
+                col = []
+            }
+        }
+        if !col.isEmpty { result.append(col) }
+        return result
+    }
+
+    private var voteHeatmap: some View {
+        VStack(alignment: .leading, spacing: Spacing.sm) {
+            // Header with streak highlight
+            HStack {
+                Text("VOTE ACTIVITY — 90 DAYS")
+                    .font(.system(size: 11, weight: .heavy))
+                    .kerning(0.8)
+                    .foregroundStyle(.textSecondary)
+                Spacer()
+                let activeDays = heatmapCells.filter { $0.count > 0 }.count
+                Text("\(activeDays) active days")
+                    .font(.lmMono)
+                    .foregroundStyle(.forBlue.opacity(0.8))
+            }
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(alignment: .top, spacing: 2) {
+                    ForEach(Array(heatmapColumns.enumerated()), id: \.offset) { _, col in
+                        VStack(spacing: 2) {
+                            ForEach(Array(col.enumerated()), id: \.offset) { _, cell in
+                                RoundedRectangle(cornerRadius: 2)
+                                    .fill(heatmapCellColor(cell.count, date: cell.date))
+                                    .frame(width: 11, height: 11)
+                                    .overlay {
+                                        if Calendar.current.isDateInToday(cell.date) {
+                                            RoundedRectangle(cornerRadius: 2)
+                                                .stroke(Color.white.opacity(0.6), lineWidth: 1)
+                                        }
+                                    }
+                            }
+                        }
+                    }
+                }
+                .padding(.bottom, 2)
+            }
+
+            // Legend
+            HStack(spacing: 6) {
+                Text("Less")
+                    .font(.system(size: 9))
+                    .foregroundStyle(.textTertiary)
+                ForEach([0, 1, 2, 4, 7], id: \.self) { n in
+                    RoundedRectangle(cornerRadius: 2)
+                        .fill(heatmapCellColor(n, date: Date.distantPast))
+                        .frame(width: 10, height: 10)
+                }
+                Text("More")
+                    .font(.system(size: 9))
+                    .foregroundStyle(.textTertiary)
+            }
+        }
+        .lmCard()
+    }
+
+    private func heatmapCellColor(_ count: Int, date: Date) -> Color {
+        switch count {
+        case 0:      return Color.surface300
+        case 1:      return Color.forBlue.opacity(0.25)
+        case 2...3:  return Color.forBlue.opacity(0.50)
+        case 4...6:  return Color.forBlue.opacity(0.75)
+        default:     return Color.forBlue
+        }
     }
 
     private var categoryBreakdown: some View {
