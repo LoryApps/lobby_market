@@ -46,6 +46,7 @@ struct FeedView: View {
     @State private var showFilterStrip: Bool = true
     @State private var lastScrollY: CGFloat = 0
     @State private var showBriefing: Bool = false
+    @State private var showTrending: Bool = false
 
     private var activeCategory: String? {
         selectedFilter.id == "all" ? nil : selectedFilter.id
@@ -90,6 +91,17 @@ struct FeedView: View {
                             .foregroundStyle(.white)
                     }
                     Spacer()
+                    // Trending sheet shortcut
+                    Button {
+                        showTrending = true
+                        Haptics.selection()
+                    } label: {
+                        Image(systemName: "flame.fill")
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundStyle(.againstRed)
+                            .frame(width: 36, height: 36)
+                            .background(Circle().fill(Color.surface300.opacity(0.55)))
+                    }
                     // Daily Brief shortcut
                     Button {
                         showBriefing = true
@@ -143,6 +155,10 @@ struct FeedView: View {
         }
         .sheet(isPresented: $showBriefing) {
             BriefingView()
+        }
+        .sheet(isPresented: $showTrending) {
+            TrendingNowView()
+                .environmentObject(auth)
         }
     }
 

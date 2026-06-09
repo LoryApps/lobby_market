@@ -22,6 +22,11 @@ struct Topic: Identifiable, Codable, Equatable, Hashable {
     let likeCount: Int
     let isLocked: Bool
     let tags: [String]
+    // Supabase schema fields — decoded alongside the legacy fields
+    let status: String?
+    let bluePct: Double?
+    let viewCount: Int?
+    let scope: String?
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -40,6 +45,10 @@ struct Topic: Identifiable, Codable, Equatable, Hashable {
         case likeCount = "like_count"
         case isLocked = "is_locked"
         case tags
+        case status
+        case bluePct = "blue_pct"
+        case viewCount = "view_count"
+        case scope
     }
 
     init(from decoder: Decoder) throws {
@@ -60,6 +69,10 @@ struct Topic: Identifiable, Codable, Equatable, Hashable {
         likeCount = try c.decodeIfPresent(Int.self, forKey: .likeCount) ?? 0
         isLocked = try c.decodeIfPresent(Bool.self, forKey: .isLocked) ?? false
         tags = (try? c.decodeIfPresent([String].self, forKey: .tags)) ?? []
+        status = try c.decodeIfPresent(String.self, forKey: .status)
+        bluePct = try c.decodeIfPresent(Double.self, forKey: .bluePct)
+        viewCount = try c.decodeIfPresent(Int.self, forKey: .viewCount)
+        scope = try c.decodeIfPresent(String.self, forKey: .scope)
     }
 
     init(
@@ -78,7 +91,11 @@ struct Topic: Identifiable, Codable, Equatable, Hashable {
         commentCount: Int = 0,
         likeCount: Int = 0,
         isLocked: Bool = false,
-        tags: [String] = []
+        tags: [String] = [],
+        status: String? = nil,
+        bluePct: Double? = nil,
+        viewCount: Int? = nil,
+        scope: String? = nil
     ) {
         self.id = id
         self.statement = statement
@@ -96,10 +113,16 @@ struct Topic: Identifiable, Codable, Equatable, Hashable {
         self.likeCount = likeCount
         self.isLocked = isLocked
         self.tags = tags
+        self.status = status
+        self.bluePct = bluePct
+        self.viewCount = viewCount
+        self.scope = scope
     }
 
     /// Percentage (0-100) of votes that are FOR.
+    /// Uses the server-computed blue_pct when available, falls back to ratio.
     var bluePercentage: Double {
+        if let pct = bluePct { return pct }
         guard totalVotes > 0 else { return 50.0 }
         return Double(forVotes) / Double(totalVotes) * 100.0
     }

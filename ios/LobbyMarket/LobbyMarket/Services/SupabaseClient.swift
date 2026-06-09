@@ -307,6 +307,35 @@ final class SupabaseClient {
         return list.first
     }
 
+    /// Fetch the most-voted active/voting topics — used by TrendingNowView.
+    func fetchHotTopics(limit: Int = 20) async throws -> [Topic] {
+        var q = QueryParams()
+        q.select("*")
+        q.inFilter("status", values: ["active", "voting"])
+        q.order("total_votes", ascending: false)
+        q.limit(limit)
+        let req = try buildRequest(method: "GET", path: "topics", query: q)
+        do {
+            return try await execute(req)
+        } catch {
+            return Topic.sampleData
+        }
+    }
+
+    /// Fetch the most recently established laws — used by TrendingNowView.
+    func fetchRecentLaws(limit: Int = 8) async throws -> [Law] {
+        var q = QueryParams()
+        q.select("*")
+        q.order("updated_at", ascending: false)
+        q.limit(limit)
+        let req = try buildRequest(method: "GET", path: "laws", query: q)
+        do {
+            return try await execute(req)
+        } catch {
+            return Array(Law.sampleData.prefix(limit))
+        }
+    }
+
     // MARK: - Search
 
     func searchTopics(query: String, limit: Int = 20) async throws -> [Topic] {
