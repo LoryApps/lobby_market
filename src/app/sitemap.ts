@@ -341,12 +341,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .order('established_at', { ascending: false })
       .limit(2000)
 
-    const lawUrls: MetadataRoute.Sitemap = (laws ?? []).map((law) => ({
-      url: `${BASE_URL}/law/${law.id}`,
-      lastModified: new Date(law.established_at),
-      changeFrequency: 'monthly' as const,
-      priority: 0.75,
-    }))
+    const lawUrls: MetadataRoute.Sitemap = (laws ?? []).flatMap((law) => ([
+      {
+        url: `${BASE_URL}/law/${law.id}`,
+        lastModified: new Date(law.established_at),
+        changeFrequency: 'monthly' as const,
+        priority: 0.75,
+      },
+      {
+        url: `${BASE_URL}/law/${law.id}/blueprint`,
+        lastModified: new Date(law.established_at),
+        changeFrequency: 'weekly' as const,
+        priority: 0.65,
+      },
+    ]))
 
     const { data: profiles } = await supabase
       .from('profiles')

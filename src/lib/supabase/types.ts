@@ -1717,6 +1717,38 @@ export type Database = {
           }
         ];
       };
+      law_blueprints: {
+        Row: {
+          id: string;
+          law_id: string;
+          blueprint_json: Record<string, unknown>;
+          model: string;
+          generated_at: string;
+        };
+        Insert: {
+          id?: string;
+          law_id: string;
+          blueprint_json: Record<string, unknown>;
+          model?: string;
+          generated_at?: string;
+        };
+        Update: {
+          id?: string;
+          law_id?: string;
+          blueprint_json?: Record<string, unknown>;
+          model?: string;
+          generated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "law_blueprints_law_id_fkey";
+            columns: ["law_id"];
+            isOneToOne: true;
+            referencedRelation: "laws";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
       daily_editorials: {
         Row: {
           id: string;

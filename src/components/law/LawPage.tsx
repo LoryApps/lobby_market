@@ -12,6 +12,7 @@ import {
   Menu,
   Network,
   PanelRight,
+  Sparkles,
   Tag,
   Users,
   X,
@@ -327,6 +328,18 @@ export function LawPage({
                 >
                   <BarChart2 className="h-3.5 w-3.5" />
                   Impact Report
+                </Link>
+                <Link
+                  href={`/law/${law.id}/blueprint`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-purple/10 border border-purple/30 text-purple',
+                    'hover:bg-purple/20 hover:border-purple/50',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                >
+                  <Sparkles className="h-3.5 w-3.5" />
+                  Blueprint
                 </Link>
               </div>
             </div>
