@@ -548,6 +548,17 @@ struct StatsView: View {
                         .foregroundStyle(.textTertiary)
                 }
             }
+
+            NavigationLink(destination: PredictionsView()) {
+                HStack(spacing: 4) {
+                    Text("View Prediction Market")
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundStyle(.forBlue)
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 10, weight: .semibold))
+                        .foregroundStyle(.forBlue)
+                }
+            }
         }
         .lmCard()
     }
