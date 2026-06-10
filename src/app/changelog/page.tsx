@@ -2137,6 +2137,14 @@ interface RecentBuild {
 
 const RECENT_BUILDS: RecentBuild[] = [
   {
+    title: 'Debate Performance Breakdown',
+    description: 'New /debate/[id]/performance page (Ch. 296) — per-participant stats sheet for any ended debate. Shows each speaker\'s argument count, total upvotes earned, average upvotes per argument, audience sway contribution, and best argument card. A head-to-head comparison strip renders FOR vs AGAINST split bars for arguments, messages, and upvotes side-by-side. Overall verdict panel shows the final sway bar, duration, and viewer count. Linked from the DebateArena ended overlay ("Stats" button) and from DebateRecap action row. New /api/debates/[id]/performance route aggregates debate_messages (filtered by is_argument) and debate_participants for each speaker.',
+    href: '/debate',
+    icon: BarChart2,
+    color: 'text-for-400',
+    tag: 'Ch. 296',
+  },
+  {
     title: 'Law Community Hub',
     description: 'New /law/[id]/community page (Ch. 294) — central dashboard for ongoing civic activity around each established law. Three-section layout: Community Notes panel (annotate implementation blueprint steps), Amendment Proposals list (status, vote counts, ratification progress), and Related Active Debates (topic discussions that were spawned by or relate to the law). Fetches from /api/laws/[id]/community aggregating blueprint_notes, law_amendments, and topic_arguments. Linked from the main law page alongside Blueprint and Impact Report.',
     href: '/law',

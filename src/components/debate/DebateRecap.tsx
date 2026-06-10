@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import {
   ArrowLeft,
+  BarChart2,
   Trophy,
   MessageSquare,
   Users,
@@ -462,6 +463,12 @@ export function DebateRecap({
               </Button>
             </Link>
           )}
+          <Link href={`/debate/${debate.id}/performance`} className="flex-1 min-w-[120px]">
+            <Button variant="ghost" size="lg" className="w-full">
+              <BarChart2 className="h-4 w-4 mr-1.5" />
+              Stats
+            </Button>
+          </Link>
           <Link href={`/debate/${debate.id}/transcript`} className="flex-1 min-w-[120px]">
             <Button variant="ghost" size="lg" className="w-full">
               Transcript
