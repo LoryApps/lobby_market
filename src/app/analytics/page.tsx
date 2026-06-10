@@ -20,6 +20,7 @@ import {
   Activity,
   Radio,
   Map,
+  Search,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -347,6 +348,191 @@ function PredictionHistorySection() {
   )
 }
 
+// ─── Full Analytics Suite directory ──────────────────────────────────────────
+
+const SUITE_SECTIONS: Array<{
+  title: string
+  color: string
+  items: Array<{ label: string; href: string; icon: typeof BarChart2 }>
+}> = [
+  {
+    title: 'Voting',
+    color: 'text-for-400',
+    items: [
+      { label: 'Vote History',      href: '/analytics/votes',         icon: ThumbsUp },
+      { label: 'Opinion Evolution', href: '/analytics/evolution',     icon: TrendingUp },
+      { label: 'Consensus Shift',   href: '/analytics/consensus-shift', icon: Zap },
+      { label: 'Diversity Score',   href: '/analytics/diversity',     icon: Globe },
+      { label: 'Streak History',    href: '/analytics/streak',        icon: Flame },
+      { label: 'Civic Drift',       href: '/analytics/drift',         icon: TrendingDown },
+      { label: 'Contrarian',        href: '/analytics/contrarian',    icon: Shuffle },
+      { label: 'Timing Report',     href: '/analytics/timing',        icon: Clock },
+    ],
+  },
+  {
+    title: 'Arguments',
+    color: 'text-purple',
+    items: [
+      { label: 'Argument Portfolio', href: '/analytics/arguments',        icon: BookOpen },
+      { label: 'Argument Quality',   href: '/analytics/argument-quality', icon: Brain },
+      { label: 'Quality Trend',      href: '/analytics/quality-trend',    icon: TrendingUp },
+      { label: 'Rhetoric Style',     href: '/analytics/rhetoric',         icon: Brain },
+      { label: 'Argument DNA',       href: '/analytics/dna',              icon: Sparkles },
+      { label: 'Argument Mentor',    href: '/analytics/mentor',           icon: Brain },
+      { label: 'Argument Velocity',  href: '/analytics/velocity',         icon: Activity },
+      { label: 'Citation Impact',    href: '/analytics/citations',        icon: Globe },
+      { label: 'Hot Take Voice',     href: '/analytics/reasons',          icon: Quote },
+      { label: 'Thread Analytics',   href: '/analytics/threads',          icon: MessageSquare },
+      { label: 'Discourse Quality',  href: '/analytics/discourse',        icon: Brain },
+      { label: 'Reaction Analytics', href: '/analytics/reactions',        icon: MessageSquare },
+    ],
+  },
+  {
+    title: 'Law & Impact',
+    color: 'text-gold',
+    items: [
+      { label: 'Law Analytics',    href: '/analytics/laws',      icon: Gavel },
+      { label: 'Topic Analytics',  href: '/analytics/topics',    icon: Scale },
+      { label: 'Proposal Analytics', href: '/analytics/proposals', icon: FileText },
+      { label: 'Civic Impact',     href: '/impact',              icon: Star },
+      { label: 'Civic Legacy',     href: '/analytics/legacy',    icon: Trophy },
+      { label: 'Civic Journey',    href: '/analytics/journey',   icon: Landmark },
+    ],
+  },
+  {
+    title: 'Social',
+    color: 'text-emerald',
+    items: [
+      { label: 'Civic Kin',          href: '/analytics/kin',              icon: Users },
+      { label: 'Civic Audience',     href: '/analytics/audience',         icon: Users },
+      { label: 'Reach Report',       href: '/analytics/reach',            icon: Radio },
+      { label: 'Network Topology',   href: '/analytics/network',          icon: Network },
+      { label: 'Network Analytics',  href: '/analytics/following',        icon: Network },
+      { label: 'Alignment Network',  href: '/analytics/alignment-network', icon: Network },
+      { label: 'Civic Alignment',    href: '/analytics/alignment',        icon: Scale },
+      { label: 'Coalition Stats',    href: '/analytics/coalitions',       icon: Shield },
+      { label: 'Civic Groups',       href: '/analytics/groups',           icon: Users },
+      { label: 'Faceoff Record',     href: '/analytics/faceoffs',         icon: Swords },
+      { label: 'Debate Stats',       href: '/analytics/debates',          icon: Gavel },
+      { label: 'Persuasion Power',   href: '/analytics/persuasion',       icon: Sparkles },
+      { label: 'Influence Cascade',  href: '/analytics/cascade',          icon: GitMerge },
+    ],
+  },
+  {
+    title: 'Identity',
+    color: 'text-against-400',
+    items: [
+      { label: 'Civic Fingerprint',  href: '/fingerprint',               icon: Fingerprint },
+      { label: 'Fingerprint Report', href: '/analytics/fingerprint',     icon: Fingerprint },
+      { label: 'Mind Map',           href: '/mindmap',                   icon: Network },
+      { label: 'Civic Compass',      href: '/compass',                   icon: Compass },
+      { label: 'The Accord',         href: '/accord',                    icon: Scale },
+      { label: 'Karma Score',        href: '/karma',                     icon: Sparkles },
+      { label: 'Sentiment Report',   href: '/analytics/sentiment',       icon: Heart },
+      { label: 'Tag Voting Profile', href: '/analytics/tags',            icon: Hash },
+      { label: 'Territory Map',      href: '/analytics/territory',       icon: Compass },
+      { label: 'Opposition Intel',   href: '/analytics/opposition',      icon: Swords },
+    ],
+  },
+  {
+    title: 'Rankings & Growth',
+    color: 'text-gold',
+    items: [
+      { label: 'Report Card',       href: '/analytics/report-card',     icon: Award },
+      { label: 'Activity Growth',   href: '/analytics/growth',          icon: Rocket },
+      { label: 'Growth Plan',       href: '/analytics/growth-plan',     icon: TrendingUp },
+      { label: 'Momentum Report',   href: '/analytics/momentum',        icon: Activity },
+      { label: 'Engagement Depth',  href: '/analytics/engagement',      icon: Activity },
+      { label: 'Civic Depth Score', href: '/analytics/depth',           icon: Layers },
+      { label: 'Civic Coverage',    href: '/analytics/coverage',        icon: Map },
+      { label: 'You vs. Platform',  href: '/analytics/compare',         icon: GitCompare },
+      { label: 'Civic Bridge',      href: '/bridge',                    icon: GitCompare },
+      { label: 'Influence Score',   href: '/influence',                 icon: Network },
+      { label: 'Civic Resonance',   href: '/analytics/resonance',       icon: GitMerge },
+      { label: 'Consistency',       href: '/analytics/consistency',     icon: GitMerge },
+    ],
+  },
+]
+
+function AnalyticsSuite() {
+  const [open, setOpen] = useState(false)
+  const [query, setQuery] = useState('')
+
+  const filtered = query.trim()
+    ? SUITE_SECTIONS.map((s) => ({
+        ...s,
+        items: s.items.filter((i) =>
+          i.label.toLowerCase().includes(query.toLowerCase())
+        ),
+      })).filter((s) => s.items.length > 0)
+    : SUITE_SECTIONS
+
+  return (
+    <div className="mt-6 rounded-2xl bg-surface-100 border border-surface-300 overflow-hidden">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="w-full flex items-center justify-between gap-3 px-5 py-4 hover:bg-surface-200/60 transition-colors"
+      >
+        <div className="flex items-center gap-2">
+          <div className="flex items-center justify-center h-7 w-7 rounded-lg bg-surface-200">
+            <LayoutGrid className="h-3.5 w-3.5 text-surface-500" />
+          </div>
+          <span className="text-sm font-mono font-semibold text-white">Full Analytics Suite</span>
+          <span className="text-xs font-mono text-surface-500">
+            {SUITE_SECTIONS.reduce((n, s) => n + s.items.length, 0)} reports
+          </span>
+        </div>
+        <ChevronDown className={cn('h-4 w-4 text-surface-500 transition-transform duration-200', open && 'rotate-180')} />
+      </button>
+
+      {open && (
+        <div className="border-t border-surface-300">
+          <div className="px-5 pt-4 pb-2">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-surface-500 pointer-events-none" />
+              <input
+                type="text"
+                placeholder="Search analytics…"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                className="w-full pl-9 pr-4 py-2 rounded-lg bg-surface-200 border border-surface-300 text-sm text-white placeholder-surface-500 focus:outline-none focus:ring-2 focus:ring-for-500/40 font-mono"
+              />
+            </div>
+          </div>
+          <div className="px-5 pb-5 space-y-5">
+            {filtered.map((section) => (
+              <div key={section.title}>
+                <div className={cn('text-[10px] font-mono font-semibold uppercase tracking-widest mb-2', section.color)}>
+                  {section.title}
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+                  {section.items.map((item) => {
+                    const Icon = item.icon
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className="flex items-center gap-2 rounded-lg px-3 py-2 bg-surface-200/60 border border-surface-300/60 hover:bg-surface-200 hover:border-surface-400 transition-colors group"
+                      >
+                        <Icon className="h-3.5 w-3.5 text-surface-500 group-hover:text-white flex-shrink-0 transition-colors" />
+                        <span className="text-xs font-mono text-surface-600 group-hover:text-white truncate transition-colors">{item.label}</span>
+                      </Link>
+                    )
+                  })}
+                </div>
+              </div>
+            ))}
+            {filtered.length === 0 && (
+              <p className="text-sm text-surface-500 text-center py-4">No results for &ldquo;{query}&rdquo;</p>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function AnalyticsPage() {
   const router = useRouter()
   const [data, setData] = useState<AnalyticsData | null>(null)
@@ -374,80 +560,7 @@ export default function AnalyticsPage() {
             <h1 className="text-xl font-bold text-white font-mono">Your Analytics</h1>
             {memberSince && <p className="text-xs text-surface-500 mt-0.5">Member since {memberSince}</p>}
           </div>
-          <div className="ml-auto flex items-center gap-3">
-            <Link href="/impact" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><Star className="h-3.5 w-3.5" />Impact</Link>
-            <Link href="/compass" className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"><Compass className="h-3.5 w-3.5" />Compass</Link>
-            <Link href="/influence" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><Network className="h-3.5 w-3.5" />Influence</Link>
-            <Link href="/bridge" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><GitCompare className="h-3.5 w-3.5" />Civic Bridge</Link>
-            <Link href="/analytics/diversity" className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"><Globe className="h-3.5 w-3.5" />Diversity Score</Link>
-            <Link href="/accord" className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"><Scale className="h-3.5 w-3.5" />The Accord</Link>
-            <Link href="/fingerprint" className="flex items-center gap-1 text-xs text-against-400 hover:text-against-300 transition-colors font-mono font-semibold"><Fingerprint className="h-3.5 w-3.5" />Fingerprint</Link>
-            <Link href="/mindmap" className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"><Network className="h-3.5 w-3.5" />Mind Map</Link>
-            <Link href="/analytics/arguments" className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"><BookOpen className="h-3.5 w-3.5" />Argument Portfolio</Link>
-            <Link href="/analytics/topics" className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"><Scale className="h-3.5 w-3.5" />Topic Analytics</Link>
-            <Link href="/analytics/proposals" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><FileText className="h-3.5 w-3.5" />Proposal Analytics</Link>
-            <Link href="/analytics/evolution" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><TrendingUp className="h-3.5 w-3.5" />Opinion Evolution</Link>
-            <Link href="/analytics/growth" className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"><Rocket className="h-3.5 w-3.5" />Activity Growth</Link>
-            <Link href="/analytics/sentiment" className="flex items-center gap-1 text-xs text-against-400 hover:text-against-300 transition-colors font-mono font-semibold"><Heart className="h-3.5 w-3.5" />Sentiment</Link>
-            <Link href="/analytics/votes" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><ThumbsUp className="h-3.5 w-3.5" />Vote History</Link>
-            <Link href="/analytics/portfolio" className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"><BarChart2 className="h-3.5 w-3.5" />Civic Portfolio</Link>
-            <Link href="/analytics/coalitions" className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"><Shield className="h-3.5 w-3.5" />Coalition Stats</Link>
-            <Link href="/analytics/faceoffs" className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"><Swords className="h-3.5 w-3.5" />Faceoff Record</Link>
-            <Link href="/analytics/debates" className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"><Gavel className="h-3.5 w-3.5" />Debate Stats</Link>
-            <Link href="/analytics/laws" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><Gavel className="h-3.5 w-3.5" />Law Analytics</Link>
-            <Link href="/analytics/reactions" className="flex items-center gap-1 text-xs text-against-400 hover:text-against-300 transition-colors font-mono font-semibold"><MessageSquare className="h-3.5 w-3.5" />Reaction Analytics</Link>
-            <Link href="/analytics/predictions" className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"><Zap className="h-3.5 w-3.5" />Predictions</Link>
-            <Link href="/analytics/discourse" className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"><Brain className="h-3.5 w-3.5" />Discourse Quality</Link>
-            <Link href="/analytics/citations" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><Globe className="h-3.5 w-3.5" />Citation Impact</Link>
-            <Link href="/analytics/reasons" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><Quote className="h-3.5 w-3.5" />Hot Take Voice</Link>
-            <Link href="/analytics/consensus-shift" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><Zap className="h-3.5 w-3.5" />Consensus Shift</Link>
-            <Link href="/analytics/tags" className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"><Hash className="h-3.5 w-3.5" />Tag Profile</Link>
-            <Link href="/analytics/calibration" className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"><Gauge className="h-3.5 w-3.5" />Calibration</Link>
-            <Link href="/analytics/lens" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><Eye className="h-3.5 w-3.5" />Perspective Lens</Link>
-            <Link href="/analytics/argument-quality" className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"><Brain className="h-3.5 w-3.5" />Arg. Quality</Link>
-            <Link href="/analytics/quality-trend" className="flex items-center gap-1 text-xs text-for-300 hover:text-for-200 transition-colors font-mono font-semibold"><TrendingUp className="h-3.5 w-3.5" />Quality Trend</Link>
-            <Link href="/analytics/rhetoric" className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"><Brain className="h-3.5 w-3.5" />Rhetoric Style</Link>
-            <Link href="/analytics/dna" className="flex items-center gap-1 text-xs text-for-300 hover:text-for-200 transition-colors font-mono font-semibold"><Sparkles className="h-3.5 w-3.5" />Argument DNA</Link>
-            <Link href="/analytics/resonance" className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"><GitMerge className="h-3.5 w-3.5" />Resonance</Link>
-            <Link href="/analytics/mentor" className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"><Brain className="h-3.5 w-3.5" />Argument Mentor</Link>
-            <Link href="/analytics/cascade" className="flex items-center gap-1 text-xs text-for-300 hover:text-for-200 transition-colors font-mono font-semibold"><GitMerge className="h-3.5 w-3.5" />Influence Cascade</Link>
-            <Link href="/analytics/threads" className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"><MessageSquare className="h-3.5 w-3.5" />Thread Analytics</Link>
-            <Link href="/analytics/engagement" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><Activity className="h-3.5 w-3.5" />Engagement Depth</Link>
-            <Link href="/analytics/compare" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><GitCompare className="h-3.5 w-3.5" />You vs. Platform</Link>
-            <Link href="/analytics/snapshot" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><LayoutGrid className="h-3.5 w-3.5" />Snapshot</Link>
-            <Link href="/analytics/benchmark" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><Trophy className="h-3.5 w-3.5" />Benchmark</Link>
-            <Link href="/analytics/standing" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><Trophy className="h-3.5 w-3.5" />Standing</Link>
-            <Link href="/analytics/drift" className="flex items-center gap-1 text-xs text-against-400 hover:text-against-300 transition-colors font-mono font-semibold"><TrendingDown className="h-3.5 w-3.5" />Drift</Link>
-            <Link href="/analytics/contrarian" className="flex items-center gap-1 text-xs text-against-400 hover:text-against-300 transition-colors font-mono font-semibold"><Shuffle className="h-3.5 w-3.5" />Contrarian</Link>
-            <Link href="/analytics/timing" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><Clock className="h-3.5 w-3.5" />Timing</Link>
-            <Link href="/analytics/influence" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><Zap className="h-3.5 w-3.5" />Influence</Link>
-            <Link href="/analytics/audience" className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"><Users className="h-3.5 w-3.5" />Audience</Link>
-            <Link href="/analytics/reach" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><Radio className="h-3.5 w-3.5" />Reach Report</Link>
-            <Link href="/analytics/depth" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><Layers className="h-3.5 w-3.5" />Depth Score</Link>
-            <Link href="/analytics/consistency" className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"><GitMerge className="h-3.5 w-3.5" />Consistency</Link>
-            <Link href="/analytics/clout" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><Coins className="h-3.5 w-3.5" />Clout Economy</Link>
-            <Link href="/analytics/groups" className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"><Users className="h-3.5 w-3.5" />Civic Groups</Link>
-            <Link href="/analytics/network" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><Network className="h-3.5 w-3.5" />Network Topology</Link>
-            <Link href="/analytics/following" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><Network className="h-3.5 w-3.5" />Network</Link>
-            <Link href="/analytics/alignment" className="flex items-center gap-1 text-xs text-for-300 hover:text-for-200 transition-colors font-mono font-semibold"><Scale className="h-3.5 w-3.5" />Alignment</Link>
-            <Link href="/analytics/alignment-network" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><Network className="h-3.5 w-3.5" />Alignment Network</Link>
-            <Link href="/analytics/streak" className="flex items-center gap-1 text-xs text-against-400 hover:text-against-300 transition-colors font-mono font-semibold"><Flame className="h-3.5 w-3.5" />Streak History</Link>
-            <Link href="/analytics/legacy" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><Trophy className="h-3.5 w-3.5" />Legacy</Link>
-            <Link href="/analytics/journey" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><Landmark className="h-3.5 w-3.5" />Journey</Link>
-            <Link href="/analytics/growth-plan" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><TrendingUp className="h-3.5 w-3.5" />Growth Plan</Link>
-            <Link href="/analytics/category-mastery" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><Trophy className="h-3.5 w-3.5" />Category Mastery</Link>
-            <Link href="/analytics/territory" className="flex items-center gap-1 text-xs text-emerald hover:text-emerald/80 transition-colors font-mono font-semibold"><Compass className="h-3.5 w-3.5" />Territory Map</Link>
-            <Link href="/analytics/opposition" className="flex items-center gap-1 text-xs text-against-400 hover:text-against-300 transition-colors font-mono font-semibold"><Swords className="h-3.5 w-3.5" />Opposition Intel</Link>
-            <Link href="/analytics/velocity" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><Activity className="h-3.5 w-3.5" />Arg. Velocity</Link>
-            <Link href="/persuasion" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><MessageSquare className="h-3.5 w-3.5" />Persuasion Map</Link>
-            <Link href="/analytics/persuasion" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><Sparkles className="h-3.5 w-3.5" />Persuasion Power</Link>
-            <Link href="/analytics/momentum" className="flex items-center gap-1 text-xs text-for-300 hover:text-for-200 transition-colors font-mono font-semibold"><Activity className="h-3.5 w-3.5" />Momentum Report</Link>
-            <Link href="/analytics/report-card" className="flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors font-mono font-semibold"><Award className="h-3.5 w-3.5" />Report Card</Link>
-            <Link href="/analytics/fingerprint" className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"><Fingerprint className="h-3.5 w-3.5" />Fingerprint</Link>
-            <Link href="/analytics/coverage" className="flex items-center gap-1 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"><Map className="h-3.5 w-3.5" />Civic Coverage</Link>
-            <Link href="/karma" className="flex items-center gap-1 text-xs text-purple hover:text-purple/80 transition-colors font-mono font-semibold"><Sparkles className="h-3.5 w-3.5" />Karma</Link>
-            <Link href="/profile/me" className="flex items-center gap-1 text-xs text-surface-500 hover:text-white transition-colors">Profile<ChevronRight className="h-3.5 w-3.5" /></Link>
-          </div>
+          <Link href="/profile/me" className="ml-auto flex items-center gap-1 text-xs text-surface-500 hover:text-white transition-colors font-mono">Profile<ChevronRight className="h-3.5 w-3.5" /></Link>
         </div>
         {error && <div className="rounded-xl bg-against-950 border border-against-800 p-4 text-sm text-against-400 mb-4">{error}</div>}
         {loading && <AnalyticsSkeleton />}
@@ -1031,6 +1144,7 @@ export default function AnalyticsPage() {
             <Link href="/" className="mt-4 inline-flex items-center gap-2 rounded-lg bg-for-600 hover:bg-for-700 px-4 py-2 text-sm font-medium text-white transition-colors">Go to Feed</Link>
           </div>
         )}
+        <AnalyticsSuite />
       </main>
       <BottomNav />
     </div>
