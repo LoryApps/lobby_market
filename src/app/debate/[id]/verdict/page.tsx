@@ -25,6 +25,7 @@ import {
   MessageSquare,
   Mic,
   Scale,
+  Swords,
   ThumbsDown,
   ThumbsUp,
   Users,
@@ -396,6 +397,7 @@ export default async function DebateVerdictPage({ params }: PageProps) {
 
   // ── Sub-navigation tabs
   const tabs = [
+    { label: 'Clash Card', href: `/debate/${id}/clash`, icon: Swords },
     { label: 'Audience', href: `/debate/${id}/audience`, icon: Users },
     { label: 'Performance', href: `/debate/${id}/performance`, icon: BarChart2 },
     { label: 'Highlights', href: `/debate/${id}/highlights`, icon: Award },

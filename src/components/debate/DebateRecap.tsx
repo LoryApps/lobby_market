@@ -13,6 +13,7 @@ import {
   Flame,
   Share2,
   Minus,
+  Swords,
   Zap,
 } from 'lucide-react'
 import Link from 'next/link'
@@ -465,6 +466,12 @@ export function DebateRecap({
               </Button>
             </Link>
           )}
+          <Link href={`/debate/${debate.id}/clash`} className="flex-1 min-w-[120px]">
+            <Button variant="for" size="lg" className="w-full">
+              <Swords className="h-4 w-4 mr-1.5" />
+              Clash Card
+            </Button>
+          </Link>
           <Link href={`/debate/${debate.id}/verdict`} className="flex-1 min-w-[120px]">
             <Button variant="gold" size="lg" className="w-full">
               <Trophy className="h-4 w-4 mr-1.5" />

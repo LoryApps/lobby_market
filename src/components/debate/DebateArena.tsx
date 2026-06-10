@@ -375,6 +375,11 @@ export function DebateArena({
             </div>
           </div>
           <div className="flex items-center gap-3">
+            <Link href={`/debate/${debate.id}/clash`}>
+              <button className="px-6 py-2.5 rounded-full bg-for-600/10 backdrop-blur-md border border-for-500/30 text-sm font-semibold text-for-400 hover:bg-for-600/20 hover:border-for-500/50 transition-all">
+                Clash
+              </button>
+            </Link>
             <Link href={`/debate/${debate.id}/verdict`}>
               <button className="px-6 py-2.5 rounded-full bg-gold/10 backdrop-blur-md border border-gold/30 text-sm font-semibold text-gold hover:bg-gold/20 hover:border-gold/50 transition-all">
                 Verdict
