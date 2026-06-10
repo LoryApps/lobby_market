@@ -463,6 +463,12 @@ export function DebateRecap({
               </Button>
             </Link>
           )}
+          <Link href={`/debate/${debate.id}/verdict`} className="flex-1 min-w-[120px]">
+            <Button variant="gold" size="lg" className="w-full">
+              <Trophy className="h-4 w-4 mr-1.5" />
+              Verdict
+            </Button>
+          </Link>
           <Link href={`/debate/${debate.id}/audience`} className="flex-1 min-w-[120px]">
             <Button variant="ghost" size="lg" className="w-full">
               <Users className="h-4 w-4 mr-1.5 text-purple" />

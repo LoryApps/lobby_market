@@ -367,6 +367,11 @@ export function DebateArena({
             </div>
           </div>
           <div className="flex items-center gap-3">
+            <Link href={`/debate/${debate.id}/verdict`}>
+              <button className="px-6 py-2.5 rounded-full bg-gold/10 backdrop-blur-md border border-gold/30 text-sm font-semibold text-gold hover:bg-gold/20 hover:border-gold/50 transition-all">
+                Verdict
+              </button>
+            </Link>
             <Link href={`/debate/${debate.id}/recap`}>
               <button className="px-6 py-2.5 rounded-full bg-surface-100/90 backdrop-blur-md border border-surface-300 text-sm font-semibold text-white hover:bg-surface-200/90 hover:border-surface-400 transition-all">
                 View Recap
@@ -383,7 +388,7 @@ export function DebateArena({
               </button>
             </Link>
             <Link href={`/debate/${debate.id}/highlights`}>
-              <button className="px-6 py-2.5 rounded-full bg-gold/10 backdrop-blur-md border border-gold/30 text-sm font-semibold text-gold hover:bg-gold/20 hover:border-gold/50 transition-all">
+              <button className="px-6 py-2.5 rounded-full bg-surface-100/90 backdrop-blur-md border border-surface-300 text-sm font-semibold text-surface-400 hover:text-white hover:bg-surface-200/90 hover:border-surface-400 transition-all">
                 Highlights
               </button>
             </Link>

@@ -552,6 +552,7 @@ export function HighlightsClient({ debateId }: { debateId: string }) {
                 className="grid grid-cols-3 gap-3"
               >
                 {[
+                  { label: 'Verdict', sub: 'Official result', href: `/debate/${id}/verdict` },
                   { label: 'Audience', sub: 'Crowd verdict', href: `/debate/${id}/audience` },
                   { label: 'Recap', sub: 'Overview', href: `/debate/${id}/recap` },
                   { label: 'Performance', sub: 'Speaker stats', href: `/debate/${id}/performance` },
