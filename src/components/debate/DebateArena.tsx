@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Users } from 'lucide-react'
+import { ArrowLeft, Bot, Users } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils/cn'
 import type {
@@ -336,13 +336,21 @@ export function DebateArena({
             </span>
           </div>
           {debate.status === 'scheduled' && (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap justify-center">
               <CalendarExportButton debateId={debate.id} size="md" />
               <DebateRSVPButton
                 debateId={debate.id}
                 size="md"
                 className="backdrop-blur-md bg-surface-100/80"
               />
+              {currentUserId && participants.some((p) => p.user_id === currentUserId && p.is_speaker) && (
+                <Link href={`/debate/${debate.id}/coach`}>
+                  <button className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-purple/10 backdrop-blur-md border border-purple/30 text-sm font-semibold text-purple hover:bg-purple/20 hover:border-purple/50 transition-all">
+                    <Bot className="h-3.5 w-3.5" />
+                    Get Coached
+                  </button>
+                </Link>
+              )}
             </div>
           )}
         </div>
