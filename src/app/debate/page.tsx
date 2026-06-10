@@ -215,6 +215,19 @@ export default async function DebateIndexPage() {
               <Calendar className="h-4 w-4" />
               <span className="hidden sm:inline">Calendar</span>
             </Link>
+            <a
+              href="/api/calendar/debates"
+              download="lobby-market-debates.ics"
+              title="Subscribe to all debates as a calendar feed (.ics)"
+              className={cn(
+                'inline-flex items-center gap-2 px-3 py-2 rounded-lg',
+                'bg-surface-200 border border-surface-300 text-surface-500',
+                'hover:bg-surface-300 hover:text-white text-xs font-mono font-medium transition-colors'
+              )}
+            >
+              <Calendar className="h-4 w-4" />
+              <span className="hidden sm:inline">.ics</span>
+            </a>
             <Link
               href="/debate/my-record"
               className={cn(

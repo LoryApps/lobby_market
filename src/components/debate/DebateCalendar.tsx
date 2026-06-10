@@ -14,6 +14,7 @@ import {
   CalendarCheck,
 } from 'lucide-react'
 import { DebateRSVPButton } from '@/components/debate/DebateRSVPButton'
+import { CalendarExportButton } from '@/components/debate/CalendarExportButton'
 import { cn } from '@/lib/utils/cn'
 import type { DebateWithTopic, DebateParticipantWithProfile } from '@/lib/supabase/types'
 
@@ -290,6 +291,9 @@ function DayPanel({
                       size="sm"
                     />
                   )}
+                  {!isLive && (
+                    <CalendarExportButton debateId={d.id} size="sm" />
+                  )}
                 </div>
               </div>
             )
@@ -502,6 +506,37 @@ export function DebateCalendar({ debates, initialYear, initialMonth }: Props) {
           </Link>
         </div>
       )}
+
+      {/* Calendar subscribe strip */}
+      <div className="flex items-center justify-between gap-3 px-4 py-3 rounded-xl border border-surface-300 bg-surface-100">
+        <div className="flex items-center gap-2.5 text-xs font-mono">
+          <Calendar className="h-4 w-4 text-for-400 flex-shrink-0" aria-hidden="true" />
+          <div>
+            <span className="text-white font-medium">Subscribe to Debate Calendar</span>
+            <span className="hidden sm:inline text-surface-500"> — never miss a live debate</span>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <a
+            href="/api/calendar/debates"
+            download="lobby-market-debates.ics"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-medium border border-surface-400 bg-surface-200 hover:bg-surface-300 text-surface-600 hover:text-white transition-colors"
+            aria-label="Download ICS calendar file for all upcoming debates"
+          >
+            <Calendar className="h-3 w-3" />
+            .ics
+          </a>
+          <a
+            href="https://calendar.google.com/calendar/render?cid=webcal%3A%2F%2Flobby.market%2Fapi%2Fcalendar%2Fdebates"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-medium border border-surface-400 bg-surface-200 hover:bg-surface-300 text-surface-600 hover:text-white transition-colors"
+            aria-label="Subscribe to all debates in Google Calendar"
+          >
+            Google Cal
+          </a>
+        </div>
+      </div>
 
       {/* All upcoming list (below calendar, compact) */}
       {debates.length > 0 && (
