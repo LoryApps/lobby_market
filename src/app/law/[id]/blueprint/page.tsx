@@ -46,6 +46,7 @@ import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { Badge } from '@/components/ui/Badge'
 import { Skeleton } from '@/components/ui/Skeleton'
+import { BlueprintNotes } from '@/components/law/BlueprintNotes'
 import { cn } from '@/lib/utils/cn'
 import type {
   BlueprintResponse,
@@ -630,6 +631,9 @@ export default function LawBlueprintPage() {
                 </div>
               </div>
             )}
+
+            {/* Community Notes */}
+            <BlueprintNotes lawId={id} />
 
             {/* Bottom links */}
             <div className="pt-2 flex flex-wrap gap-3">
