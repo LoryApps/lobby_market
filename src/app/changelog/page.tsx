@@ -2137,6 +2137,14 @@ interface RecentBuild {
 
 const RECENT_BUILDS: RecentBuild[] = [
   {
+    title: 'AI Debate Analysis',
+    description: 'New /debate/[id]/analysis page (Ch. 303) — AI-generated post-debate breakdown for any concluded debate. Includes: overall quality score (1–10) with a visual ring, a verdict analysis explaining who won and why, the key turning point, side-by-side speaker analysis cards (rhetorical style, strongest argument, main weakness, persuasion score), a sway comparison panel, up to 3 key exchanges, detected logical fallacies, audience takeaway, and epistemic quality assessment. Backed by /api/debates/[id]/analysis GET route using Claude claude-haiku-4-5-20251001 with analysis cached in new debate_analyses table (migration 00090). Analysis link added to DebateArena ended overlay and DebateRecap action row.',
+    href: '/debate',
+    icon: Brain,
+    color: 'text-purple',
+    tag: 'Ch. 303',
+  },
+  {
     title: 'Pre-Debate Outcome Predictions',
     description: 'New /debate/[id]/predictions page (Ch. 302) — citizens can predict debate outcomes before the debate starts. Three fields: predicted winner (FOR / AGAINST / Tie), predicted sway change (±20pp slider), and confidence (10–100%). Community aggregate shows consensus bar + avg confidence. After debate ends, correct predictions are highlighted and clout is awarded. New DB migration 00089_debate_predictions.sql. New /api/debates/[id]/predictions GET+POST route. "Predict" button added to DebateCard for scheduled debates. "Predictions" nav button added to DebateArena ended overlay and DebateRecap action row.',
     href: '/debate',

@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import {
   ArrowLeft,
   BarChart2,
+  Brain,
   Trophy,
   MessageSquare,
   Users,
@@ -497,6 +498,12 @@ export function DebateRecap({
           <Link href={`/debate/${debate.id}/transcript`} className="flex-1 min-w-[120px]">
             <Button variant="ghost" size="lg" className="w-full">
               Transcript
+            </Button>
+          </Link>
+          <Link href={`/debate/${debate.id}/analysis`} className="flex-1 min-w-[120px]">
+            <Button variant="ghost" size="lg" className="w-full">
+              <Brain className="h-4 w-4 mr-1.5 text-purple" />
+              AI Analysis
             </Button>
           </Link>
           <Link href="/debate" className="flex-1 min-w-[120px]">

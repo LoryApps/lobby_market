@@ -410,6 +410,11 @@ export function DebateArena({
                 Transcript
               </button>
             </Link>
+            <Link href={`/debate/${debate.id}/analysis`}>
+              <button className="px-6 py-2.5 rounded-full bg-purple/10 backdrop-blur-md border border-purple/30 text-sm font-semibold text-purple hover:bg-purple/20 hover:border-purple/50 transition-all">
+                AI Analysis
+              </button>
+            </Link>
           </div>
         </div>
       )}
