@@ -122,6 +122,7 @@ export async function POST(request: NextRequest) {
     title?: string
     description?: string
     scheduled_at?: string
+    series_id?: string
   }
   try {
     body = await request.json()
@@ -129,7 +130,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 })
   }
 
-  const { topic_id, type, title, description, scheduled_at } = body
+  const { topic_id, type, title, description, scheduled_at, series_id } = body
 
   if (!topic_id || typeof topic_id !== 'string') {
     return NextResponse.json({ error: 'topic_id is required' }, { status: 400 })
@@ -186,6 +187,38 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Topic not found' }, { status: 404 })
   }
 
+  // Resolve series assignment
+  let resolvedSeriesId: string | null = null
+  let resolvedSeriesRound: number | null = null
+
+  if (series_id && typeof series_id === 'string') {
+    const { data: series, error: seriesErr } = await supabase
+      .from('debate_series')
+      .select('id, creator_id, status, format, blue_wins, red_wins')
+      .eq('id', series_id)
+      .single()
+
+    if (seriesErr || !series) {
+      return NextResponse.json({ error: 'Series not found' }, { status: 404 })
+    }
+
+    if (series.status !== 'ongoing') {
+      return NextResponse.json(
+        { error: 'Cannot add a debate to a completed or cancelled series' },
+        { status: 400 }
+      )
+    }
+
+    // Count debates already in this series to determine the next round number
+    const { count: existingCount } = await supabase
+      .from('debates')
+      .select('id', { count: 'exact', head: true })
+      .eq('series_id', series_id)
+
+    resolvedSeriesId = series_id
+    resolvedSeriesRound = (existingCount ?? 0) + 1
+  }
+
   // Insert debate
   const { data: debate, error: debateError } = await supabase
     .from('debates')
@@ -198,6 +231,8 @@ export async function POST(request: NextRequest) {
       title: title.trim(),
       description: description?.trim() || null,
       scheduled_at: scheduledDate.toISOString(),
+      series_id: resolvedSeriesId,
+      series_round: resolvedSeriesRound,
     })
     .select()
     .single()

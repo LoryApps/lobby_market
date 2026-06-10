@@ -3,15 +3,16 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Bot, Users } from 'lucide-react'
+import { ArrowLeft, Bot, Layers, Trophy, Users } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils/cn'
 import type {
+  Debate,
+  DebateSeries,
   DebateWithTopic,
   DebateParticipantWithProfile,
   DebateMessageWithAuthor,
   VoteSide,
-  Debate,
 } from '@/lib/supabase/types'
 import { DebateSide } from './DebateSide'
 import { DebateChat } from './DebateChat'
@@ -60,8 +61,26 @@ export function DebateArena({
     useState<DebateMessageWithAuthor[]>(initialMessages)
   const [reactions, setReactions] = useState<FloatingReaction[]>([])
   const [chatOpen, setChatOpen] = useState(true)
+  const [series, setSeries] = useState<DebateSeries | null>(null)
 
   const reactionIdRef = useRef(0)
+
+  // Load series context if this debate is part of a series
+  useEffect(() => {
+    const sid = debate.series_id
+    if (!sid) return
+    let cancelled = false
+    ;(async () => {
+      const supabase = createClient()
+      const { data } = await supabase
+        .from('debate_series')
+        .select('id, title, format, blue_wins, red_wins, status, winner_side, creator_id, topic_id, description, created_at, updated_at')
+        .eq('id', sid)
+        .maybeSingle()
+      if (!cancelled && data) setSeries(data as DebateSeries)
+    })()
+    return () => { cancelled = true }
+  }, [debate.series_id])
 
   const blueSpeaker = useMemo(
     () => participants.find((p) => p.side === 'blue' && p.is_speaker) ?? null,
@@ -255,6 +274,42 @@ export function DebateArena({
           </div>
         </div>
       </div>
+
+      {/* Series context strip — shown when this debate is part of a series */}
+      {series && (
+        <Link
+          href={`/debate/series/${series.id}`}
+          className="absolute top-[4.5rem] left-0 right-0 z-20 flex items-center justify-center px-4 pointer-events-auto"
+        >
+          <div className={cn(
+            'inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-mono',
+            'bg-purple/10 backdrop-blur-md border border-purple/30 text-purple',
+            'hover:bg-purple/20 hover:border-purple/50 transition-all',
+          )}>
+            <Layers className="h-3 w-3 flex-shrink-0" />
+            <span className="truncate max-w-[140px]">{series.title}</span>
+            <span className="text-surface-500">·</span>
+            {series.status === 'completed' && series.winner_side ? (
+              <>
+                <Trophy className="h-3 w-3" />
+                <span className={series.winner_side === 'blue' ? 'text-for-400' : 'text-against-400'}>
+                  {series.winner_side === 'blue' ? 'FOR wins' : 'AGAINST wins'}
+                </span>
+              </>
+            ) : (
+              <>
+                <span className="text-for-400 font-bold">{series.blue_wins}</span>
+                <span className="text-surface-600">–</span>
+                <span className="text-against-400 font-bold">{series.red_wins}</span>
+                <span className="text-surface-500 ml-0.5">
+                  ({series.format.replace('best_of_', 'Bo').replace('fixed', 'Fixed')})
+                </span>
+              </>
+            )}
+            <span className="text-surface-600">→</span>
+          </div>
+        </Link>
+      )}
 
       {/* Split arena */}
       <div className="absolute inset-0 pt-32 pb-36 z-10 flex">

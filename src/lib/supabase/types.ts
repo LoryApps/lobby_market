@@ -1032,6 +1032,8 @@ export type Database = {
           viewer_count: number;
           blue_sway: number;
           red_sway: number;
+          series_id: string | null;
+          series_round: number | null;
           created_at: string;
           updated_at: string;
         };
@@ -1051,6 +1053,8 @@ export type Database = {
           viewer_count?: number;
           blue_sway?: number;
           red_sway?: number;
+          series_id?: string | null;
+          series_round?: number | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -1070,6 +1074,8 @@ export type Database = {
           viewer_count?: number;
           blue_sway?: number;
           red_sway?: number;
+          series_id?: string | null;
+          series_round?: number | null;
           created_at?: string;
           updated_at?: string;
         };
