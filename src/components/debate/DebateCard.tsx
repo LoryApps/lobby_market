@@ -201,7 +201,16 @@ export function DebateCard({ debate, participants = [] }: DebateCardProps) {
       {/* RSVP + Calendar row — only for scheduled (not yet live) debates */}
       {!isLive && !isEnded && (
         <div className="mt-3 pt-3 border-t border-surface-300/40 flex items-center justify-between gap-2">
-          <CalendarExportButton debateId={debate.id} size="sm" />
+          <div className="flex items-center gap-2">
+            <CalendarExportButton debateId={debate.id} size="sm" />
+            <Link
+              href={`/debate/${debate.id}/predictions`}
+              onClick={(e) => e.stopPropagation()}
+              className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-purple/10 border border-purple/30 text-[11px] font-mono font-semibold text-purple hover:bg-purple/20 transition-colors"
+            >
+              Predict
+            </Link>
+          </div>
           <DebateRSVPButton debateId={debate.id} size="sm" />
         </div>
       )}

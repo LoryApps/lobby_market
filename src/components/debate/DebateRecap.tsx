@@ -12,6 +12,7 @@ import {
   Flame,
   Share2,
   Minus,
+  Zap,
 } from 'lucide-react'
 import Link from 'next/link'
 import { Avatar } from '@/components/ui/Avatar'
@@ -485,6 +486,12 @@ export function DebateRecap({
             <Button variant="ghost" size="lg" className="w-full">
               <Flame className="h-4 w-4 mr-1.5 text-gold" />
               Highlights
+            </Button>
+          </Link>
+          <Link href={`/debate/${debate.id}/predictions`} className="flex-1 min-w-[120px]">
+            <Button variant="ghost" size="lg" className="w-full">
+              <Zap className="h-4 w-4 mr-1.5 text-purple" />
+              Predictions
             </Button>
           </Link>
           <Link href={`/debate/${debate.id}/transcript`} className="flex-1 min-w-[120px]">
