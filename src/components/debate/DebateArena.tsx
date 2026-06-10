@@ -372,6 +372,11 @@ export function DebateArena({
                 View Recap
               </button>
             </Link>
+            <Link href={`/debate/${debate.id}/audience`}>
+              <button className="px-6 py-2.5 rounded-full bg-purple/10 backdrop-blur-md border border-purple/30 text-sm font-semibold text-purple hover:bg-purple/20 hover:border-purple/50 transition-all">
+                Audience
+              </button>
+            </Link>
             <Link href={`/debate/${debate.id}/performance`}>
               <button className="px-6 py-2.5 rounded-full bg-surface-100/90 backdrop-blur-md border border-surface-300 text-sm font-semibold text-surface-400 hover:text-white hover:bg-surface-200/90 hover:border-surface-400 transition-all">
                 Stats

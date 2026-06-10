@@ -538,7 +538,17 @@ export default function DebatePerformancePage() {
               )}
 
               {/* Links */}
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <Link
+                  href={`/debate/${debateId}/audience`}
+                  className="flex items-center justify-between p-4 rounded-xl border border-purple/30 bg-purple/5 hover:border-purple/50 transition-colors"
+                >
+                  <div>
+                    <p className="text-sm font-semibold text-purple">Audience</p>
+                    <p className="text-xs font-mono text-surface-500">Crowd verdict</p>
+                  </div>
+                  <ChevronRight className="h-4 w-4 text-purple/60" />
+                </Link>
                 <Link
                   href={`/debate/${debateId}/recap`}
                   className="flex items-center justify-between p-4 rounded-xl border border-surface-300 bg-surface-100 hover:border-surface-400 transition-colors"

@@ -463,6 +463,12 @@ export function DebateRecap({
               </Button>
             </Link>
           )}
+          <Link href={`/debate/${debate.id}/audience`} className="flex-1 min-w-[120px]">
+            <Button variant="ghost" size="lg" className="w-full">
+              <Users className="h-4 w-4 mr-1.5 text-purple" />
+              Audience
+            </Button>
+          </Link>
           <Link href={`/debate/${debate.id}/performance`} className="flex-1 min-w-[120px]">
             <Button variant="ghost" size="lg" className="w-full">
               <BarChart2 className="h-4 w-4 mr-1.5" />
