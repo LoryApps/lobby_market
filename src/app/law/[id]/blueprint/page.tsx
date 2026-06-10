@@ -40,6 +40,7 @@ import {
   TrendingDown,
   TrendingUp,
   Users,
+  Users2,
   Zap,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
@@ -650,6 +651,13 @@ export default function LawBlueprintPage() {
               >
                 <BarChart2 className="h-3.5 w-3.5" />
                 Impact data
+              </Link>
+              <Link
+                href={`/law/${id}/community`}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-for-500/10 border border-for-500/30 text-for-400 hover:bg-for-500/20 hover:border-for-500/50 text-sm font-mono transition-colors"
+              >
+                <Users2 className="h-3.5 w-3.5" />
+                Community Hub
               </Link>
               <Link
                 href="/simulate"

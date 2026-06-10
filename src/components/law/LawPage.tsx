@@ -15,6 +15,7 @@ import {
   Sparkles,
   Tag,
   Users,
+  Users2,
   X,
 } from 'lucide-react'
 import { SharePanel } from '@/components/ui/SharePanel'
@@ -340,6 +341,18 @@ export function LawPage({
                 >
                   <Sparkles className="h-3.5 w-3.5" />
                   Blueprint
+                </Link>
+                <Link
+                  href={`/law/${law.id}/community`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-for-500/10 border border-for-500/30 text-for-400',
+                    'hover:bg-for-500/20 hover:border-for-500/50',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                >
+                  <Users2 className="h-3.5 w-3.5" />
+                  Community
                 </Link>
               </div>
             </div>
