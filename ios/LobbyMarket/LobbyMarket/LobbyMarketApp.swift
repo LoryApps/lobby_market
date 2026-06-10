@@ -5,6 +5,7 @@
 //  App entry point.
 //
 
+import AppIntents
 import SwiftUI
 
 @main
@@ -18,6 +19,8 @@ struct LobbyMarketApp: App {
     @AppStorage("lm_onboarding_done") private var onboardingDone: Bool = false
 
     init() {
+        // Register Siri App Shortcuts so they surface in Spotlight and Shortcuts.app.
+        LobbyMarketShortcuts.updateAppShortcutParameters()
         // Force dark-tinted navigation appearance.
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()

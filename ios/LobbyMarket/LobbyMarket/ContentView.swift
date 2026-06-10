@@ -2,112 +2,79 @@
 //  ContentView.swift
 //  LobbyMarket
 //
-//  Root tab container.
+//  Root tab container. Observes NavigationStateManager so App Intents
+//  (Siri shortcuts) can drive tab switches from outside the view hierarchy.
 //
 
 import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject var auth: AuthService
-    @State private var selectedTab: Tab = .feed
-
-    enum Tab: Hashable {
-        case feed, discover, search, debates, floor, create, codex, coalitions, leaderboard, stats, notifications, achievements, saved, messages, profile
-    }
+    @StateObject private var navState = NavigationStateManager.shared
 
     var body: some View {
-        TabView(selection: $selectedTab) {
+        TabView(selection: $navState.selectedTab) {
             FeedView()
-                .tabItem {
-                    Label("Feed", systemImage: "house.fill")
-                }
-                .tag(Tab.feed)
+                .tabItem { Label("Feed", systemImage: "house.fill") }
+                .tag(AppTab.feed)
 
             DiscoverView()
-                .tabItem {
-                    Label("Discover", systemImage: "safari.fill")
-                }
-                .tag(Tab.discover)
+                .tabItem { Label("Discover", systemImage: "safari.fill") }
+                .tag(AppTab.discover)
 
             SearchView()
-                .tabItem {
-                    Label("Search", systemImage: "magnifyingglass")
-                }
-                .tag(Tab.search)
+                .tabItem { Label("Search", systemImage: "magnifyingglass") }
+                .tag(AppTab.search)
 
             DebatesView()
-                .tabItem {
-                    Label("Debates", systemImage: "mic.fill")
-                }
-                .tag(Tab.debates)
+                .tabItem { Label("Debates", systemImage: "mic.fill") }
+                .tag(AppTab.debates)
 
             TheFloorView()
-                .tabItem {
-                    Label("Floor", systemImage: "building.columns.fill")
-                }
-                .tag(Tab.floor)
+                .tabItem { Label("Floor", systemImage: "building.columns.fill") }
+                .tag(AppTab.floor)
 
             CreateTopicView()
-                .tabItem {
-                    Label("Create", systemImage: "plus.circle.fill")
-                }
-                .tag(Tab.create)
+                .tabItem { Label("Create", systemImage: "plus.circle.fill") }
+                .tag(AppTab.create)
 
             LawCodexView()
-                .tabItem {
-                    Label("Codex", systemImage: "books.vertical.fill")
-                }
-                .tag(Tab.codex)
+                .tabItem { Label("Codex", systemImage: "books.vertical.fill") }
+                .tag(AppTab.codex)
 
             CoalitionsView()
-                .tabItem {
-                    Label("Lobbies", systemImage: "person.3.fill")
-                }
-                .tag(Tab.coalitions)
+                .tabItem { Label("Lobbies", systemImage: "person.3.fill") }
+                .tag(AppTab.coalitions)
 
             LeaderboardView()
-                .tabItem {
-                    Label("Ranks", systemImage: "trophy.fill")
-                }
-                .tag(Tab.leaderboard)
+                .tabItem { Label("Ranks", systemImage: "trophy.fill") }
+                .tag(AppTab.leaderboard)
 
             StatsView()
-                .tabItem {
-                    Label("Stats", systemImage: "chart.bar.fill")
-                }
-                .tag(Tab.stats)
+                .tabItem { Label("Stats", systemImage: "chart.bar.fill") }
+                .tag(AppTab.stats)
 
             NotificationsView()
-                .tabItem {
-                    Label("Alerts", systemImage: "bell.fill")
-                }
-                .tag(Tab.notifications)
+                .tabItem { Label("Alerts", systemImage: "bell.fill") }
+                .tag(AppTab.notifications)
 
             NavigationStack {
                 AchievementsView()
             }
-            .tabItem {
-                Label("Badges", systemImage: "rosette")
-            }
-            .tag(Tab.achievements)
+            .tabItem { Label("Badges", systemImage: "rosette") }
+            .tag(AppTab.achievements)
 
             BookmarksView()
-                .tabItem {
-                    Label("Saved", systemImage: "bookmark.fill")
-                }
-                .tag(Tab.saved)
+                .tabItem { Label("Saved", systemImage: "bookmark.fill") }
+                .tag(AppTab.saved)
 
             MessagesView()
-                .tabItem {
-                    Label("Messages", systemImage: "bubble.left.and.bubble.right.fill")
-                }
-                .tag(Tab.messages)
+                .tabItem { Label("Messages", systemImage: "bubble.left.and.bubble.right.fill") }
+                .tag(AppTab.messages)
 
             ProfileView()
-                .tabItem {
-                    Label("Profile", systemImage: "person.fill")
-                }
-                .tag(Tab.profile)
+                .tabItem { Label("Profile", systemImage: "person.fill") }
+                .tag(AppTab.profile)
         }
         .tint(.forBlue)
         .background(Color.surface0.ignoresSafeArea())
