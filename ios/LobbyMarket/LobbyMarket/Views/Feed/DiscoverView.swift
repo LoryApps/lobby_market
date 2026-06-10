@@ -438,9 +438,6 @@ struct DiscoverView: View {
     @State private var topCitizens: [LeaderboardEntry] = []
     @State private var isLoading = false
     @State private var hasLoaded = false
-    @State private var selectedCategory: CategoryConfig? = nil
-    @State private var showingCategorySheet = false
-
     // MARK: Body
 
     var body: some View {
@@ -474,14 +471,12 @@ struct DiscoverView: View {
             .navigationDestination(for: Law.self) { law in
                 LawDetailView(law: law, allLaws: recentLaws)
             }
+            .navigationDestination(for: String.self) { categoryName in
+                CategoryDetailView(category: categoryName)
+            }
         }
         .task {
             if !hasLoaded { await load() }
-        }
-        .sheet(isPresented: $showingCategorySheet) {
-            if let cat = selectedCategory {
-                CategoryTopicsSheet(category: cat.id)
-            }
         }
     }
 
@@ -503,11 +498,7 @@ struct DiscoverView: View {
                 spacing: Spacing.sm
             ) {
                 ForEach(CATEGORIES) { cat in
-                    Button {
-                        Haptics.impact(.light)
-                        selectedCategory = cat
-                        showingCategorySheet = true
-                    } label: {
+                    NavigationLink(value: cat.id) {
                         HStack(spacing: Spacing.xs) {
                             Image(systemName: cat.icon)
                                 .font(.system(size: 16, weight: .semibold))

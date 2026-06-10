@@ -185,6 +185,35 @@ final class SupabaseClient {
         }
     }
 
+    /// Fetch topics for a specific category with optional status + sort filtering.
+    func fetchTopicsByCategory(
+        category: String,
+        status: String? = nil,
+        sort: String = "top",
+        limit: Int = 30,
+        offset: Int = 0
+    ) async throws -> [Topic] {
+        var q = QueryParams()
+        q.select("*")
+        q.eq("category", category)
+        if let status {
+            q.eq("status", status)
+        }
+        switch sort {
+        case "top":  q.order("total_votes", ascending: false)
+        case "hot":  q.order("view_count",  ascending: false)
+        default:     q.order("created_at",  ascending: false)
+        }
+        q.limit(limit)
+        q.offset(offset)
+        let req = try buildRequest(method: "GET", path: "topics", query: q)
+        do {
+            return try await execute(req)
+        } catch {
+            return Topic.sampleData.filter { $0.category == category }
+        }
+    }
+
     /// Fetch the top trending tags by counting their occurrences across topics.
     func fetchTrendingTags(limit: Int = 60) async throws -> [TrendingTag] {
         var q = QueryParams()
