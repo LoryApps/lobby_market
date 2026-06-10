@@ -98,9 +98,12 @@ struct ArgumentDetailSheet: View {
                     .overlay(Capsule().stroke(accentColor.opacity(0.35), lineWidth: 1))
 
                 if let username = argument.authorUsername {
-                    Text("@\(username)")
-                        .font(.lmCaption)
-                        .foregroundStyle(.textTertiary)
+                    NavigationLink(destination: PublicProfileView(username: username)) {
+                        Text("@\(username)")
+                            .font(.lmCaption)
+                            .foregroundStyle(.forBlue.opacity(0.8))
+                    }
+                    .buttonStyle(.plain)
                 }
 
                 Spacer()

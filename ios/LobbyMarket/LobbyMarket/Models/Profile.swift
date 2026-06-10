@@ -16,6 +16,9 @@ struct Profile: Identifiable, Codable, Equatable, Hashable {
     let votesCast: Int
     let reputation: Int
     let clout: Int
+    let role: String
+    let followersCount: Int
+    let followingCount: Int
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -28,6 +31,9 @@ struct Profile: Identifiable, Codable, Equatable, Hashable {
         case votesCast = "votes_cast"
         case reputation
         case clout
+        case role
+        case followersCount = "followers_count"
+        case followingCount = "following_count"
     }
 
     init(from decoder: Decoder) throws {
@@ -42,6 +48,9 @@ struct Profile: Identifiable, Codable, Equatable, Hashable {
         votesCast = try c.decodeIfPresent(Int.self, forKey: .votesCast) ?? 0
         reputation = try c.decodeIfPresent(Int.self, forKey: .reputation) ?? 0
         clout = try c.decodeIfPresent(Int.self, forKey: .clout) ?? 0
+        role = try c.decodeIfPresent(String.self, forKey: .role) ?? "person"
+        followersCount = try c.decodeIfPresent(Int.self, forKey: .followersCount) ?? 0
+        followingCount = try c.decodeIfPresent(Int.self, forKey: .followingCount) ?? 0
     }
 
     init(
@@ -54,7 +63,10 @@ struct Profile: Identifiable, Codable, Equatable, Hashable {
         topicsCreated: Int = 0,
         votesCast: Int = 0,
         reputation: Int = 0,
-        clout: Int = 0
+        clout: Int = 0,
+        role: String = "person",
+        followersCount: Int = 0,
+        followingCount: Int = 0
     ) {
         self.id = id
         self.username = username
@@ -66,6 +78,9 @@ struct Profile: Identifiable, Codable, Equatable, Hashable {
         self.votesCast = votesCast
         self.reputation = reputation
         self.clout = clout
+        self.role = role
+        self.followersCount = followersCount
+        self.followingCount = followingCount
     }
 }
 

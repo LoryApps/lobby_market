@@ -283,10 +283,13 @@ struct LeaderboardView: View {
                 )
         }
         .frame(maxWidth: .infinity)
-        .onTapGesture {
-            Haptics.impact(.light)
-            openProfile(username: entry.username)
-        }
+        .contentShape(Rectangle())
+        .onTapGesture { Haptics.impact(.light) }
+        .overlay(
+            NavigationLink(destination: PublicProfileView(username: entry.username)) {
+                Color.clear
+            }
+        )
     }
 
     private func podiumColor(rank: Int) -> Color {
@@ -324,10 +327,7 @@ struct LeaderboardView: View {
     }
 
     private func rankedRow(entry: LeaderboardEntry, rank: Int) -> some View {
-        Button {
-            Haptics.impact(.light)
-            openProfile(username: entry.username)
-        } label: {
+        NavigationLink(destination: PublicProfileView(username: entry.username)) {
             HStack(spacing: Spacing.sm) {
                 // Rank number
                 Text("\(rank)")
@@ -383,6 +383,7 @@ struct LeaderboardView: View {
             )
         }
         .buttonStyle(.plain)
+        .simultaneousGesture(TapGesture().onEnded { Haptics.impact(.light) })
     }
 
     private var metricUnit: String {
@@ -487,11 +488,6 @@ struct LeaderboardView: View {
         loading = false
     }
 
-    private func openProfile(username: String) {
-        let urlStr = "\(Config.webURL)/profile/\(username)"
-        guard let url = URL(string: urlStr) else { return }
-        UIApplication.shared.open(url)
-    }
 }
 
 // MARK: - Shimmer modifier

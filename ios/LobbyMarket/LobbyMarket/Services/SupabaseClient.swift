@@ -1436,10 +1436,76 @@ final class SupabaseClient {
         let tReq = try buildRequest(method: "GET", path: "topics", query: tq)
         return (try? await execute(tReq)) ?? []
     }
+
+    // MARK: - Public Profile & Follow
+
+    /// Fetch a profile by username (for public profile view).
+    func fetchProfileByUsername(_ username: String) async throws -> Profile? {
+        var q = QueryParams()
+        q.select("*")
+        q.eq("username", username)
+        q.limit(1)
+        let req = try buildRequest(method: "GET", path: "profiles", query: q)
+        let list: [Profile] = try await execute(req)
+        return list.first
+    }
+
+    /// Check whether `myId` follows `targetId`. Returns false on any error.
+    func isFollowing(myId: String, targetId: String) async -> Bool {
+        var q = QueryParams()
+        q.select("id")
+        q.eq("follower_id", myId)
+        q.eq("following_id", targetId)
+        q.limit(1)
+        guard let req = try? buildRequest(method: "GET", path: "user_follows", query: q) else { return false }
+        let rows: [RawFollowRow] = (try? await execute(req)) ?? []
+        return !rows.isEmpty
+    }
+
+    /// Follow a user. Inserts into user_follows. Requires auth token to be set.
+    func followUser(myId: String, targetId: String) async throws {
+        let body = FollowPayload(follower_id: myId, following_id: targetId)
+        let bodyData = try encoder.encode(body)
+        var req = try buildRequest(method: "POST", path: "user_follows", query: QueryParams())
+        req.httpBody = bodyData
+        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        req.setValue("return=minimal", forHTTPHeaderField: "Prefer")
+        _ = try await session.data(for: req)
+    }
+
+    /// Unfollow a user. Deletes from user_follows using query params.
+    func unfollowUser(myId: String, targetId: String) async throws {
+        var q = QueryParams()
+        q.eq("follower_id", myId)
+        q.eq("following_id", targetId)
+        var req = try buildRequest(method: "DELETE", path: "user_follows", query: q)
+        req.setValue("return=minimal", forHTTPHeaderField: "Prefer")
+        _ = try await session.data(for: req)
+    }
+
+    /// Fetch recent arguments authored by a user across all topics.
+    func fetchUserArguments(userId: String, limit: Int = 12) async throws -> [Argument] {
+        var q = QueryParams()
+        q.select("id,topic_id,author_id,content,side,upvotes,created_at")
+        q.eq("author_id", userId)
+        q.order("created_at", ascending: false)
+        q.limit(limit)
+        let req = try buildRequest(method: "GET", path: "arguments", query: q)
+        return (try? await execute(req)) ?? []
+    }
 }
 
 /// Dummy type for endpoints that don't return a body.
 struct EmptyResponse: Decodable {}
+
+/// Minimal row for follow existence check.
+private struct RawFollowRow: Decodable { let id: String }
+
+/// Payload for inserting a follow.
+private struct FollowPayload: Encodable {
+    let follower_id: String
+    let following_id: String
+}
 
 /// User notification preferences — mirrors the `user_notification_prefs` table.
 struct NotifPrefs: Codable {

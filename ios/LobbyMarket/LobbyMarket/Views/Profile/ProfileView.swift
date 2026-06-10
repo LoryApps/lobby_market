@@ -304,7 +304,10 @@ struct ProfileView: View {
                             topicsCreated: p.topicsCreated,
                             votesCast: p.votesCast,
                             reputation: p.reputation,
-                            clout: p.clout
+                            clout: p.clout,
+                            role: p.role,
+                            followersCount: p.followersCount,
+                            followingCount: p.followingCount
                         )
                     }
                 }
@@ -344,6 +347,37 @@ struct ProfileView: View {
                     .padding(.horizontal, Spacing.xl)
             }
 
+            // Role badge
+            if let role = profile?.role, role != "person" {
+                Text(roleLabel(role))
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(roleColorFor(role))
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 3)
+                    .background(Capsule().fill(roleColorFor(role).opacity(0.12)))
+                    .overlay(Capsule().stroke(roleColorFor(role).opacity(0.3), lineWidth: 1))
+            }
+
+            // Followers / Following
+            HStack(spacing: Spacing.xl) {
+                VStack(spacing: 2) {
+                    Text("\(profile?.followersCount ?? 0)")
+                        .font(.lmHeadline)
+                        .foregroundStyle(.textPrimary)
+                    Text("Followers")
+                        .font(.lmCaption)
+                        .foregroundStyle(.textTertiary)
+                }
+                VStack(spacing: 2) {
+                    Text("\(profile?.followingCount ?? 0)")
+                        .font(.lmHeadline)
+                        .foregroundStyle(.textPrimary)
+                    Text("Following")
+                        .font(.lmCaption)
+                        .foregroundStyle(.textTertiary)
+                }
+            }
+
             HStack(spacing: Spacing.sm) {
                 if !joinYear.isEmpty {
                     Label(joinYear, systemImage: "calendar")
@@ -351,6 +385,24 @@ struct ProfileView: View {
                         .foregroundStyle(.textTertiary)
                 }
             }
+        }
+    }
+
+    private func roleLabel(_ role: String) -> String {
+        switch role {
+        case "debator":       return "Debator"
+        case "troll_catcher": return "Troll Catcher"
+        case "elder":         return "Elder"
+        default:              return "Citizen"
+        }
+    }
+
+    private func roleColorFor(_ role: String) -> Color {
+        switch role {
+        case "debator":       return .forBlue
+        case "troll_catcher": return .againstRed
+        case "elder":         return .gold
+        default:              return .textTertiary
         }
     }
 

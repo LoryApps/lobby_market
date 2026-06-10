@@ -38,6 +38,7 @@ struct ArenaView: View {
     @State private var totalDone = 0
     @State private var allDone = false
     @State private var error: String?
+    @State private var profileUsername: String?
 
     var body: some View {
         ZStack {
@@ -70,6 +71,15 @@ struct ArenaView: View {
             }
         }
         .task { await loadMatchup() }
+        .sheet(isPresented: Binding(get: { profileUsername != nil },
+                                   set: { if !$0 { profileUsername = nil } })) {
+            if let name = profileUsername {
+                NavigationStack {
+                    PublicProfileView(username: name)
+                        .environmentObject(auth)
+                }
+            }
+        }
     }
 
     // MARK: - Header
@@ -194,9 +204,15 @@ struct ArenaView: View {
 
                 HStack(spacing: Spacing.xs) {
                     if let author = arg.authorUsername {
-                        Text("@\(author)")
-                            .font(.lmCaption)
-                            .foregroundStyle(.textTertiary)
+                        Button {
+                            Haptics.impact(.light)
+                            profileUsername = author
+                        } label: {
+                            Text("@\(author)")
+                                .font(.lmCaption)
+                                .foregroundStyle(.forBlue.opacity(0.7))
+                        }
+                        .buttonStyle(.plain)
                     }
                     Spacer()
                     Image(systemName: "arrow.up")
