@@ -538,16 +538,26 @@ export default function DebatePerformancePage() {
               )}
 
               {/* Links */}
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-3 gap-3">
                 <Link
                   href={`/debate/${debateId}/recap`}
                   className="flex items-center justify-between p-4 rounded-xl border border-surface-300 bg-surface-100 hover:border-surface-400 transition-colors"
                 >
                   <div>
-                    <p className="text-sm font-semibold text-white">Debate recap</p>
+                    <p className="text-sm font-semibold text-white">Recap</p>
                     <p className="text-xs font-mono text-surface-500">Overview</p>
                   </div>
                   <ChevronRight className="h-4 w-4 text-surface-500" />
+                </Link>
+                <Link
+                  href={`/debate/${debateId}/highlights`}
+                  className="flex items-center justify-between p-4 rounded-xl border border-gold/30 bg-gold/5 hover:border-gold/50 transition-colors"
+                >
+                  <div>
+                    <p className="text-sm font-semibold text-gold">Highlights</p>
+                    <p className="text-xs font-mono text-surface-500">Best moments</p>
+                  </div>
+                  <ChevronRight className="h-4 w-4 text-gold/60" />
                 </Link>
                 <Link
                   href={`/debate/${debateId}/transcript`}

@@ -469,6 +469,12 @@ export function DebateRecap({
               Stats
             </Button>
           </Link>
+          <Link href={`/debate/${debate.id}/highlights`} className="flex-1 min-w-[120px]">
+            <Button variant="ghost" size="lg" className="w-full">
+              <Flame className="h-4 w-4 mr-1.5 text-gold" />
+              Highlights
+            </Button>
+          </Link>
           <Link href={`/debate/${debate.id}/transcript`} className="flex-1 min-w-[120px]">
             <Button variant="ghost" size="lg" className="w-full">
               Transcript
