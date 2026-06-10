@@ -26,6 +26,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     ? `${series.description} (${statusLabel}, ${score})`
     : `${statusLabel} series · Score: ${score}`
 
+  const ogImageUrl = `/api/og/debate-series/${params.id}`
+
   return {
     title: `${series.title} · Lobby Market`,
     description,
@@ -34,11 +36,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description,
       type: 'article',
       siteName: 'Lobby Market',
+      images: [
+        {
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
+          alt: `${series.title} — ${score}`,
+        },
+      ],
     },
     twitter: {
-      card: 'summary',
+      card: 'summary_large_image',
       title: `${series.title} · Lobby Market`,
       description,
+      images: [ogImageUrl],
     },
   }
 }

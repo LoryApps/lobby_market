@@ -6,6 +6,7 @@ import { motion } from 'framer-motion'
 import {
   ArrowLeft,
   CalendarDays,
+  Check,
   CheckCircle2,
   ChevronRight,
   Clock,
@@ -14,6 +15,7 @@ import {
   Mic,
   RefreshCw,
   Scale,
+  Share2,
   Swords,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
@@ -225,6 +227,44 @@ function DetailSkeleton() {
   )
 }
 
+// ─── Share button ─────────────────────────────────────────────────────────────
+
+function SeriesShareButton({ title, score }: { title: string; score: string }) {
+  const [copied, setCopied] = useState(false)
+
+  const handleShare = useCallback(async () => {
+    const url = typeof window !== 'undefined' ? window.location.href : ''
+    const text = `${title} — ${score} · Lobby Market`
+
+    if (typeof window !== 'undefined' && 'share' in navigator) {
+      try {
+        await navigator.share({ title: text, url })
+        return
+      } catch {
+        // fall through to clipboard
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(url)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      // best-effort
+    }
+  }, [title, score])
+
+  return (
+    <button
+      onClick={handleShare}
+      aria-label="Share this series"
+      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono text-surface-500 hover:text-surface-300 border border-surface-500/20 bg-surface-200/30 hover:bg-surface-200/60 transition-colors"
+    >
+      {copied ? <Check className="h-3 w-3 text-emerald" /> : <Share2 className="h-3 w-3" />}
+      {copied ? 'Copied!' : 'Share'}
+    </button>
+  )
+}
+
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export function DebateSeriesDetailClient({ seriesId }: { seriesId: string }) {
@@ -290,7 +330,7 @@ export function DebateSeriesDetailClient({ seriesId }: { seriesId: string }) {
 
         {/* Series header */}
         <div className="mb-6">
-          <div className="flex items-center gap-2 mb-2">
+          <div className="flex items-center gap-2 mb-2 flex-wrap">
             <span className={cn(
               'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold border',
               isComplete
@@ -303,6 +343,7 @@ export function DebateSeriesDetailClient({ seriesId }: { seriesId: string }) {
             <span className="text-[10px] font-mono text-surface-500 border border-surface-500/30 bg-surface-200/50 px-2 py-0.5 rounded-full">
               {formatLabel(series.format)}
             </span>
+            <SeriesShareButton title={series.title} score={`${series.blue_wins}–${series.red_wins}`} />
           </div>
           <h1 className="text-2xl font-black text-surface-900 mb-1">{series.title}</h1>
           {series.description && (
