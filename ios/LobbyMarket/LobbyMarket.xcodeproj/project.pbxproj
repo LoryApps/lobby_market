@@ -72,6 +72,7 @@
 		FF0000000000000000001A02 /* TopicWikiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0000000000000000001A01 /* TopicWikiView.swift */; };
 		FF0000000000000000001B02 /* AppShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0000000000000000001B01 /* AppShortcuts.swift */; };
 		FF0000000000000000001C02 /* NavigationStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0000000000000000001C01 /* NavigationStateManager.swift */; };
+		FF0000000000000000001D02 /* VoteCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0000000000000000001D01 /* VoteCalendarView.swift */; };
 		14394479B75708F8FF2E238F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 37E4D4511D6DE1D83D37BF1C /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
@@ -144,6 +145,7 @@
 		FF0000000000000000001A01 /* TopicWikiView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopicWikiView.swift; sourceTree = "<group>"; };
 		FF0000000000000000001B01 /* AppShortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppShortcuts.swift; sourceTree = "<group>"; };
 		FF0000000000000000001C01 /* NavigationStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationStateManager.swift; sourceTree = "<group>"; };
+		FF0000000000000000001D01 /* VoteCalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoteCalendarView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -380,6 +382,7 @@
 				6D1D2976198B01CA88582A90 /* ProfileView.swift */,
 				FF0000000000000000001701 /* PublicProfileView.swift */,
 				B3C4D5E6F7A8B9C0D1E2F3A4B /* SettingsView.swift */,
+				FF0000000000000000001D01 /* VoteCalendarView.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -533,6 +536,7 @@
 				FF0000000000000000001A02 /* TopicWikiView.swift in Sources */,
 			FF0000000000000000001B02 /* AppShortcuts.swift in Sources */,
 			FF0000000000000000001C02 /* NavigationStateManager.swift in Sources */,
+				FF0000000000000000001D02 /* VoteCalendarView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

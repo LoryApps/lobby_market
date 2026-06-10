@@ -189,6 +189,7 @@ struct ProfileView: View {
 
     @State private var profile: Profile?
     @State private var recentVotes: [RecentActivityVote] = []
+    @State private var voteHistory: [VoteHistory] = []
     @State private var authoredTopics: [Topic] = []
     @State private var isLoading = false
     @State private var showEdit = false
@@ -213,11 +214,13 @@ struct ProfileView: View {
     }
 
     private var categoryStats: [(cat: String, count: Int, fraction: Double)] {
+        // Use full vote history for accurate category breakdown when available,
+        // fall back to the smaller recentVotes list.
+        let source: [(category: String?)] = voteHistory.isEmpty
+            ? recentVotes.map { (category: $0.topicCategory) }
+            : voteHistory.map { (category: $0.topics?.category) }
         var map: [String: Int] = [:]
-        for v in recentVotes {
-            let key = v.topicCategory ?? "Other"
-            map[key, default: 0] += 1
-        }
+        for v in source { map[v.category ?? "Other", default: 0] += 1 }
         let total = map.values.reduce(0, +)
         guard total > 0 else { return [] }
         return map
@@ -225,6 +228,10 @@ struct ProfileView: View {
             .prefix(5)
             .map { (cat: $0.key, count: $0.value, fraction: Double($0.value) / Double(total)) }
     }
+
+    private var voteDates: [Date] { voteHistory.map(\.createdAt) }
+
+    private var streak: Int { VoteCalendarView.streak(from: voteDates) }
 
     // MARK: Body
 
@@ -240,6 +247,9 @@ struct ProfileView: View {
                         VStack(spacing: Spacing.lg) {
                             heroSection
                             statsGrid
+                            if !voteDates.isEmpty {
+                                VoteCalendarView(voteDates: voteDates, streak: streak)
+                            }
                             if !categoryStats.isEmpty {
                                 voteDNASection
                             }
@@ -717,9 +727,11 @@ struct ProfileView: View {
         isLoading = true
         async let p = SupabaseClient.shared.fetchProfile(id: uid)
         async let v = SupabaseClient.shared.fetchRecentVotesWithTopics(userId: uid, limit: 10)
+        async let h = SupabaseClient.shared.fetchVoteHistory(userId: uid, limit: 300)
         async let t = SupabaseClient.shared.fetchTopicsByAuthor(authorId: uid, limit: 8)
         profile = try? await p
         recentVotes = (try? await v) ?? []
+        voteHistory = (try? await h) ?? []
         authoredTopics = (try? await t) ?? []
         isLoading = false
     }

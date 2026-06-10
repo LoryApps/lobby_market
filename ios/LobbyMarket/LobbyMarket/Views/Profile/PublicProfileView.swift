@@ -130,10 +130,14 @@ struct PublicProfileView: View {
     @State private var profile: Profile?
     @State private var arguments: [Argument] = []
     @State private var topics: [Topic] = []
+    @State private var publicVoteHistory: [VoteHistory] = []
     @State private var isFollowing = false
     @State private var isLoading = true
     @State private var followLoading = false
     @State private var errorMessage: String?
+
+    private var publicVoteDates: [Date] { publicVoteHistory.map(\.createdAt) }
+    private var publicStreak: Int { VoteCalendarView.streak(from: publicVoteDates) }
 
     private var isOwnProfile: Bool {
         guard let me = auth.currentUserId, let p = profile else { return false }
@@ -190,6 +194,14 @@ struct PublicProfileView: View {
                 // ── Bio ─────────────────────────────────────────────────────
                 if let bio = p.bio, !bio.isEmpty {
                     bioSection(bio)
+                        .padding(.horizontal, Spacing.md)
+                        .padding(.vertical, Spacing.md)
+                    Divider().background(Color.surface300)
+                }
+
+                // ── Vote activity heatmap ────────────────────────────────────
+                if !publicVoteDates.isEmpty {
+                    VoteCalendarView(voteDates: publicVoteDates, streak: publicStreak)
                         .padding(.horizontal, Spacing.md)
                         .padding(.vertical, Spacing.md)
                     Divider().background(Color.surface300)
@@ -497,11 +509,13 @@ struct PublicProfileView: View {
             }
             profile = p
 
-            async let argsTask   = SupabaseClient.shared.fetchUserArguments(userId: p.id)
-            async let topicsTask = SupabaseClient.shared.fetchTopicsByAuthor(authorId: p.id, limit: 5)
+            async let argsTask    = SupabaseClient.shared.fetchUserArguments(userId: p.id)
+            async let topicsTask  = SupabaseClient.shared.fetchTopicsByAuthor(authorId: p.id, limit: 5)
+            async let historyTask = SupabaseClient.shared.fetchVoteHistory(userId: p.id, limit: 300)
 
-            arguments = (try? await argsTask) ?? []
-            topics    = (try? await topicsTask) ?? []
+            arguments         = (try? await argsTask) ?? []
+            topics            = (try? await topicsTask) ?? []
+            publicVoteHistory = (try? await historyTask) ?? []
 
             if let myId = auth.currentUserId, myId != p.id {
                 isFollowing = await SupabaseClient.shared.isFollowing(myId: myId, targetId: p.id)
