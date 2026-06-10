@@ -2336,3 +2336,47 @@ export type ArgumentDraftWithTopic = ArgumentDraft & {
     status: string;
   };
 };
+
+// ─── Debate Series ─────────────────────────────────────────────────────────────
+
+export interface DebateSeries {
+  id: string;
+  title: string;
+  description: string | null;
+  topic_id: string | null;
+  creator_id: string | null;
+  status: 'ongoing' | 'completed' | 'cancelled';
+  format: 'best_of_3' | 'best_of_5' | 'best_of_7' | 'fixed';
+  blue_wins: number;
+  red_wins: number;
+  winner_side: 'blue' | 'red' | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export type DebateSeriesFormat = DebateSeries['format'];
+export type DebateSeriesStatus = DebateSeries['status'];
+
+export type DebateSeriesWithDetails = DebateSeries & {
+  topic: {
+    id: string;
+    statement: string;
+    category: string | null;
+    status: string;
+    blue_pct: number;
+    total_votes: number;
+  } | null;
+  creator: {
+    id: string;
+    username: string;
+    display_name: string | null;
+    avatar_url: string | null;
+    role: string | null;
+  } | null;
+  debates: (Debate & {
+    series_round: number | null;
+    participants: DebateParticipantWithProfile[];
+  })[];
+  debate_count: number;
+  next_debate: Debate | null;
+};
