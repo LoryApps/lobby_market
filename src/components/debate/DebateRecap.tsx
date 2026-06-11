@@ -11,6 +11,7 @@ import {
   Users,
   Clock,
   Flame,
+  Play,
   Share2,
   Minus,
   Swords,
@@ -500,6 +501,12 @@ export function DebateRecap({
             <Button variant="ghost" size="lg" className="w-full">
               <Zap className="h-4 w-4 mr-1.5 text-purple" />
               Predictions
+            </Button>
+          </Link>
+          <Link href={`/debate/${debate.id}/replay`} className="flex-1 min-w-[120px]">
+            <Button variant="ghost" size="lg" className="w-full">
+              <Play className="h-4 w-4 mr-1.5 text-purple" />
+              Replay
             </Button>
           </Link>
           <Link href={`/debate/${debate.id}/transcript`} className="flex-1 min-w-[120px]">

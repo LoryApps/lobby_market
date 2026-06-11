@@ -74,6 +74,7 @@ import {
   Rss,
   Bird,
   Smartphone,
+  Play,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -2136,6 +2137,54 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Debate Replay Player',
+    description: 'New /debate/[id]/replay page (Ch. 310) — cinematic message-by-message replay of any ended debate. Messages appear one at a time with spring animations, an animated sway gauge updates as each argument lands, and a sticky bottom player bar provides full playback controls: Play/Pause, Step Back/Forward, Skip to End, speed selector (0.5×/1×/2×/5×), and a timeline scrubber. No new DB migration needed — reuses the existing /api/debates/[id]/transcript endpoint. Replay button added to DebateRecap action row and DebateArena ended overlay.',
+    href: '/debate',
+    icon: Play,
+    color: 'text-purple',
+    tag: 'Ch. 310',
+  },
+  {
+    title: 'Guest Vote Prompt',
+    description: 'New GuestVotePrompt component (Ch. 309) — when a logged-out visitor taps or swipes to vote on a topic, they now see a conversion-focused bottom sheet instead of a silent failure. The sheet shows which side they tried to vote (FOR / AGAINST), animates a simulated vote-split preview showing the impact their vote would have on consensus, lists 4 platform benefits (unlimited votes, 10,000+ citizens, shape real laws, earn clout), and provides CTA buttons: "Create free account" (styled to match their vote side) and "Already have an account? Sign in". Both CTAs pass returnUrl so the user lands back on the same topic. Backed by a Zustand auth-store that caches Supabase user state, initialized once in Providers.',
+    href: '/',
+    icon: Vote,
+    color: 'text-for-400',
+    tag: 'Ch. 309',
+  },
+  {
+    title: 'The Clash — Live Argument Battle Feed',
+    description: 'New /clash page (Ch. 308) — live head-to-head argument battle dashboard. Shows FOR vs AGAINST argument pairs across trending topics, with live upvote animations and Supabase Realtime updates. Pairs are sorted by combined upvote activity (hottest battles first), with a "momentum" indicator showing which side is gaining. Category filter tabs (All / Politics / Economics / Technology / …). Each clash card shows both arguments, author profiles, quality scores, and a "battle score" based on combined upvotes. Backed by new /api/clash GET route. Distinct from /duel (single carousel), /faceoffs (arena leaderboard), /spar (AI practice).',
+    href: '/clash',
+    icon: Swords,
+    color: 'text-against-400',
+    tag: 'Ch. 308',
+  },
+  {
+    title: 'Debate Series OG Image + Share',
+    description: 'New /api/og/debate-series/[slug] route (Ch. 307) — generates a 1200×630 OG image for debate series using @vercel/og. Shows series title, format badge, episode count, status (scheduling/active/completed), and Lobby branding. generateMetadata in /series/[slug]/page.tsx updated to include openGraph.images pointing to the new route. Share button added to series header, using navigator.share with fallback to clipboard copy. Series card in /debate/series grid updated with a Share icon button.',
+    href: '/debate/series',
+    icon: Share2,
+    color: 'text-gold',
+    tag: 'Ch. 307',
+  },
+  {
+    title: 'Debate Series Integration',
+    description: 'Debate Series wired into the creation and arena flows (Ch. 306). DebateCreate form gains a "Part of a series?" toggle that opens a series selector (lists series the current user owns, with a Create New option inline). On submit, the chosen series_id is stored on the debate. DebateArena banner shows series context when a debate belongs to a series — displays series title, current episode number, format, and a link to the series page. /api/debate-series/[id]/debates route returns ordered episodes with their status.',
+    href: '/debate/series',
+    icon: Layers,
+    color: 'text-purple',
+    tag: 'Ch. 306',
+  },
+  {
+    title: 'Debate Series — Multi-Round Competitions',
+    description: 'New debate_series table (migration 00091) and full Series UI (Ch. 305). /debate/series browse page lists all series with format badges (Best-of-3, Championship, etc.), episode counts, and status. /series/[slug] detail page shows the episode bracket, standings table (wins/losses/draws/points per participant), and series-level statistics. /debate/series/create form lets organizers define a series with title, format, max episodes, description. /api/debate-series CRUD routes. Series are linked to individual debates via series_id + episode_number.',
+    href: '/debate/series',
+    icon: Trophy,
+    color: 'text-gold',
+    tag: 'Ch. 305',
+  },
   {
     title: 'AI Debate Analysis',
     description: 'New /debate/[id]/analysis page (Ch. 303) — AI-generated post-debate breakdown for any concluded debate. Includes: overall quality score (1–10) with a visual ring, a verdict analysis explaining who won and why, the key turning point, side-by-side speaker analysis cards (rhetorical style, strongest argument, main weakness, persuasion score), a sway comparison panel, up to 3 key exchanges, detected logical fallacies, audience takeaway, and epistemic quality assessment. Backed by /api/debates/[id]/analysis GET route using Claude claude-haiku-4-5-20251001 with analysis cached in new debate_analyses table (migration 00090). Analysis link added to DebateArena ended overlay and DebateRecap action row.',
