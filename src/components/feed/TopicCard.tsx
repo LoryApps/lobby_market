@@ -25,6 +25,8 @@ import { TopicReactions } from '@/components/topic/TopicReactions'
 import { TrendMini } from '@/components/topic/TrendMini'
 import { TopArgumentsPreview } from '@/components/feed/TopArgumentsPreview'
 import { QuickArgueSheet } from '@/components/feed/QuickArgueSheet'
+import { GuestVotePrompt } from '@/components/voting/GuestVotePrompt'
+import { useAuthStore } from '@/lib/stores/auth-store'
 
 // ── Signal icon map ───────────────────────────────────────────────────────────
 
@@ -122,6 +124,8 @@ function TagPills({ tags }: { tags: string[] }) {
 export function TopicCard({ topic, authorName, authorAvatar }: TopicCardProps) {
   const { castVote, hasVoted, getVoteSide } = useVoteStore()
   const updateTopic = useFeedStore((s) => s.updateTopic)
+  const authUser = useAuthStore((s) => s.user)
+  const authInitialized = useAuthStore((s) => s.initialized)
   const votedSide = getVoteSide(topic.id)
   const isVotable = topic.status === 'active' || topic.status === 'voting'
   const isProposed = topic.status === 'proposed'
@@ -137,6 +141,10 @@ export function TopicCard({ topic, authorName, authorAvatar }: TopicCardProps) {
 
   // Quick Argue sheet state
   const [argueSheetOpen, setArgueSheetOpen] = useState(false)
+
+  // Guest vote prompt — shown when a logged-out visitor tries to vote
+  const [guestPromptOpen, setGuestPromptOpen] = useState(false)
+  const [guestPendingSide, setGuestPendingSide] = useState<VoteSide | null>(null)
 
   // Swipe gesture is only available on active/voting topics the user hasn't voted on yet
   const canSwipeVote = isVotable && !hasVoted(topic.id) && !pendingVoteSide
@@ -171,9 +179,17 @@ export function TopicCard({ topic, authorName, authorAvatar }: TopicCardProps) {
     })
   }
 
-  // Button tap: show hot-take form before committing the vote
+  // Button tap: show hot-take form before committing the vote.
+  // If the auth store has initialized and the user isn't logged in,
+  // show the guest conversion prompt instead.
   const handleVoteIntent = (side: VoteSide) => {
     if (hasVoted(topic.id)) return
+    if (authInitialized && !authUser) {
+      haptics.selection()
+      setGuestPendingSide(side)
+      setGuestPromptOpen(true)
+      return
+    }
     setPendingVoteSide(side)
     setHotTakeText('')
     setTimeout(() => hotTakeRef.current?.focus(), 60)
@@ -235,10 +251,15 @@ export function TopicCard({ topic, authorName, authorAvatar }: TopicCardProps) {
     const votedRight = dx > SWIPE_THRESHOLD || vx > 550
     const votedLeft = dx < -SWIPE_THRESHOLD || vx < -550
 
-    if (votedRight) {
-      handleVote('blue')
-    } else if (votedLeft) {
-      handleVote('red')
+    if (votedRight || votedLeft) {
+      const side: VoteSide = votedRight ? 'blue' : 'red'
+      if (authInitialized && !authUser) {
+        haptics.selection()
+        setGuestPendingSide(side)
+        setGuestPromptOpen(true)
+      } else {
+        handleVote(side)
+      }
     }
 
     // Spring card back to center
@@ -692,6 +713,17 @@ export function TopicCard({ topic, authorName, authorAvatar }: TopicCardProps) {
         onClose={() => setArgueSheetOpen(false)}
         topicId={topic.id}
         topicStatement={topic.statement}
+      />
+
+      {/* Guest vote prompt — converts logged-out visitors into signups */}
+      <GuestVotePrompt
+        open={guestPromptOpen}
+        onClose={() => { setGuestPromptOpen(false); setGuestPendingSide(null) }}
+        topicId={topic.id}
+        topicStatement={topic.statement}
+        pendingSide={guestPendingSide}
+        currentPct={topic.blue_pct ?? 50}
+        totalVotes={topic.total_votes ?? 0}
       />
     </div>
   )

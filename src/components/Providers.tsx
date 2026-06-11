@@ -8,6 +8,15 @@ import { AchievementWatcher } from '@/components/ui/AchievementWatcher'
 import { useCommandPalette, toggleCommandPalette } from '@/lib/hooks/useCommandPalette'
 import { InstallPrompt } from '@/components/layout/InstallPrompt'
 import { RouteProgressBar } from '@/components/layout/RouteProgressBar'
+import { useAuthStore } from '@/lib/stores/auth-store'
+
+// Initialize auth store once at the app level so all components can
+// synchronously check whether the current visitor is logged in.
+function AuthInitializer() {
+  const init = useAuthStore((s) => s.init)
+  useEffect(() => { init() }, [init])
+  return null
+}
 
 // Register the service worker for Web Push Notifications
 function ServiceWorkerRegistrar() {
@@ -62,6 +71,7 @@ function CommandPaletteProvider() {
 export function Providers({ children }: ProvidersProps) {
   return (
     <ToastProvider>
+      <AuthInitializer />
       <ServiceWorkerRegistrar />
       <RouteProgressBar />
       {children}
