@@ -12,6 +12,7 @@ import {
   LayoutGrid,
   ThumbsDown,
   ThumbsUp,
+  Users,
   Zap,
 } from 'lucide-react'
 import { ProfileHeader } from './ProfileHeader'
@@ -449,6 +450,27 @@ export function ProfilePage({
                 </div>
                 <p className="text-xs font-mono text-surface-500 mt-2">
                   Every law {profile.display_name ?? profile.username} backed, proposed, or argued about — the full civic law footprint.
+                </p>
+              </Link>
+
+              {/* Civic Network teaser */}
+              <Link
+                href={`/profile/${profile.username}/network`}
+                className="block rounded-2xl border border-for-500/20 bg-for-500/5 hover:bg-for-500/10 hover:border-for-500/30 transition-colors p-5"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Users className="h-4 w-4 text-for-400" aria-hidden="true" />
+                    <h3 className="text-[11px] font-mono text-for-400 uppercase tracking-wider">
+                      Civic Network
+                    </h3>
+                  </div>
+                  <span className="text-[10px] font-mono text-for-400/70 hover:text-for-400 transition-colors">
+                    View network →
+                  </span>
+                </div>
+                <p className="text-xs font-mono text-surface-500 mt-2">
+                  {profile.display_name ?? profile.username}&apos;s followers, following, and mutual connections in the Lobby.
                 </p>
               </Link>
 
