@@ -431,6 +431,27 @@ export function ProfilePage({
                 </p>
               </Link>
 
+              {/* Laws Record teaser */}
+              <Link
+                href={`/profile/${profile.username}/laws`}
+                className="block rounded-2xl border border-emerald/20 bg-emerald/5 hover:bg-emerald/10 hover:border-emerald/30 transition-colors p-5"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Scale className="h-4 w-4 text-emerald" aria-hidden="true" />
+                    <h3 className="text-[11px] font-mono text-emerald uppercase tracking-wider">
+                      Laws Record
+                    </h3>
+                  </div>
+                  <span className="text-[10px] font-mono text-emerald/70 hover:text-emerald transition-colors">
+                    View record →
+                  </span>
+                </div>
+                <p className="text-xs font-mono text-surface-500 mt-2">
+                  Every law {profile.display_name ?? profile.username} backed, proposed, or argued about — the full civic law footprint.
+                </p>
+              </Link>
+
               {/* Top arguments preview */}
               {profileArguments.length > 0 && (
                 <div className="rounded-2xl border border-surface-300 bg-surface-100 p-5">
@@ -606,6 +627,16 @@ export function ProfilePage({
                   </Link>
                 ))
               )}
+              {laws.length > 0 && (
+                <div className="flex justify-center pt-2">
+                  <a
+                    href={`/profile/${profile.username}/laws`}
+                    className="text-xs font-mono text-emerald hover:text-emerald/80 transition-colors underline underline-offset-2"
+                  >
+                    Full laws record ↗
+                  </a>
+                </div>
+              )}
             </motion.div>
           )}
 
@@ -676,6 +707,13 @@ export function ProfilePage({
                   className="hover:text-gold transition-colors underline underline-offset-2"
                 >
                   Civic impact ↗
+                </a>
+                <span className="text-surface-600">·</span>
+                <a
+                  href={`/profile/${profile.username}/laws`}
+                  className="hover:text-emerald transition-colors underline underline-offset-2"
+                >
+                  Laws record ↗
                 </a>
               </div>
             </motion.div>

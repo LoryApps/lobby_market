@@ -2121,10 +2121,10 @@ const CHAPTERS: Chapter[] = [
 ]
 
 const STATS = [
-  { value: '311', label: 'chapters shipped' },
-  { value: '950+', label: 'features built' },
+  { value: '318', label: 'chapters shipped' },
+  { value: '960+', label: 'features built' },
   { value: '91', label: 'DB migrations' },
-  { value: '590+', label: 'API routes' },
+  { value: '595+', label: 'API routes' },
 ]
 
 interface RecentBuild {
@@ -2137,6 +2137,38 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Civic Laws Record — Profile Subpage',
+    description: 'New /profile/[username]/laws page (Ch. 318) — a dedicated laws record for every citizen. Shows every law they backed (voted FOR), proposed (authored the topic), argued about, or opposed. Organised into three sections: Laws Proposed (gold, highlighted), Laws Backed FOR (blue), and Other Law Involvement. Stats header shows counts for backed, proposed, opposed, and argued. FOR% vote bar and category label on each row. Wired into the profile overview as a green "Laws Record" teaser card and linked from the laws tab inline view. Sitemap updated to include /profile/[username]/laws, /debates, and /impact. Changelog stats updated to 318 chapters.',
+    href: '/profile',
+    icon: Scale,
+    color: 'text-emerald',
+    tag: 'Ch. 318',
+  },
+  {
+    title: 'Civic Impact Page — Profile Subpage',
+    description: 'New /profile/[username]/impact page (Ch. 317) — a composite Civic Impact score (0–100) distilled from votes cast, arguments written, laws backed, laws proposed, reputation, and debate participation. Organised into six weighted dimensions shown as animated bars. Impact tier labels from Spectator through Civic Legend. Shows the user\'s top 3 laws by vote count and top arguments by upvotes. Wired into the profile overview as a gold teaser card.',
+    href: undefined,
+    icon: BarChart2,
+    color: 'text-gold',
+    tag: 'Ch. 317',
+  },
+  {
+    title: 'User Debate Record — Profile Subpage',
+    description: 'New /profile/[username]/debates page (Ch. 316) — every debate a user has participated in, with side (blue/red), type (Quick/Grand/Tribunal), status badge, message count, top message preview, and outcome. Stats header shows total debates, wins, losses, and live/scheduled. Wired into the profile page as a purple teaser card with "View all →".',
+    href: undefined,
+    icon: Gavel,
+    color: 'text-purple',
+    tag: 'Ch. 316',
+  },
+  {
+    title: 'The Civic Values Engine',
+    description: 'New /values page (Ch. 315) — AI-inferred community values surfaced from argument text across all platform debates. Six value dimensions (Liberty, Equality, Community, Progress, Tradition, Justice) each scored 0–100 based on linguistic signals in arguments. Radar chart with platform-wide vs. per-category breakdown. Identifies the platform\'s dominant civic value profile.',
+    href: '/values',
+    icon: BarChart2,
+    color: 'text-purple',
+    tag: 'Ch. 315',
+  },
   {
     title: 'The Civic Mandate',
     description: 'New /mandate page (Ch. 314) — a dedicated view of every topic where the Lobby has reached decisive democratic consensus (≥70% on either side). Topics are organised by mandate strength: Overwhelming (≥85%), Strong (≥75%), and Clear (≥70%), with FOR mandates in blue and AGAINST mandates in red. Platform-wide stats show total mandates, directional split, and cumulative votes. Filterable by category, direction (FOR/AGAINST), and sortable by strength, vote count, or recency. New /api/mandate route powers the data layer with configurable thresholds and a minimum vote floor for statistical relevance. The Civic Mandate is now linked in the TopBar navigation under the Consensus section.',
