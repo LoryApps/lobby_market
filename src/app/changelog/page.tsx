@@ -2138,6 +2138,30 @@ interface RecentBuild {
 
 const RECENT_BUILDS: RecentBuild[] = [
   {
+    title: 'The Civic Mandate',
+    description: 'New /mandate page (Ch. 314) — a dedicated view of every topic where the Lobby has reached decisive democratic consensus (≥70% on either side). Topics are organised by mandate strength: Overwhelming (≥85%), Strong (≥75%), and Clear (≥70%), with FOR mandates in blue and AGAINST mandates in red. Platform-wide stats show total mandates, directional split, and cumulative votes. Filterable by category, direction (FOR/AGAINST), and sortable by strength, vote count, or recency. New /api/mandate route powers the data layer with configurable thresholds and a minimum vote floor for statistical relevance. The Civic Mandate is now linked in the TopBar navigation under the Consensus section.',
+    href: '/mandate',
+    icon: Scale,
+    color: 'text-for-400',
+    tag: 'Ch. 314',
+  },
+  {
+    title: 'Civic Wrapped — Analytics Hub Integration',
+    description: 'New /wrapped page (Ch. 313) — annual Civic Wrapped report now integrated into the Analytics Hub. Users can view their annual civic engagement summary, top categories, best arguments, and prediction accuracy for any year they have been active on the platform.',
+    href: '/wrapped',
+    icon: BarChart2,
+    color: 'text-purple',
+    tag: 'Ch. 313',
+  },
+  {
+    title: 'Consensus Terminal — Bloomberg-Style Market View',
+    description: 'New /terminal page (Ch. 312) — a Bloomberg Terminal-style live market view of the civic consensus engine. Shows real-time vote flows, topic momentum, and consensus drift in a dense, data-rich dashboard format for power users.',
+    href: '/terminal',
+    icon: Activity,
+    color: 'text-emerald',
+    tag: 'Ch. 312',
+  },
+  {
     title: 'Analytics Hub — Bias, Blind Spots & Memories',
     description: 'Analytics suite expanded (Ch. 311). Three personal insight pages — /bias (Civic Bias Checker: confirmation bias, social proof bias, negativity bias, category tunnel detection), /blindspots (Civic Blind Spots: which civic categories you\'ve never engaged with, per-category coverage bar, personalised challenge topic), and /memories (Civic Memories: "On This Day" civic diary showing your past votes, arguments, and platform milestones from this calendar date across the years) — are now linked from the Analytics Hub main page under the Voting and Identity sections. New redirect pages at /analytics/bias, /analytics/blindspots, /analytics/memories route users seamlessly from the analytics nav. Changelog stats updated to reflect current platform state (311 chapters, 91 migrations, 950+ features).',
     href: '/analytics',
