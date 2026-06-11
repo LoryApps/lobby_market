@@ -8,6 +8,7 @@ import {
   MessageSquare,
   Scale,
   Swords,
+  Target,
   Trophy,
   LayoutGrid,
   ThumbsDown,
@@ -471,6 +472,27 @@ export function ProfilePage({
                 </div>
                 <p className="text-xs font-mono text-surface-500 mt-2">
                   {profile.display_name ?? profile.username}&apos;s followers, following, and mutual connections in the Lobby.
+                </p>
+              </Link>
+
+              {/* Prediction Record teaser */}
+              <Link
+                href={`/profile/${profile.username}/predictions`}
+                className="block rounded-2xl border border-gold/20 bg-gold/5 hover:bg-gold/10 hover:border-gold/30 transition-colors p-5"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Target className="h-4 w-4 text-gold" aria-hidden="true" />
+                    <h3 className="text-[11px] font-mono text-gold uppercase tracking-wider">
+                      Prediction Record
+                    </h3>
+                  </div>
+                  <span className="text-[10px] font-mono text-gold/70 hover:text-gold transition-colors">
+                    View record →
+                  </span>
+                </div>
+                <p className="text-xs font-mono text-surface-500 mt-2">
+                  Every market call {profile.display_name ?? profile.username} has staked — topic outcomes, debate predictions, accuracy rate, and clout earned.
                 </p>
               </Link>
 
