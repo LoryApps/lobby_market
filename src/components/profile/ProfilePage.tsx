@@ -7,6 +7,7 @@ import {
   Activity,
   MessageSquare,
   Scale,
+  Swords,
   Trophy,
   LayoutGrid,
   ThumbsDown,
@@ -387,6 +388,27 @@ export function ProfilePage({
                 />
               )}
 
+              {/* Debate record teaser */}
+              <Link
+                href={`/profile/${profile.username}/debates`}
+                className="block rounded-2xl border border-purple/20 bg-purple/5 hover:bg-purple/10 hover:border-purple/30 transition-colors p-5"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Swords className="h-4 w-4 text-purple" aria-hidden="true" />
+                    <h3 className="text-[11px] font-mono text-purple uppercase tracking-wider">
+                      Debate Record
+                    </h3>
+                  </div>
+                  <span className="text-[10px] font-mono text-purple/70 hover:text-purple transition-colors">
+                    View all →
+                  </span>
+                </div>
+                <p className="text-xs font-mono text-surface-500 mt-2">
+                  Every arena {profile.display_name ?? profile.username} has stepped into — sides argued, outcomes, and top messages.
+                </p>
+              </Link>
+
               {/* Top arguments preview */}
               {profileArguments.length > 0 && (
                 <div className="rounded-2xl border border-surface-300 bg-surface-100 p-5">
@@ -618,6 +640,13 @@ export function ProfilePage({
                   className="hover:text-for-400 transition-colors underline underline-offset-2"
                 >
                   Full argument portfolio ↗
+                </a>
+                <span className="text-surface-600">·</span>
+                <a
+                  href={`/profile/${profile.username}/debates`}
+                  className="hover:text-purple transition-colors underline underline-offset-2"
+                >
+                  Debate record ↗
                 </a>
               </div>
             </motion.div>
