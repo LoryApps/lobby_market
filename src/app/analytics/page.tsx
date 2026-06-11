@@ -442,6 +442,7 @@ const SUITE_SECTIONS: Array<{
     color: 'text-gold',
     items: [
       { label: 'Report Card',       href: '/analytics/report-card',     icon: Award },
+      { label: 'Civic Wrapped',     href: '/wrapped',                   icon: Sparkles },
       { label: 'Activity Growth',   href: '/analytics/growth',          icon: Rocket },
       { label: 'Growth Plan',       href: '/analytics/growth-plan',     icon: TrendingUp },
       { label: 'Momentum Report',   href: '/analytics/momentum',        icon: Activity },
@@ -1123,6 +1124,21 @@ export default function AnalyticsPage() {
                   </div>
                 </div>
                 <ChevronRight className="h-4 w-4 text-surface-500 group-hover:text-for-400 transition-colors flex-shrink-0" />
+              </Link>
+            </motion.div>
+            {/* Civic Wrapped card */}
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.449 }}>
+              <Link href="/wrapped" className="flex items-center justify-between rounded-2xl bg-gradient-to-r from-purple/10 to-gold/5 border border-purple/30 p-5 hover:border-purple/50 hover:bg-purple/10 transition-colors group">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center justify-center h-10 w-10 rounded-xl bg-purple/10 border border-purple/30 flex-shrink-0">
+                    <Sparkles className="h-5 w-5 text-purple" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-mono font-semibold text-white">Civic Wrapped</div>
+                    <div className="text-xs font-mono text-surface-500 mt-0.5">Your year in civic debate — votes, laws supported, accuracy, best argument, and where you rank</div>
+                  </div>
+                </div>
+                <ChevronRight className="h-4 w-4 text-surface-500 group-hover:text-purple transition-colors flex-shrink-0" />
               </Link>
             </motion.div>
             <PredictionHistorySection />
