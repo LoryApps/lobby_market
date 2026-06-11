@@ -367,6 +367,7 @@ const SUITE_SECTIONS: Array<{
       { label: 'Civic Drift',       href: '/analytics/drift',         icon: TrendingDown },
       { label: 'Contrarian',        href: '/analytics/contrarian',    icon: Shuffle },
       { label: 'Timing Report',     href: '/analytics/timing',        icon: Clock },
+      { label: 'Civic Blind Spots', href: '/blindspots',              icon: Eye },
     ],
   },
   {
@@ -432,6 +433,8 @@ const SUITE_SECTIONS: Array<{
       { label: 'Tag Voting Profile', href: '/analytics/tags',            icon: Hash },
       { label: 'Territory Map',      href: '/analytics/territory',       icon: Compass },
       { label: 'Opposition Intel',   href: '/analytics/opposition',      icon: Swords },
+      { label: 'Bias Checker',       href: '/bias',                      icon: Brain },
+      { label: 'Civic Memories',     href: '/memories',                  icon: Clock },
     ],
   },
   {

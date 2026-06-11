@@ -2121,10 +2121,10 @@ const CHAPTERS: Chapter[] = [
 ]
 
 const STATS = [
-  { value: '294', label: 'chapters shipped' },
-  { value: '900+', label: 'features built' },
-  { value: '88', label: 'DB migrations' },
-  { value: '580+', label: 'API routes' },
+  { value: '311', label: 'chapters shipped' },
+  { value: '950+', label: 'features built' },
+  { value: '91', label: 'DB migrations' },
+  { value: '590+', label: 'API routes' },
 ]
 
 interface RecentBuild {
@@ -2137,6 +2137,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Analytics Hub — Bias, Blind Spots & Memories',
+    description: 'Analytics suite expanded (Ch. 311). Three personal insight pages — /bias (Civic Bias Checker: confirmation bias, social proof bias, negativity bias, category tunnel detection), /blindspots (Civic Blind Spots: which civic categories you\'ve never engaged with, per-category coverage bar, personalised challenge topic), and /memories (Civic Memories: "On This Day" civic diary showing your past votes, arguments, and platform milestones from this calendar date across the years) — are now linked from the Analytics Hub main page under the Voting and Identity sections. New redirect pages at /analytics/bias, /analytics/blindspots, /analytics/memories route users seamlessly from the analytics nav. Changelog stats updated to reflect current platform state (311 chapters, 91 migrations, 950+ features).',
+    href: '/analytics',
+    icon: BarChart2,
+    color: 'text-for-400',
+    tag: 'Ch. 311',
+  },
   {
     title: 'Debate Replay Player',
     description: 'New /debate/[id]/replay page (Ch. 310) — cinematic message-by-message replay of any ended debate. Messages appear one at a time with spring animations, an animated sway gauge updates as each argument lands, and a sticky bottom player bar provides full playback controls: Play/Pause, Step Back/Forward, Skip to End, speed selector (0.5×/1×/2×/5×), and a timeline scrubber. No new DB migration needed — reuses the existing /api/debates/[id]/transcript endpoint. Replay button added to DebateRecap action row and DebateArena ended overlay.',
