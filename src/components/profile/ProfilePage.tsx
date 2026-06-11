@@ -12,6 +12,7 @@ import {
   LayoutGrid,
   ThumbsDown,
   ThumbsUp,
+  Zap,
 } from 'lucide-react'
 import { ProfileHeader } from './ProfileHeader'
 import { ProfileCompletionBanner } from './ProfileCompletionBanner'
@@ -409,6 +410,27 @@ export function ProfilePage({
                 </p>
               </Link>
 
+              {/* Civic Impact teaser */}
+              <Link
+                href={`/profile/${profile.username}/impact`}
+                className="block rounded-2xl border border-gold/20 bg-gold/5 hover:bg-gold/10 hover:border-gold/30 transition-colors p-5"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Zap className="h-4 w-4 text-gold" aria-hidden="true" />
+                    <h3 className="text-[11px] font-mono text-gold uppercase tracking-wider">
+                      Civic Impact
+                    </h3>
+                  </div>
+                  <span className="text-[10px] font-mono text-gold/70 hover:text-gold transition-colors">
+                    View impact →
+                  </span>
+                </div>
+                <p className="text-xs font-mono text-surface-500 mt-2">
+                  Laws shaped, top arguments, impact score, and civic footprint — the full measure of {profile.display_name ?? profile.username}&apos;s influence.
+                </p>
+              </Link>
+
               {/* Top arguments preview */}
               {profileArguments.length > 0 && (
                 <div className="rounded-2xl border border-surface-300 bg-surface-100 p-5">
@@ -634,7 +656,7 @@ export function ProfilePage({
                 arguments={profileArguments}
                 username={profile.username}
               />
-              <div className="mt-4 flex items-center justify-center gap-4 text-xs font-mono text-surface-500">
+              <div className="mt-4 flex items-center justify-center gap-4 text-xs font-mono text-surface-500 flex-wrap">
                 <a
                   href={`/profile/${profile.username}/arguments`}
                   className="hover:text-for-400 transition-colors underline underline-offset-2"
@@ -647,6 +669,13 @@ export function ProfilePage({
                   className="hover:text-purple transition-colors underline underline-offset-2"
                 >
                   Debate record ↗
+                </a>
+                <span className="text-surface-600">·</span>
+                <a
+                  href={`/profile/${profile.username}/impact`}
+                  className="hover:text-gold transition-colors underline underline-offset-2"
+                >
+                  Civic impact ↗
                 </a>
               </div>
             </motion.div>
