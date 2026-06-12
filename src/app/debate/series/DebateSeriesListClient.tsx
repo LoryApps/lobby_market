@@ -7,13 +7,11 @@ import {
   CheckCircle2,
   ChevronRight,
   Flame,
-  Loader2,
   Mic,
   Plus,
   RefreshCw,
   Swords,
   Trophy,
-  X,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -180,125 +178,12 @@ function SeriesSkeleton() {
   )
 }
 
-// ─── Create series modal ──────────────────────────────────────────────────────
-
-function CreateSeriesModal({ onClose, onCreated }: {
-  onClose: () => void
-  onCreated: (id: string) => void
-}) {
-  const [title, setTitle] = useState('')
-  const [format, setFormat] = useState<'best_of_3' | 'best_of_5'>('best_of_3')
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-
-  async function handleCreate() {
-    if (!title.trim()) { setError('Title is required'); return }
-    setLoading(true)
-    setError(null)
-    try {
-      const res = await fetch('/api/debate-series', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: title.trim(), format }),
-      })
-      if (!res.ok) {
-        const j = await res.json()
-        throw new Error(j.error ?? 'Failed to create series')
-      }
-      const { series } = await res.json()
-      onCreated(series.id)
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Failed to create series')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-      onClick={onClose}
-    >
-      <motion.div
-        initial={{ y: 40, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        exit={{ y: 40, opacity: 0 }}
-        className="w-full max-w-sm rounded-2xl bg-surface-100 border border-surface-300 p-5"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="font-bold text-surface-900">New Debate Series</h2>
-          <button onClick={onClose} className="text-surface-500 hover:text-surface-300 transition-colors">
-            <X className="h-4 w-4" />
-          </button>
-        </div>
-
-        <div className="space-y-4">
-          <div>
-            <label className="text-xs font-mono text-surface-500 uppercase tracking-wider mb-1.5 block">
-              Series Title
-            </label>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g. The UBI Debate Trilogy"
-              maxLength={80}
-              className="w-full bg-surface-200 border border-surface-400 rounded-lg px-3 py-2 text-sm text-surface-900 placeholder-surface-600 focus:outline-none focus:border-for-500 transition-colors"
-            />
-          </div>
-
-          <div>
-            <label className="text-xs font-mono text-surface-500 uppercase tracking-wider mb-1.5 block">
-              Format
-            </label>
-            <div className="flex gap-2">
-              {(['best_of_3', 'best_of_5'] as const).map((f) => (
-                <button
-                  key={f}
-                  onClick={() => setFormat(f)}
-                  className={cn(
-                    'flex-1 py-2 rounded-lg text-xs font-mono font-semibold border transition-all',
-                    format === f
-                      ? 'bg-for-500/20 border-for-500/40 text-for-300'
-                      : 'bg-surface-200 border-surface-400 text-surface-500 hover:border-surface-300',
-                  )}
-                >
-                  {f === 'best_of_3' ? 'Best of 3' : 'Best of 5'}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {error && (
-            <p className="text-xs text-against-400">{error}</p>
-          )}
-
-          <Button
-            onClick={handleCreate}
-            disabled={loading || !title.trim()}
-            className="w-full"
-          >
-            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
-            Create Series
-          </Button>
-        </div>
-      </motion.div>
-    </motion.div>
-  )
-}
-
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export function DebateSeriesListClient() {
   const [series, setSeries] = useState<SeriesListItem[]>([])
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState<'ongoing' | 'completed'>('ongoing')
-  const [showCreate, setShowCreate] = useState(false)
-
   const load = useCallback(async (status: 'ongoing' | 'completed') => {
     setLoading(true)
     try {
@@ -331,15 +216,16 @@ export function DebateSeriesListClient() {
               <p className="text-xs text-surface-500">Multi-round competitions</p>
             </div>
           </div>
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={() => setShowCreate(true)}
-            className="flex items-center gap-1.5"
-          >
-            <Plus className="h-4 w-4" />
-            New Series
-          </Button>
+          <Link href="/debate/series/create">
+            <Button
+              size="sm"
+              variant="ghost"
+              className="flex items-center gap-1.5"
+            >
+              <Plus className="h-4 w-4" />
+              New Series
+            </Button>
+          </Link>
         </div>
 
         {/* Tabs */}
@@ -405,17 +291,6 @@ export function DebateSeriesListClient() {
       </main>
       <BottomNav />
 
-      <AnimatePresence>
-        {showCreate && (
-          <CreateSeriesModal
-            onClose={() => setShowCreate(false)}
-            onCreated={(id) => {
-              setShowCreate(false)
-              window.location.href = `/debate/series/${id}`
-            }}
-          />
-        )}
-      </AnimatePresence>
     </div>
   )
 }
