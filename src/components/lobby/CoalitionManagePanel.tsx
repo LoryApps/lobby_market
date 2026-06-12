@@ -31,6 +31,8 @@ import {
   Lock,
   Send,
   Inbox,
+  ArrowUp,
+  ArrowDown,
 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Avatar } from '@/components/ui/Avatar'
@@ -360,6 +362,44 @@ export function CoalitionManagePanel({
       alert('Network error — please try again')
     } finally {
       setKickingId(null)
+    }
+  }
+
+  // ─── Role change (leader only) ───────────────────────────────────────────────
+
+  const [promotingId, setPromotingId] = useState<string | null>(null)
+
+  async function changeRole(userId: string, role: MemberRole, username: string) {
+    const label =
+      role === 'leader'
+        ? `Transfer leadership to @${username}? You will become a regular member.`
+        : role === 'officer'
+        ? `Promote @${username} to Officer?`
+        : `Demote @${username} to Member?`
+
+    if (!confirm(label)) return
+    setPromotingId(userId)
+
+    try {
+      const res = await fetch(
+        `/api/coalitions/${coalitionId}/members/${userId}`,
+        {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ role }),
+        }
+      )
+      const data = await res.json()
+
+      if (!res.ok) {
+        alert(data.error ?? 'Failed to change role')
+      } else {
+        startTransition(() => router.refresh())
+      }
+    } catch {
+      alert('Network error — please try again')
+    } finally {
+      setPromotingId(null)
     }
   }
 
@@ -760,16 +800,22 @@ export function CoalitionManagePanel({
           <div className="rounded-xl border border-surface-300 bg-surface-100 divide-y divide-surface-300/60">
             {members.map((m) => {
               const profile = m.profile
+              const username = profile?.username ?? m.user_id
               const canKick =
                 isLeaderOrOfficer &&
                 m.user_id !== currentUserId &&
                 m.role !== 'leader' &&
                 !(currentUserRole === 'officer' && m.role === 'officer')
+              const canChangeRole =
+                currentUserRole === 'leader' &&
+                m.user_id !== currentUserId &&
+                m.role !== 'leader'
+              const isBusy = kickingId === m.user_id || promotingId === m.user_id
 
               return (
                 <div
                   key={m.id}
-                  className="flex items-center gap-3 px-4 py-3"
+                  className="flex items-center gap-2 px-4 py-3"
                 >
                   <Avatar
                     src={profile?.avatar_url}
@@ -789,21 +835,64 @@ export function CoalitionManagePanel({
 
                   <RoleBadge role={m.role} />
 
+                  {/* Role-change actions (leader only) */}
+                  {canChangeRole && (
+                    <div className="flex items-center gap-1 ml-1">
+                      {m.role === 'member' ? (
+                        <button
+                          onClick={() => changeRole(m.user_id, 'officer', username)}
+                          disabled={isBusy}
+                          title={`Promote @${username} to Officer`}
+                          aria-label={`Promote ${username} to officer`}
+                          className={cn(
+                            'rounded p-1 transition-colors',
+                            'text-surface-500 hover:text-for-400 hover:bg-for-500/10',
+                            isBusy && 'opacity-40 cursor-not-allowed'
+                          )}
+                        >
+                          <ArrowUp className="h-3 w-3" />
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => changeRole(m.user_id, 'member', username)}
+                          disabled={isBusy}
+                          title={`Demote @${username} to Member`}
+                          aria-label={`Demote ${username} to member`}
+                          className={cn(
+                            'rounded p-1 transition-colors',
+                            'text-surface-500 hover:text-gold hover:bg-gold/10',
+                            isBusy && 'opacity-40 cursor-not-allowed'
+                          )}
+                        >
+                          <ArrowDown className="h-3 w-3" />
+                        </button>
+                      )}
+                      <button
+                        onClick={() => changeRole(m.user_id, 'leader', username)}
+                        disabled={isBusy}
+                        title={`Transfer leadership to @${username}`}
+                        aria-label={`Transfer leadership to ${username}`}
+                        className={cn(
+                          'rounded p-1 transition-colors',
+                          'text-surface-500 hover:text-gold hover:bg-gold/10',
+                          isBusy && 'opacity-40 cursor-not-allowed'
+                        )}
+                      >
+                        <Crown className="h-3 w-3" />
+                      </button>
+                    </div>
+                  )}
+
                   {canKick && (
                     <button
-                      onClick={() =>
-                        kickMember(
-                          m.user_id,
-                          profile?.username ?? m.user_id
-                        )
-                      }
-                      disabled={kickingId === m.user_id}
+                      onClick={() => kickMember(m.user_id, username)}
+                      disabled={isBusy}
                       className={cn(
-                        'ml-2 rounded-lg p-1.5 transition-colors',
+                        'rounded-lg p-1.5 transition-colors',
                         'text-surface-500 hover:text-against-400 hover:bg-against-500/10',
-                        kickingId === m.user_id && 'opacity-50 cursor-not-allowed'
+                        isBusy && 'opacity-50 cursor-not-allowed'
                       )}
-                      aria-label={`Remove ${profile?.username ?? 'member'}`}
+                      aria-label={`Remove ${username}`}
                     >
                       <UserMinus className="h-3.5 w-3.5" />
                     </button>
@@ -818,7 +907,9 @@ export function CoalitionManagePanel({
       {/* ── Leader leave (must transfer first) ──────────────────────── */}
       {currentUserRole === 'leader' && (
         <p className="font-mono text-[10px] text-surface-500 text-center">
-          As the leader, you must transfer leadership before leaving.
+          To leave, use the{' '}
+          <Crown className="inline h-2.5 w-2.5 text-gold" aria-hidden="true" />{' '}
+          crown icon next to any member to transfer leadership first.
         </p>
       )}
     </div>

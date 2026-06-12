@@ -1,6 +1,99 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
+type Role = 'leader' | 'officer' | 'member'
+
+// PATCH /api/coalitions/[id]/members/[userId]
+// Leader only: change a member's role or transfer leadership
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: { id: string; userId: string } }
+) {
+  const supabase = await createClient()
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  if (user.id === params.userId) {
+    return NextResponse.json({ error: 'Cannot change your own role' }, { status: 400 })
+  }
+
+  let body: { role?: unknown }
+  try {
+    body = await request.json()
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
+  }
+
+  const role = body.role as Role
+  if (!['officer', 'member', 'leader'].includes(role)) {
+    return NextResponse.json({ error: 'Invalid role' }, { status: 400 })
+  }
+
+  // Only the leader may change roles
+  const { data: callerMember } = await supabase
+    .from('coalition_members')
+    .select('role')
+    .eq('coalition_id', params.id)
+    .eq('user_id', user.id)
+    .maybeSingle()
+
+  if (!callerMember || callerMember.role !== 'leader') {
+    return NextResponse.json(
+      { error: 'Only the coalition leader can change member roles' },
+      { status: 403 }
+    )
+  }
+
+  // Get target member
+  const { data: targetMember } = await supabase
+    .from('coalition_members')
+    .select('id, role')
+    .eq('coalition_id', params.id)
+    .eq('user_id', params.userId)
+    .maybeSingle()
+
+  if (!targetMember) {
+    return NextResponse.json({ error: 'Member not found in this coalition' }, { status: 404 })
+  }
+
+  if (targetMember.role === 'leader') {
+    return NextResponse.json(
+      { error: 'Target is already the leader — transfer leadership to a different member first' },
+      { status: 400 }
+    )
+  }
+
+  // Leadership transfer: demote caller → member, promote target → leader
+  if (role === 'leader') {
+    const { error: demoteErr } = await supabase
+      .from('coalition_members')
+      .update({ role: 'member' })
+      .eq('coalition_id', params.id)
+      .eq('user_id', user.id)
+
+    if (demoteErr) {
+      return NextResponse.json({ error: demoteErr.message }, { status: 500 })
+    }
+  }
+
+  const { error: updateErr } = await supabase
+    .from('coalition_members')
+    .update({ role })
+    .eq('id', targetMember.id)
+
+  if (updateErr) {
+    return NextResponse.json({ error: updateErr.message }, { status: 500 })
+  }
+
+  return NextResponse.json({ success: true, role })
+}
+
 // DELETE /api/coalitions/[id]/members/[userId]
 // Leader/officer only: remove a member from the coalition
 export async function DELETE(

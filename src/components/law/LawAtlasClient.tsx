@@ -13,6 +13,7 @@ import {
   Filter,
   BarChart2,
   ArrowUpRight,
+  Search,
 } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { EmptyState } from '@/components/ui/EmptyState'
@@ -207,6 +208,7 @@ export function LawAtlasClient({ data }: LawAtlasClientProps) {
   const [selectedScope, setSelectedScope] = useState<string | null>(null)
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [sortBy, setSortBy] = useState<'date' | 'votes'>('date')
+  const [searchQuery, setSearchQuery] = useState('')
 
   // Max cell value for heat intensity
   const maxCount = useMemo(() => {
@@ -237,11 +239,13 @@ export function LawAtlasClient({ data }: LawAtlasClientProps) {
         return cat === selectedCategory
       })
     }
+    const q = searchQuery.trim().toLowerCase()
+    if (q) list = list.filter((l) => l.statement.toLowerCase().includes(q))
     if (sortBy === 'votes') {
       list = [...list].sort((a, b) => (b.total_votes ?? 0) - (a.total_votes ?? 0))
     }
     return list
-  }, [laws, selectedScope, selectedCategory, sortBy])
+  }, [laws, selectedScope, selectedCategory, sortBy, searchQuery])
 
   function toggleScope(scope: string) {
     setSelectedScope((s) => (s === scope ? null : scope))
@@ -254,9 +258,10 @@ export function LawAtlasClient({ data }: LawAtlasClientProps) {
   function clearFilters() {
     setSelectedScope(null)
     setSelectedCategory(null)
+    setSearchQuery('')
   }
 
-  const hasFilters = selectedScope !== null || selectedCategory !== null
+  const hasFilters = selectedScope !== null || selectedCategory !== null || searchQuery.trim() !== ''
   const activeScopes = SCOPES.filter((s) => byScope[s] != null && byScope[s] > 0)
 
   return (
@@ -423,6 +428,20 @@ export function LawAtlasClient({ data }: LawAtlasClientProps) {
             </span>
           )}
 
+          {searchQuery.trim() && (
+            <span className="flex items-center gap-1 pl-2.5 pr-1 py-0.5 rounded-full text-xs font-mono font-semibold bg-emerald/10 text-emerald border border-emerald/30">
+              <Search className="h-2.5 w-2.5" />
+              &ldquo;{searchQuery.trim()}&rdquo;
+              <button
+                onClick={() => setSearchQuery('')}
+                aria-label="Remove search filter"
+                className="ml-0.5 rounded-full p-0.5 hover:bg-white/20 transition-colors"
+              >
+                <X className="h-2.5 w-2.5" />
+              </button>
+            </span>
+          )}
+
           <button
             onClick={clearFilters}
             className="text-xs font-mono text-surface-500 hover:text-surface-300 underline transition-colors"
@@ -438,6 +457,34 @@ export function LawAtlasClient({ data }: LawAtlasClientProps) {
 
       {/* ── Sort + list ───────────────────────────────────────────────── */}
       <div>
+        {/* Search input */}
+        <div className="relative mb-3">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-surface-500 pointer-events-none" />
+          <input
+            type="search"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search laws by keyword…"
+            aria-label="Search laws"
+            className={cn(
+              'w-full h-9 rounded-lg pl-9 pr-3',
+              'bg-surface-100 border border-surface-300',
+              'font-mono text-xs text-white placeholder:text-surface-500',
+              'focus:outline-none focus:border-emerald/50 focus:ring-1 focus:ring-emerald/20',
+              'transition-colors'
+            )}
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              aria-label="Clear search"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded p-0.5 text-surface-500 hover:text-surface-300 transition-colors"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          )}
+        </div>
+
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <Gavel className="h-4 w-4 text-emerald" />
