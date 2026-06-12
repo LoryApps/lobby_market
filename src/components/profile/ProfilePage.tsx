@@ -548,6 +548,27 @@ export function ProfilePage({
                   Every civic alliance {profile.display_name ?? profile.username} is part of — roles held, coalition influence, and wins.
                 </p>
               </Link>
+              {/* Podium Record teaser */}
+              <Link
+                href={`/profile/${profile.username}/podium`}
+                className="block rounded-2xl border border-surface-300 bg-surface-100 hover:bg-surface-200 hover:border-surface-400 transition-colors p-5"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Trophy className="h-4 w-4 text-gold" aria-hidden="true" />
+                    <h3 className="text-[11px] font-mono text-surface-400 uppercase tracking-wider">
+                      Podium Record
+                    </h3>
+                  </div>
+                  <span className="text-[10px] font-mono text-surface-500 hover:text-white transition-colors">
+                    View record →
+                  </span>
+                </div>
+                <p className="text-xs font-mono text-surface-500 mt-2">
+                  Every weekly top-3 finish {profile.display_name ?? profile.username} has earned — medals, categories, scores, and career highlights.
+                </p>
+              </Link>
+
               {/* Top arguments preview */}
               {profileArguments.length > 0 && (
                 <div className="rounded-2xl border border-surface-300 bg-surface-100 p-5">
