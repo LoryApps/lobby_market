@@ -528,6 +528,26 @@ export function ProfilePage({
                 </p>
               </Link>
 
+              {/* Coalitions teaser */}
+              <Link
+                href={`/profile/${profile.username}/coalitions`}
+                className="block rounded-2xl border border-surface-300 bg-surface-100 hover:bg-surface-200 hover:border-surface-400 transition-colors p-5"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-surface-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    <h3 className="text-[11px] font-mono text-surface-400 uppercase tracking-wider">
+                      Coalitions
+                    </h3>
+                  </div>
+                  <span className="text-[10px] font-mono text-surface-500 hover:text-white transition-colors">
+                    View all →
+                  </span>
+                </div>
+                <p className="text-xs font-mono text-surface-500 mt-2">
+                  Every civic alliance {profile.display_name ?? profile.username} is part of — roles held, coalition influence, and wins.
+                </p>
+              </Link>
               {/* Top arguments preview */}
               {profileArguments.length > 0 && (
                 <div className="rounded-2xl border border-surface-300 bg-surface-100 p-5">
