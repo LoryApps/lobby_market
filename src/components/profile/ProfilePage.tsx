@@ -14,6 +14,7 @@ import {
   ThumbsDown,
   ThumbsUp,
   Users,
+  Vote,
   Zap,
 } from 'lucide-react'
 import { ProfileHeader } from './ProfileHeader'
@@ -412,6 +413,27 @@ export function ProfilePage({
                 </p>
               </Link>
 
+              {/* Vote Record teaser */}
+              <Link
+                href={`/profile/${profile.username}/votes`}
+                className="block rounded-2xl border border-for-500/20 bg-for-500/5 hover:bg-for-500/10 hover:border-for-500/30 transition-colors p-5"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Vote className="h-4 w-4 text-for-400" aria-hidden="true" />
+                    <h3 className="text-[11px] font-mono text-for-400 uppercase tracking-wider">
+                      Vote Record
+                    </h3>
+                  </div>
+                  <span className="text-[10px] font-mono text-for-400/70 hover:text-for-400 transition-colors">
+                    View all →
+                  </span>
+                </div>
+                <p className="text-xs font-mono text-surface-500 mt-2">
+                  Every vote {profile.display_name ?? profile.username} has cast — stance, accuracy on resolved topics, and category breakdown.
+                </p>
+              </Link>
+
               {/* Civic Impact teaser */}
               <Link
                 href={`/profile/${profile.username}/impact`}
@@ -606,6 +628,14 @@ export function ProfilePage({
 
               {/* ── My Hot Takes panel ─────────────────────────────────────── */}
               <HotTakesPanel votes={voteHistory} />
+
+              {/* ── Link to full vote record ──────────────────────────────── */}
+              <Link
+                href={`/profile/${profile.username}/votes`}
+                className="block text-center py-2.5 rounded-xl border border-for-500/20 bg-for-500/5 hover:bg-for-500/10 text-for-400 text-xs font-mono font-semibold transition-colors"
+              >
+                View full vote record →
+              </Link>
             </motion.div>
           )}
 
