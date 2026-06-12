@@ -320,23 +320,33 @@ export function ProfilePage({
                       No topics yet.
                     </div>
                   ) : (
-                    <ul className="space-y-2">
-                      {topics.slice(0, 5).map((topic) => (
-                        <li key={topic.id}>
-                          <Link
-                            href={`/topic/${topic.id}`}
-                            className="block text-sm text-surface-700 hover:text-white transition-colors"
-                          >
-                            <span className="line-clamp-1">
-                              {topic.statement}
-                            </span>
-                            <span className="text-[10px] font-mono text-surface-500 mt-0.5">
-                              {topic.total_votes} votes · {topic.status}
-                            </span>
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
+                    <>
+                      <ul className="space-y-2">
+                        {topics.slice(0, 5).map((topic) => (
+                          <li key={topic.id}>
+                            <Link
+                              href={`/topic/${topic.id}`}
+                              className="block text-sm text-surface-700 hover:text-white transition-colors"
+                            >
+                              <span className="line-clamp-1">
+                                {topic.statement}
+                              </span>
+                              <span className="text-[10px] font-mono text-surface-500 mt-0.5">
+                                {topic.total_votes} votes · {topic.status}
+                              </span>
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                      {topics.length > 5 && (
+                        <Link
+                          href={`/profile/${profile.username}/topics`}
+                          className="mt-3 block text-[11px] font-mono text-for-300 hover:text-for-200 transition-colors"
+                        >
+                          View all {topics.length} topics →
+                        </Link>
+                      )}
+                    </>
                   )}
                 </div>
                 <div className="rounded-2xl border border-surface-300 bg-surface-100 p-5">
@@ -652,7 +662,7 @@ export function ProfilePage({
                   No topics authored yet.
                 </div>
               ) : (
-                topics.map((topic) => (
+                topics.slice(0, 5).map((topic) => (
                   <Link
                     key={topic.id}
                     href={`/topic/${topic.id}`}
@@ -668,6 +678,14 @@ export function ProfilePage({
                     </div>
                   </Link>
                 ))
+              )}
+              {topics.length > 0 && (
+                <Link
+                  href={`/profile/${profile.username}/topics`}
+                  className="block px-5 py-3 text-center text-[11px] font-mono text-for-300 hover:text-for-200 hover:bg-surface-200 transition-colors border-t border-surface-300"
+                >
+                  See all {topics.length} topics →
+                </Link>
               )}
             </motion.div>
           )}
