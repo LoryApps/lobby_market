@@ -6,6 +6,7 @@ import {
   ArrowLeft,
   BarChart2,
   Calendar,
+  Edit3,
   ExternalLink,
   Gavel,
   History,
@@ -397,6 +398,18 @@ export function LawPage({
                       {revisions.length}
                     </span>
                   )}
+                </Link>
+                <Link
+                  href={`/law/${law.id}/amendments`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-for-700/20 border border-for-600/30 text-for-400',
+                    'hover:bg-for-700/30 hover:border-for-600/50',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                >
+                  <Edit3 className="h-3.5 w-3.5" />
+                  Amendments
                 </Link>
               </div>
             </div>
