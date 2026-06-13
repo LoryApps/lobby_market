@@ -18,6 +18,7 @@ import {
   ArrowRight,
   CheckCircle2,
   ChevronDown,
+  ChevronRight,
   ChevronUp,
   Clock,
   Edit3,
@@ -483,7 +484,7 @@ export default function AmendmentsPage() {
             </button>
           </div>
 
-          {/* Explainer */}
+          {/* Explainer + leaderboard link */}
           <div className="rounded-xl bg-gold/5 border border-gold/20 p-3">
             <p className="text-xs font-mono text-surface-400 leading-relaxed">
               Citizens may propose amendments to any established law.
@@ -491,6 +492,15 @@ export default function AmendmentsPage() {
               reaches <span className="text-white font-semibold">{RATIFY_THRESHOLD_PCT}% FOR</span> with
               at least <span className="text-white font-semibold">{RATIFY_MIN_VOTES} votes</span>.
             </p>
+            <div className="mt-2 pt-2 border-t border-gold/10 flex items-center justify-between">
+              <span className="text-xs font-mono text-surface-500">See who shapes the Codex</span>
+              <Link
+                href="/leaderboard/amendments"
+                className="inline-flex items-center gap-1 text-xs font-mono text-gold hover:text-gold/80 transition-colors font-semibold"
+              >
+                Amendment Architects <ChevronRight className="h-3 w-3" />
+              </Link>
+            </div>
           </div>
         </div>
 
