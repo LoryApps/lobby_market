@@ -418,6 +418,79 @@ for (const topic of data) {
 // → 58% FOR — Algorithmic content curation harms democracy`}
             />
           </div>
+
+          {/* ── GET /api/v1/debates ──────────────────────────────────────────── */}
+          <h3 className="font-mono text-sm font-bold text-white mb-3 mt-8">Debates</h3>
+          <EndpointPill method="GET" path="/api/v1/debates" />
+          <p className="text-xs font-mono text-surface-500 mb-4 leading-relaxed">
+            Returns scheduled, live, and past civic debates. Filter by status or type; sort by date, upcoming schedule, or live viewer count.
+          </p>
+          <CodeBlock
+            lang="bash"
+            label="Fetch live debates"
+            code={`curl "https://lobby.market/api/v1/debates?status=live&limit=5"`}
+          />
+          <CodeBlock
+            lang="json"
+            label="Response schema"
+            code={`{
+  "data": [{
+    "id": "uuid",
+    "topic_id": "uuid",
+    "topic_statement": "Universal Basic Income should be implemented",
+    "title": "Grand Debate: UBI",
+    "description": "Opening arguments begin at 20:00 UTC",
+    "type": "grand",
+    "status": "live",
+    "scheduled_at": "2025-06-13T20:00:00Z",
+    "started_at": "2025-06-13T20:00:00Z",
+    "ended_at": null,
+    "viewer_count": 342,
+    "blue_sway": 61,
+    "red_sway": 39,
+    "host_username": "civic_host",
+    "host_display_name": "Civic Host",
+    "created_at": "2025-06-10T12:00:00Z",
+    "url": "https://lobby.market/debate/uuid"
+  }],
+  "meta": { "total": 12, "limit": 5, "offset": 0, "has_more": true }
+}`}
+          />
+
+          {/* ── GET /api/v1/coalitions ─────────────────────────────────────── */}
+          <h3 className="font-mono text-sm font-bold text-white mb-3 mt-8">Coalitions</h3>
+          <EndpointPill method="GET" path="/api/v1/coalitions" />
+          <p className="text-xs font-mono text-surface-500 mb-4 leading-relaxed">
+            Returns public civic alliances. Sort by influence score, member count, or campaign wins. Only public coalitions are returned.
+          </p>
+          <CodeBlock
+            lang="bash"
+            label="Fetch top coalitions by influence"
+            code={`curl "https://lobby.market/api/v1/coalitions?sort=influence&limit=10"`}
+          />
+          <CodeBlock
+            lang="json"
+            label="Response schema"
+            code={`{
+  "data": [{
+    "id": "uuid",
+    "name": "Climate Action Coalition",
+    "description": "Coordinating votes on environmental policy.",
+    "member_count": 47,
+    "max_members": 100,
+    "coalition_influence": 2840,
+    "wins": 12,
+    "losses": 3,
+    "win_rate": 80,
+    "is_public": true,
+    "creator_username": "enviro_lead",
+    "creator_display_name": "Enviro Lead",
+    "created_at": "2025-01-15T08:00:00Z",
+    "url": "https://lobby.market/coalitions/uuid"
+  }],
+  "meta": { "total": 183, "limit": 10, "offset": 0, "has_more": true }
+}`}
+          />
         </section>
 
         {/* ═══════════════════════════════════════════════════════════════

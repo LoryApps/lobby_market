@@ -15,6 +15,8 @@
  *   GET /api/v1/arguments
  *   GET /api/v1/users
  *   GET /api/v1/users/:username
+ *   GET /api/v1/debates
+ *   GET /api/v1/coalitions
  */
 
 import { useCallback, useState } from 'react'
@@ -31,9 +33,11 @@ import {
   Gavel,
   Loader2,
   MessageSquare,
+  Mic,
   Play,
   RotateCcw,
   Scale,
+  Shield,
   Users,
   Zap,
 } from 'lucide-react'
@@ -294,6 +298,88 @@ const ENDPOINTS: Endpoint[] = [
         label: 'Username',
         placeholder: 'civic_citizen',
         default: '',
+      },
+    ],
+  },
+  {
+    id: 'debates',
+    label: 'List Debates',
+    method: 'GET',
+    path: '/api/v1/debates',
+    description: 'Scheduled, live, and past civic debates with host info and audience sway metrics.',
+    icon: Mic,
+    color: 'text-purple',
+    bg: 'bg-purple/10',
+    border: 'border-purple/30',
+    params: [
+      {
+        name: 'limit',
+        type: 'select',
+        label: 'Limit',
+        options: ['5', '10', '20', '50'],
+        default: '10',
+      },
+      {
+        name: 'offset',
+        type: 'number',
+        label: 'Offset',
+        placeholder: '0',
+        default: '0',
+      },
+      {
+        name: 'status',
+        type: 'select',
+        label: 'Status',
+        options: ['', 'scheduled', 'live', 'ended', 'cancelled'],
+        default: '',
+      },
+      {
+        name: 'type',
+        type: 'select',
+        label: 'Type',
+        options: ['', 'quick', 'grand', 'tribunal'],
+        default: '',
+      },
+      {
+        name: 'sort',
+        type: 'select',
+        label: 'Sort',
+        options: ['newest', 'scheduled', 'viewers'],
+        default: 'newest',
+      },
+    ],
+  },
+  {
+    id: 'coalitions',
+    label: 'List Coalitions',
+    method: 'GET',
+    path: '/api/v1/coalitions',
+    description: 'Public civic alliances ranked by influence, member count, or campaign wins.',
+    icon: Shield,
+    color: 'text-emerald',
+    bg: 'bg-emerald/10',
+    border: 'border-emerald/30',
+    params: [
+      {
+        name: 'limit',
+        type: 'select',
+        label: 'Limit',
+        options: ['5', '10', '20', '50'],
+        default: '10',
+      },
+      {
+        name: 'offset',
+        type: 'number',
+        label: 'Offset',
+        placeholder: '0',
+        default: '0',
+      },
+      {
+        name: 'sort',
+        type: 'select',
+        label: 'Sort',
+        options: ['influence', 'members', 'wins', 'new'],
+        default: 'influence',
       },
     ],
   },
