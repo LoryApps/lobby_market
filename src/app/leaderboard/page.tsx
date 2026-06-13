@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { BarChart2, BookOpen, Brain, Calendar, Edit3, FileText, Flame, FlaskConical, Gavel, Globe, Hash, MessageSquare, Mic, Rocket, Shield, Sparkles, Swords, Target, Trophy } from 'lucide-react'
+import { BarChart2, BookOpen, Brain, Calendar, CalendarDays, Edit3, FileText, Flame, FlaskConical, Gavel, Globe, Hash, MessageSquare, Mic, Rocket, Shield, Sparkles, Swords, Target, Trophy } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -356,6 +356,38 @@ export default async function LeaderboardPage() {
                 </p>
                 <p className="text-sm font-mono text-surface-500 mt-0.5">
                   Weekly top voters, debators, and clout earners — resets every Monday.
+                </p>
+              </div>
+            </div>
+            <svg
+              className="h-5 w-5 text-surface-500 group-hover:text-surface-300 transition-colors flex-shrink-0"
+              viewBox="0 0 20 20"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.5}
+              aria-hidden
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 4l5 6-5 6" />
+            </svg>
+          </Link>
+        </section>
+
+        {/* This Month link */}
+        <section className="mt-6">
+          <Link
+            href="/leaderboard/month"
+            className="flex items-center justify-between rounded-2xl border border-purple/30 bg-purple/5 px-6 py-5 hover:bg-purple/10 transition-colors group"
+          >
+            <div className="flex items-center gap-4">
+              <div className="flex items-center justify-center h-11 w-11 rounded-xl bg-purple/10 border border-purple/30 flex-shrink-0">
+                <CalendarDays className="h-5 w-5 text-purple" aria-hidden="true" />
+              </div>
+              <div>
+                <p className="font-mono text-base font-semibold text-white">
+                  This Month&rsquo;s Rankings
+                </p>
+                <p className="text-sm font-mono text-surface-500 mt-0.5">
+                  Monthly top voters, arguers, influencers, and lawmakers — browse past months too.
                 </p>
               </div>
             </div>
