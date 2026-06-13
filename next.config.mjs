@@ -109,6 +109,17 @@ const nextConfig = {
           { key: 'Cache-Control', value: 'public, s-maxage=300, stale-while-revalidate=600' },
         ],
       },
+      {
+        // Public REST API v1 — open CORS for programmatic access from any origin.
+        // All v1 endpoints are read-only and backed by the public Supabase anon key.
+        source: '/api/v1/(.*)',
+        headers: [
+          { key: 'Access-Control-Allow-Origin', value: '*' },
+          { key: 'Access-Control-Allow-Methods', value: 'GET, OPTIONS' },
+          { key: 'Access-Control-Allow-Headers', value: 'Content-Type, Accept' },
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+        ],
+      },
     ]
   },
 }

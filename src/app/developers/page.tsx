@@ -4,6 +4,7 @@ import {
   ArrowRight,
   CalendarDays,
   Code2,
+  Database,
   ExternalLink,
   FileCode2,
   Globe,
@@ -205,6 +206,7 @@ export default function DevelopersPage() {
           className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-12"
         >
           {[
+            { href: '#rest-api', icon: Database, label: 'REST API', color: 'text-emerald' },
             { href: '#embed', icon: Layers, label: 'Embed Widget', color: 'text-for-400' },
             { href: '#rss', icon: Rss, label: 'RSS Feed', color: 'text-gold' },
             { href: '#ical', icon: CalendarDays, label: 'iCal Export', color: 'text-emerald' },
@@ -229,6 +231,194 @@ export default function DevelopersPage() {
             </a>
           ))}
         </nav>
+
+        {/* ═══════════════════════════════════════════════════════════════
+            SECTION 0: Public REST API
+        ═══════════════════════════════════════════════════════════════ */}
+        <section id="rest-api" className="mb-16 scroll-mt-20">
+          <SectionHeader
+            icon={Database}
+            iconColor="text-emerald"
+            iconBg="bg-emerald/10 border-emerald/30"
+            title="REST API v1"
+            description="Query topics, laws, and platform stats programmatically — no API key needed."
+          />
+
+          <p className="text-sm font-mono text-surface-500 mb-6 leading-relaxed">
+            The Lobby Market public API returns JSON and supports open CORS from any origin.
+            All endpoints are read-only and use the same public data visible on the site.
+            Rate limits apply at the CDN layer (burst-friendly, no hard caps for reasonable use).
+          </p>
+
+          {/* Base URL callout */}
+          <div className="mb-6 p-4 rounded-xl border border-emerald/30 bg-emerald/5 font-mono text-sm">
+            <span className="text-surface-500 text-xs uppercase tracking-wider block mb-1">Base URL</span>
+            <span className="text-emerald font-semibold">https://lobby.market/api/v1</span>
+          </div>
+
+          {/* ── GET /api/v1/topics ─────────────────────────────────────────── */}
+          <h3 className="font-mono text-sm font-bold text-white mb-3 mt-8">List topics</h3>
+          <EndpointPill method="GET" path="/api/v1/topics" />
+          <ParamTable
+            params={[
+              { name: 'status', type: 'string', required: false, description: 'Filter by lifecycle status. One of: proposed, active, voting, law, failed.' },
+              { name: 'category', type: 'string', required: false, description: 'Filter by category. One of: Politics, Technology, Ethics, Culture, Economics, Science, Philosophy, Health, Environment, Education, Other.' },
+              { name: 'sort', type: 'string', required: false, description: 'Sort order: votes (default), new, trending, score.' },
+              { name: 'limit', type: 'integer', required: false, description: 'Number of results per page. Max 100. Default 20.' },
+              { name: 'offset', type: 'integer', required: false, description: 'Pagination offset. Default 0.' },
+            ]}
+          />
+          <CodeBlock
+            lang="bash"
+            label="Fetch the 20 most-voted active topics"
+            code={`curl "https://lobby.market/api/v1/topics?status=active&sort=votes&limit=20"`}
+          />
+          <CodeBlock
+            lang="json"
+            label="Response schema"
+            code={`{
+  "data": [
+    {
+      "id": "uuid",
+      "statement": "Universal Basic Income should be implemented",
+      "description": "...",
+      "category": "Economics",
+      "scope": "Global",
+      "status": "active",
+      "for_pct": 62,
+      "against_pct": 38,
+      "total_votes": 14823,
+      "view_count": 89210,
+      "created_at": "2025-01-15T10:00:00Z",
+      "voting_ends_at": null,
+      "url": "https://lobby.market/topic/uuid"
+    }
+  ],
+  "meta": {
+    "total": 312,
+    "limit": 20,
+    "offset": 0,
+    "has_more": true
+  }
+}`}
+          />
+
+          {/* ── GET /api/v1/topics/:id ─────────────────────────────────────── */}
+          <h3 className="font-mono text-sm font-bold text-white mb-3 mt-8">Get topic by ID</h3>
+          <EndpointPill method="GET" path="/api/v1/topics/{id}" />
+          <ParamTable
+            params={[
+              { name: '{id}', type: 'UUID', required: true, description: 'The UUID of the topic.' },
+            ]}
+          />
+          <CodeBlock
+            lang="bash"
+            label="Fetch a single topic with top arguments"
+            code={`curl "https://lobby.market/api/v1/topics/TOPIC_UUID"`}
+          />
+          <CodeBlock
+            lang="json"
+            label="Response schema"
+            code={`{
+  "data": {
+    "id": "uuid",
+    "statement": "...",
+    "description": "...",
+    "category": "Economics",
+    "scope": "Global",
+    "status": "active",
+    "for_pct": 62,
+    "against_pct": 38,
+    "total_votes": 14823,
+    "view_count": 89210,
+    "support_count": 431,
+    "activation_threshold": 500,
+    "created_at": "2025-01-15T10:00:00Z",
+    "voting_ends_at": null,
+    "url": "https://lobby.market/topic/uuid",
+    "embed_url": "https://lobby.market/api/embed/topic/uuid",
+    "og_image_url": "https://lobby.market/api/og/topic/uuid",
+    "top_arguments": [
+      {
+        "id": "uuid",
+        "body": "Evidence shows that pilot programs...",
+        "side": "for",
+        "upvotes": 142,
+        "author_username": "alice"
+      }
+    ]
+  }
+}`}
+          />
+
+          {/* ── GET /api/v1/laws ───────────────────────────────────────────── */}
+          <h3 className="font-mono text-sm font-bold text-white mb-3 mt-8">List established laws</h3>
+          <EndpointPill method="GET" path="/api/v1/laws" />
+          <ParamTable
+            params={[
+              { name: 'category', type: 'string', required: false, description: 'Filter by category (same values as /topics).' },
+              { name: 'limit', type: 'integer', required: false, description: 'Max 100. Default 20.' },
+              { name: 'offset', type: 'integer', required: false, description: 'Pagination offset. Default 0.' },
+            ]}
+          />
+          <CodeBlock
+            lang="bash"
+            label="Fetch all laws in the Technology category"
+            code={`curl "https://lobby.market/api/v1/laws?category=Technology&limit=50"`}
+          />
+
+          {/* ── GET /api/v1/stats ──────────────────────────────────────────── */}
+          <h3 className="font-mono text-sm font-bold text-white mb-3 mt-8">Platform stats</h3>
+          <EndpointPill method="GET" path="/api/v1/stats" />
+          <p className="text-xs font-mono text-surface-500 mb-4 leading-relaxed">
+            Returns aggregate counts for the entire platform — useful for dashboards, embeds, and status displays.
+          </p>
+          <CodeBlock
+            lang="bash"
+            label="Fetch platform stats"
+            code={`curl "https://lobby.market/api/v1/stats"`}
+          />
+          <CodeBlock
+            lang="json"
+            label="Response schema"
+            code={`{
+  "data": {
+    "total_topics": 847,
+    "total_laws": 124,
+    "total_active_topics": 312,
+    "total_votes": 2841920,
+    "total_debates": 88,
+    "total_arguments": 19203,
+    "top_category": "Politics",
+    "updated_at": "2025-06-13T10:00:00Z"
+  }
+}`}
+          />
+
+          <div className="mt-4 p-4 rounded-xl bg-surface-100 border border-surface-300 font-mono text-xs text-surface-500 space-y-1">
+            <p><span className="text-white">CORS:</span> All <code className="text-emerald">/api/v1/</code> endpoints set <code className="text-for-300">Access-Control-Allow-Origin: *</code>.</p>
+            <p><span className="text-white">Caching:</span> Topics and laws cache for 30–60s at the CDN. Stats cache for 2 minutes.</p>
+            <p><span className="text-white">Pagination:</span> Use <code className="text-for-300">limit</code> and <code className="text-for-300">offset</code> to page through results. Check <code className="text-for-300">meta.has_more</code> to detect more pages.</p>
+            <p><span className="text-white">Errors:</span> Invalid parameters return HTTP 400 with an <code className="text-against-400">error</code> string and a <code className="text-surface-400">docs</code> link.</p>
+          </div>
+
+          <div className="mt-6">
+            <CodeBlock
+              lang="javascript"
+              label="JavaScript example — fetch trending topics"
+              code={`const res = await fetch(
+  'https://lobby.market/api/v1/topics?sort=trending&status=active&limit=10'
+);
+const { data, meta } = await res.json();
+
+for (const topic of data) {
+  console.log(\`\${topic.for_pct}% FOR — \${topic.statement}\`);
+}
+// → 71% FOR — Universal Basic Income should be implemented
+// → 58% FOR — Algorithmic content curation harms democracy`}
+            />
+          </div>
+        </section>
 
         {/* ═══════════════════════════════════════════════════════════════
             SECTION 1: Embed Widget
