@@ -629,8 +629,15 @@ export default function PodiumPage() {
           >
             <div className="flex flex-wrap gap-3">
               <Link
-                href="/leaderboard"
+                href="/podium/champions"
                 className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gold/10 border border-gold/30 text-xs font-mono font-semibold text-gold hover:bg-gold/20 transition-colors"
+              >
+                <Trophy className="h-3.5 w-3.5" />
+                Hall of Champions
+              </Link>
+              <Link
+                href="/leaderboard"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-surface-200 border border-surface-300 text-xs font-mono font-semibold text-surface-400 hover:text-white transition-colors"
               >
                 <Trophy className="h-3.5 w-3.5" />
                 All-time leaderboard

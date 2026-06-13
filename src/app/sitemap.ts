@@ -35,6 +35,8 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/leaderboard`, changeFrequency: 'daily', priority: 0.7 },
   { url: `${BASE_URL}/leaderboard/today`, changeFrequency: 'always', priority: 0.8 },
   { url: `${BASE_URL}/ladder`, changeFrequency: 'daily', priority: 0.7 },
+  { url: `${BASE_URL}/podium`, changeFrequency: 'weekly', priority: 0.72 },
+  { url: `${BASE_URL}/podium/champions`, changeFrequency: 'weekly', priority: 0.7 },
   { url: `${BASE_URL}/season`, changeFrequency: 'daily', priority: 0.75 },
   { url: `${BASE_URL}/seasons`, changeFrequency: 'weekly', priority: 0.7 },
   { url: `${BASE_URL}/achievements`, changeFrequency: 'weekly', priority: 0.65 },
