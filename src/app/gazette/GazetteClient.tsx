@@ -488,7 +488,9 @@ export function GazetteClient({ data }: { data: GazetteData | null }) {
           className="pt-4 border-t border-surface-300"
         >
           <div className="flex items-center justify-between text-xs text-surface-600">
-            <span>The Civic Gazette · lobby.market</span>
+            <Link href="/gazette/archive" className="hover:text-surface-300 transition-colors">
+              Archive
+            </Link>
             <div className="flex items-center gap-3">
               <Link href="/trending" className="hover:text-surface-300 transition-colors">Trending</Link>
               <Link href="/law" className="hover:text-surface-300 transition-colors">Laws</Link>
