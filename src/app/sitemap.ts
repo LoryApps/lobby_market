@@ -160,6 +160,8 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/polarization`, changeFrequency: 'daily', priority: 0.72 },
   { url: `${BASE_URL}/changelog`, changeFrequency: 'monthly', priority: 0.55 },
   { url: `${BASE_URL}/missions`, changeFrequency: 'daily', priority: 0.8 },
+  { url: `${BASE_URL}/session`, changeFrequency: 'daily', priority: 0.85 },
+  { url: `${BASE_URL}/session/weekly`, changeFrequency: 'weekly', priority: 0.82 },
   { url: `${BASE_URL}/wisdom`, changeFrequency: 'hourly', priority: 0.75 },
   { url: `${BASE_URL}/prompt`, changeFrequency: 'daily', priority: 0.88 },
   { url: `${BASE_URL}/prompt/archive`, changeFrequency: 'daily', priority: 0.7 },

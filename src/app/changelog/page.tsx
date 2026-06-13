@@ -2140,6 +2140,14 @@ interface RecentBuild {
 
 const RECENT_BUILDS: RecentBuild[] = [
   {
+    title: 'Weekly Civic Summit',
+    description: 'New /session/weekly page (Ch. 330) — a ten-topic weekly voting summit, deterministically seeded by ISO week so every citizen sees the same slate. Topics are curated from five pools: week\'s top-voted, most contested (35–65% split), near-law (≥60% FOR), viral (high feed_score), and newest laws. Backed by a new /api/session/weekly route that tags each topic with its pick_reason, checks the user\'s existing votes, and returns voted_count, is_complete, week_start, and week_end. Completing all 10 earns a +75 Summit Clout bonus (vs +20 for the daily). Gold colour scheme throughout — trophy icon, gold progress segments, gold completion card. Linked from the daily session footer. Sitemap updated with /session and /session/weekly.',
+    href: '/session/weekly',
+    icon: Trophy,
+    color: 'text-gold',
+    tag: 'Ch. 330',
+  },
+  {
     title: 'Platform Status Page',
     description: 'New /status page (Ch. 329) — live health dashboard for Lobby Market. Shows overall platform status (Operational / Degraded / Outage) with an animated pulsing indicator, latency-checked system components (Database, API, Auth), real-time platform metrics (topics, laws, votes, arguments, debates, citizens), a topic status breakdown bar, and a recent platform events feed (laws established, topics activated). Auto-refreshes every 30 seconds with a live countdown. Backed by a new /api/status route that returns a full PlatformStatus JSON object including component health, latency readings, and recent events. Linked from the Developers page footer.',
     href: '/status',
