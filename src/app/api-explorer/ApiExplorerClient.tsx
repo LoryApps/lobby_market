@@ -17,6 +17,9 @@
  *   GET /api/v1/users/:username
  *   GET /api/v1/debates
  *   GET /api/v1/coalitions
+ *   GET /api/v1/tags
+ *   GET /api/v1/leaderboard
+ *   GET /api/v1/categories
  */
 
 import { useCallback, useState } from 'react'
@@ -31,6 +34,7 @@ import {
   Copy,
   ExternalLink,
   Gavel,
+  LayoutGrid,
   Loader2,
   MessageSquare,
   Mic,
@@ -38,6 +42,8 @@ import {
   RotateCcw,
   Scale,
   Shield,
+  Tag,
+  Trophy,
   Users,
   Zap,
 } from 'lucide-react'
@@ -382,6 +388,86 @@ const ENDPOINTS: Endpoint[] = [
         default: 'influence',
       },
     ],
+  },
+  {
+    id: 'tags',
+    label: 'List Tags',
+    method: 'GET',
+    path: '/api/v1/tags',
+    description: 'Civic keyword tags ranked by topic count, vote volume, or law conversions.',
+    icon: Tag,
+    color: 'text-for-300',
+    bg: 'bg-for-500/10',
+    border: 'border-for-500/30',
+    params: [
+      {
+        name: 'limit',
+        type: 'select',
+        label: 'Limit',
+        options: ['10', '25', '50', '100'],
+        default: '25',
+      },
+      {
+        name: 'offset',
+        type: 'number',
+        label: 'Offset',
+        placeholder: '0',
+        default: '0',
+      },
+      {
+        name: 'sort',
+        type: 'select',
+        label: 'Sort',
+        options: ['topics', 'votes', 'laws', 'active'],
+        default: 'topics',
+      },
+    ],
+  },
+  {
+    id: 'leaderboard',
+    label: 'Leaderboard',
+    method: 'GET',
+    path: '/api/v1/leaderboard',
+    description: 'Top citizens ranked by civic engagement metrics — clout, votes, arguments, or reputation.',
+    icon: Trophy,
+    color: 'text-gold',
+    bg: 'bg-gold/10',
+    border: 'border-gold/30',
+    params: [
+      {
+        name: 'limit',
+        type: 'select',
+        label: 'Limit',
+        options: ['10', '25', '50', '100'],
+        default: '25',
+      },
+      {
+        name: 'offset',
+        type: 'number',
+        label: 'Offset',
+        placeholder: '0',
+        default: '0',
+      },
+      {
+        name: 'metric',
+        type: 'select',
+        label: 'Metric',
+        options: ['clout', 'votes', 'arguments', 'reputation'],
+        default: 'clout',
+      },
+    ],
+  },
+  {
+    id: 'categories',
+    label: 'Categories',
+    method: 'GET',
+    path: '/api/v1/categories',
+    description: 'All civic debate categories with live statistics: topic counts, law counts, average consensus, and top topic.',
+    icon: LayoutGrid,
+    color: 'text-purple',
+    bg: 'bg-purple/10',
+    border: 'border-purple/30',
+    params: [],
   },
 ]
 

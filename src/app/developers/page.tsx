@@ -491,6 +491,117 @@ for (const topic of data) {
   "meta": { "total": 183, "limit": 10, "offset": 0, "has_more": true }
 }`}
           />
+
+          {/* ── GET /api/v1/tags ──────────────────────────────────────────────── */}
+          <h3 className="font-mono text-sm font-bold text-white mb-3 mt-8">Tags</h3>
+          <EndpointPill method="GET" path="/api/v1/tags" />
+          <p className="text-xs font-mono text-surface-500 mb-4 leading-relaxed">
+            Returns civic keyword tags aggregated from all topic statements. Sort by topic count, vote volume, law conversions, or active debates. Useful for building tag clouds, topic finders, and trend explorers.
+          </p>
+          <CodeBlock
+            lang="bash"
+            label="Fetch top tags by topic count"
+            code={`curl "https://lobby.market/api/v1/tags?sort=topics&limit=25"`}
+          />
+          <CodeBlock
+            lang="json"
+            label="Response schema"
+            code={`{
+  "data": [{
+    "tag": "climate",
+    "topic_count": 34,
+    "law_count": 8,
+    "active_count": 12,
+    "total_votes": 142300,
+    "url": "https://lobby.market/tags/climate"
+  }],
+  "meta": { "total": 287, "limit": 25, "offset": 0, "has_more": true }
+}`}
+          />
+          <p className="text-xs font-mono text-surface-600 mb-4 leading-relaxed">
+            <strong className="text-surface-400">Sort options:</strong>{' '}
+            <code className="text-for-300">topics</code> (default) ·{' '}
+            <code className="text-for-300">votes</code> ·{' '}
+            <code className="text-for-300">laws</code> ·{' '}
+            <code className="text-for-300">active</code>
+          </p>
+
+          {/* ── GET /api/v1/leaderboard ───────────────────────────────────────── */}
+          <h3 className="font-mono text-sm font-bold text-white mb-3 mt-8">Leaderboard</h3>
+          <EndpointPill method="GET" path="/api/v1/leaderboard" />
+          <p className="text-xs font-mono text-surface-500 mb-4 leading-relaxed">
+            Returns ranked citizens by civic engagement metrics. Each entry includes the citizen&apos;s global rank, clout score, vote count, argument count, and reputation score. Ranks reset with pagination — offset 25 starts at rank 26.
+          </p>
+          <CodeBlock
+            lang="bash"
+            label="Fetch top 25 citizens by clout"
+            code={`curl "https://lobby.market/api/v1/leaderboard?metric=clout&limit=25"`}
+          />
+          <CodeBlock
+            lang="json"
+            label="Response schema"
+            code={`{
+  "data": [{
+    "rank": 1,
+    "id": "uuid",
+    "username": "civic_champion",
+    "display_name": "Civic Champion",
+    "avatar_url": "https://...",
+    "role": "elder",
+    "clout": 9840,
+    "total_votes": 2341,
+    "total_arguments": 187,
+    "reputation_score": 94.2,
+    "civic_archetype": "The Legislator",
+    "url": "https://lobby.market/profile/civic_champion"
+  }],
+  "meta": { "metric": "clout", "total": 5200, "limit": 25, "offset": 0, "has_more": true, "updated_at": "..." }
+}`}
+          />
+          <p className="text-xs font-mono text-surface-600 mb-4 leading-relaxed">
+            <strong className="text-surface-400">Metric options:</strong>{' '}
+            <code className="text-for-300">clout</code> (default) ·{' '}
+            <code className="text-for-300">votes</code> ·{' '}
+            <code className="text-for-300">arguments</code> ·{' '}
+            <code className="text-for-300">reputation</code>
+          </p>
+
+          {/* ── GET /api/v1/categories ────────────────────────────────────────── */}
+          <h3 className="font-mono text-sm font-bold text-white mb-3 mt-8">Categories</h3>
+          <EndpointPill method="GET" path="/api/v1/categories" />
+          <p className="text-xs font-mono text-surface-500 mb-4 leading-relaxed">
+            Returns all 10 civic debate categories with live statistics. Includes topic counts by status, total vote volume, average consensus percentage (FOR vs AGAINST), and the most-voted topic in each category. No pagination — all categories always returned.
+          </p>
+          <CodeBlock
+            lang="bash"
+            label="Fetch all categories"
+            code={`curl "https://lobby.market/api/v1/categories"`}
+          />
+          <CodeBlock
+            lang="json"
+            label="Response schema"
+            code={`{
+  "data": [{
+    "name": "Technology",
+    "topic_count": 89,
+    "law_count": 14,
+    "active_count": 23,
+    "proposed_count": 31,
+    "total_votes": 487200,
+    "avg_for_pct": 58.3,
+    "top_topic": {
+      "id": "uuid",
+      "statement": "AI systems should be regulated...",
+      "total_votes": 18400,
+      "for_pct": 71.2,
+      "status": "law",
+      "url": "https://lobby.market/topic/uuid"
+    },
+    "url": "https://lobby.market/categories/technology"
+  }],
+  "meta": { "total": 10, "updated_at": "..." }
+}`}
+          />
         </section>
 
         {/* ═══════════════════════════════════════════════════════════════
