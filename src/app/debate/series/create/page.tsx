@@ -156,19 +156,14 @@ export default function CreateDebateSeriesPage() {
     }
   }, [topicQuery])
 
-  // ── Validation ─────────────────────────────────────────────────────────────
-  function validate(): boolean {
+  // ── Submit ─────────────────────────────────────────────────────────────────
+  const handleSubmit = useCallback(async () => {
     const errs: Record<string, string> = {}
     if (!title.trim()) errs.title = 'Title is required'
     if (title.trim().length > 120) errs.title = 'Title must be 120 characters or fewer'
     if (description.length > 500) errs.description = 'Description must be 500 characters or fewer'
     setErrors(errs)
-    return Object.keys(errs).length === 0
-  }
-
-  // ── Submit ─────────────────────────────────────────────────────────────────
-  const handleSubmit = useCallback(async () => {
-    if (!validate()) return
+    if (Object.keys(errs).length > 0) return
 
     setSubmitting(true)
     setGlobalError(null)
