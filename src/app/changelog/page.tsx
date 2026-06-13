@@ -75,6 +75,8 @@ import {
   Bird,
   Smartphone,
   Play,
+  Database,
+  Server,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -2121,10 +2123,10 @@ const CHAPTERS: Chapter[] = [
 ]
 
 const STATS = [
-  { value: '318', label: 'chapters shipped' },
-  { value: '960+', label: 'features built' },
-  { value: '91', label: 'DB migrations' },
-  { value: '595+', label: 'API routes' },
+  { value: '329', label: 'chapters shipped' },
+  { value: '975+', label: 'features built' },
+  { value: '92', label: 'DB migrations' },
+  { value: '610+', label: 'API routes' },
 ]
 
 interface RecentBuild {
@@ -2137,6 +2139,38 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Platform Status Page',
+    description: 'New /status page (Ch. 329) — live health dashboard for Lobby Market. Shows overall platform status (Operational / Degraded / Outage) with an animated pulsing indicator, latency-checked system components (Database, API, Auth), real-time platform metrics (topics, laws, votes, arguments, debates, citizens), a topic status breakdown bar, and a recent platform events feed (laws established, topics activated). Auto-refreshes every 30 seconds with a live countdown. Backed by a new /api/status route that returns a full PlatformStatus JSON object including component health, latency readings, and recent events. Linked from the Developers page footer.',
+    href: '/status',
+    icon: Activity,
+    color: 'text-emerald',
+    tag: 'Ch. 329',
+  },
+  {
+    title: 'v1 REST API — Tags & Leaderboard Endpoints',
+    description: 'Public REST API expanded (Ch. 328) with /api/v1/tags (topic tags with follow counts, top topics per tag, filterable and sortable) and /api/v1/leaderboard (top users by clout, reputation, arguments, votes, laws, or prediction accuracy). Both endpoints include full CORS headers, cache-control, and are documented in the API Explorer.',
+    href: '/api-explorer',
+    icon: Database,
+    color: 'text-for-400',
+    tag: 'Ch. 328',
+  },
+  {
+    title: 'Interactive API Explorer',
+    description: 'New /api-explorer page (Ch. 327) — a live browser for the Lobby Market v1 REST API. Browse all 10 endpoint groups, build requests with query parameter controls, run them live against the real API, view formatted JSON responses, and copy ready-to-use cURL commands. No authentication required for public endpoints.',
+    href: '/api-explorer',
+    icon: Globe,
+    color: 'text-purple',
+    tag: 'Ch. 327',
+  },
+  {
+    title: 'Public REST API v1 — Core Endpoints',
+    description: 'Lobby Market launches a public developer API (Ch. 326). Six core endpoints: GET /api/v1/topics (filterable by category, status, sort), /api/v1/laws, /api/v1/debates, /api/v1/arguments, /api/v1/users, /api/v1/stats, /api/v1/coalitions. Full CORS, pagination, and JSON responses. All unauthenticated. Documented at /developers and explorable at /api-explorer.',
+    href: '/developers',
+    icon: Server,
+    color: 'text-emerald',
+    tag: 'Ch. 326',
+  },
   {
     title: 'Civic Laws Record — Profile Subpage',
     description: 'New /profile/[username]/laws page (Ch. 318) — a dedicated laws record for every citizen. Shows every law they backed (voted FOR), proposed (authored the topic), argued about, or opposed. Organised into three sections: Laws Proposed (gold, highlighted), Laws Backed FOR (blue), and Other Law Involvement. Stats header shows counts for backed, proposed, opposed, and argued. FOR% vote bar and category label on each row. Wired into the profile overview as a green "Laws Record" teaser card and linked from the laws tab inline view. Sitemap updated to include /profile/[username]/laws, /debates, and /impact. Changelog stats updated to 318 chapters.',

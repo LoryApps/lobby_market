@@ -1200,6 +1200,13 @@ window.addEventListener('message', function (e) {
           </div>
           <div className="flex items-center gap-3">
             <Link
+              href="/status"
+              className="inline-flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-white transition-colors"
+            >
+              Platform Status
+              <ArrowRight className="h-3 w-3" />
+            </Link>
+            <Link
               href="/about"
               className="inline-flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-white transition-colors"
             >
