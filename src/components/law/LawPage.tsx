@@ -12,6 +12,7 @@ import {
   Menu,
   Network,
   PanelRight,
+  Scale,
   Sparkles,
   Star,
   Tag,
@@ -366,6 +367,18 @@ export function LawPage({
                 >
                   <Star className="h-3.5 w-3.5" />
                   Reviews
+                </Link>
+                <Link
+                  href={`/law/${law.id}/debate`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-for-500/10 border border-for-500/20 text-for-300',
+                    'hover:bg-for-500/20 hover:border-for-500/40',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                >
+                  <Scale className="h-3.5 w-3.5" />
+                  Debate Record
                 </Link>
               </div>
             </div>
