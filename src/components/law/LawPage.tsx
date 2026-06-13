@@ -13,6 +13,7 @@ import {
   Network,
   PanelRight,
   Sparkles,
+  Star,
   Tag,
   Users,
   Users2,
@@ -353,6 +354,18 @@ export function LawPage({
                 >
                   <Users2 className="h-3.5 w-3.5" />
                   Community
+                </Link>
+                <Link
+                  href={`/law/${law.id}/reviews`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-gold/10 border border-gold/30 text-gold',
+                    'hover:bg-gold/20 hover:border-gold/50',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                >
+                  <Star className="h-3.5 w-3.5" />
+                  Reviews
                 </Link>
               </div>
             </div>

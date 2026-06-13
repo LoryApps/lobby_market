@@ -1755,6 +1755,80 @@ export type Database = {
           }
         ];
       };
+      law_reviews: {
+        Row: {
+          id: string;
+          law_id: string;
+          user_id: string;
+          stars: number;
+          body: string | null;
+          helpful: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          law_id: string;
+          user_id: string;
+          stars: number;
+          body?: string | null;
+          helpful?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          law_id?: string;
+          user_id?: string;
+          stars?: number;
+          body?: string | null;
+          helpful?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "law_reviews_law_id_fkey";
+            columns: ["law_id"];
+            isOneToOne: false;
+            referencedRelation: "laws";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "law_reviews_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      law_review_helpful: {
+        Row: {
+          review_id: string;
+          user_id: string;
+          created_at: string;
+        };
+        Insert: {
+          review_id: string;
+          user_id: string;
+          created_at?: string;
+        };
+        Update: {
+          review_id?: string;
+          user_id?: string;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "law_review_helpful_review_id_fkey";
+            columns: ["review_id"];
+            isOneToOne: false;
+            referencedRelation: "law_reviews";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
       daily_editorials: {
         Row: {
           id: string;
