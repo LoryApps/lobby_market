@@ -8,6 +8,7 @@ import {
   Calendar,
   ExternalLink,
   Gavel,
+  History,
   List,
   Menu,
   Network,
@@ -379,6 +380,23 @@ export function LawPage({
                 >
                   <Scale className="h-3.5 w-3.5" />
                   Debate Record
+                </Link>
+                <Link
+                  href={`/law/${law.id}/revisions`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-surface-200 border border-surface-300 text-surface-500',
+                    'hover:bg-surface-300 hover:border-surface-400 hover:text-white',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                >
+                  <History className="h-3.5 w-3.5" />
+                  Revisions
+                  {revisions.length > 0 && (
+                    <span className="ml-0.5 text-[10px] font-mono font-bold opacity-70">
+                      {revisions.length}
+                    </span>
+                  )}
                 </Link>
               </div>
             </div>
