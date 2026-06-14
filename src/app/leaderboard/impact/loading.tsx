@@ -2,48 +2,39 @@ import { Skeleton } from '@/components/ui/Skeleton'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
 
-export default function PodiumLoading() {
+export default function ImpactLeaderboardLoading() {
   return (
     <div className="min-h-screen bg-surface-50">
       <TopBar />
-      <main className="max-w-4xl mx-auto px-4 pt-6 pb-24 md:pb-12">
+      <main className="max-w-3xl mx-auto px-4 pt-6 pb-24 md:pb-12">
+        <div className="mb-5">
+          <Skeleton className="h-9 w-32 rounded-lg" />
+        </div>
+
         {/* Header */}
         <div className="flex items-start gap-4 mb-8">
           <Skeleton className="h-12 w-12 rounded-xl flex-shrink-0" />
           <div className="space-y-2">
-            <Skeleton className="h-7 w-36" />
-            <Skeleton className="h-4 w-64" />
+            <Skeleton className="h-7 w-52" />
+            <Skeleton className="h-4 w-80" />
           </div>
         </div>
 
-        {/* Filter tabs */}
-        <div className="flex gap-2 mb-6">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton key={i} className="h-8 w-20 rounded-lg" />
-          ))}
-        </div>
-
         {/* Top 3 podium */}
-        <div className="rounded-3xl bg-surface-100 border border-surface-300 p-6 mb-6">
-          <Skeleton className="h-4 w-24 mb-6" />
-          <div className="flex items-end justify-center gap-6">
-            {/* 2nd */}
-            <div className="flex flex-col items-center gap-2">
-              <Skeleton className="h-12 w-12 rounded-full" />
-              <Skeleton className="h-16 w-24 rounded-t-lg" />
-              <Skeleton className="h-3 w-16" />
-            </div>
-            {/* 1st */}
-            <div className="flex flex-col items-center gap-2">
-              <Skeleton className="h-14 w-14 rounded-full" />
-              <Skeleton className="h-24 w-28 rounded-t-lg" />
-              <Skeleton className="h-3 w-20" />
-            </div>
-            {/* 3rd */}
+        <div className="rounded-2xl bg-surface-100 border border-surface-300 p-5 mb-4">
+          <Skeleton className="h-4 w-24 mb-4" />
+          <div className="flex items-end justify-center gap-3">
             <div className="flex flex-col items-center gap-2">
               <Skeleton className="h-10 w-10 rounded-full" />
-              <Skeleton className="h-12 w-24 rounded-t-lg" />
-              <Skeleton className="h-3 w-16" />
+              <Skeleton className="h-14 w-20 rounded-t-lg" />
+            </div>
+            <div className="flex flex-col items-center gap-2">
+              <Skeleton className="h-12 w-12 rounded-full" />
+              <Skeleton className="h-20 w-24 rounded-t-lg" />
+            </div>
+            <div className="flex flex-col items-center gap-2">
+              <Skeleton className="h-9 w-9 rounded-full" />
+              <Skeleton className="h-10 w-20 rounded-t-lg" />
             </div>
           </div>
         </div>
@@ -55,8 +46,8 @@ export default function PodiumLoading() {
               <Skeleton className="h-6 w-6 rounded flex-shrink-0" />
               <Skeleton className="h-10 w-10 rounded-full flex-shrink-0" />
               <div className="flex-1 space-y-1.5">
-                <Skeleton className="h-4 w-28" />
-                <Skeleton className="h-3 w-40" />
+                <Skeleton className="h-4 w-32" />
+                <Skeleton className="h-3 w-48" />
               </div>
               <Skeleton className="h-8 w-16 rounded-lg flex-shrink-0" />
             </div>

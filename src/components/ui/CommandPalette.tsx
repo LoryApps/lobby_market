@@ -3185,6 +3185,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'leaderboard-impact',
+    label: 'Civic Impact Leaderboard',
+    sublabel: 'Who has truly changed the Lobby? Ranked by laws authored, reputation, clout, and reach.',
+    href: '/leaderboard/impact',
+    icon: Target,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'leaderboard-grades',
     label: 'Grades Leaderboard',
     sublabel: 'Citizens ranked by their overall civic GPA — composite score across all subjects',
