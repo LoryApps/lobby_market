@@ -304,6 +304,7 @@ const SECTIONS: FeatureSection[] = [
       { href: '/moments', label: 'Civic Moments', description: 'TikTok-style feed of significant civic milestones and records.', icon: Sparkles },
       { href: '/wrapped', label: 'Civic Wrapped', description: 'Your annual civic year-in-review — Spotify-style engagement breakdown.', icon: Trophy },
       { href: '/legacy', label: 'Civic Legacy', description: 'The long-term historical record of laws and their impact over time.', icon: Scroll },
+      { href: '/transcripts', label: 'Debate Archive', description: 'Every resolved debate with its top FOR and AGAINST arguments — the full civic record.', icon: BookOpen },
       { href: '/records', label: 'Platform Records', description: 'All-time records: most votes, longest streaks, most accurate.', icon: Crown },
       { href: '/changelog', label: 'Platform Changelog', description: 'Every feature and update added to Lobby Market.', icon: GitBranch },
     ],

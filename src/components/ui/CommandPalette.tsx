@@ -2721,6 +2721,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'transcripts',
+    label: 'Debate Archive',
+    sublabel: 'Browse every resolved debate with its top FOR and AGAINST arguments side-by-side',
+    href: '/transcripts',
+    icon: History,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
     id: 'glossary',
     label: 'Civic Glossary',
     sublabel: 'Searchable guide to Lobby Market terms, debate concepts, logical fallacies, and civic vocabulary',
