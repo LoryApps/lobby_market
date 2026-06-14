@@ -1180,6 +1180,39 @@ export default async function LeaderboardPage() {
           </Link>
         </section>
 
+        {/* Streak Masters link */}
+        <section className="mt-6">
+          <Link
+            href="/leaderboard/streaks"
+            className="flex items-center justify-between rounded-2xl border border-against-500/40 bg-against-500/5 px-6 py-5 hover:bg-against-500/10 transition-colors group"
+          >
+            <div className="flex items-center gap-4">
+              <div className="flex items-center justify-center h-11 w-11 rounded-xl bg-against-500/10 border border-against-500/30 flex-shrink-0">
+                <Flame className="h-5 w-5 text-against-400" />
+              </div>
+              <div>
+                <p className="font-mono text-base font-semibold text-white flex items-center gap-2">
+                  Streak Masters
+                  <span className="text-[10px] font-mono text-against-400 bg-against-500/15 border border-against-500/30 px-1.5 py-0.5 rounded-md uppercase tracking-wide">New</span>
+                </p>
+                <p className="text-sm font-mono text-surface-500 mt-0.5">
+                  Who&rsquo;s kept the flame alive longest? Ranked by consecutive daily voting streaks.
+                </p>
+              </div>
+            </div>
+            <svg
+              className="h-5 w-5 text-surface-500 group-hover:text-surface-300 transition-colors flex-shrink-0"
+              viewBox="0 0 20 20"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.5}
+              aria-hidden
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 4l5 6-5 6" />
+            </svg>
+          </Link>
+        </section>
+
         {/* Achievements link */}
         <section className="mt-6">
           <Link

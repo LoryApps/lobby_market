@@ -246,6 +246,8 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/leaderboard/arena`, changeFrequency: 'daily', priority: 0.67 },
   { url: `${BASE_URL}/leaderboard/bounties`, changeFrequency: 'daily', priority: 0.67 },
   { url: `${BASE_URL}/leaderboard/engagement`, changeFrequency: 'daily', priority: 0.68 },
+  { url: `${BASE_URL}/leaderboard/streaks`, changeFrequency: 'hourly', priority: 0.69 },
+  { url: `${BASE_URL}/leaderboard/year`, changeFrequency: 'daily', priority: 0.67 },
   { url: `${BASE_URL}/predictions/leaderboard`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/stage`, changeFrequency: 'always', priority: 0.72 },
   { url: `${BASE_URL}/karma`, changeFrequency: 'daily', priority: 0.65 },

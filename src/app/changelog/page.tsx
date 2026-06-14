@@ -2123,10 +2123,10 @@ const CHAPTERS: Chapter[] = [
 ]
 
 const STATS = [
-  { value: '329', label: 'chapters shipped' },
-  { value: '975+', label: 'features built' },
-  { value: '92', label: 'DB migrations' },
-  { value: '610+', label: 'API routes' },
+  { value: '354', label: 'chapters shipped' },
+  { value: '1010+', label: 'features built' },
+  { value: '93', label: 'DB migrations' },
+  { value: '620+', label: 'API routes' },
 ]
 
 interface RecentBuild {
@@ -2139,6 +2139,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Streak Masters Leaderboard',
+    description: 'New /leaderboard/streaks page (Ch. 354) — dedicated leaderboard ranking citizens by their current consecutive daily voting streak. Four filter tabs (All, Platinum 90+ d, Gold 30+ d, Silver 7+ d) let you find your tier cohort. Top 3 get a podium treatment with estimated streak-start date. Tier dots (Platinum, Gold, Silver, Bronze, Ember) appear on avatars throughout. Backed by /api/leaderboard/streaks with 2-minute CDN cache. Also shipped: 11 recently-built leaderboards (week, month, year, arena, bounties, engagement, reviews, amendments, ambassadors, streaks) added to the ⌘K Command Palette for discoverability. /leaderboard/streaks and /leaderboard/year added to sitemap.ts.',
+    href: '/leaderboard/streaks',
+    icon: Flame,
+    color: 'text-against-400',
+    tag: 'Ch. 354',
+  },
   {
     title: 'Weekly Civic Summit',
     description: 'New /session/weekly page (Ch. 330) — a ten-topic weekly voting summit, deterministically seeded by ISO week so every citizen sees the same slate. Topics are curated from five pools: week\'s top-voted, most contested (35–65% split), near-law (≥60% FOR), viral (high feed_score), and newest laws. Backed by a new /api/session/weekly route that tags each topic with its pick_reason, checks the user\'s existing votes, and returns voted_count, is_complete, week_start, and week_end. Completing all 10 earns a +75 Summit Clout bonus (vs +20 for the daily). Gold colour scheme throughout — trophy icon, gold progress segments, gold completion card. Linked from the daily session footer. Sitemap updated with /session and /session/weekly.',
