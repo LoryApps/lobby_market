@@ -3305,6 +3305,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'leaderboard-dissent',
+    label: 'The Dissent Index',
+    sublabel: 'The Lobby\'s most principled contrarians — citizens who vote in the minority and argue their case anyway',
+    href: '/leaderboard/dissent',
+    icon: Shuffle,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
     id: 'leaderboard-week',
     label: 'Weekly Leaderboard',
     sublabel: 'Most active civic citizens this week — votes, arguments, and upvotes',
