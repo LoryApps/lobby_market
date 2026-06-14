@@ -210,6 +210,7 @@ const SECTIONS: FeatureSection[] = [
       { href: '/civic-recall', label: 'Civic Recall', description: 'Memory test: recognize civic topics from a list of keywords.', icon: Brain },
       { href: '/civic-decoder', label: 'Civic Decoder', description: 'Three arguments, one mystery topic — can you decode it in 5 rounds?', icon: Lock },
       { href: '/civic-mirror', label: 'Civic Mirror', description: 'Vote your gut on 5 topics, then see if you match the community.', icon: Eye },
+      { href: '/civic-crossroads', label: 'Civic Crossroads', description: 'Two fundamental values in direct tension — one weekly vote reveals where the Lobby stands.', icon: GitMerge },
       { href: '/wordle', label: 'Civic Wordle', description: '6 guesses to name a civic topic from progressive letter hints.', icon: FileText },
       { href: '/bingo', label: 'Civic Bingo', description: '5×5 weekly bingo card — mark off topics as they become law.', icon: Grip },
       { href: '/bracket', label: 'Civic Bracket', description: 'Vote topics through a tournament — crown the most urgent debate.', icon: GitMerge },
