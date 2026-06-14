@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   Activity,
   BarChart2,
+  Coins,
   BookOpen,
   Brain,
   Calendar,
@@ -186,7 +187,8 @@ const SECTIONS: FeatureSection[] = [
       { href: '/leaderboard/grades', label: 'Argument Quality', description: 'Debaters ranked by their average AI argument grade (A–F).', icon: Award },
       { href: '/leaderboard/rising', label: 'Rising Citizens', description: 'Fastest growing members in the last 7 days.', icon: TrendingUp },
       { href: '/leaderboard/debates', label: 'Top Debaters', description: 'Most wins and best performance in live structured debates.', icon: Mic },
-      { href: '/leaderboard/arena', label: 'Arena Champions', description: 'Who wins the most head-to-head argument faceoffs? Ranked by win rate.', icon: Swords, isNew: true },
+      { href: '/leaderboard/arena', label: 'Arena Champions', description: 'Who wins the most head-to-head argument faceoffs? Ranked by win rate.', icon: Swords },
+      { href: '/leaderboard/bounties', label: 'Bounty Board', description: 'Who earns the most clout winning bounties — and who funds the chase?', icon: Coins, isNew: true },
       { href: '/leaderboard/wiki', label: 'Wiki Authors', description: 'Citizens who have contributed most to topic wiki content.', icon: FileEdit },
       { href: '/podium', label: 'Weekly Podium', description: 'Top 3 contributors per category — resets every Monday.', icon: Medal },
     ],
