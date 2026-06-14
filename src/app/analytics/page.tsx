@@ -427,6 +427,7 @@ const SUITE_SECTIONS: Array<{
       { label: 'Fingerprint Report', href: '/analytics/fingerprint',     icon: Fingerprint },
       { label: 'Mind Map',           href: '/mindmap',                   icon: Network },
       { label: 'Civic Compass',      href: '/compass',                   icon: Compass },
+      { label: 'My Compass',        href: '/analytics/compass',          icon: Compass },
       { label: 'The Accord',         href: '/accord',                    icon: Scale },
       { label: 'Karma Score',        href: '/karma',                     icon: Sparkles },
       { label: 'Sentiment Report',   href: '/analytics/sentiment',       icon: Heart },
