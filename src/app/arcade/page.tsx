@@ -1427,6 +1427,7 @@ export default function ArcadePage() {
                 { href: '/civic-decoder', icon: Search, label: 'Civic Decoder', color: 'text-purple', bg: 'bg-purple/10', border: 'border-purple/20' },
                 { href: '/archetype', icon: Layers, label: 'Archetype', color: 'text-purple', bg: 'bg-purple/10', border: 'border-purple/20' },
                 { href: '/crossroads', icon: Scale, label: 'Crossroads', color: 'text-for-400', bg: 'bg-for-500/10', border: 'border-for-500/20' },
+                { href: '/civic-referendums', icon: Gavel, label: 'Referendums', color: 'text-purple', bg: 'bg-purple/10', border: 'border-purple/20' },
               ].map((item) => (
                 <Link
                   key={item.href}

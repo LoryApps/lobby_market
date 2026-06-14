@@ -111,6 +111,7 @@ import {
   Lock,
   Lightbulb,
   Waves,
+  Gavel,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -1979,6 +1980,16 @@ const QUICK_LINKS: QuickLink[] = [
     icon: Globe,
     iconColor: 'text-for-300',
     iconBg: 'bg-for-400/10',
+  },
+  {
+    type: 'link',
+    id: 'civic-referendums',
+    label: 'Civic Referendums',
+    sublabel: 'Platform governance votes — propose changes to how Lobby Market works and let the community decide',
+    href: '/civic-referendums',
+    icon: Gavel,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
   },
   {
     type: 'link',
