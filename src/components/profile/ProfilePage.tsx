@@ -9,6 +9,7 @@ import {
   Clock,
   MessageSquare,
   Scale,
+  Star,
   Swords,
   Target,
   Trophy,
@@ -631,6 +632,27 @@ export function ProfilePage({
                 </div>
                 <p className="text-xs font-mono text-surface-500 mt-2">
                   Category breakdown, voting accuracy, argument quality, and how {profile.display_name ?? profile.username}&apos;s civic engagement compares to the platform.
+                </p>
+              </Link>
+
+              {/* Law Reviews teaser */}
+              <Link
+                href={`/profile/${profile.username}/reviews`}
+                className="block rounded-2xl border border-surface-300 bg-surface-100 hover:bg-surface-200 hover:border-surface-400 transition-colors p-5"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Star className="h-4 w-4 text-gold" aria-hidden="true" />
+                    <h3 className="text-[11px] font-mono text-surface-400 uppercase tracking-wider">
+                      Law Reviews
+                    </h3>
+                  </div>
+                  <span className="text-[10px] font-mono text-surface-500 hover:text-white transition-colors">
+                    View reviews →
+                  </span>
+                </div>
+                <p className="text-xs font-mono text-surface-500 mt-2">
+                  Star ratings and written reviews {profile.display_name ?? profile.username} has left on established laws — reflecting on civic outcomes in practice.
                 </p>
               </Link>
 
