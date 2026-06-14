@@ -64,6 +64,7 @@ const navItems: NavItem[] = [
   { href: '/oracle', label: 'The Oracle', icon: Eye },
   { href: '/checker', label: 'Claim Checker', icon: Scale },
   { href: '/galaxy', label: 'Galaxy', icon: Orbit },
+  { href: '/explore', label: 'Explore Features', icon: Layers },
   { href: '/trending', label: 'Trending', icon: TrendingUp },
   { href: '/futures', label: 'Civic Futures', icon: CalendarClock },
   { href: '/surge', label: 'Surge', icon: Flame },

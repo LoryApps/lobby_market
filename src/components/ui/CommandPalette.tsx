@@ -1973,6 +1973,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'explore',
+    label: 'Explore',
+    sublabel: 'Browse all Lobby Market features — AI tools, games, analytics, and more',
+    href: '/explore',
+    icon: Layers,
+    iconColor: 'text-for-300',
+    iconBg: 'bg-for-400/10',
+  },
+  {
+    type: 'link',
     id: 'discover',
     label: 'Discover',
     sublabel: 'Suggested people, hot topics, debates, and new laws',
