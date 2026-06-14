@@ -358,10 +358,10 @@ function LeaderboardPanel({ leaders }: { leaders: RepLeader[] }) {
           Top Citizens
         </h2>
         <Link
-          href="/leaderboard"
+          href="/leaderboard/reputation"
           className="text-xs font-mono text-for-400 hover:text-for-300 transition-colors flex items-center gap-1"
         >
-          Full leaderboard <ArrowRight className="h-3 w-3" />
+          Full ranking <ArrowRight className="h-3 w-3" />
         </Link>
       </div>
 

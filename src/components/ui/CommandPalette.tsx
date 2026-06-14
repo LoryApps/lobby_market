@@ -3305,6 +3305,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'leaderboard-reputation',
+    label: 'Reputation Leaderboard',
+    sublabel: 'Citizens ranked by civic reputation — votes cast, topics authored, and laws passed',
+    href: '/leaderboard/reputation',
+    icon: Shield,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
     id: 'leaderboard-dissent',
     label: 'The Dissent Index',
     sublabel: 'The Lobby\'s most principled contrarians — citizens who vote in the minority and argue their case anyway',
