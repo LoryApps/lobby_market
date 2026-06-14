@@ -168,6 +168,18 @@ export default async function LawIndexPage() {
               </Link>
 
               <Link
+                href="/law/reviews"
+                className={cn(
+                  'inline-flex items-center gap-2 px-3 py-2 rounded-lg',
+                  'bg-gold/10 border border-gold/30 text-gold text-xs font-mono font-medium',
+                  'hover:bg-gold/20 hover:border-gold/50 transition-colors'
+                )}
+              >
+                <BookOpen className="h-4 w-4" />
+                <span className="hidden sm:inline">Reviews</span>
+              </Link>
+
+              <Link
                 href="/law/conflicts"
                 className={cn(
                   'inline-flex items-center gap-2 px-3 py-2 rounded-lg',
