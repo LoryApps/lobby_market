@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Activity,
+  Clock,
   MessageSquare,
   Scale,
   Swords,
@@ -566,6 +567,27 @@ export function ProfilePage({
                 </div>
                 <p className="text-xs font-mono text-surface-500 mt-2">
                   Every weekly top-3 finish {profile.display_name ?? profile.username} has earned — medals, categories, scores, and career highlights.
+                </p>
+              </Link>
+
+              {/* Civic Timeline teaser */}
+              <Link
+                href={`/profile/${profile.username}/timeline`}
+                className="block rounded-2xl border border-surface-300 bg-surface-100 hover:bg-surface-200 hover:border-surface-400 transition-colors p-5"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Clock className="h-4 w-4 text-for-300" aria-hidden="true" />
+                    <h3 className="text-[11px] font-mono text-surface-400 uppercase tracking-wider">
+                      Civic Timeline
+                    </h3>
+                  </div>
+                  <span className="text-[10px] font-mono text-surface-500 hover:text-white transition-colors">
+                    View timeline →
+                  </span>
+                </div>
+                <p className="text-xs font-mono text-surface-500 mt-2">
+                  Every vote, argument, debate, achievement, and coalition join — the full chronological record of {profile.display_name ?? profile.username}&apos;s civic journey.
                 </p>
               </Link>
 
