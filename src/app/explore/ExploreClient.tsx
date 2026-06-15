@@ -271,6 +271,7 @@ const SECTIONS: FeatureSection[] = [
       { href: '/bookmarks', label: 'Bookmarks', description: 'Topics and arguments you\'ve saved to read later.', icon: BookMarked },
       { href: '/predictions', label: 'Your Predictions', description: 'Track your forecast accuracy on active and resolved topics.', icon: Target },
       { href: '/settings', label: 'Settings', description: 'Notification preferences, push settings, and account options.', icon: Settings },
+      { href: '/badge', label: 'Civic Badge', description: 'Generate a shareable stats badge for GitHub READMEs, forums, and social bios.', icon: Share2, isNew: true },
     ],
   },
   {

@@ -423,17 +423,25 @@ export default function ProfileSettingsPage() {
             </div>
           )}
 
-          <button
-            type="submit"
-            disabled={saving}
-            className={cn(
-              'inline-flex items-center gap-2 rounded-lg bg-for-600 hover:bg-for-700 px-4 py-2.5 text-sm font-semibold text-white transition-colors',
-              saving && 'opacity-60 cursor-not-allowed',
-            )}
-          >
-            <Save className="h-4 w-4" aria-hidden="true" />
-            {saving ? 'Saving…' : 'Save changes'}
-          </button>
+          <div className="flex items-center gap-3 flex-wrap">
+            <button
+              type="submit"
+              disabled={saving}
+              className={cn(
+                'inline-flex items-center gap-2 rounded-lg bg-for-600 hover:bg-for-700 px-4 py-2.5 text-sm font-semibold text-white transition-colors',
+                saving && 'opacity-60 cursor-not-allowed',
+              )}
+            >
+              <Save className="h-4 w-4" aria-hidden="true" />
+              {saving ? 'Saving…' : 'Save changes'}
+            </button>
+            <Link
+              href="/badge"
+              className="inline-flex items-center gap-2 rounded-lg bg-surface-200 hover:bg-surface-300 border border-surface-300 px-4 py-2.5 text-sm font-semibold text-surface-700 hover:text-white transition-colors"
+            >
+              Generate civic badge →
+            </Link>
+          </div>
         </form>
       </main>
       <BottomNav />
