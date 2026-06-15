@@ -7,6 +7,7 @@ import {
   Activity,
   BarChart2,
   Clock,
+  Link2,
   MessageSquare,
   Scale,
   Star,
@@ -653,6 +654,27 @@ export function ProfilePage({
                 </div>
                 <p className="text-xs font-mono text-surface-500 mt-2">
                   Star ratings and written reviews {profile.display_name ?? profile.username} has left on established laws — reflecting on civic outcomes in practice.
+                </p>
+              </Link>
+
+              {/* Civic Relays */}
+              <Link
+                href={`/profile/${profile.username}/relays`}
+                className="block rounded-2xl border border-surface-300 bg-surface-100 hover:bg-surface-200 hover:border-surface-400 transition-colors p-5"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Link2 className="h-4 w-4 text-purple" aria-hidden="true" />
+                    <h3 className="text-[11px] font-mono text-surface-400 uppercase tracking-wider">
+                      Civic Relays
+                    </h3>
+                  </div>
+                  <span className="text-[10px] font-mono text-surface-500 hover:text-white transition-colors">
+                    View relays →
+                  </span>
+                </div>
+                <p className="text-xs font-mono text-surface-500 mt-2">
+                  Collaborative argument chains {profile.display_name ?? profile.username} has started or contributed legs to — collective cases built with fellow citizens.
                 </p>
               </Link>
 
