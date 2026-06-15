@@ -28,9 +28,10 @@ export const metadata: Metadata = {
   alternates: {
     types: {
       'application/rss+xml': [
-        { url: 'https://lobby.market/api/rss',         title: 'Lobby Market — Laws & Active Topics' },
-        { url: 'https://lobby.market/api/rss/laws',    title: 'Lobby Market — Established Laws' },
-        { url: 'https://lobby.market/api/rss/debates', title: 'Lobby Market — Live & Upcoming Debates' },
+        { url: 'https://lobby.market/api/rss',              title: 'Lobby Market — Laws & Active Topics' },
+        { url: 'https://lobby.market/api/rss/laws',         title: 'Lobby Market — Established Laws' },
+        { url: 'https://lobby.market/api/rss/debates',      title: 'Lobby Market — Live & Upcoming Debates' },
+        { url: 'https://lobby.market/api/rss/arguments',    title: 'Lobby Market — Top Arguments' },
       ],
     },
   },

@@ -26,6 +26,7 @@ import {
   Leaf,
   LayoutGrid,
   Lightbulb,
+  MessageSquare,
   Mic,
   Music2,
   Rss,
@@ -90,6 +91,17 @@ const MAIN_FEEDS: FeedEntry[] = [
     iconBorder: 'border-purple/30',
     tag: 'Debates',
     tagColor: 'bg-purple/20 text-purple border-purple/40',
+  },
+  {
+    title: 'Top Arguments',
+    description: 'The most upvoted FOR and AGAINST arguments from the past 7 days — the sharpest civic reasoning on the platform.',
+    url: `${BASE}/api/rss/arguments`,
+    icon: MessageSquare,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+    iconBorder: 'border-emerald/30',
+    tag: 'Arguments',
+    tagColor: 'bg-emerald/20 text-emerald border-emerald/40',
   },
 ]
 
@@ -447,7 +459,7 @@ export function FeedsClient() {
           </div>
           <p className="text-sm font-mono text-surface-400 leading-relaxed max-w-2xl">
             Subscribe to Lobby Market in your favourite RSS reader — Feedly, Reeder, NetNewsWire, or any app that supports RSS 2.0.
-            Feeds update every few minutes and cover laws, active debates, and every civic category.
+            Feeds update every few minutes and cover laws, active debates, top arguments, and every civic category.
           </p>
         </motion.div>
 
@@ -533,7 +545,7 @@ export function FeedsClient() {
               'Copy any feed URL from the list above.',
               'Open your RSS reader (Feedly, Reeder, NetNewsWire, Inoreader, etc.).',
               'Find “Add feed” or “Subscribe” and paste the URL.',
-              'New laws and active topics will appear automatically.',
+              'New laws, active topics, and top arguments will appear automatically.',
             ].map((step, i) => (
               <li key={i} className="flex items-start gap-2.5 text-xs font-mono text-surface-400">
                 <span className="flex-shrink-0 flex items-center justify-center h-5 w-5 rounded-full bg-for-500/20 text-for-400 font-bold text-[10px] mt-0.5">
