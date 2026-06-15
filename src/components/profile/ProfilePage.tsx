@@ -7,6 +7,7 @@ import {
   Activity,
   BarChart2,
   Clock,
+  Layers,
   Link2,
   MessageSquare,
   Scale,
@@ -675,6 +676,27 @@ export function ProfilePage({
                 </div>
                 <p className="text-xs font-mono text-surface-500 mt-2">
                   Collaborative argument chains {profile.display_name ?? profile.username} has started or contributed legs to — collective cases built with fellow citizens.
+                </p>
+              </Link>
+
+              {/* Topic Collections */}
+              <Link
+                href={`/profile/${profile.username}/collections`}
+                className="block rounded-2xl border border-surface-300 bg-surface-100 hover:bg-surface-200 hover:border-surface-400 transition-colors p-5"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Layers className="h-4 w-4 text-for-400" aria-hidden="true" />
+                    <h3 className="text-[11px] font-mono text-surface-400 uppercase tracking-wider">
+                      Topic Collections
+                    </h3>
+                  </div>
+                  <span className="text-[10px] font-mono text-surface-500 hover:text-white transition-colors">
+                    View collections →
+                  </span>
+                </div>
+                <p className="text-xs font-mono text-surface-500 mt-2">
+                  Curated reading lists of civic debates {profile.display_name ?? profile.username} has organised — handpicked topics by theme, category, or personal interest.
                 </p>
               </Link>
 
