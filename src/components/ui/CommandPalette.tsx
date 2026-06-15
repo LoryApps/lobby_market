@@ -3235,6 +3235,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'leaderboard-founders',
+    label: 'Founding Citizens',
+    sublabel: 'Citizens ranked by join order — Patriarchs, Pioneers, Vanguard, and Early Citizens who built the Lobby',
+    href: '/leaderboard/founders',
+    icon: Crown,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'leaderboard-legends',
     label: 'Legends Leaderboard',
     sublabel: 'The all-time top citizens — highest lifetime clout, reputation, and civic contribution',
