@@ -8,6 +8,7 @@ import {
   BarChart2,
   Clock,
   Coins,
+  Flag,
   Layers,
   Link2,
   MessageSquare,
@@ -762,6 +763,27 @@ export function ProfilePage({
                 </div>
                 <p className="text-xs font-mono text-surface-500 mt-2">
                   Clout bounties {profile.display_name ?? profile.username} has posted to commission arguments — and rewards won by writing the best civic case.
+                </p>
+              </Link>
+
+              {/* Pledges quick-link */}
+              <Link
+                href={`/profile/${profile.username}/pledges`}
+                className="block rounded-2xl border border-surface-300 bg-surface-100 hover:bg-surface-200 hover:border-surface-400 transition-colors p-5"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Flag className="h-4 w-4 text-emerald" aria-hidden="true" />
+                    <h3 className="text-[11px] font-mono text-surface-400 uppercase tracking-wider">
+                      Civic Pledges
+                    </h3>
+                  </div>
+                  <span className="text-[10px] font-mono text-surface-500 hover:text-white transition-colors">
+                    View pledges →
+                  </span>
+                </div>
+                <p className="text-xs font-mono text-surface-500 mt-2">
+                  Public civic commitments {profile.display_name ?? profile.username} has made — with community witness accountability.
                 </p>
               </Link>
 
