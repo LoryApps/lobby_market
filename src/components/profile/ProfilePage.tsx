@@ -9,6 +9,7 @@ import {
   Clock,
   Coins,
   Flag,
+  Hash,
   Layers,
   Link2,
   MessageSquare,
@@ -784,6 +785,27 @@ export function ProfilePage({
                 </div>
                 <p className="text-xs font-mono text-surface-500 mt-2">
                   Public civic commitments {profile.display_name ?? profile.username} has made — with community witness accountability.
+                </p>
+              </Link>
+
+              {/* Tag Follows quick-link */}
+              <Link
+                href={`/profile/${profile.username}/tags`}
+                className="block rounded-2xl border border-surface-300 bg-surface-100 hover:bg-surface-200 hover:border-surface-400 transition-colors p-5"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Hash className="h-4 w-4 text-purple" aria-hidden="true" />
+                    <h3 className="text-[11px] font-mono text-surface-400 uppercase tracking-wider">
+                      Tag Subscriptions
+                    </h3>
+                  </div>
+                  <span className="text-[10px] font-mono text-surface-500 hover:text-white transition-colors">
+                    View tags →
+                  </span>
+                </div>
+                <p className="text-xs font-mono text-surface-500 mt-2">
+                  Civic topic tags {profile.display_name ?? profile.username} follows — their curated lens on the policy landscape.
                 </p>
               </Link>
 
