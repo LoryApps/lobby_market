@@ -700,6 +700,27 @@ export function ProfilePage({
                 </p>
               </Link>
 
+              {/* Evidence Submissions */}
+              <Link
+                href={`/profile/${profile.username}/evidence`}
+                className="block rounded-2xl border border-surface-300 bg-surface-100 hover:bg-surface-200 hover:border-surface-400 transition-colors p-5"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Link2 className="h-4 w-4 text-purple" aria-hidden="true" />
+                    <h3 className="text-[11px] font-mono text-surface-400 uppercase tracking-wider">
+                      Evidence Submissions
+                    </h3>
+                  </div>
+                  <span className="text-[10px] font-mono text-surface-500 hover:text-white transition-colors">
+                    View sources →
+                  </span>
+                </div>
+                <p className="text-xs font-mono text-surface-500 mt-2">
+                  Research sources and external evidence {profile.display_name ?? profile.username} has submitted to debates — links backing the FOR and AGAINST sides.
+                </p>
+              </Link>
+
               {/* Top arguments preview */}
               {profileArguments.length > 0 && (
                 <div className="rounded-2xl border border-surface-300 bg-surface-100 p-5">
