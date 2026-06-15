@@ -438,17 +438,31 @@ export default function CloutAnalyticsPage() {
               )}
 
               {/* ── CTA row ── */}
-              <div className="flex items-center justify-between rounded-2xl bg-surface-100 border border-gold/20 p-5">
-                <div>
-                  <p className="text-sm font-mono font-semibold text-white">See the full economy</p>
-                  <p className="text-xs font-mono text-surface-500 mt-0.5">Public ledger, gift Clout to fellow citizens</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="flex items-center justify-between rounded-2xl bg-surface-100 border border-gold/20 p-5">
+                  <div>
+                    <p className="text-sm font-mono font-semibold text-white">See the full economy</p>
+                    <p className="text-xs font-mono text-surface-500 mt-0.5">Public ledger, gift Clout to citizens</p>
+                  </div>
+                  <Link
+                    href="/clout"
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gold/10 border border-gold/30 text-gold text-xs font-mono font-semibold hover:bg-gold/20 transition-colors flex-shrink-0"
+                  >
+                    Ledger <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
                 </div>
-                <Link
-                  href="/clout"
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gold/10 border border-gold/30 text-gold text-xs font-mono font-semibold hover:bg-gold/20 transition-colors"
-                >
-                  Clout Ledger <ArrowRight className="h-3.5 w-3.5" />
-                </Link>
+                <div className="flex items-center justify-between rounded-2xl bg-surface-100 border border-gold/20 p-5">
+                  <div>
+                    <p className="text-sm font-mono font-semibold text-white">Clout Rankings</p>
+                    <p className="text-xs font-mono text-surface-500 mt-0.5">Top holders, earners, and givers</p>
+                  </div>
+                  <Link
+                    href="/leaderboard/clout"
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gold/10 border border-gold/30 text-gold text-xs font-mono font-semibold hover:bg-gold/20 transition-colors flex-shrink-0"
+                  >
+                    Rankings <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
+                </div>
               </div>
 
             </motion.div>
