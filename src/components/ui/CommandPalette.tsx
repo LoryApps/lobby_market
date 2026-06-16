@@ -3423,6 +3423,16 @@ const QUICK_LINKS: QuickLink[] = [
     iconColor: 'text-purple',
     iconBg: 'bg-purple/10',
   },
+  {
+    type: 'link',
+    id: 'leaderboard-proposals',
+    label: 'Proposal Makers',
+    sublabel: 'Citizens ranked by the success of their topic proposals — laws passed, voting phases reached, and overall traction',
+    href: '/leaderboard/proposals',
+    icon: Wand2,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
 
   // ─── Law sub-pages ────────────────────────────────────────────────────────
   {

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { BarChart2, BookOpen, Brain, Calendar, CalendarDays, Clock, Coins, Crown, Edit3, FileText, Flame, FlaskConical, Gavel, GitMerge, Globe, GraduationCap, Hash, Link2, MessageSquare, Mic, Network, PenLine, Rocket, Scroll, Shield, Shuffle, Sparkles, Star, Swords, Target, Trophy } from 'lucide-react'
+import { BarChart2, BookOpen, Brain, Calendar, CalendarDays, Clock, Coins, Crown, Edit3, FileText, Flame, FlaskConical, Gavel, GitMerge, Globe, GraduationCap, Hash, Link2, MessageSquare, Mic, Network, PenLine, Rocket, Scroll, Shield, Shuffle, Sparkles, Star, Swords, Target, Trophy, Wand2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -933,10 +933,42 @@ export default async function LeaderboardPage() {
               <div>
                 <p className="font-mono text-base font-semibold text-white flex items-center gap-2">
                   Civic Depth League
-                  <span className="text-[10px] font-mono text-purple bg-purple/15 border border-purple/30 px-1.5 py-0.5 rounded-md uppercase tracking-wide">New</span>
                 </p>
                 <p className="text-sm font-mono text-surface-500 mt-0.5">
                   Quality over quantity — argument grades, citations, evidence, and wiki contributions combined.
+                </p>
+              </div>
+            </div>
+            <svg
+              className="h-5 w-5 text-surface-500 group-hover:text-surface-300 transition-colors flex-shrink-0"
+              viewBox="0 0 20 20"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.5}
+              aria-hidden
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 4l5 6-5 6" />
+            </svg>
+          </Link>
+        </section>
+
+        {/* Proposal Makers link */}
+        <section className="mt-6">
+          <Link
+            href="/leaderboard/proposals"
+            className="flex items-center justify-between rounded-2xl border border-gold/30 bg-gold/5 px-6 py-5 hover:bg-gold/10 transition-colors group"
+          >
+            <div className="flex items-center gap-4">
+              <div className="flex items-center justify-center h-11 w-11 rounded-xl bg-gold/10 border border-gold/30 flex-shrink-0">
+                <Wand2 className="h-5 w-5 text-gold" />
+              </div>
+              <div>
+                <p className="font-mono text-base font-semibold text-white flex items-center gap-2">
+                  Proposal Makers
+                  <span className="text-[10px] font-mono text-gold bg-gold/15 border border-gold/30 px-1.5 py-0.5 rounded-md uppercase tracking-wide">New</span>
+                </p>
+                <p className="text-sm font-mono text-surface-500 mt-0.5">
+                  Citizens ranked by the success of the civic topics they&apos;ve submitted — laws, votes, and traction.
                 </p>
               </div>
             </div>
