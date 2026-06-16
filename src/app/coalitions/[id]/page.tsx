@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { ArrowLeft, BarChart2, Clock, Crown, ScrollText, Shield, Swords, Trophy, Users, Zap, Target } from 'lucide-react'
+import { ArrowLeft, BarChart2, Clock, Crown, Mic, ScrollText, Shield, Swords, Trophy, Users, Zap, Target } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { CoalitionManagePanel } from '@/components/lobby/CoalitionManagePanel'
 import { CoalitionBulletinBoard } from '@/components/lobby/CoalitionBulletinBoard'
@@ -480,9 +480,29 @@ export default async function CoalitionPage({ params }: CoalitionPageProps) {
             <ArrowLeft className="h-4 w-4 text-surface-500 rotate-180 group-hover:text-for-400 transition-colors" />
           </Link>
           <Link
+            href={`/coalitions/${typedCoalition.id}/debates`}
+            className={cn(
+              'flex items-center justify-between rounded-xl border border-surface-300 bg-surface-100 px-4 py-3',
+              'hover:border-for-400/40 hover:bg-surface-200 transition-colors group',
+            )}
+          >
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-for-400/10 border border-for-400/20 text-for-400">
+                <Mic className="h-4 w-4" />
+              </div>
+              <div>
+                <div className="font-mono text-sm font-semibold text-white">Debate Stage</div>
+                <div className="font-mono text-[11px] text-surface-500">
+                  Debates &amp; win/loss record
+                </div>
+              </div>
+            </div>
+            <ArrowLeft className="h-4 w-4 text-surface-500 rotate-180 group-hover:text-for-400 transition-colors" />
+          </Link>
+          <Link
             href={`/coalitions/${typedCoalition.id}/challenges`}
             className={cn(
-              'col-span-2 flex items-center justify-between rounded-xl border border-surface-300 bg-surface-100 px-4 py-3',
+              'flex items-center justify-between rounded-xl border border-surface-300 bg-surface-100 px-4 py-3',
               'hover:border-against-500/40 hover:bg-surface-200 transition-colors group',
             )}
           >
@@ -493,7 +513,7 @@ export default async function CoalitionPage({ params }: CoalitionPageProps) {
               <div>
                 <div className="font-mono text-sm font-semibold text-white">Challenge Board</div>
                 <div className="font-mono text-[11px] text-surface-500">
-                  Issue &amp; respond to inter-coalition debate challenges
+                  Issue &amp; respond to challenges
                 </div>
               </div>
             </div>
