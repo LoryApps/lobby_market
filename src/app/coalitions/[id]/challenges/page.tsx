@@ -30,6 +30,7 @@ import {
   Clock,
   Coins,
   Flame,
+  Globe,
   Loader2,
   Plus,
   RefreshCw,
@@ -736,6 +737,14 @@ export default function CoalitionChallengesPage() {
           </div>
 
           <div className="flex items-center gap-2">
+            <Link
+              href="/coalitions/clashes"
+              className="flex items-center justify-center h-9 w-9 rounded-xl bg-surface-100 border border-surface-300/60 text-surface-500 hover:text-white hover:bg-surface-200 transition-colors"
+              aria-label="Global clashes"
+              title="All coalition clashes"
+            >
+              <Globe className="h-4 w-4" />
+            </Link>
             <Link
               href={`/coalitions/${coalitionId}/analytics`}
               className="flex items-center justify-center h-9 w-9 rounded-xl bg-surface-100 border border-surface-300/60 text-surface-500 hover:text-white hover:bg-surface-200 transition-colors"
