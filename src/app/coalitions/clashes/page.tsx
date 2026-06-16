@@ -31,6 +31,7 @@ import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   ArrowLeft,
+  ArrowRight,
   Coins,
   Crown,
   ExternalLink,
@@ -316,18 +317,27 @@ function ClashCard({ challenge }: { challenge: GlobalChallenge }) {
           </Link>
           {' · '}{relativeTime(challenge.createdAt)}
         </p>
-        {challenge.status === 'resolved' && challenge.winnerName && (
-          <span className="flex items-center gap-1 text-[11px] font-mono font-semibold text-gold">
-            <Trophy className="h-3 w-3" />
-            {challenge.winnerName} won
-          </span>
-        )}
-        {challenge.status === 'resolved' && !challenge.winnerName && (
-          <span className="flex items-center gap-1 text-[11px] font-mono text-surface-500">
-            <XCircle className="h-3 w-3" />
-            No winner declared
-          </span>
-        )}
+        <div className="flex items-center gap-3">
+          {challenge.status === 'resolved' && challenge.winnerName && (
+            <span className="flex items-center gap-1 text-[11px] font-mono font-semibold text-gold">
+              <Trophy className="h-3 w-3" />
+              {challenge.winnerName} won
+            </span>
+          )}
+          {challenge.status === 'resolved' && !challenge.winnerName && (
+            <span className="flex items-center gap-1 text-[11px] font-mono text-surface-500">
+              <XCircle className="h-3 w-3" />
+              No winner declared
+            </span>
+          )}
+          <Link
+            href={`/coalitions/clashes/${challenge.id}`}
+            className="flex items-center gap-0.5 text-[11px] font-mono font-semibold text-for-400 hover:text-for-300 transition-colors"
+          >
+            Details
+            <ArrowRight className="h-3 w-3" />
+          </Link>
+        </div>
       </div>
     </motion.div>
   )
