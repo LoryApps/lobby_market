@@ -576,6 +576,9 @@ export type Database = {
           max_members: number;
           created_at: string;
           updated_at: string;
+          constitution_md: string | null;
+          constitution_updated_at: string | null;
+          constitution_updated_by: string | null;
         };
         Insert: {
           id?: string;
@@ -590,6 +593,9 @@ export type Database = {
           max_members?: number;
           created_at?: string;
           updated_at?: string;
+          constitution_md?: string | null;
+          constitution_updated_at?: string | null;
+          constitution_updated_by?: string | null;
         };
         Update: {
           id?: string;
@@ -604,8 +610,53 @@ export type Database = {
           max_members?: number;
           created_at?: string;
           updated_at?: string;
+          constitution_md?: string | null;
+          constitution_updated_at?: string | null;
+          constitution_updated_by?: string | null;
         };
         Relationships: [];
+      };
+      coalition_constitution_revisions: {
+        Row: {
+          id: string;
+          coalition_id: string;
+          author_id: string;
+          body_md: string;
+          edit_summary: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          coalition_id: string;
+          author_id: string;
+          body_md: string;
+          edit_summary?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          coalition_id?: string;
+          author_id?: string;
+          body_md?: string;
+          edit_summary?: string | null;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "coalition_constitution_revisions_coalition_id_fkey";
+            columns: ["coalition_id"];
+            isOneToOne: false;
+            referencedRelation: "coalitions";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "coalition_constitution_revisions_author_id_fkey";
+            columns: ["author_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          }
+        ];
       };
       coalition_members: {
         Row: {
