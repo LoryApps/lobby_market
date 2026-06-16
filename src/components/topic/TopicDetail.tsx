@@ -84,6 +84,7 @@ import { TopicEvidencePanel } from '@/components/topic/TopicEvidencePanel'
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary'
 import { ArgumentQualityPanel } from '@/components/topic/ArgumentQualityPanel'
 import { TopicCorrelationsPanel } from '@/components/topic/TopicCorrelationsPanel'
+import { TopicResolutionBanner } from '@/components/topic/TopicResolutionBanner'
 
 const SIGNAL_ICONS_DETAIL: Record<string, typeof Flame> = {
   ending_soon:     Clock,
@@ -97,6 +98,8 @@ const SIGNAL_ICONS_DETAIL: Record<string, typeof Flame> = {
 interface TopicDetailProps {
   initialTopic: Topic
   author: Profile | null
+  lawId?: string | null
+  establishedAt?: string | null
 }
 
 const statusLabel: Record<string, string> = {
@@ -121,7 +124,7 @@ const statusBadgeVariant: Record<string, 'proposed' | 'active' | 'law' | 'failed
 
 type TopicTab = 'details' | 'arguments' | 'chat' | 'lobbies' | 'bounties' | 'evidence'
 
-export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
+export function TopicDetail({ initialTopic, author, lawId, establishedAt }: TopicDetailProps) {
   const router = useRouter()
   const [topic, setTopic] = useState<Topic>(initialTopic)
   const [hasSupported, setHasSupported] = useState(false)
@@ -742,13 +745,17 @@ export function TopicDetail({ initialTopic, author }: TopicDetailProps) {
               </div>
             )}
 
-            {/* Law badge */}
-            {topic.status === 'law' && (
-              <div className="flex justify-center mb-8">
-                <Badge variant="law" className="text-lg px-6 py-2">
-                  LAW
-                </Badge>
-              </div>
+            {/* Resolution banner — law or failed */}
+            {(topic.status === 'law' || topic.status === 'failed') && (
+              <TopicResolutionBanner
+                status={topic.status as 'law' | 'failed'}
+                lawId={topic.status === 'law' ? lawId : null}
+                establishedAt={topic.status === 'law' ? establishedAt : null}
+                failedAt={topic.status === 'failed' ? (topic as { voting_ends_at?: string | null }).voting_ends_at : null}
+                forPct={topic.blue_pct ?? 50}
+                totalVotes={topic.total_votes ?? 0}
+                topicId={topic.id}
+              />
             )}
 
             {/* Metadata */}

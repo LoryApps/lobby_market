@@ -4,6 +4,11 @@ import { createClient } from '@/lib/supabase/server'
 import { TopicDetail } from '@/components/topic/TopicDetail'
 import type { Topic, Profile } from '@/lib/supabase/types'
 
+interface LawRow {
+  id: string
+  established_at: string | null
+}
+
 interface TopicPageProps {
   params: { id: string }
 }
@@ -102,6 +107,21 @@ export default async function TopicPage({ params }: TopicPageProps) {
     .eq('id', topic.author_id)
     .single()
 
+  // For resolved topics, look up the law document (id + established_at)
+  let lawId: string | null = null
+  let establishedAt: string | null = null
+  if (topic.status === 'law') {
+    const { data: law } = await supabase
+      .from('laws')
+      .select('id, established_at')
+      .eq('topic_id', params.id)
+      .maybeSingle()
+    if (law) {
+      lawId = (law as LawRow).id
+      establishedAt = (law as LawRow).established_at
+    }
+  }
+
   const typedTopic = topic as Topic
   const forPct = Math.round(typedTopic.blue_pct ?? 50)
   const description = (typedTopic as { description?: string | null }).description
@@ -156,6 +176,8 @@ export default async function TopicPage({ params }: TopicPageProps) {
       <TopicDetail
         initialTopic={typedTopic}
         author={(author as Profile) ?? null}
+        lawId={lawId}
+        establishedAt={establishedAt}
       />
     </>
   )
