@@ -479,6 +479,26 @@ export default async function CoalitionPage({ params }: CoalitionPageProps) {
             </div>
             <ArrowLeft className="h-4 w-4 text-surface-500 rotate-180 group-hover:text-against-400 transition-colors" />
           </Link>
+          <Link
+            href={`/coalitions/${typedCoalition.id}/members`}
+            className={cn(
+              'col-span-2 flex items-center justify-between rounded-xl border border-surface-300 bg-surface-100 px-4 py-3',
+              'hover:border-purple/40 hover:bg-surface-200 transition-colors group',
+            )}
+          >
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-purple/10 border border-purple/20 text-purple">
+                <Users className="h-4 w-4" />
+              </div>
+              <div>
+                <div className="font-mono text-sm font-semibold text-white">Member Directory</div>
+                <div className="font-mono text-[11px] text-surface-500">
+                  Full roster, roles, clout, and invite management
+                </div>
+              </div>
+            </div>
+            <ArrowLeft className="h-4 w-4 text-surface-500 rotate-180 group-hover:text-purple transition-colors" />
+          </Link>
         </div>
 
         {/* ── Members + Management Panel ─────────────────────────────── */}
