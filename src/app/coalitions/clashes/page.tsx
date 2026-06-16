@@ -331,6 +331,13 @@ function ClashCard({ challenge }: { challenge: GlobalChallenge }) {
             </span>
           )}
           <Link
+            href={`/coalitions/rivalry/${challenge.challengerId}/vs/${challenge.challengedId}`}
+            className="flex items-center gap-0.5 text-[11px] font-mono text-surface-500 hover:text-purple transition-colors"
+          >
+            <Swords className="h-3 w-3 mr-0.5" />
+            Rivalry
+          </Link>
+          <Link
             href={`/coalitions/clashes/${challenge.id}`}
             className="flex items-center gap-0.5 text-[11px] font-mono font-semibold text-for-400 hover:text-for-300 transition-colors"
           >

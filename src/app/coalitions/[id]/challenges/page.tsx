@@ -27,6 +27,7 @@ import {
   ArrowLeft,
   BarChart2,
   Check,
+  ChevronRight,
   Clock,
   Coins,
   Flame,
@@ -252,6 +253,14 @@ function ChallengeCard({ challenge, coalitionId, role, onRespond, responding }: 
             <span>{winnerName} won</span>
           </div>
         )}
+        <Link
+          href={`/coalitions/rivalry/${challenge.challengerId}/vs/${challenge.challengedId}`}
+          className="flex items-center gap-1 text-[10px] font-mono text-surface-500 hover:text-purple transition-colors"
+        >
+          <Swords className="h-3 w-3" />
+          Rivalry
+          <ChevronRight className="h-3 w-3" />
+        </Link>
         <div className="ml-auto flex items-center gap-1.5">
           <Avatar
             src={challenge.issuedByAvatarUrl}
