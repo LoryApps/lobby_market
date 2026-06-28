@@ -7,6 +7,7 @@ const MAX_DESCRIPTION_LENGTH = 500
 
 // GET /api/coalitions
 // Optional ?limit=... caps results (default 30, max 100).
+// Optional ?search=... filters by coalition name (case-insensitive substring).
 export async function GET(request: NextRequest) {
   const supabase = await createClient()
   const url = new URL(request.url)
@@ -14,14 +15,21 @@ export async function GET(request: NextRequest) {
   const limit = Number.isFinite(rawLimit)
     ? Math.min(Math.max(rawLimit, 1), 100)
     : 30
+  const search = url.searchParams.get('search')?.trim() ?? ''
 
-  const { data: rows, error } = await supabase
+  let query = supabase
     .from('coalitions')
     .select('*')
     .eq('is_public', true)
     .order('coalition_influence', { ascending: false })
     .order('member_count', { ascending: false })
     .limit(limit)
+
+  if (search) {
+    query = query.ilike('name', `%${search}%`)
+  }
+
+  const { data: rows, error } = await query
 
   if (error) {
     return NextResponse.json(
