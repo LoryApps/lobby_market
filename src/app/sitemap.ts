@@ -177,6 +177,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/battleground`, changeFrequency: 'always', priority: 0.8 },
   { url: `${BASE_URL}/mosaic`, changeFrequency: 'always', priority: 0.78 },
   { url: `${BASE_URL}/relay`, changeFrequency: 'always', priority: 0.80 },
+  { url: `${BASE_URL}/assembly`, changeFrequency: 'always', priority: 0.82 },
   { url: `${BASE_URL}/referendum`, changeFrequency: 'always', priority: 0.82 },
   { url: `${BASE_URL}/civic-referendums`, changeFrequency: 'daily', priority: 0.80 },
   { url: `${BASE_URL}/public-record`, changeFrequency: 'daily', priority: 0.75 },
