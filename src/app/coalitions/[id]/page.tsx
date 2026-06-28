@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { ArrowLeft, BarChart2, Clock, Crown, Mic, ScrollText, Shield, Swords, Target, Trophy, Users, Zap } from 'lucide-react'
+import { ArrowLeft, BarChart2, Clock, Crown, Handshake, Mic, ScrollText, Shield, Swords, Target, Trophy, Users, Zap } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { CoalitionManagePanel } from '@/components/lobby/CoalitionManagePanel'
 import { CoalitionBulletinBoard } from '@/components/lobby/CoalitionBulletinBoard'
@@ -598,6 +598,26 @@ export default async function CoalitionPage({ params }: CoalitionPageProps) {
               </div>
             </div>
             <ArrowLeft className="h-4 w-4 text-surface-500 rotate-180 group-hover:text-purple transition-colors" />
+          </Link>
+          <Link
+            href={`/coalitions/${typedCoalition.id}/treaties`}
+            className={cn(
+              'col-span-2 flex items-center justify-between rounded-xl border border-surface-300 bg-surface-100 px-4 py-3',
+              'hover:border-for-500/40 hover:bg-surface-200 transition-colors group',
+            )}
+          >
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-for-500/10 border border-for-500/20 text-for-400">
+                <Handshake className="h-4 w-4" />
+              </div>
+              <div>
+                <div className="font-mono text-sm font-semibold text-white">Treaties</div>
+                <div className="font-mono text-[11px] text-surface-500">
+                  Diplomatic agreements with allied coalitions
+                </div>
+              </div>
+            </div>
+            <ArrowLeft className="h-4 w-4 text-surface-500 rotate-180 group-hover:text-for-400 transition-colors" />
           </Link>
         </div>
 
