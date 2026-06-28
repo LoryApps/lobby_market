@@ -322,10 +322,23 @@ function RelayCard({
                   </span>
                 )}
 
+                <Link
+                  href={`/relay/${relay.id}`}
+                  className={cn(
+                    'inline-flex items-center gap-1 text-xs text-surface-500 hover:text-white transition-colors',
+                    !relay.topic_id && 'ml-auto'
+                  )}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <Link2 className="h-3 w-3" />
+                  Permalink
+                </Link>
+
                 {relay.topic_id && (
                   <Link
                     href={`/topic/${relay.topic_id}`}
                     className="ml-auto inline-flex items-center gap-1 text-xs text-surface-500 hover:text-white transition-colors"
+                    onClick={(e) => e.stopPropagation()}
                   >
                     <ExternalLink className="h-3 w-3" />
                     Topic

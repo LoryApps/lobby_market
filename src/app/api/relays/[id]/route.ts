@@ -1,7 +1,108 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import type { RelayRow, RelayLeg } from '@/app/api/relays/route'
 
 export const dynamic = 'force-dynamic'
+
+// ─── GET /api/relays/[id] — Fetch single relay ────────────────────────────────
+
+export async function GET(
+  _req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const supabase = await createClient()
+  const relayId = params.id
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  const { data: raw } = await supabase
+    .from('civic_relays')
+    .select('*')
+    .eq('id', relayId)
+    .single()
+
+  if (!raw) {
+    return NextResponse.json({ error: 'Relay not found' }, { status: 404 })
+  }
+
+  // Fetch starter profile
+  const { data: starter } = await supabase
+    .from('profiles')
+    .select('id, username, display_name, avatar_url, role')
+    .eq('id', raw.starter_id)
+    .single()
+
+  // Fetch topic
+  let topic: { id: string; statement: string; category: string | null; status: string } | null = null
+  if (raw.topic_id) {
+    const { data: t } = await supabase
+      .from('topics')
+      .select('id, statement, category, status, blue_pct, total_votes')
+      .eq('id', raw.topic_id)
+      .single()
+    topic = t
+  }
+
+  // Fetch legs with authors
+  const { data: legsRaw } = await supabase
+    .from('relay_legs')
+    .select('*, profiles:author_id(id, username, display_name, avatar_url, role)')
+    .eq('relay_id', relayId)
+    .order('leg_number', { ascending: true })
+
+  const legs: RelayLeg[] = (legsRaw ?? []).map((leg) => ({
+    id: leg.id,
+    relay_id: leg.relay_id,
+    author_id: leg.author_id,
+    leg_number: leg.leg_number,
+    content: leg.content,
+    created_at: leg.created_at,
+    author: (leg as { profiles?: RelayLeg['author'] }).profiles ?? null,
+  }))
+
+  // User vote
+  let user_vote: 'compelling' | 'not_compelling' | null = null
+  let user_has_leg = false
+  if (user) {
+    const { data: voteData } = await supabase
+      .from('relay_votes')
+      .select('vote')
+      .eq('relay_id', relayId)
+      .eq('voter_id', user.id)
+      .maybeSingle()
+    user_vote = (voteData?.vote as typeof user_vote) ?? null
+    user_has_leg = legs.some((l) => l.author_id === user.id)
+  }
+
+  const relay: RelayRow & { topic_blue_pct?: number; topic_total_votes?: number } = {
+    id: raw.id,
+    topic_id: raw.topic_id,
+    side: raw.side,
+    starter_id: raw.starter_id,
+    status: raw.status,
+    max_legs: raw.max_legs,
+    vote_compelling: raw.vote_compelling ?? 0,
+    vote_not_compelling: raw.vote_not_compelling ?? 0,
+    created_at: raw.created_at,
+    completed_at: raw.completed_at ?? null,
+    topic_statement: (topic as { statement?: string } | null)?.statement ?? null,
+    topic_category: (topic as { category?: string | null } | null)?.category ?? null,
+    topic_status: (topic as { status?: string } | null)?.status ?? null,
+    topic_blue_pct: (topic as { blue_pct?: number } | null)?.blue_pct ?? undefined,
+    topic_total_votes: (topic as { total_votes?: number } | null)?.total_votes ?? undefined,
+    starter_username: starter?.username ?? 'unknown',
+    starter_display_name: starter?.display_name ?? null,
+    starter_avatar_url: starter?.avatar_url ?? null,
+    starter_role: starter?.role ?? 'person',
+    legs,
+    user_vote,
+    user_has_leg,
+  }
+
+  return NextResponse.json({ relay })
+}
 
 // ─── POST /api/relays/[id] — Add a leg or vote ────────────────────────────────
 
