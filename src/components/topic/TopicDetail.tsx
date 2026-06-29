@@ -33,6 +33,7 @@ import {
   Users,
   Brain,
   Scroll,
+  Gauge,
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { Topic, Profile, VoteSide } from '@/lib/supabase/types'
@@ -625,6 +626,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                     >
                       <BarChart2 className="h-3.5 w-3.5" />
                       Stats
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/pressure`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-against-400 hover:text-against-300 transition-colors"
+                    >
+                      <Gauge className="h-3.5 w-3.5" />
+                      Pressure
                     </Link>
                     <Link
                       href={`/topic/${topic.id}/activity`}
