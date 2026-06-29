@@ -27,6 +27,8 @@ export type Database = {
           following_count: number;
           civic_archetype: string | null;
           archetype_set_at: string | null;
+          civic_oath_at: string | null;
+          civic_oath_value: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -55,6 +57,8 @@ export type Database = {
           following_count?: number;
           civic_archetype?: string | null;
           archetype_set_at?: string | null;
+          civic_oath_at?: string | null;
+          civic_oath_value?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -83,6 +87,8 @@ export type Database = {
           following_count?: number;
           civic_archetype?: string | null;
           archetype_set_at?: string | null;
+          civic_oath_at?: string | null;
+          civic_oath_value?: string | null;
           created_at?: string;
           updated_at?: string;
         };
