@@ -32,7 +32,7 @@
     "zustand": "^5.0.12"
   },
   "devDependencies": {
-    "@next/swc-linux-x64-gnu": "^16.2.9",
+    "@next/swc-linux-x64-gnu": "14.2.29",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
