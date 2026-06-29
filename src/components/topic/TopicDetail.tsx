@@ -32,6 +32,7 @@ import {
   Trophy,
   Users,
   Brain,
+  Scroll,
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { Topic, Profile, VoteSide } from '@/lib/supabase/types'
@@ -668,6 +669,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                     >
                       <Brain className="h-3.5 w-3.5" />
                       Steelman
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/narrative`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-purple hover:text-purple/80 transition-colors"
+                    >
+                      <Scroll className="h-3.5 w-3.5" />
+                      Narrative arc
                     </Link>
                     <Link
                       href={`/topic/${topic.id}/predictions`}
