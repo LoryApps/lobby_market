@@ -270,9 +270,12 @@ export function CoalitionStancePanel({
           </span>
         </div>
         {totalStances > 0 && (
-          <span className="text-[10px] font-mono text-surface-500">
-            {totalStances} coalition{totalStances !== 1 ? 's' : ''} weighed in
-          </span>
+          <Link
+            href={`/topic/${topicId}/coalitions`}
+            className="text-[10px] font-mono text-surface-500 hover:text-surface-300 transition-colors"
+          >
+            {totalStances} coalition{totalStances !== 1 ? 's' : ''} · View all →
+          </Link>
         )}
       </div>
 
