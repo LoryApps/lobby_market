@@ -186,6 +186,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/public-record`, changeFrequency: 'daily', priority: 0.75 },
   { url: `${BASE_URL}/summit`, changeFrequency: 'always', priority: 0.78 },
   { url: `${BASE_URL}/flashpoint`, changeFrequency: 'always', priority: 0.78 },
+  { url: `${BASE_URL}/hearings`, changeFrequency: 'always', priority: 0.80 },
   { url: `${BASE_URL}/tribunal`, changeFrequency: 'daily', priority: 0.75 },
   { url: `${BASE_URL}/diversity`, changeFrequency: 'weekly', priority: 0.70 },
   { url: `${BASE_URL}/bridge`, changeFrequency: 'weekly', priority: 0.70 },
