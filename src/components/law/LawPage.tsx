@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useMemo, useState } from 'react'
 import {
   ArrowLeft,
+  Ban,
   BarChart2,
   Calendar,
   Edit3,
@@ -410,6 +411,19 @@ export function LawPage({
                 >
                   <Edit3 className="h-3.5 w-3.5" />
                   Amendments
+                </Link>
+                <Link
+                  href="/civic-veto"
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-against-600/10 border border-against-500/30 text-against-400',
+                    'hover:bg-against-600/20 hover:border-against-500/50',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="Challenge this law via Civic Veto"
+                >
+                  <Ban className="h-3.5 w-3.5" />
+                  Veto Chamber
                 </Link>
               </div>
             </div>
