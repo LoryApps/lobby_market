@@ -27,6 +27,7 @@ import {
   Loader2,
   RefreshCw,
   Scale,
+  Scroll,
   Star,
   ThumbsDown,
   ThumbsUp,
@@ -681,6 +682,13 @@ export default function GrandCouncilPage() {
           </div>
 
           <div className="flex items-center gap-2 flex-shrink-0">
+            <Link
+              href="/proclamations"
+              className="flex items-center gap-1.5 h-9 px-3 rounded-xl bg-surface-200 border border-surface-300 text-surface-500 hover:text-white text-xs font-mono font-medium transition-colors"
+            >
+              <Scroll className="h-3.5 w-3.5" />
+              Proclamations
+            </Link>
             <button
               onClick={load}
               disabled={loading}
