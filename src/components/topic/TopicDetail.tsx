@@ -31,6 +31,7 @@ import {
   ThumbsUp,
   Trophy,
   Users,
+  Brain,
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { Topic, Profile, VoteSide } from '@/lib/supabase/types'
@@ -660,6 +661,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                     >
                       <Lightbulb className="h-3.5 w-3.5" />
                       Argument starter
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/steelman`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-purple hover:text-purple/80 transition-colors"
+                    >
+                      <Brain className="h-3.5 w-3.5" />
+                      Steelman
                     </Link>
                     <Link
                       href={`/topic/${topic.id}/predictions`}
