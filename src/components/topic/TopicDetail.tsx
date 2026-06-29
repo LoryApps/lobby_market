@@ -34,6 +34,9 @@ import {
   Brain,
   Scroll,
   Gauge,
+  GitMerge,
+  Shield,
+  Footprints,
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { Topic, Profile, VoteSide } from '@/lib/supabase/types'
@@ -698,6 +701,34 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                     >
                       <Gavel className="h-3.5 w-3.5" />
                       Resolution criteria
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/coalitions`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-for-400 hover:text-for-300 transition-colors"
+                    >
+                      <Shield className="h-3.5 w-3.5" />
+                      Coalition stances
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/continuations`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-emerald hover:text-emerald/80 transition-colors"
+                    >
+                      <GitMerge className="h-3.5 w-3.5" />
+                      Chain continuations
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/contributors`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-gold hover:text-gold/80 transition-colors"
+                    >
+                      <Trophy className="h-3.5 w-3.5" />
+                      Top voices
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/journey`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-purple hover:text-purple/80 transition-colors"
+                    >
+                      <Footprints className="h-3.5 w-3.5" />
+                      My journey
                     </Link>
                   </div>
                 )}
