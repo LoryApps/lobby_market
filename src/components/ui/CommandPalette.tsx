@@ -2183,6 +2183,16 @@ const QUICK_LINKS: QuickLink[] = [
     iconColor: 'text-gold',
     iconBg: 'bg-gold/10',
   },
+  {
+    type: 'link',
+    id: 'oath',
+    label: 'Civic Oath',
+    sublabel: 'Take your one-time pledge of good-faith civic participation',
+    href: '/oath',
+    icon: Shield,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
   // ── Competition ────────────────────────────────────────────────────────────────────────
   {
     type: 'link',
