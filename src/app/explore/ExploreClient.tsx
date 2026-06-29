@@ -254,6 +254,11 @@ const SECTIONS: FeatureSection[] = [
       { href: '/pledges', label: 'Civic Pledge Wall', description: 'Public commitments to civic action, witnessed by the community.', icon: Scroll },
       { href: '/elections', label: 'Civic Elections', description: 'Vote on proposed constitutional changes and major resolutions.', icon: Vote },
       { href: '/referendums', label: 'Civic Referendums', description: 'Community-wide votes on fundamental civic questions.', icon: Scale },
+      { href: '/civic-commons', label: 'The Civic Commons', description: 'All active governance in one place: council, assemblies, referendums, tribunal, elections.', icon: LayoutGrid },
+      { href: '/council', label: 'The Grand Council', description: 'Top-20 citizens propose and vote on civic motions and resolutions.', icon: Crown },
+      { href: '/proclamations', label: 'Proclamations Board', description: 'Permanent record of all Grand Council motions and official decrees.', icon: Scroll },
+      { href: '/assembly', label: 'Citizens\' Assembly', description: 'Sortition-based deliberative bodies tackling contested civic topics.', icon: Users },
+      { href: '/tribunal', label: 'The Civic Tribunal', description: 'Community peer-review of arguments: challenge, deliberate, verdict.', icon: Gavel },
     ],
   },
   {
