@@ -1743,6 +1743,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'ombudsman',
+    label: 'Civic Ombudsman',
+    sublabel: 'Independent civic oversight — file formal complaints about process fairness, decisions, and integrity breaches',
+    href: '/ombudsman',
+    icon: Scale,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
     id: 'amendments',
     label: 'Amendment Chamber',
     sublabel: 'Community proposals to refine and extend established laws — vote to ratify',
