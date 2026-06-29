@@ -4,6 +4,8 @@ import { cn } from '@/lib/utils/cn'
 const variants = {
   default:
     'bg-surface-200 text-surface-700 hover:bg-surface-300',
+  secondary:
+    'bg-surface-200 border border-surface-300 text-surface-400 hover:bg-surface-300 hover:text-white',
   for: 'bg-for-600 text-white hover:bg-for-700',
   against:
     'bg-against-600 text-white hover:bg-against-700',

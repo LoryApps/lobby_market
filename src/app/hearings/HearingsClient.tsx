@@ -633,6 +633,18 @@ function HearingCard({ hearing: initialHearing }: { hearing: HearingRow }) {
                   )}
                 </div>
               )}
+
+              {/* Link to full detail page */}
+              <div className="border-t border-surface-300 pt-3 mt-3">
+                <Link
+                  href={`/hearings/${hearing.id}`}
+                  className="inline-flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-white transition-colors"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <BookOpen className="h-3 w-3" />
+                  View full hearing record
+                </Link>
+              </div>
             </div>
           </motion.div>
         )}
