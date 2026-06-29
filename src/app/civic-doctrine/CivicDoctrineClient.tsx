@@ -573,7 +573,7 @@ function AffirmationBanner() {
           Your commitment to these principles is part of the Lobby&apos;s foundation.
         </p>
         <Link
-          href="/civic-oath"
+          href="/oath"
           className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-emerald/30 bg-emerald/10 text-emerald text-sm font-mono font-semibold hover:bg-emerald/20 transition-colors"
         >
           Take the Civic Oath
@@ -633,7 +633,7 @@ function AffirmationBanner() {
           I affirm these principles
         </button>
         <Link
-          href="/civic-oath"
+          href="/oath"
           className={cn(
             'flex items-center justify-center gap-2 px-5 py-3 rounded-xl',
             'bg-surface-200 hover:bg-surface-300 border border-surface-300',
