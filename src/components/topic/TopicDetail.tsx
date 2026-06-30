@@ -839,6 +839,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                       <MessageSquare className="h-3.5 w-3.5" />
                       Threads
                     </Link>
+                    <Link
+                      href={`/topic/${topic.id}/dissent`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-white transition-colors"
+                    >
+                      <Scale className="h-3.5 w-3.5" />
+                      Dissent
+                    </Link>
                   </div>
                 )}
                 <VoteButton
