@@ -78,7 +78,7 @@ import { cn } from '@/lib/utils/cn'
 import { useVoteStore } from '@/lib/stores/vote-store'
 import { useFeedStore } from '@/lib/stores/feed-store'
 import { getTopicSignal, SIGNAL_PILL_CLASSES } from '@/lib/utils/topic-signal'
-import { Clock, Flame, Gavel, Swords, Target, TrendingUp, Zap } from 'lucide-react'
+import { Award, Clock, Flame, Gavel, Swords, Target, TrendingUp, Zap } from 'lucide-react'
 import { TopicReactions } from '@/components/topic/TopicReactions'
 import { TopicHotTakes } from '@/components/topic/TopicHotTakes'
 import { ArgumentContributors } from '@/components/topic/ArgumentContributors'
@@ -788,6 +788,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                     >
                       <LayoutGrid className="h-3.5 w-3.5" />
                       Vote Heatmap
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/scorecard`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-gold hover:text-gold/80 transition-colors"
+                    >
+                      <Award className="h-3.5 w-3.5" />
+                      Scorecard
                     </Link>
                   </div>
                 )}
