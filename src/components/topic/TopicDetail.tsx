@@ -803,6 +803,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                       <Shuffle className="h-3.5 w-3.5" />
                       Swing Analysis
                     </Link>
+                    <Link
+                      href={`/topic/${topic.id}/debate-map`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-for-300 hover:text-for-200 transition-colors"
+                    >
+                      <Target className="h-3.5 w-3.5" />
+                      Debate Map
+                    </Link>
                   </div>
                 )}
                 <VoteButton
