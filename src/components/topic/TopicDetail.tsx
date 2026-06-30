@@ -730,6 +730,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                       <Footprints className="h-3.5 w-3.5" />
                       My journey
                     </Link>
+                    <Link
+                      href={`/topic/${topic.id}/archetypes`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-emerald hover:text-emerald/80 transition-colors"
+                    >
+                      <Users className="h-3.5 w-3.5" />
+                      Archetype split
+                    </Link>
                   </div>
                 )}
                 <VoteButton
