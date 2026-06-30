@@ -868,6 +868,27 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                       <FlaskConical className="h-3.5 w-3.5" />
                       Anatomy
                     </Link>
+                    <Link
+                      href={`/topic/${topic.id}/fault-lines`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-against-300 hover:text-against-200 transition-colors"
+                    >
+                      <GitCompare className="h-3.5 w-3.5" />
+                      Fault Lines
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/inflection`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-gold hover:text-gold/80 transition-colors"
+                    >
+                      <TrendingUp className="h-3.5 w-3.5" />
+                      Inflection
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/depth`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-for-300 hover:text-for-200 transition-colors"
+                    >
+                      <Layers className="h-3.5 w-3.5" />
+                      Depth
+                    </Link>
                   </div>
                 )}
                 <VoteButton
