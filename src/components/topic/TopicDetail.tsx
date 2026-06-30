@@ -40,6 +40,7 @@ import {
   Footprints,
   FlaskConical,
   Quote,
+  Heart,
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { Topic, Profile, VoteSide } from '@/lib/supabase/types'
@@ -660,6 +661,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                     >
                       <Activity className="h-3.5 w-3.5" />
                       Live activity
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/pulse`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-against-400 hover:text-against-300 transition-colors"
+                    >
+                      <Heart className="h-3.5 w-3.5" />
+                      Live pulse
                     </Link>
                     {(topic.status === 'law' || topic.status === 'failed') && (
                       <Link
