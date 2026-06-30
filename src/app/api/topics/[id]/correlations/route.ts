@@ -27,10 +27,12 @@ export interface TopicCorrelationsResponse {
 // ─── Route ───────────────────────────────────────────────────────────────────
 
 export async function GET(
-  _req: Request,
+  req: Request,
   { params }: { params: { id: string } }
 ) {
   const topicId = params.id
+  const url = new URL(req.url)
+  const limit = Math.min(parseInt(url.searchParams.get('limit') ?? '8', 10), 30)
   const supabase = await createClient()
 
   // Pull a generous number of correlation pairs — we'll filter to this topic
@@ -92,7 +94,7 @@ export async function GET(
     })
     // Sort by absolute correlation descending
     .sort((a, b) => Math.abs(b.correlation) - Math.abs(a.correlation))
-    .slice(0, 8)
+    .slice(0, limit)
 
   return NextResponse.json({
     topic_id: topicId,

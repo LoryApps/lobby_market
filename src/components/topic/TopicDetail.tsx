@@ -624,6 +624,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                       Connections
                     </Link>
                     <Link
+                      href={`/topic/${topic.id}/correlations`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-purple hover:text-purple/80 transition-colors"
+                    >
+                      <GitCompare className="h-3.5 w-3.5" />
+                      Correlations
+                    </Link>
+                    <Link
                       href={`/topic/${topic.id}/stats`}
                       className="inline-flex items-center gap-1.5 text-xs font-mono text-gold hover:text-gold/80 transition-colors"
                     >
@@ -1015,8 +1022,15 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
               <TopicCorrelationsPanel topicId={topic.id} className="mt-8" />
             </ErrorBoundary>
 
-            {/* Connections hub link */}
-            <div className="mt-4 flex justify-end">
+            {/* Correlations + Connections hub links */}
+            <div className="mt-4 flex items-center justify-between gap-3">
+              <Link
+                href={`/topic/${topic.id}/correlations`}
+                className="inline-flex items-center gap-1.5 text-[11px] font-mono text-purple hover:text-purple/80 transition-colors"
+              >
+                <GitCompare className="h-3 w-3" />
+                Full correlation explorer &rarr;
+              </Link>
               <Link
                 href={`/topic/${topic.id}/connections`}
                 className="inline-flex items-center gap-1.5 text-[11px] font-mono text-emerald hover:text-emerald/80 transition-colors"
