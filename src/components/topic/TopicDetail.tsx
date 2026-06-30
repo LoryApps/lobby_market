@@ -817,6 +817,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                       <BookOpen className="h-3.5 w-3.5" />
                       Sources
                     </Link>
+                    <Link
+                      href={`/topic/${topic.id}/crossfire`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-against-400 hover:text-against-300 transition-colors"
+                    >
+                      <Swords className="h-3.5 w-3.5" />
+                      Crossfire
+                    </Link>
                   </div>
                 )}
                 <VoteButton
