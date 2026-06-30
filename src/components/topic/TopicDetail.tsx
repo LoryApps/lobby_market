@@ -37,6 +37,7 @@ import {
   GitMerge,
   Shield,
   Footprints,
+  FlaskConical,
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { Topic, Profile, VoteSide } from '@/lib/supabase/types'
@@ -757,6 +758,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                     >
                       <BookOpen className="h-3.5 w-3.5" />
                       Debate prep
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/what-if`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-purple hover:text-purple/80 transition-colors"
+                    >
+                      <FlaskConical className="h-3.5 w-3.5" />
+                      What If?
                     </Link>
                   </div>
                 )}
