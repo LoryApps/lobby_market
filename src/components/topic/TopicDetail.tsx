@@ -854,6 +854,20 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                       <History className="h-3.5 w-3.5" />
                       Wiki History
                     </Link>
+                    <Link
+                      href={`/topic/${topic.id}/changemaker`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-purple hover:text-white transition-colors"
+                    >
+                      <Brain className="h-3.5 w-3.5" />
+                      Change My Mind
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/anatomy`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-emerald hover:text-white transition-colors"
+                    >
+                      <FlaskConical className="h-3.5 w-3.5" />
+                      Anatomy
+                    </Link>
                   </div>
                 )}
                 <VoteButton
