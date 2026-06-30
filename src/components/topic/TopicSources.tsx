@@ -8,7 +8,8 @@
  */
 
 import { useEffect, useRef, useState } from 'react'
-import { BookOpen, ExternalLink, Loader2, Plus, Trash2, X } from 'lucide-react'
+import Link from 'next/link'
+import { ArrowUpRight, BookOpen, ExternalLink, Loader2, Plus, Trash2, X } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils/cn'
 
@@ -407,6 +408,19 @@ export function TopicSources({ topicId, topicAuthorId }: TopicSourcesProps) {
           onAdd={handleAdd}
           onClose={() => setShowForm(false)}
         />
+      )}
+
+      {/* Link to full sources page */}
+      {!loading && (
+        <div className="mt-3 flex justify-end">
+          <Link
+            href={`/topic/${topicId}/sources`}
+            className="inline-flex items-center gap-1 text-[11px] font-mono text-surface-500 hover:text-for-400 transition-colors"
+          >
+            <ArrowUpRight className="h-3 w-3" />
+            Manage sources
+          </Link>
+        </div>
       )}
     </section>
   )

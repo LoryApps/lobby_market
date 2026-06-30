@@ -810,6 +810,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                       <Target className="h-3.5 w-3.5" />
                       Debate Map
                     </Link>
+                    <Link
+                      href={`/topic/${topic.id}/sources`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-for-400 hover:text-for-300 transition-colors"
+                    >
+                      <BookOpen className="h-3.5 w-3.5" />
+                      Sources
+                    </Link>
                   </div>
                 )}
                 <VoteButton
