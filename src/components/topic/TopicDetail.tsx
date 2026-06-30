@@ -41,6 +41,7 @@ import {
   FlaskConical,
   Quote,
   Heart,
+  History,
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { Topic, Profile, VoteSide } from '@/lib/supabase/types'
@@ -845,6 +846,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                     >
                       <Scale className="h-3.5 w-3.5" />
                       Dissent
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/wiki-history`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-white transition-colors"
+                    >
+                      <History className="h-3.5 w-3.5" />
+                      Wiki History
                     </Link>
                   </div>
                 )}
