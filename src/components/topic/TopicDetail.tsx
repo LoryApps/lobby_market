@@ -38,6 +38,7 @@ import {
   Shield,
   Footprints,
   FlaskConical,
+  Quote,
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { Topic, Profile, VoteSide } from '@/lib/supabase/types'
@@ -581,6 +582,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                     >
                       <List className="h-3.5 w-3.5" />
                       Browse arguments
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/quotes`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-gold hover:text-gold/80 transition-colors"
+                    >
+                      <Quote className="h-3.5 w-3.5" />
+                      Best quotes
                     </Link>
                     <Link
                       href={`/topic/${topic.id}/argument-graph`}
