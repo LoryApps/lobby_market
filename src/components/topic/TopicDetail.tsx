@@ -35,6 +35,7 @@ import {
   Scroll,
   Gauge,
   GitMerge,
+  LayoutGrid,
   Shield,
   Footprints,
   FlaskConical,
@@ -780,6 +781,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                     >
                       <Brain className="h-3.5 w-3.5" />
                       Intel Report
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/heat`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-orange-400 hover:text-orange-300 transition-colors"
+                    >
+                      <LayoutGrid className="h-3.5 w-3.5" />
+                      Vote Heatmap
                     </Link>
                   </div>
                 )}
