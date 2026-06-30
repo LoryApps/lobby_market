@@ -737,6 +737,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                       <Users className="h-3.5 w-3.5" />
                       Archetype split
                     </Link>
+                    <Link
+                      href={`/topic/${topic.id}/debate-prep`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-gold hover:text-gold/80 transition-colors"
+                    >
+                      <BookOpen className="h-3.5 w-3.5" />
+                      Debate prep
+                    </Link>
                   </div>
                 )}
                 <VoteButton
