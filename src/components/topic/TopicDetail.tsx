@@ -756,6 +756,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                       Law forecast
                     </Link>
                     <Link
+                      href={`/topic/${topic.id}/parallels`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-gold hover:text-gold/80 transition-colors"
+                    >
+                      <History className="h-3.5 w-3.5" />
+                      Historical mirror
+                    </Link>
+                    <Link
                       href={`/topic/${topic.id}/coalitions`}
                       className="inline-flex items-center gap-1.5 text-xs font-mono text-for-400 hover:text-for-300 transition-colors"
                     >
