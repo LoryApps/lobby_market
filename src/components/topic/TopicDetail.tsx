@@ -690,6 +690,15 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                         Recap
                       </Link>
                     )}
+                    {(topic.status === 'law' || topic.status === 'failed') && (
+                      <Link
+                        href={`/topic/${topic.id}/legacy`}
+                        className="inline-flex items-center gap-1.5 text-xs font-mono text-gold hover:text-gold/80 transition-colors"
+                      >
+                        <Scroll className="h-3.5 w-3.5" />
+                        Legacy
+                      </Link>
+                    )}
                     <Link
                       href={`/topic/${topic.id}/versus`}
                       className="inline-flex items-center gap-1.5 text-xs font-mono text-for-400 hover:text-for-300 transition-colors"
