@@ -552,6 +552,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                       See who voted
                     </Link>
                     <Link
+                      href={`/topic/${topic.id}/breakdown`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-for-400 hover:text-for-300 transition-colors"
+                    >
+                      <BarChart2 className="h-3.5 w-3.5" />
+                      Voter breakdown
+                    </Link>
+                    <Link
                       href={`/topic/${topic.id}/reasons`}
                       className="inline-flex items-center gap-1.5 text-xs font-mono text-for-400 hover:text-for-300 transition-colors"
                     >
