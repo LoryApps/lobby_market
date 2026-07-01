@@ -896,6 +896,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                       <Layers className="h-3.5 w-3.5" />
                       Depth
                     </Link>
+                    <Link
+                      href={`/topic/${topic.id}/sentiment`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-purple hover:text-purple/80 transition-colors"
+                    >
+                      <Heart className="h-3.5 w-3.5" />
+                      Sentiment
+                    </Link>
                   </div>
                 )}
                 <VoteButton
