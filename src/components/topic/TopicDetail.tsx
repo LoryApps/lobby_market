@@ -42,6 +42,10 @@ import {
   Quote,
   Heart,
   History,
+  Handshake,
+  Radio,
+  Radar,
+  Sparkles,
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { Topic, Profile, VoteSide } from '@/lib/supabase/types'
@@ -902,6 +906,34 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                     >
                       <Heart className="h-3.5 w-3.5" />
                       Sentiment
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/consensus`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-emerald hover:text-emerald/80 transition-colors"
+                    >
+                      <Handshake className="h-3.5 w-3.5" />
+                      Common Ground
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/persuasion`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-gold hover:text-gold/80 transition-colors"
+                    >
+                      <Sparkles className="h-3.5 w-3.5" />
+                      Persuasion Lab
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/radar`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-for-300 hover:text-for-200 transition-colors"
+                    >
+                      <Radar className="h-3.5 w-3.5" />
+                      Debate Radar
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/influence`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-gold hover:text-gold/80 transition-colors"
+                    >
+                      <Radio className="h-3.5 w-3.5" />
+                      Influence Map
                     </Link>
                   </div>
                 )}
