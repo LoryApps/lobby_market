@@ -46,6 +46,9 @@ import {
   Radio,
   Radar,
   Sparkles,
+  Dna,
+  Waves,
+  Microscope,
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { Topic, Profile, VoteSide } from '@/lib/supabase/types'
@@ -964,6 +967,34 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                     >
                       <Gauge className="h-3.5 w-3.5" />
                       Velocity Engine
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/dna`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-purple hover:text-purple/80 transition-colors"
+                    >
+                      <Dna className="h-3.5 w-3.5" />
+                      Debate DNA
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/conviction`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-gold hover:text-gold/80 transition-colors"
+                    >
+                      <Microscope className="h-3.5 w-3.5" />
+                      Conviction Atlas
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/autopsy`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-against-300 hover:text-against-200 transition-colors"
+                    >
+                      <Microscope className="h-3.5 w-3.5" />
+                      Debate Autopsy
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/ripple`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-emerald hover:text-emerald/80 transition-colors"
+                    >
+                      <Waves className="h-3.5 w-3.5" />
+                      Ripple Effect
                     </Link>
                   </div>
                 )}
