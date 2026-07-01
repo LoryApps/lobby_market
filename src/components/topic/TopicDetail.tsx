@@ -49,6 +49,7 @@ import {
   Dna,
   Waves,
   Microscope,
+  Waypoints,
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { Topic, Profile, VoteSide } from '@/lib/supabase/types'
@@ -1016,6 +1017,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                     >
                       <Shield className="h-3.5 w-3.5" />
                       Opposition Playbook
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/echo-chamber`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-purple hover:text-purple/80 transition-colors"
+                    >
+                      <Waypoints className="h-3.5 w-3.5" />
+                      Echo Chamber
                     </Link>
                   </div>
                 )}
