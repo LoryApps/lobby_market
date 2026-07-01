@@ -935,6 +935,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                       <Radio className="h-3.5 w-3.5" />
                       Influence Map
                     </Link>
+                    <Link
+                      href={`/topic/${topic.id}/signal`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-emerald hover:text-emerald/80 transition-colors"
+                    >
+                      <Activity className="h-3.5 w-3.5" />
+                      Signal Board
+                    </Link>
                   </div>
                 )}
                 <VoteButton
