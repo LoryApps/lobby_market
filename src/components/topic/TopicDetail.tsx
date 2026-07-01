@@ -996,6 +996,27 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                       <Waves className="h-3.5 w-3.5" />
                       Ripple Effect
                     </Link>
+                    <Link
+                      href={`/topic/${topic.id}/stakeholders`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-gold hover:text-gold/80 transition-colors"
+                    >
+                      <Users className="h-3.5 w-3.5" />
+                      Stakeholder Map
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/frames`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-purple hover:text-purple/80 transition-colors"
+                    >
+                      <Layers className="h-3.5 w-3.5" />
+                      Ideological Frames
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/opposition`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-against-400 hover:text-against-300 transition-colors"
+                    >
+                      <Shield className="h-3.5 w-3.5" />
+                      Opposition Playbook
+                    </Link>
                   </div>
                 )}
                 <VoteButton
