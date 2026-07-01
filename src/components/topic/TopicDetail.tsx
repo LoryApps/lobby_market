@@ -942,6 +942,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                       <Activity className="h-3.5 w-3.5" />
                       Signal Board
                     </Link>
+                    <Link
+                      href={`/topic/${topic.id}/velocity`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-for-400 hover:text-for-300 transition-colors"
+                    >
+                      <Gauge className="h-3.5 w-3.5" />
+                      Velocity Engine
+                    </Link>
                   </div>
                 )}
                 <VoteButton
