@@ -613,6 +613,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'daily',
+    label: 'Daily Dashboard',
+    sublabel: 'Platform stats, hot topics, controversy of the day, and your unvoted recommendations',
+    href: '/daily',
+    icon: Target,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
     id: 'catchup',
     label: 'Catch Up',
     sublabel: 'What happened while you were away',
