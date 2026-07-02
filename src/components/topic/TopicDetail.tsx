@@ -845,6 +845,20 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                       Swing Analysis
                     </Link>
                     <Link
+                      href={`/topic/${topic.id}/hot-takes`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-against-400 hover:text-against-300 transition-colors"
+                    >
+                      <Flame className="h-3.5 w-3.5" />
+                      Hot Takes
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/cross-examine`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-emerald hover:text-emerald/80 transition-colors"
+                    >
+                      <MessageSquare className="h-3.5 w-3.5" />
+                      Cross-Examine
+                    </Link>
+                    <Link
                       href={`/topic/${topic.id}/debate-map`}
                       className="inline-flex items-center gap-1.5 text-xs font-mono text-for-300 hover:text-for-200 transition-colors"
                     >
