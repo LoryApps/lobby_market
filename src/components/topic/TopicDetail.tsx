@@ -50,6 +50,7 @@ import {
   Waves,
   Microscope,
   Waypoints,
+  Sprout,
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { Topic, Profile, VoteSide } from '@/lib/supabase/types'
@@ -1031,6 +1032,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                     >
                       <Globe className="h-3.5 w-3.5" />
                       Global Context
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/origins`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-gold hover:text-gold/80 transition-colors"
+                    >
+                      <Sprout className="h-3.5 w-3.5" />
+                      Origins
                     </Link>
                   </div>
                 )}
