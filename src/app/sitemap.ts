@@ -347,6 +347,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       { url: `${BASE_URL}/topic/${topic.id}/predictions`, lastModified: new Date(topic.updated_at), changeFrequency: 'hourly' as const, priority: 0.6 },
       { url: `${BASE_URL}/topic/${topic.id}/impact`, lastModified: new Date(topic.updated_at), changeFrequency: 'daily' as const, priority: 0.55 },
       { url: `${BASE_URL}/topic/${topic.id}/faceoff`, lastModified: new Date(topic.updated_at), changeFrequency: 'hourly' as const, priority: 0.58 },
+      { url: `${BASE_URL}/topic/${topic.id}/global`, lastModified: new Date(topic.updated_at), changeFrequency: 'daily' as const, priority: 0.55 },
     ])
 
     const { data: topicsWithWiki } = await supabase

@@ -1025,6 +1025,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                       <Waypoints className="h-3.5 w-3.5" />
                       Echo Chamber
                     </Link>
+                    <Link
+                      href={`/topic/${topic.id}/global`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-emerald hover:text-emerald/80 transition-colors"
+                    >
+                      <Globe className="h-3.5 w-3.5" />
+                      Global Context
+                    </Link>
                   </div>
                 )}
                 <VoteButton
