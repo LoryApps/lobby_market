@@ -167,7 +167,7 @@ export function TopicHotTakes({ topicId, className }: TopicHotTakesProps) {
           </span>
         </div>
         <Link
-          href={`/hot-takes`}
+          href={`/topic/${topicId}/hot-takes`}
           className="text-[11px] font-mono text-surface-500 hover:text-white transition-colors"
         >
           See all →
