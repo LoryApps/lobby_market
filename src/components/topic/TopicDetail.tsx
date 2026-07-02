@@ -859,6 +859,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                       Cross-Examine
                     </Link>
                     <Link
+                      href={`/topic/${topic.id}/common-ground`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-gold hover:text-gold/80 transition-colors"
+                    >
+                      <Handshake className="h-3.5 w-3.5" />
+                      Bridge Args
+                    </Link>
+                    <Link
                       href={`/topic/${topic.id}/debate-map`}
                       className="inline-flex items-center gap-1.5 text-xs font-mono text-for-300 hover:text-for-200 transition-colors"
                     >
@@ -947,7 +954,7 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                       className="inline-flex items-center gap-1.5 text-xs font-mono text-emerald hover:text-emerald/80 transition-colors"
                     >
                       <Handshake className="h-3.5 w-3.5" />
-                      Common Ground
+                      Shared Values
                     </Link>
                     <Link
                       href={`/topic/${topic.id}/persuasion`}
