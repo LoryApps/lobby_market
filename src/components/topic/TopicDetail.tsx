@@ -1040,6 +1040,20 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                       <Sprout className="h-3.5 w-3.5" />
                       Origins
                     </Link>
+                    <Link
+                      href={`/topic/${topic.id}/mandate`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-for-400 hover:text-for-300 transition-colors"
+                    >
+                      <Scale className="h-3.5 w-3.5" />
+                      Mandate Meter
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/blueprint`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-purple hover:text-purple/80 transition-colors"
+                    >
+                      <FileText className="h-3.5 w-3.5" />
+                      Policy Blueprint
+                    </Link>
                   </div>
                 )}
                 <VoteButton
