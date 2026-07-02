@@ -1054,6 +1054,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                       <FileText className="h-3.5 w-3.5" />
                       Policy Blueprint
                     </Link>
+                    <Link
+                      href={`/topic/${topic.id}/playbook`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-gold hover:text-gold/80 transition-colors"
+                    >
+                      <Swords className="h-3.5 w-3.5" />
+                      Campaign Playbook
+                    </Link>
                   </div>
                 )}
                 <VoteButton
