@@ -453,6 +453,27 @@ export function ProfilePage({
                 </p>
               </Link>
 
+              {/* Civic Positions teaser */}
+              <Link
+                href={`/profile/${profile.username}/positions`}
+                className="block rounded-2xl border border-for-700/20 bg-for-900/20 hover:bg-for-900/30 hover:border-for-700/30 transition-colors p-5"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Scale className="h-4 w-4 text-for-300" aria-hidden="true" />
+                    <h3 className="text-[11px] font-mono text-for-300 uppercase tracking-wider">
+                      Civic Positions
+                    </h3>
+                  </div>
+                  <span className="text-[10px] font-mono text-for-300/70 hover:text-for-300 transition-colors">
+                    View record →
+                  </span>
+                </div>
+                <p className="text-xs font-mono text-surface-500 mt-2">
+                  Public stance record — FOR and AGAINST positions grouped by category, with consensus comparison and contrarian highlights.
+                </p>
+              </Link>
+
               {/* Civic Impact teaser */}
               <Link
                 href={`/profile/${profile.username}/impact`}
