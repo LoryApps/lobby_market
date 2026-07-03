@@ -14,6 +14,7 @@ import {
   FileText,
   GitBranch,
   GitCompare,
+  HelpCircle,
   Layers,
   Globe,
   Info,
@@ -310,6 +311,18 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
               aria-label="Live chat"
             >
               <MessageCircle className="h-3.5 w-3.5" />
+            </Link>
+            <Link
+              href={`/topic/${topic.id}/ask`}
+              className={cn(
+                'flex items-center justify-center h-8 w-8 rounded-lg',
+                'bg-surface-200 border border-surface-300 text-surface-500',
+                'hover:bg-surface-300 hover:text-purple transition-colors',
+              )}
+              title="Ask the Community — clarifying Q&A"
+              aria-label="Community Q&A"
+            >
+              <HelpCircle className="h-3.5 w-3.5" />
             </Link>
             <Link
               href={`/compare?a=${topic.id}`}
@@ -903,6 +916,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                     >
                       <Swords className="h-3.5 w-3.5" />
                       Crossfire
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/ask`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-purple hover:text-purple/80 transition-colors"
+                    >
+                      <HelpCircle className="h-3.5 w-3.5" />
+                      Community Q&A
                     </Link>
                     <Link
                       href={`/topic/${topic.id}/threads`}
