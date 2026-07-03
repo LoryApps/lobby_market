@@ -68,7 +68,7 @@ const typeConfig: Record<
 
 // ─── Filter tabs ──────────────────────────────────────────────────────────────
 
-type FilterTab = 'all' | 'unread' | 'social' | 'debates' | 'achievements'
+type FilterTab = 'all' | 'unread' | 'social' | 'debates' | 'achievements' | 'qa'
 
 const FILTER_TABS: { id: FilterTab; label: string }[] = [
   { id: 'all', label: 'All' },
@@ -76,6 +76,7 @@ const FILTER_TABS: { id: FilterTab; label: string }[] = [
   { id: 'social', label: 'Social' },
   { id: 'debates', label: 'Debates' },
   { id: 'achievements', label: 'Achievements' },
+  { id: 'qa', label: 'Q&A' },
 ]
 
 const SOCIAL_TYPES: NotificationType[] = [
@@ -85,13 +86,13 @@ const SOCIAL_TYPES: NotificationType[] = [
   'reply_received',
   'role_promoted',
   'direct_message',
-  'qa_question_answered',
-  'qa_answer_accepted',
 ]
 
 const DEBATE_TYPES: NotificationType[] = ['debate_starting', 'new_topic_in_tag']
 
 const ACHIEVEMENT_TYPES: NotificationType[] = ['achievement_earned']
+
+const QA_TYPES: NotificationType[] = ['qa_question_answered', 'qa_answer_accepted']
 
 function filterNotifications(
   notifications: Notification[],
@@ -111,6 +112,10 @@ function filterNotifications(
     case 'achievements':
       return notifications.filter((n) =>
         ACHIEVEMENT_TYPES.includes(n.type as NotificationType)
+      )
+    case 'qa':
+      return notifications.filter((n) =>
+        QA_TYPES.includes(n.type as NotificationType)
       )
     default:
       return notifications
@@ -215,6 +220,9 @@ export function NotificationsList({ notifications }: NotificationsListProps) {
       achievements: notifications.filter((n) =>
         ACHIEVEMENT_TYPES.includes(n.type as NotificationType)
       ).length,
+      qa: notifications.filter((n) =>
+        QA_TYPES.includes(n.type as NotificationType)
+      ).length,
     }),
     [notifications]
   )
@@ -289,8 +297,11 @@ export function NotificationsList({ notifications }: NotificationsListProps) {
                 <Bell className="h-5 w-5 text-surface-500" aria-hidden="true" />
               </div>
               <p className="text-surface-500 text-sm">
-                No {activeFilter === 'all' ? '' : activeFilter + ' '}
-                notifications yet.
+                {activeFilter === 'all'
+                  ? 'No notifications yet.'
+                  : activeFilter === 'qa'
+                    ? 'No Q&A notifications yet.'
+                    : `No ${activeFilter} notifications yet.`}
               </p>
             </div>
           ) : (

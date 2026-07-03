@@ -650,7 +650,7 @@ function ArgumentRow({ item }: { item: ArgumentResult }) {
 function QuestionRow({ item }: { item: QuestionResult }) {
   return (
     <Link
-      href={item.topic ? `/topic/${item.topic.id}/qa` : '/questions'}
+      href={`/questions/${item.id}`}
       className={cn(
         'block p-4 rounded-xl',
         'bg-surface-100 border border-surface-300',
