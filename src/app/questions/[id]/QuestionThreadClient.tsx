@@ -42,6 +42,7 @@ import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { Skeleton } from '@/components/ui/Skeleton'
+import { ExpertChip } from '@/components/profile/QAExpertiseBadges'
 import { cn } from '@/lib/utils/cn'
 import type { QuestionDetail, QuestionDetailAnswer } from '@/app/api/questions/[id]/route'
 
@@ -73,6 +74,7 @@ const ROLE_BADGE: Record<string, string> = {
 function AnswerItem({
   answer,
   topicId,
+  topicCategory,
   isQuestionAuthor,
   currentUserId,
   onVote,
@@ -80,6 +82,7 @@ function AnswerItem({
 }: {
   answer: QuestionDetailAnswer
   topicId: string
+  topicCategory?: string | null
   isQuestionAuthor: boolean
   currentUserId: string | null
   onVote: (answerId: string, voted: boolean, newUpvotes: number) => void
@@ -181,6 +184,9 @@ function AnswerItem({
           <span className={cn('text-[10px] px-1.5 py-0.5 rounded border font-mono font-semibold capitalize flex-shrink-0', roleBadge)}>
             {answer.author.role}
           </span>
+        )}
+        {(answer.expertise_tier === 'expert' || answer.expertise_tier === 'sage') && topicCategory && (
+          <ExpertChip category={topicCategory} tier={answer.expertise_tier} />
         )}
         <span className="ml-auto text-[11px] text-surface-600 flex-shrink-0">{relativeTime(answer.created_at)}</span>
       </div>
@@ -579,6 +585,7 @@ export function QuestionThreadClient({ questionId }: { questionId: string }) {
                       <AnswerItem
                         answer={answer}
                         topicId={question.topic_id}
+                        topicCategory={question.topic?.category}
                         isQuestionAuthor={isQuestionAuthor}
                         currentUserId={currentUserId}
                         onVote={handleAnswerVote}

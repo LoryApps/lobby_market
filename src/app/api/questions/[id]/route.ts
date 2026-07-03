@@ -21,6 +21,8 @@ export interface QuestionDetailAnswer {
   created_at: string
   author: QuestionDetailAuthor | null
   user_voted: boolean
+  /** Expertise tier in the topic's category, if applicable */
+  expertise_tier: 'contributor' | 'expert' | 'sage' | null
 }
 
 export interface QuestionDetail {
@@ -130,6 +132,20 @@ export async function GET(
       answerVotedIds = new Set((votes ?? []).map((v) => v.answer_id))
     }
 
+    // Fetch per-author expertise tiers for this topic's category
+    const expertiseMap = new Map<string, 'contributor' | 'expert' | 'sage'>()
+    if (topic?.category && answers.length > 0) {
+      const authorIds = [...new Set(answers.map((a) => a.author_id))]
+      const { data: expertRows } = await supabase
+        .from('qa_user_expertise')
+        .select('user_id, tier')
+        .in('user_id', authorIds)
+        .eq('category', topic.category)
+      for (const row of expertRows ?? []) {
+        expertiseMap.set(row.user_id, row.tier as 'contributor' | 'expert' | 'sage')
+      }
+    }
+
     const enrichedAnswers: QuestionDetailAnswer[] = answers.map((a) => ({
       id: a.id,
       question_id: a.question_id,
@@ -141,6 +157,7 @@ export async function GET(
       created_at: a.created_at,
       author: profileMap.get(a.author_id) ?? null,
       user_voted: answerVotedIds.has(a.id),
+      expertise_tier: expertiseMap.get(a.author_id) ?? null,
     }))
 
     const result: QuestionDetail = {

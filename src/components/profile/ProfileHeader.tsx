@@ -29,6 +29,7 @@ import { RoleBadge, getRoleRingClass } from './RoleBadge'
 import { FollowersModal, type FollowTab } from './FollowersModal'
 import { AlignmentBadge } from './AlignmentBadge'
 import { ARCHETYPE_CONFIG, type ArchetypeId } from '@/lib/config/archetypes'
+import { QAExpertiseBadges } from './QAExpertiseBadges'
 
 // ── Inline bio markdown renderer ──────────────────────────────────────────────
 // Supports: **bold**, *italic*, `code`, [text](url)
@@ -678,6 +679,9 @@ export function ProfileHeader({
               </Link>
             )
           })()}
+
+          {/* Q&A Expertise badges */}
+          <QAExpertiseBadges userId={profile.id} className="mb-2" />
 
           {/* Social links */}
           {profile.social_links && (
