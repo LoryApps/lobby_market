@@ -1754,6 +1754,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'questions-hub',
+    label: 'Community Q&A Hub',
+    sublabel: 'Browse open questions from every civic debate — answer what you know, earn Clout for clarity',
+    href: '/questions',
+    icon: HelpCircle,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
     id: 'tribunal',
     label: 'The Civic Tribunal',
     sublabel: 'Democratic argument review — challenge fallacious reasoning, serve as a juror, deliver verdicts',

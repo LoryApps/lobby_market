@@ -66,6 +66,7 @@ import {
   Award,
   ChevronDown,
   CheckCircle2,
+  HelpCircle,
   X,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
@@ -153,6 +154,7 @@ const SECTIONS: FeatureSection[] = [
       { href: '/floor', label: 'The Floor', description: 'The live parliamentary chamber — watch consensus forming in real-time.', icon: Landmark },
       { href: '/argument-battle', label: 'Argument Battle', description: 'Watch two arguments clash head-to-head in real time.', icon: Swords },
       { href: '/crossfire', label: 'Crossfire', description: 'The most contested topics with best FOR vs. AGAINST arguments side by side.', icon: Flame },
+      { href: '/questions', label: 'Community Q&A Hub', description: 'Browse open clarifying questions from every debate — answer what you know, earn Clout.', icon: HelpCircle, isNew: true },
     ],
   },
   {
