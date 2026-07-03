@@ -345,31 +345,40 @@ function NominationCard({
           </span>
         </div>
 
-        {isOpen && (
-          <button
-            type="button"
-            onClick={handleEndorse}
-            disabled={endorsing}
-            className={cn(
-              'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-semibold',
-              'border transition-all',
-              nomination.user_has_endorsed
-                ? 'bg-for-500/20 border-for-500/40 text-for-400 hover:bg-against-500/10 hover:border-against-500/30 hover:text-against-400'
-                : 'bg-surface-200 border-surface-400 text-surface-300 hover:bg-for-500/10 hover:border-for-500/30 hover:text-for-400',
-              endorsing && 'opacity-50 cursor-not-allowed'
-            )}
-            aria-label={nomination.user_has_endorsed ? 'Remove endorsement' : 'Endorse this nomination'}
+        <div className="flex items-center gap-2">
+          <Link
+            href={`/civic-nominations/${nomination.id}`}
+            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[10px] font-mono text-surface-500 hover:text-surface-300 hover:bg-surface-300 border border-surface-300 hover:border-surface-400 transition-all"
           >
-            {endorsing ? (
-              <Loader2 className="h-3 w-3 animate-spin" aria-hidden="true" />
-            ) : nomination.user_has_endorsed ? (
-              <Check className="h-3 w-3" aria-hidden="true" />
-            ) : (
-              <ThumbsUp className="h-3 w-3" aria-hidden="true" />
-            )}
-            {nomination.user_has_endorsed ? 'Endorsed' : 'Endorse'}
-          </button>
-        )}
+            View
+          </Link>
+
+          {isOpen && (
+            <button
+              type="button"
+              onClick={handleEndorse}
+              disabled={endorsing}
+              className={cn(
+                'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-semibold',
+                'border transition-all',
+                nomination.user_has_endorsed
+                  ? 'bg-for-500/20 border-for-500/40 text-for-400 hover:bg-against-500/10 hover:border-against-500/30 hover:text-against-400'
+                  : 'bg-surface-200 border-surface-400 text-surface-300 hover:bg-for-500/10 hover:border-for-500/30 hover:text-for-400',
+                endorsing && 'opacity-50 cursor-not-allowed'
+              )}
+              aria-label={nomination.user_has_endorsed ? 'Remove endorsement' : 'Endorse this nomination'}
+            >
+              {endorsing ? (
+                <Loader2 className="h-3 w-3 animate-spin" aria-hidden="true" />
+              ) : nomination.user_has_endorsed ? (
+                <Check className="h-3 w-3" aria-hidden="true" />
+              ) : (
+                <ThumbsUp className="h-3 w-3" aria-hidden="true" />
+              )}
+              {nomination.user_has_endorsed ? 'Endorsed' : 'Endorse'}
+            </button>
+          )}
+        </div>
       </div>
     </motion.article>
   )
