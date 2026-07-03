@@ -136,6 +136,8 @@ function buildHref(notification: Notification): string {
       return `/coalitions/${reference_id}`
     case 'argument':
       return `/arguments/${reference_id}`
+    case 'question':
+      return `/questions/${reference_id}`
     default:
       return '#'
   }

@@ -527,6 +527,17 @@ function QuestionCard({
               currentUserId={currentUserId}
               onAnswerPosted={() => onAnswerPosted(question.id)}
             />
+            {/* Permalink to dedicated thread page */}
+            <div className="mt-3 pt-3 border-t border-surface-300/40">
+              <Link
+                href={`/questions/${question.id}`}
+                onClick={(e) => e.stopPropagation()}
+                className="flex items-center gap-1.5 text-[11px] text-surface-500 hover:text-for-400 transition-colors"
+              >
+                <ArrowRight className="h-3 w-3" />
+                View full thread permalink
+              </Link>
+            </div>
           </div>
         )}
       </AnimatePresence>
