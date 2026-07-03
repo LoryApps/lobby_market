@@ -618,6 +618,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                       Argument graph
                     </Link>
                     <Link
+                      href={`/topic/${topic.id}/mindmap`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-purple hover:text-purple/80 transition-colors"
+                    >
+                      <Network className="h-3.5 w-3.5" />
+                      Mind map
+                    </Link>
+                    <Link
                       href={`/topic/${topic.id}/themes`}
                       className="inline-flex items-center gap-1.5 text-xs font-mono text-purple hover:text-purple/80 transition-colors"
                     >
