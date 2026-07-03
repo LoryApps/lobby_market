@@ -108,6 +108,7 @@ import { ArgumentQualityPanel } from '@/components/topic/ArgumentQualityPanel'
 import { TopicCorrelationsPanel } from '@/components/topic/TopicCorrelationsPanel'
 import { TopicResolutionBanner } from '@/components/topic/TopicResolutionBanner'
 import { TopicChangemakersPanel } from '@/components/topic/TopicChangemakersPanel'
+import { TopicQAPanel } from '@/components/topic/TopicQAPanel'
 
 const SIGNAL_ICONS_DETAIL: Record<string, typeof Flame> = {
   ending_soon:     Clock,
@@ -1316,6 +1317,15 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
             {/* Wiki link graph — backlinks & outgoing topic wikilinks */}
             <ErrorBoundary size="xs" className="mt-4">
               <TopicBacklinks topicId={topic.id} className="mt-4" />
+            </ErrorBoundary>
+
+            {/* Community Q&A — questions and answers about this topic */}
+            <ErrorBoundary size="sm" label="Couldn't load Q&A" className="mt-4">
+              <TopicQAPanel
+                topicId={topic.id}
+                topicStatement={topic.statement}
+                className="mt-4"
+              />
             </ErrorBoundary>
 
             {/* Pinned sources — factual citations added by topic author/moderators */}
