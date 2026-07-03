@@ -763,6 +763,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'hindsight',
+    label: 'Community Hindsight',
+    sublabel: 'Were we right? Platform-wide retrospective on resolved civic debates — most regretted and vindicated decisions',
+    href: '/hindsight',
+    icon: RotateCcw,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
     id: 'split',
     label: 'The Split',
     sublabel: 'Most contested topics — vote where it matters',
