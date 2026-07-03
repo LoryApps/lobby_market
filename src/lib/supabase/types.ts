@@ -2114,7 +2114,9 @@ export type NotificationType =
   | "direct_message"
   | "new_topic_in_tag"
   | "streak_at_risk"
-  | "weekly_digest";
+  | "weekly_digest"
+  | "qa_question_answered"
+  | "qa_answer_accepted";
 
 export type AchievementTier = "common" | "rare" | "epic" | "legendary";
 

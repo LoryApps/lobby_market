@@ -54,6 +54,7 @@ interface NotifPrefs {
   new_topic_in_tag: boolean
   streak_reminder: boolean
   weekly_digest: boolean
+  qa_notifications: boolean
 }
 
 const DEFAULT_PREFS: NotifPrefs = {
@@ -68,6 +69,7 @@ const DEFAULT_PREFS: NotifPrefs = {
   new_topic_in_tag: true,
   streak_reminder: true,
   weekly_digest: true,
+  qa_notifications: true,
 }
 
 function loadPrefs(): NotifPrefs {
@@ -556,6 +558,12 @@ export default function SettingsPage() {
                   description="Monday morning summary of your votes, arguments, and laws from the past 7 days"
                   checked={prefs.weekly_digest ?? true}
                   onChange={(v) => updatePref('weekly_digest', v)}
+                />
+                <SettingRow
+                  label="Q&A notifications"
+                  description="When someone answers your question or accepts your answer as best"
+                  checked={prefs.qa_notifications ?? true}
+                  onChange={(v) => updatePref('qa_notifications', v)}
                 />
               </div>
             </div>

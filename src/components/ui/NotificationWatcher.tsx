@@ -89,6 +89,7 @@ interface NotifPrefs {
   new_topic_in_tag: boolean
   streak_reminder: boolean
   weekly_digest: boolean
+  qa_notifications: boolean
 }
 
 const DEFAULT_PREFS: NotifPrefs = {
@@ -103,6 +104,7 @@ const DEFAULT_PREFS: NotifPrefs = {
   new_topic_in_tag: true,
   streak_reminder: true,
   weekly_digest: true,
+  qa_notifications: true,
 }
 
 function loadPrefs(): NotifPrefs {
@@ -262,6 +264,16 @@ const TYPE_CONFIG: Record<NotificationType, TypeConfig> = {
     prefKey: 'weekly_digest',
     emoji: '📰',
     duration: 8000,
+  },
+  qa_question_answered: {
+    prefKey: 'qa_notifications',
+    emoji: '💡',
+    duration: 6000,
+  },
+  qa_answer_accepted: {
+    prefKey: 'qa_notifications',
+    emoji: '✅',
+    duration: 7000,
   },
 }
 

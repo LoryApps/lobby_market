@@ -22,6 +22,7 @@ import {
   UserPlus,
   Users,
   CheckCircle,
+  HelpCircle,
   Newspaper,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
@@ -60,7 +61,9 @@ const typeConfig: Record<
   direct_message: { icon: MessageSquare, color: 'text-for-300' },
   new_topic_in_tag: { icon: Hash, color: 'text-for-400' },
   streak_at_risk: { icon: Flame, color: 'text-gold' },
-  weekly_digest:  { icon: Newspaper, color: 'text-purple' },
+  weekly_digest:          { icon: Newspaper,    color: 'text-purple'  },
+  qa_question_answered:   { icon: HelpCircle,   color: 'text-for-400' },
+  qa_answer_accepted:     { icon: CheckCircle,  color: 'text-emerald' },
 }
 
 // ─── Filter tabs ──────────────────────────────────────────────────────────────
@@ -82,6 +85,8 @@ const SOCIAL_TYPES: NotificationType[] = [
   'reply_received',
   'role_promoted',
   'direct_message',
+  'qa_question_answered',
+  'qa_answer_accepted',
 ]
 
 const DEBATE_TYPES: NotificationType[] = ['debate_starting', 'new_topic_in_tag']
