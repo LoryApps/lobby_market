@@ -112,6 +112,7 @@ import {
   Lightbulb,
   Waves,
   Gavel,
+  Ban,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -1770,6 +1771,16 @@ const QUICK_LINKS: QuickLink[] = [
     icon: Scale,
     iconColor: 'text-for-400',
     iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
+    id: 'civic-vetoes',
+    label: 'Civic Vetoes',
+    sublabel: 'Collective democratic override — challenge established laws by gathering signatures',
+    href: '/civic-vetoes',
+    icon: Ban,
+    iconColor: 'text-against-300',
+    iconBg: 'bg-against-500/10',
   },
   {
     type: 'link',
