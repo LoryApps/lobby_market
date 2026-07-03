@@ -211,5 +211,31 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ results: data ?? [], engine: 'ilike' })
   }
 
+  // ── Questions ────────────────────────────────────────────────────────────────
+  // Searches topic_questions.content joined with topics and author profiles.
+
+  if (tab === 'questions') {
+    const { data, error } = await supabase
+      .from('topic_questions')
+      .select(`
+        id,
+        content,
+        upvotes,
+        answer_count,
+        is_answered,
+        created_at,
+        topic:topics!topic_id(id, statement, category, status),
+        author:profiles!author_id(id, username, display_name, avatar_url, role)
+      `)
+      .ilike('content', pattern)
+      .order('upvotes', { ascending: false })
+      .limit(20)
+
+    if (error) {
+      return NextResponse.json({ error: 'Search failed' }, { status: 500 })
+    }
+    return NextResponse.json({ results: data ?? [], engine: 'ilike' })
+  }
+
   return NextResponse.json({ results: [] })
 }

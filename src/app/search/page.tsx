@@ -23,6 +23,8 @@ import {
   MessageSquare,
   ThumbsUp,
   ThumbsDown,
+  HelpCircle,
+  CheckCircle2,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -43,7 +45,7 @@ const SEARCH_SIGNAL_ICONS: Record<string, typeof TrendingUp> = {
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type Tab = 'topics' | 'laws' | 'people' | 'arguments'
+type Tab = 'topics' | 'laws' | 'people' | 'arguments' | 'questions'
 
 interface TopicResult {
   id: string
@@ -97,6 +99,28 @@ interface ArgumentResult {
   } | null
 }
 
+interface QuestionResult {
+  id: string
+  content: string
+  upvotes: number
+  answer_count: number
+  is_answered: boolean
+  created_at: string
+  topic: {
+    id: string
+    statement: string
+    category: string | null
+    status: string
+  } | null
+  author: {
+    id: string
+    username: string
+    display_name: string | null
+    avatar_url: string | null
+    role: string
+  } | null
+}
+
 interface SuggestedUser {
   id: string
   username: string
@@ -115,7 +139,7 @@ interface TrendingData {
   recentLaws: { id: string; statement: string; category: string | null; established_at: string }[]
 }
 
-type SearchResult = TopicResult | LawResult | PersonResult | ArgumentResult
+type SearchResult = TopicResult | LawResult | PersonResult | ArgumentResult | QuestionResult
 
 // ─── Config ───────────────────────────────────────────────────────────────────
 
@@ -127,6 +151,7 @@ const tabs: { id: Tab; label: string; icon: typeof FileText }[] = [
   { id: 'laws',      label: 'Laws',      icon: Scale },
   { id: 'people',    label: 'People',    icon: Users },
   { id: 'arguments', label: 'Arguments', icon: MessageSquare },
+  { id: 'questions', label: 'Q&A',       icon: HelpCircle },
 ]
 
 const statusBadge: Record<string, 'proposed' | 'active' | 'law' | 'failed'> = {
@@ -216,7 +241,7 @@ function SearchFilters({
   const [categoryOpen, setCategoryOpen] = useState(false)
   const hasFilters = categoryFilter !== null || statusFilter !== null || sideFilter !== null
 
-  if (tab === 'people') return null
+  if (tab === 'people' || tab === 'questions') return null
 
   return (
     <div className="flex items-center gap-2 flex-wrap mb-4">
@@ -620,6 +645,90 @@ function ArgumentRow({ item }: { item: ArgumentResult }) {
   )
 }
 
+// ─── Question result row ──────────────────────────────────────────────────────
+
+function QuestionRow({ item }: { item: QuestionResult }) {
+  return (
+    <Link
+      href={item.topic ? `/topic/${item.topic.id}/qa` : '/questions'}
+      className={cn(
+        'block p-4 rounded-xl',
+        'bg-surface-100 border border-surface-300',
+        'hover:border-purple/40 hover:bg-surface-100/80 transition-colors group'
+      )}
+    >
+      {/* Header: answered badge + author + meta */}
+      <div className="flex items-center gap-2 mb-2.5">
+        <span
+          className={cn(
+            'inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-mono font-bold border flex-shrink-0',
+            item.is_answered
+              ? 'bg-emerald/10 border-emerald/30 text-emerald'
+              : 'bg-purple/10 border-purple/30 text-purple'
+          )}
+        >
+          {item.is_answered
+            ? <CheckCircle2 className="h-2.5 w-2.5" aria-hidden="true" />
+            : <HelpCircle className="h-2.5 w-2.5" aria-hidden="true" />
+          }
+          {item.is_answered ? 'Answered' : 'Open'}
+        </span>
+
+        {item.author && (
+          <div className="flex items-center gap-1.5 min-w-0">
+            <Avatar
+              src={item.author.avatar_url}
+              fallback={item.author.display_name || item.author.username}
+              size="xs"
+            />
+            <span className="text-xs text-surface-500 truncate">
+              {item.author.display_name || item.author.username}
+            </span>
+          </div>
+        )}
+
+        <div className="ml-auto flex items-center gap-2 flex-shrink-0">
+          {item.upvotes > 0 && (
+            <div className="flex items-center gap-1 text-xs text-gold">
+              <TrendingUp className="h-3 w-3" aria-hidden="true" />
+              <span>{item.upvotes}</span>
+            </div>
+          )}
+          {item.answer_count > 0 && (
+            <div className="flex items-center gap-1 text-xs text-surface-500">
+              <MessageSquare className="h-3 w-3" aria-hidden="true" />
+              <span>{item.answer_count}</span>
+            </div>
+          )}
+          <span className="text-[10px] font-mono text-surface-600">
+            {relativeTime(item.created_at)}
+          </span>
+        </div>
+      </div>
+
+      {/* Question content */}
+      <p className="text-sm leading-relaxed line-clamp-3 text-purple-200 mb-2.5 group-hover:text-white transition-colors">
+        {item.content}
+      </p>
+
+      {/* Topic context */}
+      {item.topic && (
+        <div className="flex items-start gap-1.5 rounded-lg px-2.5 py-1.5 border bg-purple/5 border-purple/15">
+          <FileText className="h-3 w-3 text-surface-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
+          <span className="text-[11px] text-surface-500 line-clamp-1 leading-tight">
+            {item.topic.statement}
+          </span>
+          {item.topic.category && (
+            <span className="flex-shrink-0 text-[10px] font-mono text-surface-600 ml-auto pl-2">
+              {item.topic.category}
+            </span>
+          )}
+        </div>
+      )}
+    </Link>
+  )
+}
+
 // ─── Suggested person card (with inline follow button) ───────────────────────
 
 function SuggestPersonCard({ user }: { user: SuggestedUser }) {
@@ -966,7 +1075,7 @@ function DiscoveryPanel({
           <div className="h-12 w-12 rounded-xl bg-surface-200 flex items-center justify-center mb-4">
             <Search className="h-5 w-5 text-surface-500" />
           </div>
-          <p className="text-surface-500 text-sm">Start typing to search topics, laws, people, and arguments.</p>
+          <p className="text-surface-500 text-sm">Start typing to search topics, laws, people, arguments, and questions.</p>
         </div>
       )}
     </div>
@@ -981,6 +1090,7 @@ function EmptyState({ query, tab }: { query: string; tab: Tab }) {
     laws:      'No laws match your search.',
     people:    'No people match your search.',
     arguments: 'No arguments match your search.',
+    questions: 'No questions match your search.',
   }
   return (
     <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
@@ -1138,7 +1248,7 @@ function SearchContent() {
               onChange={(e) => setQuery(e.target.value)}
               onBlur={commitQuery}
               onKeyDown={(e) => { if (e.key === 'Enter') { commitQuery(); inputRef.current?.blur() } }}
-              placeholder="Search topics, laws, people, arguments..."
+              placeholder="Search topics, laws, people, arguments, questions..."
               aria-label="Search"
               className={cn(
                 'w-full h-10 pl-9 pr-4 rounded-xl',
@@ -1225,6 +1335,9 @@ function SearchContent() {
                 }
                 if (activeTab === 'arguments') {
                   return <ArgumentRow key={item.id} item={item as ArgumentResult} />
+                }
+                if (activeTab === 'questions') {
+                  return <QuestionRow key={item.id} item={item as QuestionResult} />
                 }
                 return <PersonRow key={item.id} item={item as PersonResult} />
               })
