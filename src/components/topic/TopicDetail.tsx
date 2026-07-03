@@ -51,6 +51,7 @@ import {
   Microscope,
   Waypoints,
   Sprout,
+  RotateCcw,
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { Topic, Profile, VoteSide } from '@/lib/supabase/types'
@@ -704,6 +705,15 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                         Legacy
                       </Link>
                     )}
+                    {(topic.status === 'law' || topic.status === 'failed') && (
+                      <Link
+                        href={`/topic/${topic.id}/hindsight`}
+                        className="inline-flex items-center gap-1.5 text-xs font-mono text-purple hover:text-purple/80 transition-colors"
+                      >
+                        <RotateCcw className="h-3.5 w-3.5" />
+                        Hindsight
+                      </Link>
+                    )}
                     <Link
                       href={`/topic/${topic.id}/versus`}
                       className="inline-flex items-center gap-1.5 text-xs font-mono text-for-400 hover:text-for-300 transition-colors"
@@ -1012,6 +1022,15 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                       <Microscope className="h-3.5 w-3.5" />
                       Debate Autopsy
                     </Link>
+                    {(topic.status === 'law' || topic.status === 'failed') && (
+                      <Link
+                        href={`/topic/${topic.id}/hindsight`}
+                        className="inline-flex items-center gap-1.5 text-xs font-mono text-purple hover:text-purple/80 transition-colors"
+                      >
+                        <RotateCcw className="h-3.5 w-3.5" />
+                        Hindsight
+                      </Link>
+                    )}
                     <Link
                       href={`/topic/${topic.id}/ripple`}
                       className="inline-flex items-center gap-1.5 text-xs font-mono text-emerald hover:text-emerald/80 transition-colors"
