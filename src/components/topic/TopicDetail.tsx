@@ -106,6 +106,7 @@ import { ErrorBoundary } from '@/components/ui/ErrorBoundary'
 import { ArgumentQualityPanel } from '@/components/topic/ArgumentQualityPanel'
 import { TopicCorrelationsPanel } from '@/components/topic/TopicCorrelationsPanel'
 import { TopicResolutionBanner } from '@/components/topic/TopicResolutionBanner'
+import { TopicChangemakersPanel } from '@/components/topic/TopicChangemakersPanel'
 
 const SIGNAL_ICONS_DETAIL: Record<string, typeof Flame> = {
   ending_soon:     Clock,
@@ -1404,6 +1405,15 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                 Open full connections &rarr;
               </Link>
             </div>
+
+            {/* What would change minds — forward-looking persuadability panel */}
+            <ErrorBoundary size="sm" label="Couldn't load changemakers" className="mt-8">
+              <TopicChangemakersPanel
+                topicId={topic.id}
+                userVote={votedSide === 'blue' ? 'for' : votedSide === 'red' ? 'against' : null}
+                className="mt-8"
+              />
+            </ErrorBoundary>
 
             {/* Top argument contributors — ranked by upvotes received */}
             <ErrorBoundary size="sm" label="Couldn't load contributors" className="mt-6">
