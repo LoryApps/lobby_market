@@ -259,6 +259,8 @@ const SECTIONS: FeatureSection[] = [
       { href: '/proclamations', label: 'Proclamations Board', description: 'Permanent record of all Grand Council motions and official decrees.', icon: Scroll },
       { href: '/assembly', label: 'Citizens\' Assembly', description: 'Sortition-based deliberative bodies tackling contested civic topics.', icon: Users },
       { href: '/tribunal', label: 'The Civic Tribunal', description: 'Community peer-review of arguments: challenge, deliberate, verdict.', icon: Gavel },
+      { href: '/civic-nominations', label: 'Civic Nominations', description: 'Nominate and endorse citizens for formal civic roles — Council, Tribunal, Fact Checker, and more.', icon: Award, isNew: true },
+      { href: '/civic-petitions', label: 'Civic Petitions', description: 'File and sign citizen petitions that force formal hearings, referendums, or assembly sessions.', icon: Scroll },
     ],
   },
   {

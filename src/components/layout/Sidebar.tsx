@@ -45,6 +45,7 @@ import {
   CalendarClock,
   GlassWater,
   Lock,
+  Award,
 } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { createClient } from '@/lib/supabase/client'
@@ -83,6 +84,7 @@ const navItems: NavItem[] = [
   { href: '/floor', label: 'The Floor', icon: Landmark },
   { href: '/law', label: 'Codex', icon: Scale },
   { href: '/petitions', label: 'Petitions', icon: FileWarning },
+  { href: '/civic-nominations', label: 'Nominations', icon: Award },
   { href: '/debate', label: 'Debates', icon: Mic },
   { href: '/lobby', label: 'Lobbies', icon: Megaphone },
   { href: '/coalitions', label: 'Coalitions', icon: Users },
