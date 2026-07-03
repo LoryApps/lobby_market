@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Activity, LayoutGrid, Network, Plus, Swords, Trophy, Users, Mail } from 'lucide-react'
+import { Activity, LayoutGrid, Network, Plus, Swords, Target, Trophy, Users, Mail } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -136,6 +136,18 @@ export default async function CoalitionsIndexPage() {
               >
                 <Network className="h-4 w-4" />
                 <span className="hidden sm:inline">Network</span>
+              </Link>
+              <Link
+                href="/coalitions/drives"
+                className={cn(
+                  'inline-flex items-center gap-2 px-3 py-2 rounded-lg',
+                  'bg-purple/10 border border-purple/30 text-purple',
+                  'hover:bg-purple/20 hover:border-purple/50',
+                  'text-xs font-mono font-medium transition-colors'
+                )}
+              >
+                <Target className="h-4 w-4" />
+                <span className="hidden sm:inline">Drives</span>
               </Link>
               <Link
                 href="/coalitions/stance-map"

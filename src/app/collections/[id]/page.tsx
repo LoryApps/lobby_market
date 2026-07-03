@@ -123,7 +123,6 @@ function TopicRow({
     e.preventDefault()
     setRemoving(true)
     try {
-      await fetch(`/api/collections/items`, { method: 'DELETE' }) // handled via parent
       onRemove(topic.id)
     } catch {
       // best-effort
