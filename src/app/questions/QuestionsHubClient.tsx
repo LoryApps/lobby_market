@@ -14,6 +14,7 @@ import {
   RefreshCw,
   Send,
   ThumbsUp,
+  Trophy,
   Zap,
   BookOpen,
   Flame,
@@ -496,13 +497,23 @@ export function QuestionsHubClient() {
               </p>
             </div>
           </div>
-          <button
-            onClick={load}
-            aria-label="Refresh"
-            className="flex items-center justify-center h-9 w-9 rounded-xl bg-surface-200 border border-surface-300 text-surface-500 hover:text-white hover:border-surface-400 transition-colors"
-          >
-            <RefreshCw className={cn('h-4 w-4', loading && 'animate-spin')} />
-          </button>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/questions/leaders"
+              aria-label="Knowledge Leaders"
+              className="flex items-center gap-1.5 px-3 h-9 rounded-xl bg-surface-200 border border-surface-300 text-surface-500 hover:text-gold hover:border-gold/40 transition-colors text-xs font-mono"
+            >
+              <Trophy className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Leaders</span>
+            </Link>
+            <button
+              onClick={load}
+              aria-label="Refresh"
+              className="flex items-center justify-center h-9 w-9 rounded-xl bg-surface-200 border border-surface-300 text-surface-500 hover:text-white hover:border-surface-400 transition-colors"
+            >
+              <RefreshCw className={cn('h-4 w-4', loading && 'animate-spin')} />
+            </button>
+          </div>
         </div>
 
         {/* Filter/Sort bar */}
