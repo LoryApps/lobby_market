@@ -2,6 +2,7 @@
 
 import { ReactNode, useEffect } from 'react'
 import dynamic from 'next/dynamic'
+import { MotionConfig } from 'framer-motion'
 import { ToastProvider } from '@/components/ui/Toaster'
 import { NotificationWatcher } from '@/components/ui/NotificationWatcher'
 import { AchievementWatcher } from '@/components/ui/AchievementWatcher'
@@ -70,16 +71,20 @@ function CommandPaletteProvider() {
 
 export function Providers({ children }: ProvidersProps) {
   return (
-    <ToastProvider>
-      <AuthInitializer />
-      <ServiceWorkerRegistrar />
-      <RouteProgressBar />
-      {children}
-      <NotificationWatcher />
-      <AchievementWatcher />
-      <CommandPaletteProvider />
-      <KeyboardShortcutsProvider />
-      <InstallPrompt />
-    </ToastProvider>
+    // reducedMotion="user" makes every framer-motion animation respect the
+    // OS-level "Reduce Motion" preference without touching individual components.
+    <MotionConfig reducedMotion="user">
+      <ToastProvider>
+        <AuthInitializer />
+        <ServiceWorkerRegistrar />
+        <RouteProgressBar />
+        {children}
+        <NotificationWatcher />
+        <AchievementWatcher />
+        <CommandPaletteProvider />
+        <KeyboardShortcutsProvider />
+        <InstallPrompt />
+      </ToastProvider>
+    </MotionConfig>
   )
 }

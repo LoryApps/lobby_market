@@ -176,3 +176,16 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #71717a;
 }
+
+/* Disable all CSS animations for users who request reduced motion.
+   Framer Motion is handled globally via MotionConfig reducedMotion="user" in Providers.tsx. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
