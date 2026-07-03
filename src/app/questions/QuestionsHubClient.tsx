@@ -27,6 +27,7 @@ import { Avatar } from '@/components/ui/Avatar'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { cn } from '@/lib/utils/cn'
+import { createClient } from '@/lib/supabase/client'
 import type { HubQuestion, HubQuestionsResponse } from '@/app/api/questions/route'
 import type { TopicAnswer } from '@/app/api/topics/[id]/questions/[qid]/answers/route'
 
@@ -87,15 +88,20 @@ const STATUS_COLOR: Record<string, string> = {
 
 interface AnswerSheetProps {
   question: HubQuestion
+  currentUserId: string | null
   onAnswerPosted: () => void
 }
 
-function AnswerSheet({ question, onAnswerPosted }: AnswerSheetProps) {
-  const [answers, setAnswers]   = useState<TopicAnswer[]>([])
-  const [loading, setLoading]   = useState(true)
-  const [text, setText]         = useState('')
+function AnswerSheet({ question, currentUserId, onAnswerPosted }: AnswerSheetProps) {
+  const [answers, setAnswers]       = useState<TopicAnswer[]>([])
+  const [loading, setLoading]       = useState(true)
+  const [text, setText]             = useState('')
   const [submitting, setSubmitting] = useState(false)
+  const [votingIds, setVotingIds]   = useState<Set<string>>(new Set())
+  const [acceptingId, setAcceptingId] = useState<string | null>(null)
   const textRef = useRef<HTMLTextAreaElement>(null)
+
+  const isQuestionAuthor = !!currentUserId && currentUserId === question.author?.id
 
   useEffect(() => {
     let mounted = true
@@ -136,6 +142,54 @@ function AnswerSheet({ question, onAnswerPosted }: AnswerSheetProps) {
     }
   }
 
+  async function handleAnswerVote(ans: TopicAnswer) {
+    if (votingIds.has(ans.id) || !currentUserId) return
+    setVotingIds((s) => new Set(s).add(ans.id))
+    try {
+      const res = await fetch(
+        `/api/topics/${question.topic_id}/questions/${question.id}/answers/${ans.id}/vote`,
+        { method: ans.user_voted ? 'DELETE' : 'POST' }
+      )
+      if (res.ok) {
+        const data = await res.json()
+        setAnswers((prev) =>
+          prev.map((a) =>
+            a.id === ans.id ? { ...a, user_voted: data.voted, upvotes: data.upvotes } : a
+          )
+        )
+      }
+    } catch {
+      // best-effort
+    } finally {
+      setVotingIds((s) => { const n = new Set(s); n.delete(ans.id); return n })
+    }
+  }
+
+  async function handleAccept(ans: TopicAnswer) {
+    if (acceptingId || !isQuestionAuthor) return
+    setAcceptingId(ans.id)
+    try {
+      const res = await fetch(
+        `/api/topics/${question.topic_id}/questions/${question.id}/answers/${ans.id}/accept`,
+        { method: 'POST' }
+      )
+      if (res.ok) {
+        const data = await res.json()
+        setAnswers((prev) =>
+          prev.map((a) =>
+            a.id === ans.id
+              ? { ...a, is_accepted: data.accepted }
+              : { ...a, is_accepted: false }
+          )
+        )
+      }
+    } catch {
+      // best-effort
+    } finally {
+      setAcceptingId(null)
+    }
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, height: 0 }}
@@ -148,8 +202,8 @@ function AnswerSheet({ question, onAnswerPosted }: AnswerSheetProps) {
         {/* Answers */}
         {loading ? (
           <div className="space-y-2 mb-3">
-            <Skeleton className="h-12 w-full rounded-lg" />
-            <Skeleton className="h-12 w-3/4 rounded-lg" />
+            <Skeleton className="h-14 w-full rounded-lg" />
+            <Skeleton className="h-14 w-3/4 rounded-lg" />
           </div>
         ) : answers.length > 0 ? (
           <div className="space-y-2 mb-3">
@@ -157,21 +211,26 @@ function AnswerSheet({ question, onAnswerPosted }: AnswerSheetProps) {
               <div
                 key={ans.id}
                 className={cn(
-                  'flex gap-2 p-3 rounded-xl text-sm',
+                  'p-3 rounded-xl text-sm',
                   ans.is_accepted
                     ? 'bg-emerald/5 border border-emerald/25'
                     : 'bg-surface-300/30 border border-surface-300/50'
                 )}
               >
-                {ans.is_accepted && (
-                  <div className="flex-shrink-0 mt-0.5 flex items-center justify-center h-4 w-4 rounded-full bg-emerald/20 border border-emerald/40">
-                    <Check className="h-2.5 w-2.5 text-emerald" />
-                  </div>
-                )}
-                <div className="flex-1 min-w-0">
-                  <p className="text-surface-100 leading-relaxed">{ans.content}</p>
-                  {ans.author && (
-                    <div className="flex items-center gap-1.5 mt-1.5">
+                {/* Content + accepted badge */}
+                <div className="flex gap-2">
+                  {ans.is_accepted && (
+                    <div className="flex-shrink-0 mt-0.5 flex items-center justify-center h-4 w-4 rounded-full bg-emerald/20 border border-emerald/40">
+                      <Check className="h-2.5 w-2.5 text-emerald" />
+                    </div>
+                  )}
+                  <p className="flex-1 text-surface-100 leading-relaxed">{ans.content}</p>
+                </div>
+
+                {/* Footer: author + actions */}
+                <div className="flex items-center justify-between gap-2 mt-2">
+                  {ans.author ? (
+                    <div className="flex items-center gap-1.5 min-w-0">
                       <Avatar
                         src={ans.author.avatar_url}
                         fallback={ans.author.display_name || ans.author.username}
@@ -179,15 +238,66 @@ function AnswerSheet({ question, onAnswerPosted }: AnswerSheetProps) {
                       />
                       <Link
                         href={`/profile/${ans.author.username}`}
-                        className="text-[11px] font-mono text-surface-500 hover:text-white transition-colors"
+                        className="text-[11px] font-mono text-surface-500 hover:text-white transition-colors truncate"
                       >
                         {ans.author.display_name || ans.author.username}
                       </Link>
-                      <span className="text-[10px] text-surface-600 font-mono">
+                      <span className="text-[10px] text-surface-600 font-mono flex-shrink-0">
                         · {relativeTime(ans.created_at)}
                       </span>
                     </div>
+                  ) : (
+                    <span className="text-[10px] font-mono text-surface-600">
+                      {relativeTime(ans.created_at)}
+                    </span>
                   )}
+
+                  {/* Vote + Accept buttons */}
+                  <div className="flex items-center gap-1.5 flex-shrink-0">
+                    {/* Upvote */}
+                    <button
+                      onClick={() => handleAnswerVote(ans)}
+                      disabled={votingIds.has(ans.id) || !currentUserId || ans.author_id === currentUserId}
+                      aria-label={ans.user_voted ? 'Remove upvote' : 'Upvote answer'}
+                      className={cn(
+                        'flex items-center gap-1 px-2 py-0.5 rounded-lg text-[11px] font-mono border transition-all',
+                        'disabled:opacity-40 disabled:cursor-not-allowed',
+                        ans.user_voted
+                          ? 'bg-for-500/20 border-for-500/40 text-for-400'
+                          : 'bg-surface-400/20 border-surface-400/30 text-surface-500 hover:text-white hover:border-surface-400/60'
+                      )}
+                    >
+                      {votingIds.has(ans.id) ? (
+                        <Loader2 className="h-2.5 w-2.5 animate-spin" />
+                      ) : (
+                        <ThumbsUp className="h-2.5 w-2.5" />
+                      )}
+                      <span>{ans.upvotes}</span>
+                    </button>
+
+                    {/* Accept (question author only) */}
+                    {isQuestionAuthor && (
+                      <button
+                        onClick={() => handleAccept(ans)}
+                        disabled={!!acceptingId}
+                        aria-label={ans.is_accepted ? 'Unmark as accepted' : 'Mark as best answer'}
+                        title={ans.is_accepted ? 'Unmark as best answer' : 'Mark as best answer'}
+                        className={cn(
+                          'flex items-center justify-center h-6 w-6 rounded-lg border transition-all',
+                          'disabled:opacity-40 disabled:cursor-not-allowed',
+                          ans.is_accepted
+                            ? 'bg-emerald/20 border-emerald/40 text-emerald'
+                            : 'bg-surface-400/20 border-surface-400/30 text-surface-500 hover:text-emerald hover:border-emerald/40'
+                        )}
+                      >
+                        {acceptingId === ans.id ? (
+                          <Loader2 className="h-2.5 w-2.5 animate-spin" />
+                        ) : (
+                          <Check className="h-2.5 w-2.5" />
+                        )}
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
@@ -246,6 +356,7 @@ function AnswerSheet({ question, onAnswerPosted }: AnswerSheetProps) {
 interface QuestionCardProps {
   question: HubQuestion
   isExpanded: boolean
+  currentUserId: string | null
   onToggle: () => void
   onVote: (id: string, voted: boolean) => void
   onAnswerPosted: (id: string) => void
@@ -254,6 +365,7 @@ interface QuestionCardProps {
 function QuestionCard({
   question,
   isExpanded,
+  currentUserId,
   onToggle,
   onVote,
   onAnswerPosted,
@@ -412,6 +524,7 @@ function QuestionCard({
           <div className="px-4 pb-4">
             <AnswerSheet
               question={question}
+              currentUserId={currentUserId}
               onAnswerPosted={() => onAnswerPosted(question.id)}
             />
           </div>
@@ -424,14 +537,22 @@ function QuestionCard({
 // ─── Main Hub Component ───────────────────────────────────────────────────────
 
 export function QuestionsHubClient() {
-  const [questions, setQuestions] = useState<HubQuestion[]>([])
-  const [total, setTotal]         = useState(0)
-  const [loading, setLoading]     = useState(true)
-  const [filter, setFilter]       = useState<FilterId>('unanswered')
-  const [sort, setSort]           = useState<SortId>('hot')
-  const [category, setCategory]   = useState('All')
-  const [expanded, setExpanded]   = useState<string | null>(null)
-  const [showCats, setShowCats]   = useState(false)
+  const [questions, setQuestions]   = useState<HubQuestion[]>([])
+  const [total, setTotal]           = useState(0)
+  const [loading, setLoading]       = useState(true)
+  const [filter, setFilter]         = useState<FilterId>('unanswered')
+  const [sort, setSort]             = useState<SortId>('hot')
+  const [category, setCategory]     = useState('All')
+  const [expanded, setExpanded]     = useState<string | null>(null)
+  const [showCats, setShowCats]     = useState(false)
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null)
+
+  useEffect(() => {
+    const supabase = createClient()
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setCurrentUserId(user?.id ?? null)
+    })
+  }, [])
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -663,6 +784,7 @@ export function QuestionsHubClient() {
                   key={q.id}
                   question={q}
                   isExpanded={expanded === q.id}
+                  currentUserId={currentUserId}
                   onToggle={() => setExpanded((prev) => (prev === q.id ? null : q.id))}
                   onVote={handleVote}
                   onAnswerPosted={handleAnswerPosted}

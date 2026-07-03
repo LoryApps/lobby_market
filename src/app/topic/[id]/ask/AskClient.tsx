@@ -25,6 +25,7 @@ import { Button } from '@/components/ui/Button'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { cn } from '@/lib/utils/cn'
+import { createClient } from '@/lib/supabase/client'
 import type { TopicQuestion, QuestionsResponse } from '@/app/api/topics/[id]/questions/route'
 import type { TopicAnswer } from '@/app/api/topics/[id]/questions/[qid]/answers/route'
 
@@ -55,56 +56,163 @@ function relativeTime(iso: string): string {
 
 // ─── Answer item ──────────────────────────────────────────────────────────────
 
-function AnswerItem({ answer }: { answer: TopicAnswer }) {
+function AnswerItem({
+  answer,
+  topicId,
+  questionId,
+  currentUserId,
+  isQuestionAuthor,
+  onAccepted,
+}: {
+  answer: TopicAnswer
+  topicId: string
+  questionId: string
+  currentUserId: string | null
+  isQuestionAuthor: boolean
+  onAccepted: (answerId: string, accepted: boolean) => void
+}) {
+  const [upvotes, setUpvotes] = useState(answer.upvotes)
+  const [userVoted, setUserVoted] = useState(answer.user_voted)
+  const [voting, setVoting] = useState(false)
+  const [accepting, setAccepting] = useState(false)
+
+  async function handleVote() {
+    if (voting || !currentUserId || answer.author_id === currentUserId) return
+    setVoting(true)
+    const wasVoted = userVoted
+    setUserVoted(!wasVoted)
+    setUpvotes((n) => n + (wasVoted ? -1 : 1))
+    try {
+      const res = await fetch(
+        `/api/topics/${topicId}/questions/${questionId}/answers/${answer.id}/vote`,
+        { method: wasVoted ? 'DELETE' : 'POST' }
+      )
+      if (res.ok) {
+        const data = await res.json()
+        setUserVoted(data.voted)
+        setUpvotes(data.upvotes)
+      } else {
+        setUserVoted(wasVoted)
+        setUpvotes((n) => n + (wasVoted ? 1 : -1))
+      }
+    } catch {
+      setUserVoted(wasVoted)
+      setUpvotes((n) => n + (wasVoted ? 1 : -1))
+    } finally {
+      setVoting(false)
+    }
+  }
+
+  async function handleAccept() {
+    if (accepting || !isQuestionAuthor) return
+    setAccepting(true)
+    try {
+      const res = await fetch(
+        `/api/topics/${topicId}/questions/${questionId}/answers/${answer.id}/accept`,
+        { method: 'POST' }
+      )
+      if (res.ok) {
+        const data = await res.json()
+        onAccepted(answer.id, data.accepted)
+      }
+    } catch {
+      // best-effort
+    } finally {
+      setAccepting(false)
+    }
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       className={cn(
-        'flex gap-3 p-3 rounded-xl',
+        'p-3 rounded-xl',
         answer.is_accepted
           ? 'bg-emerald/5 border border-emerald/20'
           : 'bg-surface-200/40 border border-surface-300/50'
       )}
     >
-      {/* Accepted indicator */}
-      {answer.is_accepted && (
-        <div className="flex-shrink-0 flex items-center justify-center h-5 w-5 mt-0.5 rounded-full bg-emerald/20 border border-emerald/40">
-          <Check className="h-2.5 w-2.5 text-emerald" />
-        </div>
-      )}
+      {/* Content */}
+      <div className="flex gap-2 mb-2">
+        {answer.is_accepted && (
+          <div className="flex-shrink-0 flex items-center justify-center h-4 w-4 mt-0.5 rounded-full bg-emerald/20 border border-emerald/40">
+            <Check className="h-2.5 w-2.5 text-emerald" />
+          </div>
+        )}
+        <p className="flex-1 text-sm text-surface-100 leading-relaxed">{answer.content}</p>
+      </div>
 
-      <div className="flex-1 min-w-0">
-        <p className="text-sm text-surface-100 leading-relaxed">{answer.content}</p>
-        <div className="flex items-center gap-3 mt-2">
-          <div className="flex items-center gap-1.5">
-            {answer.author && (
-              <>
-                <Avatar
-                  src={answer.author.avatar_url}
-                  fallback={answer.author.display_name || answer.author.username}
-                  size="xs"
-                />
-                <Link
-                  href={`/profile/${answer.author.username}`}
-                  className="text-[11px] font-mono text-surface-500 hover:text-white transition-colors"
-                >
-                  {answer.author.display_name || answer.author.username}
-                </Link>
-              </>
-            )}
-            <span className="text-[10px] text-surface-600 font-mono">
-              · {relativeTime(answer.created_at)}
-            </span>
-          </div>
-          <div className="flex items-center gap-1 text-[11px] text-surface-500 font-mono">
-            <ThumbsUp className="h-2.5 w-2.5" />
-            {answer.upvotes}
-          </div>
+      {/* Footer: author + actions */}
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-1.5 min-w-0">
+          {answer.author && (
+            <>
+              <Avatar
+                src={answer.author.avatar_url}
+                fallback={answer.author.display_name || answer.author.username}
+                size="xs"
+              />
+              <Link
+                href={`/profile/${answer.author.username}`}
+                className="text-[11px] font-mono text-surface-500 hover:text-white transition-colors truncate"
+              >
+                {answer.author.display_name || answer.author.username}
+              </Link>
+            </>
+          )}
+          <span className="text-[10px] text-surface-600 font-mono flex-shrink-0">
+            · {relativeTime(answer.created_at)}
+          </span>
           {answer.is_accepted && (
-            <span className="text-[10px] font-mono text-emerald font-semibold">
-              Accepted answer
+            <span className="text-[10px] font-mono text-emerald font-semibold flex-shrink-0">
+              · Accepted
             </span>
+          )}
+        </div>
+
+        {/* Vote + Accept */}
+        <div className="flex items-center gap-1.5 flex-shrink-0">
+          <button
+            onClick={handleVote}
+            disabled={voting || !currentUserId || answer.author_id === currentUserId}
+            aria-label={userVoted ? 'Remove upvote' : 'Upvote answer'}
+            className={cn(
+              'flex items-center gap-1 px-2 py-0.5 rounded-lg text-[11px] font-mono border transition-all',
+              'disabled:opacity-40 disabled:cursor-not-allowed',
+              userVoted
+                ? 'bg-for-500/20 border-for-500/40 text-for-400'
+                : 'bg-surface-400/20 border-surface-400/30 text-surface-500 hover:text-white hover:border-surface-400/60'
+            )}
+          >
+            {voting ? (
+              <Loader2 className="h-2.5 w-2.5 animate-spin" />
+            ) : (
+              <ThumbsUp className="h-2.5 w-2.5" />
+            )}
+            <span>{upvotes}</span>
+          </button>
+
+          {isQuestionAuthor && (
+            <button
+              onClick={handleAccept}
+              disabled={accepting}
+              aria-label={answer.is_accepted ? 'Unmark as best answer' : 'Mark as best answer'}
+              title={answer.is_accepted ? 'Unmark as best answer' : 'Mark as best answer'}
+              className={cn(
+                'flex items-center justify-center h-6 w-6 rounded-lg border transition-all',
+                'disabled:opacity-40 disabled:cursor-not-allowed',
+                answer.is_accepted
+                  ? 'bg-emerald/20 border-emerald/40 text-emerald'
+                  : 'bg-surface-400/20 border-surface-400/30 text-surface-500 hover:text-emerald hover:border-emerald/40'
+              )}
+            >
+              {accepting ? (
+                <Loader2 className="h-2.5 w-2.5 animate-spin" />
+              ) : (
+                <Check className="h-2.5 w-2.5" />
+              )}
+            </button>
           )}
         </div>
       </div>
@@ -212,9 +320,11 @@ function AnswerForm({
 function QuestionCard({
   question,
   topicId,
+  currentUserId,
 }: {
   question: TopicQuestion
   topicId: string
+  currentUserId: string | null
 }) {
   const [expanded, setExpanded] = useState(false)
   const [answers, setAnswers] = useState<TopicAnswer[]>([])
@@ -223,6 +333,16 @@ function QuestionCard({
   const [voted, setVoted] = useState(question.user_voted)
   const [upvotes, setUpvotes] = useState(question.upvotes)
   const [voting, setVoting] = useState(false)
+
+  const isQuestionAuthor = !!currentUserId && currentUserId === question.author_id
+
+  function handleAnswerAccepted(acceptedId: string, accepted: boolean) {
+    setAnswers((prev) =>
+      prev.map((a) =>
+        a.id === acceptedId ? { ...a, is_accepted: accepted } : { ...a, is_accepted: false }
+      )
+    )
+  }
 
   async function loadAnswers() {
     if (answers.length > 0) return
@@ -403,7 +523,17 @@ function QuestionCard({
                   ))}
                 </div>
               ) : answers.length > 0 ? (
-                answers.map((a) => <AnswerItem key={a.id} answer={a} />)
+                answers.map((a) => (
+                  <AnswerItem
+                    key={a.id}
+                    answer={a}
+                    topicId={topicId}
+                    questionId={question.id}
+                    currentUserId={currentUserId}
+                    isQuestionAuthor={isQuestionAuthor}
+                    onAccepted={handleAnswerAccepted}
+                  />
+                ))
               ) : (
                 <p className="text-xs font-mono text-surface-500 text-center py-2">
                   No answers yet. Be the first to answer.
@@ -577,11 +707,19 @@ export function AskClient({
   bluePct,
   totalVotes,
 }: AskClientProps) {
-  const [questions, setQuestions] = useState<TopicQuestion[]>([])
-  const [loading, setLoading] = useState(true)
-  const [refreshing, setRefreshing] = useState(false)
-  const [sort, setSort] = useState<'top' | 'new'>('top')
-  const [filter, setFilter] = useState<'all' | 'unanswered' | 'answered'>('all')
+  const [questions, setQuestions]     = useState<TopicQuestion[]>([])
+  const [loading, setLoading]         = useState(true)
+  const [refreshing, setRefreshing]   = useState(false)
+  const [sort, setSort]               = useState<'top' | 'new'>('top')
+  const [filter, setFilter]           = useState<'all' | 'unanswered' | 'answered'>('all')
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null)
+
+  useEffect(() => {
+    const supabase = createClient()
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setCurrentUserId(user?.id ?? null)
+    })
+  }, [])
 
   const load = useCallback(async (showRefresh = false) => {
     if (showRefresh) setRefreshing(true)
@@ -739,7 +877,7 @@ export function AskClient({
         ) : (
           <div className="space-y-3">
             {questions.map((q) => (
-              <QuestionCard key={q.id} question={q} topicId={topicId} />
+              <QuestionCard key={q.id} question={q} topicId={topicId} currentUserId={currentUserId} />
             ))}
           </div>
         )}
