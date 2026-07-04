@@ -171,7 +171,7 @@ function ExpertCard({
 
       {/* Ask button */}
       <Link
-        href={`/questions?expert=${expert.username}&category=${encodeURIComponent(expert.category)}`}
+        href={`/questions/by-expert/${expert.username}`}
         className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-for-600/20 border border-for-600/30 text-for-400 hover:bg-for-600/30 text-xs font-mono font-semibold transition-colors"
         aria-label={`Ask ${expert.display_name ?? expert.username} a question`}
       >
