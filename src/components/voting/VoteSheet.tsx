@@ -24,6 +24,14 @@ import { haptics } from '@/lib/hooks/useHaptics'
 import { cn } from '@/lib/utils/cn'
 import type { Topic, VoteSide } from '@/lib/supabase/types'
 
+// ─── Argument type (matches /api/topics/[id]/top-arguments response) ─────────
+
+interface TopArgument {
+  id: string
+  content: string
+  upvotes: number
+}
+
 // ─── Related topic type (matches /api/topics/[id]/related response) ──────────
 
 interface RelatedTopic {
@@ -140,6 +148,92 @@ function RelatedChip({ topic, onClose }: { topic: RelatedTopic; onClose: () => v
 
       <ArrowRight className="flex-shrink-0 h-3 w-3 text-surface-600 group-hover:text-surface-400 transition-colors" aria-hidden="true" />
     </Link>
+  )
+}
+
+// ─── Opposing-side arguments panel ───────────────────────────────────────────
+
+function OpposingArguments({
+  topicId,
+  votedSide,
+}: {
+  topicId: string
+  votedSide: VoteSide
+}) {
+  const [args, setArgs] = useState<TopArgument[]>([])
+  const [loading, setLoading] = useState(true)
+
+  const isFor = votedSide === 'blue'
+
+  useEffect(() => {
+    let cancelled = false
+    fetch(`/api/topics/${topicId}/top-arguments`)
+      .then((res) => (res.ok ? res.json() : { forArgs: [], againstArgs: [] }))
+      .then((data) => {
+        if (!cancelled) {
+          const opposing: TopArgument[] = isFor
+            ? (data.againstArgs ?? (data.againstArg ? [data.againstArg] : []))
+            : (data.forArgs ?? (data.forArg ? [data.forArg] : []))
+          setArgs(opposing.slice(0, 3))
+        }
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (!cancelled) setLoading(false)
+      })
+    return () => { cancelled = true }
+  }, [topicId, isFor])
+
+  if (loading || args.length === 0) return null
+
+  const opposingColor = isFor ? 'against' : 'for'
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, delay: 0.15, ease: 'easeOut' }}
+      className="w-full space-y-2"
+    >
+      <div className="flex items-center gap-2 px-0.5">
+        <MessageSquare className="h-3 w-3 text-surface-500 flex-shrink-0" aria-hidden="true" />
+        <span className="text-[10px] font-mono uppercase tracking-widest text-surface-500">
+          The strongest case {isFor ? 'against' : 'for'}
+        </span>
+      </div>
+      <div className="space-y-1.5">
+        {args.map((arg) => (
+          <div
+            key={arg.id}
+            className={cn(
+              'rounded-xl border px-3 py-2.5',
+              opposingColor === 'against'
+                ? 'bg-against-500/5 border-against-500/20'
+                : 'bg-for-500/5 border-for-500/20'
+            )}
+          >
+            <p
+              className={cn(
+                'text-[11px] font-mono leading-relaxed line-clamp-3',
+                opposingColor === 'against' ? 'text-against-300' : 'text-for-300'
+              )}
+            >
+              {arg.content}
+            </p>
+            {arg.upvotes > 0 && (
+              <span
+                className={cn(
+                  'text-[10px] font-mono mt-1 block',
+                  opposingColor === 'against' ? 'text-against-500/70' : 'text-for-500/70'
+                )}
+              >
+                {arg.upvotes} {arg.upvotes === 1 ? 'upvote' : 'upvotes'}
+              </span>
+            )}
+          </div>
+        ))}
+      </div>
+    </motion.div>
   )
 }
 
@@ -260,6 +354,9 @@ function VoteConfirmed({
         <MessageSquare className="h-3 w-3" aria-hidden />
         See why others voted
       </Link>
+
+      {/* ── Opposing arguments ───────────────────────────────────────────── */}
+      <OpposingArguments topicId={topic.id} votedSide={side} />
 
       {/* ── Related topics nudge ─────────────────────────────────────────── */}
       <AnimatePresence>

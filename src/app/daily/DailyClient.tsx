@@ -646,7 +646,7 @@ export function DailyClient() {
                   ))}
                 </div>
                 <Link
-                  href="/debates"
+                  href="/debate"
                   className="mt-3 flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-surface-300 text-xs font-mono text-surface-400 hover:text-white hover:border-surface-400 transition-all"
                 >
                   See all debates <ArrowRight className="h-3.5 w-3.5" />

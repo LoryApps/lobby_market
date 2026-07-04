@@ -630,7 +630,7 @@ export function PlatformStatsClient() {
                     { href: '/topics', label: 'All Topics', icon: Scale },
                     { href: '/laws', label: 'The Codex', icon: Gavel },
                     { href: '/leaderboard', label: 'Leaderboard', icon: Trophy },
-                    { href: '/debates', label: 'Debates', icon: MessageSquare },
+                    { href: '/debate', label: 'Debates', icon: MessageSquare },
                     { href: '/coalitions', label: 'Coalitions', icon: Users },
                     { href: '/analytics', label: 'My Stats', icon: BarChart2 },
                   ].map(({ href, label, icon: Icon }) => (

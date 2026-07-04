@@ -10,6 +10,8 @@ export interface TopArgument {
 export interface TopArgumentsResponse {
   forArg: TopArgument | null
   againstArg: TopArgument | null
+  forArgs: TopArgument[]
+  againstArgs: TopArgument[]
 }
 
 // GET /api/topics/[id]/top-arguments
@@ -33,12 +35,20 @@ export async function GET(
 
   const args = data ?? []
 
-  const forArg = args.find((a) => a.side === 'blue') ?? null
-  const againstArg = args.find((a) => a.side === 'red') ?? null
+  const toTopArg = (a: { id: string; content: string; upvotes: number }): TopArgument => ({
+    id: a.id,
+    content: a.content,
+    upvotes: a.upvotes,
+  })
+
+  const forArgs = args.filter((a) => a.side === 'blue').slice(0, 3).map(toTopArg)
+  const againstArgs = args.filter((a) => a.side === 'red').slice(0, 3).map(toTopArg)
 
   const response: TopArgumentsResponse = {
-    forArg: forArg ? { id: forArg.id, content: forArg.content, upvotes: forArg.upvotes } : null,
-    againstArg: againstArg ? { id: againstArg.id, content: againstArg.content, upvotes: againstArg.upvotes } : null,
+    forArg: forArgs[0] ?? null,
+    againstArg: againstArgs[0] ?? null,
+    forArgs,
+    againstArgs,
   }
 
   return NextResponse.json(response, {
