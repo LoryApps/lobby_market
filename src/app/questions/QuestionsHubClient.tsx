@@ -8,6 +8,7 @@ import {
   Check,
   ChevronDown,
   Filter,
+  GraduationCap,
   HelpCircle,
   Loader2,
   MessageSquare,
@@ -645,6 +646,14 @@ export function QuestionsHubClient() {
             >
               <Trophy className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">Leaders</span>
+            </Link>
+            <Link
+              href="/experts"
+              aria-label="Expert Directory"
+              className="flex items-center gap-1.5 px-3 h-9 rounded-xl bg-surface-200 border border-surface-300 text-surface-500 hover:text-emerald hover:border-emerald/40 transition-colors text-xs font-mono"
+            >
+              <GraduationCap className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Experts</span>
             </Link>
             <button
               onClick={load}
