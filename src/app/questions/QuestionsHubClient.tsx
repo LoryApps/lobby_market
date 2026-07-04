@@ -631,6 +631,14 @@ export function QuestionsHubClient() {
           </div>
           <div className="flex items-center gap-2">
             <Link
+              href="/questions/my"
+              aria-label="My Q&A"
+              className="flex items-center gap-1.5 px-3 h-9 rounded-xl bg-surface-200 border border-surface-300 text-surface-500 hover:text-purple hover:border-purple/40 transition-colors text-xs font-mono"
+            >
+              <MessageSquare className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">My Q&amp;A</span>
+            </Link>
+            <Link
               href="/questions/leaders"
               aria-label="Knowledge Leaders"
               className="flex items-center gap-1.5 px-3 h-9 rounded-xl bg-surface-200 border border-surface-300 text-surface-500 hover:text-gold hover:border-gold/40 transition-colors text-xs font-mono"
