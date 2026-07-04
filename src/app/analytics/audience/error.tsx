@@ -11,7 +11,7 @@ export default function AudienceError({
 }) {
   return (
     <div className="min-h-screen bg-surface-50 flex items-center justify-center p-4">
-      <ErrorCard message={error.message} onRetry={reset} />
+      <ErrorCard message={error.message} onReset={reset} />
     </div>
   )
 }

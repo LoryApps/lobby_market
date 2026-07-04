@@ -337,7 +337,8 @@ export default function CalibrationAnalyticsPage() {
           ) : isEmpty ? (
             <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
               <EmptyState
-                icon={<FlaskConical className="h-8 w-8 text-purple" />}
+                icon={FlaskConical}
+                iconColor="text-purple"
                 title="No resolved votes yet"
                 description="Your calibration score appears once topics you voted on reach a final outcome (law or failed). Keep voting!"
                 actions={[{ label: 'Browse topics', href: '/' }]}

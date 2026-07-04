@@ -171,7 +171,9 @@ function TopicRow({ topic, highlight }: { topic: DriftTopic; highlight: 'contrar
               {topic.category}
             </span>
           )}
-          <Badge variant={statusBadge(topic.status)} size="sm" />
+          <Badge variant={statusBadge(topic.status)} size="sm">
+            {statusBadge(topic.status).charAt(0).toUpperCase() + statusBadge(topic.status).slice(1)}
+          </Badge>
         </div>
       </div>
       <div className="flex-shrink-0 text-right">
@@ -285,6 +287,7 @@ export default function DriftPage() {
             {/* Empty state */}
             {data.total_voted === 0 ? (
               <EmptyState
+                icon={Compass}
                 title="No votes yet"
                 description="Cast your first votes to see how your positions compare to community consensus."
                 action={{ label: 'Browse topics', href: '/' }}
@@ -301,7 +304,7 @@ export default function DriftPage() {
                   <div className="flex items-start gap-4">
                     <Avatar
                       src={data.user.avatar_url}
-                      username={data.user.username}
+                      fallback={data.user.username}
                       size="md"
                       className="flex-shrink-0"
                     />

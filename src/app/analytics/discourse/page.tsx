@@ -241,7 +241,7 @@ export default function DiscoursePage() {
             <h2 className="font-mono text-sm font-bold text-white uppercase tracking-wider">By Category</h2>
             <Link href="/categories" className="flex items-center gap-1 text-[11px] font-mono text-for-400 hover:text-for-300 transition-colors">Browse topics<ChevronRight className="h-3 w-3" /></Link>
           </div>
-          {data.by_category.length === 0 ? <EmptyState title="No category data yet" body="Argument quality data will appear once arguments are AI-scored." icon={BarChart2} /> : (
+          {data.by_category.length === 0 ? <EmptyState title="No category data yet" description="Argument quality data will appear once arguments are AI-scored." icon={BarChart2} /> : (
             <div className="space-y-2">
               <AnimatePresence>{visibleCategories.map((cat,i)=>(<motion.div key={cat.category} initial={{opacity:0,y:8}} animate={{opacity:1,y:0}} transition={{delay:i*0.05}}><CategoryRow cat={cat} /></motion.div>))}</AnimatePresence>
               {data.by_category.length > 5 && <button onClick={()=>setShowAll(v=>!v)} className="w-full py-2.5 rounded-xl border border-surface-300/60 text-[12px] font-mono text-surface-500 hover:text-white hover:border-surface-400 transition-colors">{showAll ? 'Show less' : `Show all ${data.by_category.length} categories`}</button>}
@@ -253,7 +253,7 @@ export default function DiscoursePage() {
             <h2 className="font-mono text-sm font-bold text-white uppercase tracking-wider">Healthiest Debates</h2>
             <Link href="/arguments/top-scored" className="flex items-center gap-1 text-[11px] font-mono text-for-400 hover:text-for-300 transition-colors">Top arguments<ChevronRight className="h-3 w-3" /></Link>
           </div>
-          {visibleTopics.length === 0 ? <EmptyState title="No topic data yet" body="Topics will appear here as arguments accumulate AI scores." icon={Scale} /> : (
+          {visibleTopics.length === 0 ? <EmptyState title="No topic data yet" description="Topics will appear here as arguments accumulate AI scores." icon={Scale} /> : (
             <div className="space-y-3">{visibleTopics.map((topic,i)=>(<motion.div key={topic.id} initial={{opacity:0,y:8}} animate={{opacity:1,y:0}} transition={{delay:0.1+i*0.05}}><TopicCard topic={topic} /></motion.div>))}</div>
           )}
         </div>

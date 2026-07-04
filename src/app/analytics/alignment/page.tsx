@@ -111,7 +111,7 @@ function AlignedUserRow({ user }: { user: AlignedUser }) {
     >
       {/* Avatar */}
       <Link href={`/profile/${user.username}`} className="flex-shrink-0">
-        <Avatar src={user.avatar_url ?? null} username={user.username} size={36} />
+        <Avatar src={user.avatar_url ?? null} fallback={user.username} size="sm" />
       </Link>
 
       {/* Info */}

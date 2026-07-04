@@ -347,7 +347,7 @@ export function AdvisorClient() {
           {phase === 'done' && (
             <button
               onClick={fetchAdvice}
-              disabled={phase === 'loading'}
+              disabled={false}
               aria-label="Refresh recommendations"
               className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono text-surface-400 border border-surface-400/40 hover:text-white hover:border-surface-400 transition-all"
             >

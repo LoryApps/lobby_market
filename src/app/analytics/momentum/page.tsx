@@ -482,7 +482,8 @@ export default function MomentumPage() {
           <MomentumSkeleton />
         ) : error ? (
           <EmptyState
-            icon={<Activity className="h-6 w-6 text-against-400" />}
+            icon={Activity}
+            iconColor="text-against-400"
             title="Couldn't load momentum data"
             description="Something went wrong. Try refreshing."
             action={
@@ -497,7 +498,8 @@ export default function MomentumPage() {
           />
         ) : data && !data.has_data ? (
           <EmptyState
-            icon={<Flame className="h-6 w-6 text-for-400" />}
+            icon={Flame}
+            iconColor="text-for-400"
             title="No momentum data yet"
             description="Start voting and posting arguments to build your civic momentum."
             action={

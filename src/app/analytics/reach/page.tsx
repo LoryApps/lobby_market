@@ -188,15 +188,15 @@ function AmplifierRow({ amp, rank, total }: { amp: TopAmplifier; rank: number; t
       </span>
       <Avatar
         src={amp.avatar_url}
-        username={amp.username}
-        size={32}
+        fallback={amp.username}
+        size="sm"
       />
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-1">
           <span className="text-sm font-mono font-medium text-white truncate group-hover:text-for-300 transition-colors">
             {amp.display_name ?? amp.username}
           </span>
-          <Badge variant="outline" className="text-[9px] shrink-0 capitalize">
+          <Badge variant="person" className="text-[9px] shrink-0 capitalize">
             {amp.role}
           </Badge>
         </div>

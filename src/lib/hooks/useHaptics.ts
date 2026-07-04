@@ -39,11 +39,11 @@ const PATTERNS = {
 
 export type HapticPattern = keyof typeof PATTERNS
 
-function vibrate(pattern: number | number[]): void {
+function vibrate(pattern: number | readonly number[]): void {
   if (typeof navigator === 'undefined') return
   if (!('vibrate' in navigator)) return
   try {
-    navigator.vibrate(pattern)
+    navigator.vibrate(pattern as number | number[])
   } catch {
     // Silently ignore — may be blocked by Permissions-Policy or user gesture requirement
   }

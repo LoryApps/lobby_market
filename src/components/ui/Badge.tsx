@@ -12,6 +12,9 @@ const badgeVariants = {
   active: 'bg-for-500/20 text-for-500',
   law: 'bg-emerald/20 text-emerald',
   failed: 'bg-against-500/20 text-against-500',
+  // Utility variants
+  gold: 'bg-gold/20 text-gold',
+  outline: '',
 } as const
 
 type BadgeVariant = keyof typeof badgeVariants

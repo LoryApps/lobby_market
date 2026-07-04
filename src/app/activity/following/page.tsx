@@ -225,7 +225,9 @@ function EventCard({ event, index }: { event: NetworkEvent; index: number }) {
           <Badge
             variant={STATUS_BADGE[topic.status] ?? 'proposed'}
             size="sm"
-          />
+          >
+            {topic.status.charAt(0).toUpperCase() + topic.status.slice(1)}
+          </Badge>
           {topic.category && (
             <span className="text-[10px] font-mono text-surface-500 pt-0.5">
               {topic.category}

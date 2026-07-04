@@ -112,7 +112,7 @@ export const WORDLE_WORDS: string[] = [
 ]
 
 // Remove duplicates
-const UNIQUE_WORDS = [...new Set(WORDLE_WORDS)]
+const UNIQUE_WORDS = Array.from(new Set(WORDLE_WORDS))
 
 // ─── Day picker ───────────────────────────────────────────────────────────────
 

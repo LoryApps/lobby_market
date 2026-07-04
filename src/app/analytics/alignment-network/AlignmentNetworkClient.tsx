@@ -269,7 +269,7 @@ function NetworkGraph({ users, myUsername, className, onNodeClick }: NetworkGrap
       source: 'self',
       target: u.id,
       agreementPct: u.agreementPct,
-      source_type: u.source,
+      source_type: u.source as 'following' | 'coalition',
     }))
     linksRef.current = links
 
@@ -516,7 +516,7 @@ export function AlignmentNetworkClient() {
 
       const [netData, meData] = await Promise.all([
         netRes.json() as Promise<AlignmentNetworkResponse>,
-        meRes.ok ? (meRes.json() as Promise<{ username?: string }>) : Promise.resolve({}),
+        meRes.ok ? (meRes.json() as Promise<{ username?: string }>) : Promise.resolve({} as { username?: string }),
       ])
 
       setData(netData)

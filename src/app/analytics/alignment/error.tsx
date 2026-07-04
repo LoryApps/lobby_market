@@ -9,11 +9,5 @@ export default function AlignmentError({
   error: Error & { digest?: string }
   reset: () => void
 }) {
-  return (
-    <PageError
-      title="Alignment unavailable"
-      description={error.message || 'Failed to load alignment data.'}
-      onReset={reset}
-    />
-  )
+  return <PageError error={error} reset={reset} page="Alignment" />
 }

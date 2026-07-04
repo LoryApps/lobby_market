@@ -410,8 +410,8 @@ export default function InfluencePage() {
                     </p>
                   </div>
                   <Avatar
-                    username={data.user.username}
-                    avatarUrl={data.user.avatar_url}
+                    src={data.user.avatar_url}
+                    fallback={data.user.username}
                     size="sm"
                   />
                 </div>

@@ -308,7 +308,9 @@ function OutlierVotesList({ votes }: { votes: OutlierVote[] }) {
                   {v.category && (
                     <span className={cn('text-[10px] font-mono', catColor)}>{v.category}</span>
                   )}
-                  <Badge variant={statusBadge} className="text-[9px] py-0" />
+                  <Badge variant={statusBadge} className="text-[9px] py-0">
+                    {statusBadge.charAt(0).toUpperCase() + statusBadge.slice(1)}
+                  </Badge>
                   <span className="text-[10px] font-mono text-against-400">
                     only {sidePct}% agreed with you
                   </span>

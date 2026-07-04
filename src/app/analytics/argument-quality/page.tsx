@@ -215,7 +215,7 @@ function ArguerRow({ arguer, rank }: { arguer: TopArguer; rank: number }) {
       <Link href={`/profile/${arguer.username}`} className="flex items-center gap-3 flex-1 group min-w-0">
         <Avatar
           src={arguer.avatar_url}
-          name={arguer.display_name ?? arguer.username}
+          fallback={arguer.display_name ?? arguer.username}
           size="sm"
           className="flex-shrink-0"
         />

@@ -179,7 +179,7 @@ function MemberCard({ member, showBridge = false }: { member: NetworkMember; sho
     >
       <Avatar
         src={member.avatar_url}
-        alt={member.display_name ?? member.username}
+        fallback={member.display_name ?? member.username}
         size="sm"
         className="flex-shrink-0"
       />
@@ -521,7 +521,7 @@ export default function NetworkAnalyticsPage() {
                       >
                         <Avatar
                           src={s.avatar_url}
-                          alt={s.display_name ?? s.username}
+                          fallback={s.display_name ?? s.username}
                           size="sm"
                           className="flex-shrink-0"
                         />

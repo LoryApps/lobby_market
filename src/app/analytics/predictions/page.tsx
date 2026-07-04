@@ -362,7 +362,7 @@ export default function PredictionAnalyticsPage() {
     if (p.correct) entry.correct++
     catMap.set(cat, entry)
   }
-  const byCategory = [...catMap.entries()]
+  const byCategory = Array.from(catMap.entries())
     .filter(([, d]) => d.total >= 1)
     .map(([cat, d]) => ({ cat, total: d.total, correct: d.correct, accuracy: Math.round((d.correct / d.total) * 100) }))
     .sort((a, b) => b.total - a.total)

@@ -10,37 +10,57 @@ const sizeClasses = {
 
 type AvatarSize = keyof typeof sizeClasses
 
-interface AvatarProps {
+function resolveSize(size: AvatarSize | number | undefined): AvatarSize {
+  if (typeof size === 'string') return size
+  if (!size || size <= 20) return 'xs'
+  if (size <= 34) return 'sm'
+  if (size <= 46) return 'md'
+  return 'lg'
+}
+
+export interface AvatarProps {
   src?: string | null
-  fallback: string
-  size?: AvatarSize
+  /** Image URL alias (deprecated: use src) */
+  avatarUrl?: string | null
+  /** Text for initials fallback */
+  fallback?: string
+  /** Alias for fallback (deprecated) */
+  name?: string
+  /** Alias for fallback (deprecated) */
+  username?: string
+  /** Alias for fallback (deprecated) */
+  alt?: string
+  size?: AvatarSize | number
   className?: string
 }
 
-export function Avatar({ src, fallback, size = 'md', className }: AvatarProps) {
-  const initials = fallback
+export function Avatar({ src, avatarUrl, fallback, name, username, alt, size, className }: AvatarProps) {
+  const resolvedSrc = src ?? avatarUrl ?? null
+  const resolvedFallback = fallback ?? name ?? username ?? alt ?? ''
+  const initials = resolvedFallback
     .split(' ')
     .map((w) => w[0])
     .join('')
     .toUpperCase()
     .slice(0, 2)
+  const sizeKey = resolveSize(size)
 
   return (
     <div
       className={cn(
         'relative rounded-full overflow-hidden flex items-center justify-center flex-shrink-0',
         'bg-surface-300 text-surface-700 font-medium',
-        sizeClasses[size],
+        sizeClasses[sizeKey],
         className
       )}
     >
-      {src ? (
+      {resolvedSrc ? (
         <Image
-          src={src}
-          alt={fallback}
+          src={resolvedSrc}
+          alt={resolvedFallback}
           fill
           className="object-cover"
-          sizes={size === 'lg' ? '56px' : size === 'md' ? '40px' : size === 'sm' ? '32px' : '24px'}
+          sizes={sizeKey === 'lg' ? '56px' : sizeKey === 'md' ? '40px' : sizeKey === 'sm' ? '32px' : '24px'}
         />
       ) : (
         <span>{initials}</span>

@@ -262,8 +262,8 @@ function SupporterCard({ supporter, rank }: { supporter: TopSupporter; rank: num
         </span>
         <Avatar
           src={supporter.avatar_url ?? undefined}
-          username={supporter.username}
-          size={32}
+          fallback={supporter.username}
+          size="sm"
         />
         <div className="flex-1 min-w-0">
           <p className="text-sm font-mono font-medium text-white truncate">

@@ -294,7 +294,7 @@ export default function GrowthPlanPage() {
 
         {error && (
           <EmptyState
-            icon={<BarChart2 className="h-8 w-8" />}
+            icon={BarChart2}
             title="Could not load growth plan"
             description={error}
             actions={[{ label: 'Try again', onClick: load }]}

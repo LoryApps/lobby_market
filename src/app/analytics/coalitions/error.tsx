@@ -3,16 +3,11 @@
 import { PageError } from '@/components/ui/PageError'
 
 export default function CoalitionsAnalyticsError({
+  error,
   reset,
 }: {
-  error: Error
+  error: Error & { digest?: string }
   reset: () => void
 }) {
-  return (
-    <PageError
-      title="Failed to load coalition analytics"
-      description="Something went wrong loading your coalition data. Try again."
-      onRetry={reset}
-    />
-  )
+  return <PageError error={error} reset={reset} page="Coalition analytics" />
 }

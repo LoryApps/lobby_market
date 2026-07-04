@@ -662,7 +662,7 @@ export default function ImpactPage() {
                           Upvotes by Category
                         </div>
                         {data.best_category && (
-                          <Badge variant="gold" size="xs">
+                          <Badge variant="elder" size="xs">
                             Top: {data.best_category}
                           </Badge>
                         )}

@@ -265,7 +265,9 @@ function MentionCard({
               <Badge
                 variant={STATUS_VARIANT[item.topic_status] ?? 'proposed'}
                 size="sm"
-              />
+              >
+                {item.topic_status.charAt(0).toUpperCase() + item.topic_status.slice(1)}
+              </Badge>
               <p className="text-xs font-mono text-surface-400 truncate group-hover/topic:text-white transition-colors">
                 {truncate(item.topic_statement, 60)}
               </p>

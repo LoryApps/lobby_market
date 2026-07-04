@@ -2,6 +2,12 @@
 
 import { PageError } from '@/components/ui/PageError'
 
-export default function FaceoffAnalyticsError({ error, reset }: { error: Error; reset: () => void }) {
-  return <PageError message={error.message} onRetry={reset} />
+export default function FaceoffAnalyticsError({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string }
+  reset: () => void
+}) {
+  return <PageError error={error} reset={reset} page="Faceoffs" />
 }
