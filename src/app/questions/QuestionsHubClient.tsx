@@ -10,6 +10,7 @@ import {
   Filter,
   GraduationCap,
   HelpCircle,
+  Inbox,
   Loader2,
   MessageSquare,
   RefreshCw,
@@ -631,6 +632,14 @@ export function QuestionsHubClient() {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <Link
+              href="/questions/unanswered"
+              aria-label="Answer Queue"
+              className="flex items-center gap-1.5 px-3 h-9 rounded-xl bg-surface-200 border border-surface-300 text-surface-500 hover:text-purple hover:border-purple/40 transition-colors text-xs font-mono"
+            >
+              <Inbox className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Answer Queue</span>
+            </Link>
             <Link
               href="/questions/my"
               aria-label="My Q&A"
