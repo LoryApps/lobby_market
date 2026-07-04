@@ -1484,6 +1484,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'contested',
+    label: 'The Contested',
+    sublabel: 'All debates closest to 50/50 — where your vote is most decisive, updated live',
+    href: '/contested',
+    icon: Scale,
+    iconColor: 'text-against-300',
+    iconBg: 'bg-against-500/10',
+  },
+  {
+    type: 'link',
     id: 'flashpoint',
     label: 'Flashpoint',
     sublabel: 'The single most contested debate raging right now — peak velocity, maximum drama',
