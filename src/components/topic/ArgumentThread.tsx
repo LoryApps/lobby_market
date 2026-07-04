@@ -42,6 +42,7 @@ import {
   TrendingUp,
   X,
 } from 'lucide-react'
+import NextLink from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { Avatar } from '@/components/ui/Avatar'
 import { Badge } from '@/components/ui/Badge'
@@ -1228,7 +1229,13 @@ function PostArgumentForm({
             className="text-[11px] font-mono text-emerald/80"
             role="status"
           >
-            Draft restored
+            Draft restored ·{' '}
+            <NextLink
+              href="/arguments/drafts"
+              className="underline underline-offset-2 hover:text-emerald transition-colors"
+            >
+              Manage drafts
+            </NextLink>
           </motion.p>
         )}
       </AnimatePresence>

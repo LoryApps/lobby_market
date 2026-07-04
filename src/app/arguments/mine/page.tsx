@@ -12,6 +12,7 @@ import {
   Brain,
   ChevronRight,
   ExternalLink,
+  FileEdit,
   MessageSquare,
   RefreshCw,
   Sparkles,
@@ -740,6 +741,16 @@ export default function MyArgumentsPage() {
             >
               <MessageSquare className="h-4 w-4" aria-hidden />
               Replies to My Arguments
+            </Link>
+            <Link
+              href="/arguments/drafts"
+              className={cn(
+                'flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-mono font-medium',
+                'bg-gold/10 text-gold hover:bg-gold/20 border border-gold/30 transition-all',
+              )}
+            >
+              <FileEdit className="h-4 w-4" aria-hidden />
+              My Saved Drafts
             </Link>
             <Link
               href="/"

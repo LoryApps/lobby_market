@@ -9,6 +9,7 @@ import {
   Brain,
   ChevronDown,
   ChevronUp,
+  FileEdit,
   Flame,
   GitBranch,
   Loader2,
@@ -446,6 +447,13 @@ export default function ArgumentsPage() {
               >
                 <Award className="h-3 w-3" aria-hidden />
                 Hall of Fame
+              </Link>
+              <Link
+                href="/arguments/drafts"
+                className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-gold/10 border border-gold/30 text-[11px] font-mono font-semibold text-gold hover:bg-gold/20 transition-colors flex-shrink-0"
+              >
+                <FileEdit className="h-3 w-3" aria-hidden />
+                My Drafts
               </Link>
               <Link
                 href="/arguments/dna"
