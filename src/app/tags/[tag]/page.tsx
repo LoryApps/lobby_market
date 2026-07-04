@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { ArrowLeft, BarChart2, Bell, Gavel, GitCompare, Network, Tag, TrendingUp, Zap, LineChart } from 'lucide-react'
+import { ArrowLeft, BarChart2, Bell, Gavel, GitCompare, HelpCircle, Network, Tag, TrendingUp, Zap, LineChart } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -131,6 +131,16 @@ export default async function TagPage({ params, searchParams }: PageProps) {
   const initialFollowing = !!followRes.data
   const followerCount = countRes.count ?? 0
 
+  // ── Question count for this tag ───────────────────────────────────────────
+  const tagTopicIds = allTagTopics.map((t) => t.id)
+  const questionCountRes = tagTopicIds.length
+    ? await supabase
+        .from('topic_questions')
+        .select('id', { count: 'exact', head: true })
+        .in('topic_id', tagTopicIds)
+    : { count: 0 }
+  const questionCount = questionCountRes.count ?? 0
+
   // ── Aggregate sentiment ────────────────────────────────────────────────────
   const votedTopics = allTagTopics.filter((t) => (t.total_votes ?? 0) > 0)
   const totalVotesAcrossTag = votedTopics.reduce((sum, t) => sum + (t.total_votes ?? 0), 0)
@@ -248,6 +258,16 @@ export default async function TagPage({ params, searchParams }: PageProps) {
             All tags
           </Link>
           <Link
+            href={`/tags/${encodeURIComponent(tag)}/questions`}
+            className="inline-flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-purple transition-colors"
+          >
+            <HelpCircle className="h-3.5 w-3.5" />
+            Questions
+            {questionCount > 0 && (
+              <span className="text-purple/70 font-semibold">{questionCount}</span>
+            )}
+          </Link>
+          <Link
             href={`/tags/${encodeURIComponent(tag)}/stats`}
             className="inline-flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-emerald transition-colors"
           >
@@ -337,7 +357,7 @@ export default async function TagPage({ params, searchParams }: PageProps) {
             </div>
 
             {/* Stat grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
               <div className="rounded-xl bg-surface-200/50 border border-surface-300 px-3 py-2.5 text-center">
                 <p className="font-mono text-lg font-bold text-white">{allTagTopics.length}</p>
                 <p className="text-[10px] font-mono text-surface-500 mt-0.5">Debates</p>
@@ -354,6 +374,13 @@ export default async function TagPage({ params, searchParams }: PageProps) {
                 <p className="font-mono text-lg font-bold text-surface-300">{proposedCount}</p>
                 <p className="text-[10px] font-mono text-surface-500 mt-0.5">Proposed</p>
               </div>
+              <Link
+                href={`/tags/${encodeURIComponent(tag)}/questions`}
+                className="rounded-xl bg-purple/5 border border-purple/20 px-3 py-2.5 text-center hover:bg-purple/10 hover:border-purple/30 transition-all col-span-2 sm:col-span-1"
+              >
+                <p className="font-mono text-lg font-bold text-purple">{questionCount}</p>
+                <p className="text-[10px] font-mono text-surface-500 mt-0.5">Questions</p>
+              </Link>
             </div>
 
             {/* Category breakdown */}
