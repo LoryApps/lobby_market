@@ -14,6 +14,7 @@ import { FeedTutorial } from '@/components/feed/FeedTutorial'
 import { DailyQuorumNudge } from '@/components/feed/DailyQuorumNudge'
 import { SetupChecklist } from '@/components/feed/SetupChecklist'
 import { FeedInsightStrip } from '@/components/feed/FeedInsightStrip'
+import { QuestionFeedCard } from '@/components/feed/QuestionFeedCard'
 import { FeedFilters } from '@/components/feed/FeedFilters'
 import { LivePlatformBanner } from '@/components/feed/LivePlatformBanner'
 import { PersonalDailyBar } from '@/components/feed/PersonalDailyBar'
@@ -826,6 +827,12 @@ export function FeedContainer() {
             {(index + 1) % 8 === 0 && (
               <ErrorBoundary size="xs" className="mx-4 my-2">
                 <FeedInsightStrip groupIndex={Math.floor(index / 8) + 1} />
+              </ErrorBoundary>
+            )}
+            {/* Inject a Q&A prompt card after every 5th topic */}
+            {(index + 1) % 5 === 0 && (
+              <ErrorBoundary size="xs">
+                <QuestionFeedCard slotIndex={Math.floor((index + 1) / 5)} />
               </ErrorBoundary>
             )}
           </div>
