@@ -732,6 +732,16 @@ export default function MyArgumentsPage() {
               Platform Top Arguments
             </Link>
             <Link
+              href="/arguments/replies"
+              className={cn(
+                'flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-mono font-medium',
+                'bg-purple/10 text-purple hover:bg-purple/20 border border-purple/30 transition-all',
+              )}
+            >
+              <MessageSquare className="h-4 w-4" aria-hidden />
+              Replies to My Arguments
+            </Link>
+            <Link
               href="/"
               className={cn(
                 'flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-mono font-medium',

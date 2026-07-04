@@ -754,6 +754,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'argument-replies',
+    label: 'Replies to My Arguments',
+    sublabel: 'See every reply the community posted on your arguments — your argument inbox',
+    href: '/arguments/replies',
+    icon: MessageSquare,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
     id: 'wisdom',
     label: 'Wisdom Feed',
     sublabel: "The platform's most respected voices — top arguments from Elders, Senators, and Lawmakers",
