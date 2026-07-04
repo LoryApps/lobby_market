@@ -131,6 +131,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/transparency`, changeFrequency: 'hourly', priority: 0.7 },
   { url: `${BASE_URL}/accountability`, changeFrequency: 'daily', priority: 0.72 },
   { url: `${BASE_URL}/oath`, changeFrequency: 'always', priority: 0.78 },
+  { url: `${BASE_URL}/civic-oath`, changeFrequency: 'weekly', priority: 0.72 },
   { url: `${BASE_URL}/vitals`, changeFrequency: 'hourly', priority: 0.68 },
   { url: `${BASE_URL}/depth`, changeFrequency: 'hourly', priority: 0.7 },
   { url: `${BASE_URL}/about`, changeFrequency: 'monthly', priority: 0.6 },

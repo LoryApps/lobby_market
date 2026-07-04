@@ -10,12 +10,17 @@ import {
   Code2,
   GitCompare,
   Globe,
+  Heart,
   Loader2,
   MessageSquare,
+  Scale,
+  Scroll,
   Search,
   Settings,
   Share2,
+  Star,
   Swords,
+  TrendingUp,
   UserCheck,
   UserMinus,
   UserPlus,
@@ -30,6 +35,27 @@ import { FollowersModal, type FollowTab } from './FollowersModal'
 import { AlignmentBadge } from './AlignmentBadge'
 import { ARCHETYPE_CONFIG, type ArchetypeId } from '@/lib/config/archetypes'
 import { QAExpertiseBadges } from './QAExpertiseBadges'
+
+// ── Civic Oath value config ────────────────────────────────────────────────────
+
+type OathValue = 'truth' | 'justice' | 'liberty' | 'community' | 'progress'
+
+const OATH_VALUE_CONFIG: Record<
+  OathValue,
+  {
+    label: string
+    icon: React.ComponentType<{ className?: string }>
+    color: string
+    bg: string
+    border: string
+  }
+> = {
+  truth:     { label: 'Truth',     icon: Star,       color: 'text-gold',        bg: 'bg-gold/10',         border: 'border-gold/30'         },
+  justice:   { label: 'Justice',   icon: Scale,      color: 'text-for-400',     bg: 'bg-for-500/10',      border: 'border-for-500/30'      },
+  liberty:   { label: 'Liberty',   icon: Globe,      color: 'text-emerald',     bg: 'bg-emerald/10',      border: 'border-emerald/30'      },
+  community: { label: 'Community', icon: Heart,      color: 'text-against-400', bg: 'bg-against-500/10',  border: 'border-against-500/30'  },
+  progress:  { label: 'Progress',  icon: TrendingUp, color: 'text-purple',      bg: 'bg-purple/10',       border: 'border-purple/30'       },
+}
 
 // ── Inline bio markdown renderer ──────────────────────────────────────────────
 // Supports: **bold**, *italic*, `code`, [text](url)
@@ -676,6 +702,27 @@ export function ProfileHeader({
               >
                 <AIcon className="h-3 w-3 flex-shrink-0" aria-hidden />
                 {arch.name}
+              </Link>
+            )
+          })()}
+
+          {/* Civic Oath badge */}
+          {profile.civic_oath_value && OATH_VALUE_CONFIG[profile.civic_oath_value as OathValue] && (() => {
+            const ov = OATH_VALUE_CONFIG[profile.civic_oath_value as OathValue]
+            const OIcon = ov.icon
+            return (
+              <Link
+                href="/oath"
+                className={cn(
+                  'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border mb-2',
+                  'text-[11px] font-mono font-semibold transition-opacity hover:opacity-80',
+                  ov.bg, ov.border, ov.color
+                )}
+                title={`Civic Oath: ${ov.label}`}
+              >
+                <Scroll className="h-3 w-3 flex-shrink-0 opacity-70" aria-hidden />
+                <OIcon className="h-3 w-3 flex-shrink-0" aria-hidden />
+                {ov.label}
               </Link>
             )
           })()}
