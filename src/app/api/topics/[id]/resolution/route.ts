@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 export const dynamic = 'force-dynamic'
 
 // The supermajority threshold required to pass a topic into law status.
-export const LAW_THRESHOLD = 67
+const LAW_THRESHOLD = 67
 
 // ─── Response types ───────────────────────────────────────────────────────────
 

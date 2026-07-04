@@ -661,17 +661,7 @@ export function TopicEvidencePanel({ topicId, className }: TopicEvidencePanelPro
               ? 'Be the first to add a credible source that informs this debate.'
               : 'Sign in to submit evidence for this topic.'
           }
-          action={
-            isLoggedIn && filter === 'all' ? (
-              <button
-                onClick={() => setShowForm(true)}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-purple text-white text-xs font-mono font-semibold hover:bg-purple/90 transition-colors"
-              >
-                <Plus className="h-3.5 w-3.5" />
-                Add the first source
-              </button>
-            ) : undefined
-          }
+          actions={isLoggedIn && filter === 'all' ? [{ label: 'Add the first source', onClick: () => setShowForm(true) }] : undefined}
         />
       ) : (
         <div className="space-y-3">

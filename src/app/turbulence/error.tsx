@@ -11,9 +11,9 @@ export default function TurbulenceError({
 }) {
   return (
     <PageError
-      title="Turbulence data unavailable"
-      description="Could not load the Civic Turbulence Index. Please try again."
+      error={_error}
       reset={reset}
+      page="Turbulence"
     />
   )
 }

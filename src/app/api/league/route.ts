@@ -14,7 +14,7 @@ export interface LeagueTier {
   rank: number
 }
 
-export const TIERS: LeagueTier[] = [
+const TIERS: LeagueTier[] = [
   {
     name: 'Bystander',
     minLP: 0,
@@ -65,14 +65,14 @@ export const TIERS: LeagueTier[] = [
   },
 ]
 
-export function getTier(lp: number): LeagueTier {
+function getTier(lp: number): LeagueTier {
   for (let i = TIERS.length - 1; i >= 0; i--) {
     if (lp >= TIERS[i].minLP) return TIERS[i]
   }
   return TIERS[0]
 }
 
-export function getTierProgress(lp: number): {
+function getTierProgress(lp: number): {
   tier: LeagueTier
   nextTier: LeagueTier | null
   progressPct: number

@@ -2,6 +2,12 @@
 
 import { PageError } from '@/components/ui/PageError'
 
-export default function UncertaintyError({ reset }: { reset: () => void }) {
-  return <PageError title="Failed to load Uncertainty Index" onRetry={reset} />
+export default function UncertaintyError({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string }
+  reset: () => void
+}) {
+  return <PageError error={error} reset={reset} page="Uncertainty Index" />
 }

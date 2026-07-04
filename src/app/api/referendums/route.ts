@@ -36,14 +36,6 @@ export interface ReferendumsResponse {
   userCount: number
 }
 
-const CATEGORY_LABELS: Record<ReferendumCategory, string> = {
-  governance: 'Governance',
-  features: 'Features',
-  community: 'Community',
-  policy: 'Policy',
-  other: 'Other',
-}
-
 // ── GET /api/referendums ──────────────────────────────────────────────────────
 
 export async function GET(req: NextRequest) {
@@ -196,4 +188,3 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ id: data.id })
 }
 
-export { CATEGORY_LABELS }

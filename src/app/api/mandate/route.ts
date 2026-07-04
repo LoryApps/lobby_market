@@ -6,10 +6,10 @@ export const revalidate = 0
 
 // ── Mandate threshold configuration ──────────────────────────────────────────
 
-export const THRESHOLD_OVERWHELMING = 85 // ≥85% → Overwhelming mandate
-export const THRESHOLD_STRONG       = 75 // ≥75% → Strong mandate
-export const THRESHOLD_CLEAR        = 70 // ≥70% → Clear mandate
-export const MIN_VOTES              = 10 // minimum votes for statistical relevance
+const THRESHOLD_OVERWHELMING = 85 // ≥85% → Overwhelming mandate
+const THRESHOLD_STRONG       = 75 // ≥75% → Strong mandate
+const THRESHOLD_CLEAR        = 70 // ≥70% → Clear mandate
+const MIN_VOTES              = 10 // minimum votes for statistical relevance
 
 export type MandateStrength = 'overwhelming' | 'strong' | 'clear'
 export type MandateSide     = 'for' | 'against'

@@ -25,10 +25,11 @@ function AnimatedDigits({ motionValue }: { motionValue: MotionValue<number> }) {
 
 interface AnimatedNumberProps {
   value: number
+  suffix?: string
   className?: string
 }
 
-export function AnimatedNumber({ value, className }: AnimatedNumberProps) {
+export function AnimatedNumber({ value, suffix, className }: AnimatedNumberProps) {
   const spring = useSpring(value, {
     stiffness: 100,
     damping: 30,
@@ -42,6 +43,7 @@ export function AnimatedNumber({ value, className }: AnimatedNumberProps) {
   return (
     <motion.span className={className}>
       <AnimatedDigits motionValue={spring} />
+      {suffix && <span>{suffix}</span>}
     </motion.span>
   )
 }

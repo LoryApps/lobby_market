@@ -1,5 +1,6 @@
 'use client'
 
+import { isValidElement } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils/cn'
@@ -12,6 +13,8 @@ interface EmptyStateAction {
   icon?: React.ComponentType<{ className?: string }>
 }
 
+type SingleAction = EmptyStateAction | React.ReactElement
+
 interface EmptyStateProps {
   icon: React.ComponentType<{ className?: string }>
   iconColor?: string
@@ -19,6 +22,8 @@ interface EmptyStateProps {
   iconBorder?: string
   title: string
   description?: string
+  /** Single-action shorthand — pass an EmptyStateAction object or a ReactElement to render directly */
+  action?: SingleAction
   actions?: EmptyStateAction[]
   size?: 'sm' | 'md' | 'lg'
   animate?: boolean
@@ -59,12 +64,20 @@ export function EmptyState({
   iconBorder = 'border-surface-300',
   title,
   description,
+  action,
   actions,
   size = 'md',
   animate = true,
   className,
 }: EmptyStateProps) {
   const s = SIZE_MAP[size]
+  const isActionObject = (a: SingleAction): a is EmptyStateAction =>
+    !isValidElement(a) && typeof a === 'object' && 'label' in a
+  const allActions = [
+    ...(actions ?? []),
+    ...(action && isActionObject(action) ? [action] : []),
+  ]
+  const actionNode = action && !isActionObject(action) ? action : null
 
   const content = (
     <div
@@ -98,9 +111,9 @@ export function EmptyState({
       </div>
 
       {/* Actions */}
-      {actions && actions.length > 0 && (
+      {allActions.length > 0 && (
         <div className="flex flex-col sm:flex-row items-center gap-2.5 mt-1">
-          {actions.map((action, i) => {
+          {allActions.map((action, i) => {
             const isPrimary = (action.variant ?? (i === 0 ? 'primary' : 'secondary')) === 'primary'
             const baseClass = cn(
               'inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-mono font-medium transition-colors',
@@ -126,6 +139,9 @@ export function EmptyState({
           })}
         </div>
       )}
+
+      {/* Raw action node (passed as ReactElement, not EmptyStateAction object) */}
+      {actionNode && <div className="mt-1">{actionNode}</div>}
     </div>
   )
 

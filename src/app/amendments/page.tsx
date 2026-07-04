@@ -15,7 +15,6 @@ import { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  ArrowRight,
   CheckCircle2,
   ChevronDown,
   ChevronRight,
@@ -598,14 +597,7 @@ export default function AmendmentsPage() {
                 ? 'Be the first to propose an amendment to a law. Navigate to any established law and click Propose Amendment.'
                 : 'No amendments in this category match your filters.'
             }
-            action={
-              <Link
-                href="/law"
-                className="inline-flex items-center gap-1.5 text-xs font-mono text-gold hover:text-gold/80 transition-colors"
-              >
-                Browse laws <ArrowRight className="h-3.5 w-3.5" />
-              </Link>
-            }
+            actions={[{ label: 'Browse laws', href: '/law' }]}
           />
         ) : (
           <div className="space-y-3">

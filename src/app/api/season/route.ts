@@ -44,19 +44,6 @@ export interface SeasonResponse {
   pastSeasons: Array<Pick<SeasonInfo, 'id' | 'name' | 'slug' | 'ends_at' | 'theme_color' | 'theme_icon'>>
 }
 
-// ─── Point scoring constants (kept in sync with migration comment) ─────────────
-
-const POINT_SCHEMA = [
-  { key: 'vote_pts',       label: 'Vote cast',             pts: 1  },
-  { key: 'argument_pts',   label: 'Argument posted',       pts: 5  },
-  { key: 'debate_pts',     label: 'Debate participated in',pts: 10 },
-  { key: 'law_pts',        label: 'Topic became law (FOR)',pts: 25 },
-  { key: 'upvote_pts',     label: 'Argument upvote earned',pts: 3  },
-  { key: 'prediction_pts', label: 'Correct prediction',    pts: 15 },
-] as const
-
-export { POINT_SCHEMA }
-
 // ─── Route ────────────────────────────────────────────────────────────────────
 
 export async function GET() {

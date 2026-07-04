@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { DILEMMAS, getCurrentDilemma, type CrossroadsDilemma } from '@/app/api/crossroads/route'
+import { DILEMMAS, getCurrentDilemma, type CrossroadsDilemma } from '@/lib/data/crossroads-dilemmas'
 
 export const dynamic = 'force-dynamic'
 

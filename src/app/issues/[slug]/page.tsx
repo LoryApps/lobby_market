@@ -29,7 +29,7 @@ import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { Avatar } from '@/components/ui/Avatar'
 import { EmptyState } from '@/components/ui/EmptyState'
-import { CIVIC_ISSUES } from '@/app/api/issues/route'
+import { CIVIC_ISSUES } from '@/lib/data/civic-issues'
 import { cn } from '@/lib/utils/cn'
 
 export const dynamic = 'force-dynamic'

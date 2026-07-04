@@ -18,7 +18,7 @@ interface ThreadDef {
   keywords: string[]
 }
 
-export const THREADS: ThreadDef[] = [
+const THREADS: ThreadDef[] = [
   {
     id: 'individual_freedom',
     label: 'Individual Freedom',

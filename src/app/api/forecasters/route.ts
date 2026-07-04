@@ -9,7 +9,7 @@ export const revalidate = 0
 
 export type OracleTier = 'Novice' | 'Analyst' | 'Forecaster' | 'Oracle' | 'Prophet'
 
-export function getOracleTier(accuracy: number, total: number): OracleTier {
+function getOracleTier(accuracy: number, total: number): OracleTier {
   if (total < 5) return 'Novice'
   if (accuracy >= 80 && total >= 20) return 'Prophet'
   if (accuracy >= 72 && total >= 12) return 'Oracle'

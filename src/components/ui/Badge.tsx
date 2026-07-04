@@ -16,17 +16,27 @@ const badgeVariants = {
 
 type BadgeVariant = keyof typeof badgeVariants
 
+const sizePaddingClasses = {
+  xs: 'text-[10px] px-1.5 py-0',
+  sm: 'text-xs px-1.5 py-0.5',
+  md: 'text-xs px-2 py-0.5',
+} as const
+
+type BadgeSize = keyof typeof sizePaddingClasses
+
 interface BadgeProps {
   variant: BadgeVariant
   children: ReactNode
+  size?: BadgeSize
   className?: string
 }
 
-export function Badge({ variant, children, className }: BadgeProps) {
+export function Badge({ variant, children, size = 'md', className }: BadgeProps) {
   return (
     <span
       className={cn(
-        'inline-flex items-center rounded-full text-xs font-medium px-2 py-0.5',
+        'inline-flex items-center rounded-full font-medium',
+        sizePaddingClasses[size],
         badgeVariants[variant],
         className
       )}

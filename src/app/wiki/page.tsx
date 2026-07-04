@@ -179,8 +179,8 @@ function FeaturedArticle({ article }: { article: WikiFeaturedArticle }) {
           {article.editor ? (
             <div className="flex items-center gap-2 text-xs font-mono text-surface-500 min-w-0">
               <Avatar
-                username={article.editor.username}
-                avatarUrl={article.editor.avatar_url}
+                fallback={article.editor.username}
+                src={article.editor.avatar_url}
                 size="xs"
                 aria-hidden="true"
               />
@@ -264,8 +264,8 @@ function RecentEditRow({ edit, index }: { edit: WikiRecentEdit; index: number })
           {edit.editor ? (
             <div className="flex items-center gap-1.5 justify-end mb-1">
               <Avatar
-                username={edit.editor.username}
-                avatarUrl={edit.editor.avatar_url}
+                fallback={edit.editor.username}
+                src={edit.editor.avatar_url}
                 size="xs"
                 aria-hidden="true"
               />
@@ -302,8 +302,8 @@ function ContributorCard({ contributor, rank }: { contributor: WikiContributor; 
       </span>
 
       <Avatar
-        username={contributor.username}
-        avatarUrl={contributor.avatar_url}
+        fallback={contributor.username}
+        src={contributor.avatar_url}
         size="sm"
         aria-hidden="true"
       />
