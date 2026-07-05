@@ -484,13 +484,21 @@ export default function AMAPage() {
               </p>
             </div>
             {isAuth && (
-              <button
-                onClick={() => setShowCreate(true)}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-for-600 hover:bg-for-500 text-white text-xs font-mono font-semibold transition-colors flex-shrink-0"
-              >
-                <Plus className="h-3.5 w-3.5" />
-                Host AMA
-              </button>
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <Link
+                  href="/ama/my"
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-100 hover:bg-surface-200 border border-surface-300 text-surface-400 hover:text-white text-xs font-mono font-semibold transition-colors"
+                >
+                  My AMAs
+                </Link>
+                <button
+                  onClick={() => setShowCreate(true)}
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-for-600 hover:bg-for-500 text-white text-xs font-mono font-semibold transition-colors"
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                  Host AMA
+                </button>
+              </div>
             )}
           </div>
         </div>

@@ -27,10 +27,14 @@ import {
   MessageSquare,
   Mic,
   Pin,
+  Play,
   RefreshCw,
   Send,
+  Settings,
+  Square,
   ThumbsUp,
   Users,
+  X,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -282,6 +286,8 @@ export default function AMASessionPage() {
 
   const [userId, setUserId] = useState<string | null>(null)
   const refreshRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const [statusBusy, setStatusBusy] = useState(false)
+  const [statusError, setStatusError] = useState<string | null>(null)
 
   // Fetch session data
   const fetchData = useCallback(async () => {
@@ -364,6 +370,26 @@ export default function AMASessionPage() {
       throw new Error(body.error ?? 'Failed to post answer')
     }
     void fetchData()
+  }
+
+  async function handleStatusChange(newStatus: 'live' | 'ended' | 'cancelled') {
+    if (statusBusy) return
+    setStatusBusy(true)
+    setStatusError(null)
+    try {
+      const res = await fetch(`/api/ama/${sessionId}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      })
+      const body = await res.json() as { session?: { status: string }; error?: string }
+      if (!res.ok) throw new Error(body.error ?? 'Failed to update status')
+      void fetchData()
+    } catch (err) {
+      setStatusError(err instanceof Error ? err.message : 'Failed to update status')
+    } finally {
+      setStatusBusy(false)
+    }
   }
 
   async function handleRsvp() {
@@ -569,6 +595,68 @@ export default function AMASessionPage() {
             )}
           </div>
         </div>
+
+        {/* Host control panel */}
+        {isHost && (isUpcoming || isLive) && (
+          <div className="mb-5 bg-surface-100 border border-surface-300 rounded-xl p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <Settings className="h-3.5 w-3.5 text-surface-500" />
+              <span className="text-xs font-mono font-semibold text-surface-400 uppercase tracking-wider">
+                Host Controls
+              </span>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2">
+              {isUpcoming && (
+                <button
+                  onClick={() => void handleStatusChange('live')}
+                  disabled={statusBusy}
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-for-600 hover:bg-for-500 text-white text-xs font-mono font-semibold transition-colors disabled:opacity-50"
+                >
+                  {statusBusy ? <Loader2 className="h-3 w-3 animate-spin" /> : <Play className="h-3 w-3" />}
+                  Start Session
+                </button>
+              )}
+
+              {isLive && (
+                <button
+                  onClick={() => void handleStatusChange('ended')}
+                  disabled={statusBusy}
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-surface-200 hover:bg-surface-300 text-white text-xs font-mono font-semibold border border-surface-300 transition-colors disabled:opacity-50"
+                >
+                  {statusBusy ? <Loader2 className="h-3 w-3 animate-spin" /> : <Square className="h-3 w-3" />}
+                  End Session
+                </button>
+              )}
+
+              {isUpcoming && (
+                <button
+                  onClick={() => {
+                    if (confirm('Cancel this session? This cannot be undone.')) {
+                      void handleStatusChange('cancelled')
+                    }
+                  }}
+                  disabled={statusBusy}
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-against-400 hover:text-against-300 text-xs font-mono transition-colors disabled:opacity-50"
+                >
+                  <X className="h-3 w-3" />
+                  Cancel Session
+                </button>
+              )}
+
+              <a
+                href="/ama/my"
+                className="ml-auto text-xs font-mono text-surface-500 hover:text-white transition-colors"
+              >
+                My AMAs
+              </a>
+            </div>
+
+            {statusError && (
+              <p className="mt-2 text-xs font-mono text-against-400">{statusError}</p>
+            )}
+          </div>
+        )}
 
         {/* Submit question form */}
         {(isLive || isUpcoming) && !isHost && userId && (
