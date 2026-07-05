@@ -2123,9 +2123,9 @@ const CHAPTERS: Chapter[] = [
 ]
 
 const STATS = [
-  { value: '354', label: 'chapters shipped' },
-  { value: '1010+', label: 'features built' },
-  { value: '93', label: 'DB migrations' },
+  { value: '355', label: 'chapters shipped' },
+  { value: '1011+', label: 'features built' },
+  { value: '112', label: 'DB migrations' },
   { value: '620+', label: 'API routes' },
 ]
 
@@ -2139,6 +2139,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'AMA Insights Archive',
+    description: 'New /ama/highlights page (Ch. 355) — a curated browser of the most upvoted Q&A pairs from completed expert AMA sessions. Makes ephemeral live-session knowledge permanently discoverable. Three time filters (This Week / This Month / All Time), two sort modes (Top / Recent), and 10-category filter pills. Featured "Insight of the Week" card surfaces the highest-upvoted answer from the last 7 days with a gold crown treatment. Each insight card shows the question with upvote count, the expert\'s full answer (expandable), host avatar, session link, and category badge. Load-more pagination, loading skeletons, and empty states. Backed by new /api/ama/highlights route that joins ama_answers → ama_questions → ama_sessions (status = ended), sorts by question upvotes, and resolves host profiles in parallel. "Insights" quick-link added to the AMA session browser header. Added to ⌘K Command Palette under Community Q&A.',
+    href: '/ama/highlights',
+    icon: Award,
+    color: 'text-gold',
+    tag: 'Ch. 355',
+  },
   {
     title: 'Streak Masters Leaderboard',
     description: 'New /leaderboard/streaks page (Ch. 354) — dedicated leaderboard ranking citizens by their current consecutive daily voting streak. Four filter tabs (All, Platinum 90+ d, Gold 30+ d, Silver 7+ d) let you find your tier cohort. Top 3 get a podium treatment with estimated streak-start date. Tier dots (Platinum, Gold, Silver, Bronze, Ember) appear on avatars throughout. Backed by /api/leaderboard/streaks with 2-minute CDN cache. Also shipped: 11 recently-built leaderboards (week, month, year, arena, bounties, engagement, reviews, amendments, ambassadors, streaks) added to the ⌘K Command Palette for discoverability. /leaderboard/streaks and /leaderboard/year added to sitemap.ts.',

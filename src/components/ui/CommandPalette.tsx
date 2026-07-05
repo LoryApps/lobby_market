@@ -1784,6 +1784,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'ama-highlights',
+    label: 'AMA Insights Archive',
+    sublabel: 'Best Q&A pairs from completed expert AMA sessions — browse by category and upvotes',
+    href: '/ama/highlights',
+    icon: Award,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'tribunal',
     label: 'The Civic Tribunal',
     sublabel: 'Democratic argument review — challenge fallacious reasoning, serve as a juror, deliver verdicts',

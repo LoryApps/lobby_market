@@ -320,6 +320,14 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/influx`, changeFrequency: 'hourly', priority: 0.76 },
   // Ch. 251 — The Civic Fulcrum
   { url: `${BASE_URL}/fulcrum`, changeFrequency: 'hourly', priority: 0.77 },
+  // Ch. 355 — AMA Insights Archive
+  { url: `${BASE_URL}/ama`, changeFrequency: 'always', priority: 0.82 },
+  { url: `${BASE_URL}/ama/highlights`, changeFrequency: 'hourly', priority: 0.78 },
+  { url: `${BASE_URL}/experts`, changeFrequency: 'daily', priority: 0.76 },
+  { url: `${BASE_URL}/questions`, changeFrequency: 'always', priority: 0.80 },
+  { url: `${BASE_URL}/questions/best`, changeFrequency: 'hourly', priority: 0.75 },
+  { url: `${BASE_URL}/questions/unanswered`, changeFrequency: 'always', priority: 0.73 },
+  { url: `${BASE_URL}/questions/leaders`, changeFrequency: 'daily', priority: 0.72 },
 ]
 
 export const dynamic = 'force-dynamic'
