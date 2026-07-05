@@ -24,6 +24,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   AlertCircle,
   ArrowRight,
+  Award,
   ChevronDown,
   ChevronUp,
   Clock,
@@ -858,6 +859,12 @@ export function CouncilClient() {
                     <Button size="sm" variant="ghost" className="gap-1.5 border border-surface-400">
                       <Sparkles className="h-3.5 w-3.5 text-for-400" />
                       Earn clout
+                    </Button>
+                  </Link>
+                  <Link href="/nominations">
+                    <Button size="sm" variant="ghost" className="gap-1.5 border border-surface-400">
+                      <Award className="h-3.5 w-3.5 text-gold" />
+                      Nominations
                     </Button>
                   </Link>
                 </div>
