@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   ArrowRight,
+  Award,
   Check,
   ChevronDown,
   Filter,
@@ -663,6 +664,14 @@ export function QuestionsHubClient() {
             >
               <GraduationCap className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">Experts</span>
+            </Link>
+            <Link
+              href="/questions/best"
+              aria-label="Best Answers"
+              className="flex items-center gap-1.5 px-3 h-9 rounded-xl bg-surface-200 border border-surface-300 text-surface-500 hover:text-gold hover:border-gold/40 transition-colors text-xs font-mono"
+            >
+              <Award className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Best</span>
             </Link>
             <button
               onClick={load}

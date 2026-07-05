@@ -155,6 +155,7 @@ const SECTIONS: FeatureSection[] = [
       { href: '/argument-battle', label: 'Argument Battle', description: 'Watch two arguments clash head-to-head in real time.', icon: Swords },
       { href: '/crossfire', label: 'Crossfire', description: 'The most contested topics with best FOR vs. AGAINST arguments side by side.', icon: Flame },
       { href: '/questions', label: 'Community Q&A Hub', description: 'Browse open clarifying questions from every debate — answer what you know, earn Clout.', icon: HelpCircle, isNew: true },
+      { href: '/questions/best', label: 'Best Answers', description: 'The highest-voted Q&A pairs — community questions with accepted answers, curated across every civic debate.', icon: Award, isNew: true },
     ],
   },
   {
