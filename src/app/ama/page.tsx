@@ -518,6 +518,12 @@ export default function AMAPage() {
                   Requests
                 </Link>
                 <Link
+                  href="/leaderboard/ama"
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-100 hover:bg-surface-200 border border-surface-300 text-surface-400 hover:text-white text-xs font-mono font-semibold transition-colors"
+                >
+                  Rankings
+                </Link>
+                <Link
                   href="/ama/my"
                   className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-100 hover:bg-surface-200 border border-surface-300 text-surface-400 hover:text-white text-xs font-mono font-semibold transition-colors"
                 >
