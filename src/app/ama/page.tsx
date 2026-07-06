@@ -35,6 +35,7 @@ import {
   Plus,
   Radio,
   Scale,
+  Search,
   ThumbsUp,
   TrendingUp,
   Users,
@@ -485,6 +486,13 @@ export default function AMAPage() {
             </div>
             {isAuth && (
               <div className="flex items-center gap-2 flex-shrink-0">
+                <Link
+                  href="/ama/search"
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-100 hover:bg-surface-200 border border-surface-300 text-surface-400 hover:text-white text-xs font-mono font-semibold transition-colors"
+                >
+                  <Search className="h-3.5 w-3.5" />
+                  Search
+                </Link>
                 <Link
                   href="/ama/experts"
                   className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-100 hover:bg-surface-200 border border-surface-300 text-surface-400 hover:text-white text-xs font-mono font-semibold transition-colors"
