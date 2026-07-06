@@ -13,6 +13,7 @@ import {
   Gavel,
   Link2,
   MessageSquare,
+  MessageSquarePlus,
   ThumbsDown,
   ThumbsUp,
   Zap,
@@ -556,6 +557,32 @@ export default async function ArgumentPage({ params }: ArgumentPageProps) {
             </div>
           </div>
         </div>
+
+        {/* Respond CTA */}
+        <Link
+          href={`/arguments/${arg.id}/respond`}
+          className={cn(
+            'flex items-center justify-between w-full py-3 px-4 rounded-xl mb-3',
+            'border transition-colors group',
+            isFor
+              ? 'bg-against-500/5 hover:bg-against-500/10 border-against-500/30 hover:border-against-500/50'
+              : 'bg-for-500/5 hover:bg-for-500/10 border-for-500/30 hover:border-for-500/50',
+          )}
+        >
+          <div className="flex items-center gap-2">
+            <MessageSquarePlus
+              className={cn('h-4 w-4', isFor ? 'text-against-400' : 'text-for-400')}
+              aria-hidden
+            />
+            <span className={cn('text-sm font-mono font-semibold', isFor ? 'text-against-300' : 'text-for-300')}>
+              Respond {isFor ? 'AGAINST' : 'FOR'}
+            </span>
+            <span className="text-[10px] font-mono text-surface-600 bg-surface-200 px-1.5 py-0.5 rounded-full border border-surface-300">
+              AI strategies
+            </span>
+          </div>
+          <ChevronRight className="h-4 w-4 text-surface-500 group-hover:text-white transition-colors" aria-hidden />
+        </Link>
 
         {/* Analytics link */}
         <Link
