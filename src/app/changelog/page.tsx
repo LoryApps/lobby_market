@@ -2140,6 +2140,14 @@ interface RecentBuild {
 
 const RECENT_BUILDS: RecentBuild[] = [
   {
+    title: 'Coalition Recruiting Board',
+    description: 'New /coalitions/recruit page (Ch. 356) — a dedicated hiring board for civic alliances. Browse every coalition with open spots, filter by Most Active / Newest / Most Open / Smallest, and search by name or mission. Each card shows member capacity with a fill-bar, influence score, win rate, and stance count. Public coalitions offer a one-click "Join Coalition" button; private coalitions show "Request Access" which submits a coalition_join_request. Backed by a new /api/coalitions/recruit route that returns non-full coalitions enriched with creator profiles and stance counts. "Recruit" quick-link added to the Coalitions nav and ⌘K Command Palette. /coalitions/recruit added to sitemap.',
+    href: '/coalitions/recruit',
+    icon: Users,
+    color: 'text-emerald',
+    tag: 'Ch. 356',
+  },
+  {
     title: 'AMA Insights Archive',
     description: 'New /ama/highlights page (Ch. 355) — a curated browser of the most upvoted Q&A pairs from completed expert AMA sessions. Makes ephemeral live-session knowledge permanently discoverable. Three time filters (This Week / This Month / All Time), two sort modes (Top / Recent), and 10-category filter pills. Featured "Insight of the Week" card surfaces the highest-upvoted answer from the last 7 days with a gold crown treatment. Each insight card shows the question with upvote count, the expert\'s full answer (expandable), host avatar, session link, and category badge. Load-more pagination, loading skeletons, and empty states. Backed by new /api/ama/highlights route that joins ama_answers → ama_questions → ama_sessions (status = ended), sorts by question upvotes, and resolves host profiles in parallel. "Insights" quick-link added to the AMA session browser header. Added to ⌘K Command Palette under Community Q&A.',
     href: '/ama/highlights',

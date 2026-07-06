@@ -864,6 +864,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'coalition-recruit',
+    label: 'Coalition Recruiting',
+    sublabel: 'Browse alliances actively seeking new members',
+    href: '/coalitions/recruit',
+    icon: Sparkles,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+  },
+  {
+    type: 'link',
     id: 'create-topic',
     label: 'Propose a Topic',
     sublabel: 'Submit a new topic for debate',

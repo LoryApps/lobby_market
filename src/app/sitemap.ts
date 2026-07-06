@@ -242,6 +242,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/skill-tree`, changeFrequency: 'weekly', priority: 0.65 },
   { url: `${BASE_URL}/streaks`, changeFrequency: 'daily', priority: 0.7 },
   { url: `${BASE_URL}/catchup`, changeFrequency: 'daily', priority: 0.7 },
+  { url: `${BASE_URL}/coalitions/recruit`, changeFrequency: 'hourly', priority: 0.72 },
   { url: `${BASE_URL}/coalitions/standings`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/coalitions/feed`, changeFrequency: 'always', priority: 0.65 },
   { url: `${BASE_URL}/coalitions/stance-map`, changeFrequency: 'daily', priority: 0.68 },
