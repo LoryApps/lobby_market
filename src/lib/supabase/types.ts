@@ -2116,7 +2116,9 @@ export type NotificationType =
   | "streak_at_risk"
   | "weekly_digest"
   | "qa_question_answered"
-  | "qa_answer_accepted";
+  | "qa_answer_accepted"
+  | "ama_question_answered"
+  | "ama_session_starting";
 
 export type AchievementTier = "common" | "rare" | "epic" | "legendary";
 

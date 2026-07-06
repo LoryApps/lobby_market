@@ -55,6 +55,7 @@ interface NotifPrefs {
   streak_reminder: boolean
   weekly_digest: boolean
   qa_notifications: boolean
+  ama_notifications: boolean
 }
 
 const DEFAULT_PREFS: NotifPrefs = {
@@ -70,6 +71,7 @@ const DEFAULT_PREFS: NotifPrefs = {
   streak_reminder: true,
   weekly_digest: true,
   qa_notifications: true,
+  ama_notifications: true,
 }
 
 function loadPrefs(): NotifPrefs {
@@ -564,6 +566,12 @@ export default function SettingsPage() {
                   description="When someone answers your question or accepts your answer as best"
                   checked={prefs.qa_notifications ?? true}
                   onChange={(v) => updatePref('qa_notifications', v)}
+                />
+                <SettingRow
+                  label="AMA notifications"
+                  description="When a host answers your AMA question or a session you RSVP'd to goes live"
+                  checked={prefs.ama_notifications ?? true}
+                  onChange={(v) => updatePref('ama_notifications', v)}
                 />
               </div>
             </div>

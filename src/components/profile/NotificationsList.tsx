@@ -23,7 +23,9 @@ import {
   Users,
   CheckCircle,
   HelpCircle,
+  Mic,
   Newspaper,
+  Radio,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
@@ -64,11 +66,13 @@ const typeConfig: Record<
   weekly_digest:          { icon: Newspaper,    color: 'text-purple'  },
   qa_question_answered:   { icon: HelpCircle,   color: 'text-for-400' },
   qa_answer_accepted:     { icon: CheckCircle,  color: 'text-emerald' },
+  ama_question_answered:  { icon: Mic,          color: 'text-gold'    },
+  ama_session_starting:   { icon: Radio,        color: 'text-gold'    },
 }
 
 // ─── Filter tabs ──────────────────────────────────────────────────────────────
 
-type FilterTab = 'all' | 'unread' | 'social' | 'debates' | 'achievements' | 'qa'
+type FilterTab = 'all' | 'unread' | 'social' | 'debates' | 'achievements' | 'qa' | 'ama'
 
 const FILTER_TABS: { id: FilterTab; label: string }[] = [
   { id: 'all', label: 'All' },
@@ -77,6 +81,7 @@ const FILTER_TABS: { id: FilterTab; label: string }[] = [
   { id: 'debates', label: 'Debates' },
   { id: 'achievements', label: 'Achievements' },
   { id: 'qa', label: 'Q&A' },
+  { id: 'ama', label: 'AMA' },
 ]
 
 const SOCIAL_TYPES: NotificationType[] = [
@@ -93,6 +98,8 @@ const DEBATE_TYPES: NotificationType[] = ['debate_starting', 'new_topic_in_tag']
 const ACHIEVEMENT_TYPES: NotificationType[] = ['achievement_earned']
 
 const QA_TYPES: NotificationType[] = ['qa_question_answered', 'qa_answer_accepted']
+
+const AMA_TYPES: NotificationType[] = ['ama_question_answered', 'ama_session_starting']
 
 function filterNotifications(
   notifications: Notification[],
@@ -116,6 +123,10 @@ function filterNotifications(
     case 'qa':
       return notifications.filter((n) =>
         QA_TYPES.includes(n.type as NotificationType)
+      )
+    case 'ama':
+      return notifications.filter((n) =>
+        AMA_TYPES.includes(n.type as NotificationType)
       )
     default:
       return notifications
@@ -143,6 +154,8 @@ function buildHref(notification: Notification): string {
       return `/arguments/${reference_id}`
     case 'question':
       return `/questions/${reference_id}`
+    case 'ama_session':
+      return `/ama/${reference_id}`
     default:
       return '#'
   }
@@ -223,6 +236,9 @@ export function NotificationsList({ notifications }: NotificationsListProps) {
       qa: notifications.filter((n) =>
         QA_TYPES.includes(n.type as NotificationType)
       ).length,
+      ama: notifications.filter((n) =>
+        AMA_TYPES.includes(n.type as NotificationType)
+      ).length,
     }),
     [notifications]
   )
@@ -301,7 +317,9 @@ export function NotificationsList({ notifications }: NotificationsListProps) {
                   ? 'No notifications yet.'
                   : activeFilter === 'qa'
                     ? 'No Q&A notifications yet.'
-                    : `No ${activeFilter} notifications yet.`}
+                    : activeFilter === 'ama'
+                      ? 'No AMA notifications yet.'
+                      : `No ${activeFilter} notifications yet.`}
               </p>
             </div>
           ) : (
