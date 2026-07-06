@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { ArrowLeft, BarChart2, Bell, Gavel, GitCompare, HelpCircle, MessageSquare, Mic, Network, Tag, TrendingUp, Zap, LineChart } from 'lucide-react'
+import { ArrowLeft, BarChart2, Bell, Gavel, GitCompare, HelpCircle, MessageSquare, Mic, Network, Tag, TrendingUp, Users, Zap, LineChart } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -312,6 +312,16 @@ export default async function TagPage({ params, searchParams }: PageProps) {
             AMA
             {amaCount > 0 && (
               <span className="text-purple/70 font-semibold">{amaCount}</span>
+            )}
+          </Link>
+          <Link
+            href={`/tags/${encodeURIComponent(tag)}/people`}
+            className="inline-flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-for-400 transition-colors"
+          >
+            <Users className="h-3.5 w-3.5" />
+            People
+            {followerCount > 0 && (
+              <span className="text-for-400/70 font-semibold">{followerCount}</span>
             )}
           </Link>
           <Link
