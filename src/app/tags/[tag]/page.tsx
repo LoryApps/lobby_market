@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { ArrowLeft, BarChart2, Bell, Gavel, GitCompare, HelpCircle, MessageSquare, Network, Tag, TrendingUp, Zap, LineChart } from 'lucide-react'
+import { ArrowLeft, BarChart2, Bell, Gavel, GitCompare, HelpCircle, MessageSquare, Mic, Network, Tag, TrendingUp, Zap, LineChart } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -194,6 +194,17 @@ export default async function TagPage({ params, searchParams }: PageProps) {
     .sort((a, b) => b[1] - a[1])
     .slice(0, 5)
 
+  // ── AMA session count for this tag (via top categories) ──────────────────
+  const topCatsForAMA = categoryBreakdown.slice(0, 3).map(([cat]) => cat)
+  const amaCountRes = topCatsForAMA.length
+    ? await supabase
+        .from('ama_sessions')
+        .select('id', { count: 'exact', head: true })
+        .in('category', topCatsForAMA)
+        .in('status', ['upcoming', 'live', 'ended'])
+    : { count: 0 }
+  const amaCount = amaCountRes.count ?? 0
+
   // ── Filtered + sorted list for display ────────────────────────────────────
   let topics = [...allTagTopics]
 
@@ -292,6 +303,16 @@ export default async function TagPage({ params, searchParams }: PageProps) {
           >
             <LineChart className="h-3.5 w-3.5" />
             Analytics
+          </Link>
+          <Link
+            href={`/tags/${encodeURIComponent(tag)}/ama`}
+            className="inline-flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-purple transition-colors"
+          >
+            <Mic className="h-3.5 w-3.5" />
+            AMA
+            {amaCount > 0 && (
+              <span className="text-purple/70 font-semibold">{amaCount}</span>
+            )}
           </Link>
           <Link
             href="/tags/graph"
