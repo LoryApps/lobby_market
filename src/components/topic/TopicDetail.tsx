@@ -1130,6 +1130,27 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                       <Swords className="h-3.5 w-3.5" />
                       Campaign Playbook
                     </Link>
+                    <Link
+                      href={`/topic/${topic.id}/fact-check`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-emerald hover:text-emerald/80 transition-colors"
+                    >
+                      <Shield className="h-3.5 w-3.5" />
+                      Fact-check
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/replay`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-purple hover:text-purple/80 transition-colors"
+                    >
+                      <MonitorPlay className="h-3.5 w-3.5" />
+                      Debate Replay
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/audit`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-white transition-colors"
+                    >
+                      <BarChart2 className="h-3.5 w-3.5" />
+                      Integrity Audit
+                    </Link>
                   </div>
                 )}
                 <VoteButton
