@@ -30,11 +30,13 @@ import {
   ArrowRight,
   ArrowUp,
   BarChart2,
+  Check,
   CheckCircle2,
   ChevronRight,
   Gavel,
   Loader2,
   MessageSquare,
+  Quote,
   RefreshCw,
   Scale,
   ThumbsDown,
@@ -48,12 +50,11 @@ import { Badge } from '@/components/ui/Badge'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { cn } from '@/lib/utils/cn'
-import type { TopicWithAuthor } from '@/lib/supabase/types'
+import type { SwipeTopic } from '@/app/api/swipe/route'
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const SWIPE_THRESHOLD = 90   // px before vote commits
-const BATCH_SIZE = 20
 const PREFETCH_WHEN_LEFT = 5  // fetch next batch when ≤5 cards remain
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -135,7 +136,7 @@ function addSeenId(id: string) {
 // ─── Swipe card ───────────────────────────────────────────────────────────────
 
 interface SwipeCardProps {
-  topic: TopicWithAuthor
+  topic: SwipeTopic
   onVote: (side: 'blue' | 'red') => void
   onSkip: () => void
   isTop: boolean
@@ -157,13 +158,16 @@ function SwipeCard({ topic, onVote, onSkip, isTop, stackIndex }: SwipeCardProps)
   )
 
   const { castVote } = useVoteStore()
+  // user_vote comes pre-populated from API if user already voted on this topic
+  const alreadyVoted = topic.user_vote ?? null
 
   const commit = useCallback(
     async (side: 'blue' | 'red') => {
+      if (alreadyVoted) return
       await castVote(topic.id, side)
       onVote(side)
     },
-    [castVote, onVote, topic.id]
+    [castVote, onVote, topic.id, alreadyVoted]
   )
 
   const handleDragEnd = useCallback(
@@ -172,17 +176,17 @@ function SwipeCard({ topic, onVote, onSkip, isTop, stackIndex }: SwipeCardProps)
       const vx = info.velocity.x
 
       if (dx > SWIPE_THRESHOLD || vx > 450) {
-        // swipe right → FOR
-        animate(x, 600, { duration: 0.3 }).then(() => commit('blue'))
+        // swipe right → FOR (or skip if already voted)
+        animate(x, 600, { duration: 0.3 }).then(() => alreadyVoted ? onSkip() : commit('blue'))
       } else if (dx < -SWIPE_THRESHOLD || vx < -450) {
-        // swipe left → AGAINST
-        animate(x, -600, { duration: 0.3 }).then(() => commit('red'))
+        // swipe left → AGAINST (or skip if already voted)
+        animate(x, -600, { duration: 0.3 }).then(() => alreadyVoted ? onSkip() : commit('red'))
       } else {
         // snap back
         animate(x, 0, { type: 'spring', stiffness: 300, damping: 30 })
       }
     },
-    [x, commit]
+    [x, commit, alreadyVoted, onSkip]
   )
 
   const StatusIcon = STATUS_ICON[topic.status] ?? Scale
@@ -260,11 +264,56 @@ function SwipeCard({ topic, onVote, onSkip, isTop, stackIndex }: SwipeCardProps)
         </div>
 
         {/* Topic statement */}
-        <div className="flex-1 flex items-center px-5 py-2 min-h-0">
-          <p className="text-white text-xl font-semibold leading-snug line-clamp-6 tracking-tight">
+        <div className={cn('flex items-center px-5 py-2 min-h-0', (topic.top_for || topic.top_against) ? 'flex-shrink-0' : 'flex-1')}>
+          <p className="text-white text-xl font-semibold leading-snug line-clamp-5 tracking-tight">
             {topic.statement}
           </p>
         </div>
+
+        {/* Argument previews — shown when available */}
+        {(topic.top_for || topic.top_against) && (
+          <div className="flex-1 grid grid-cols-2 gap-2 px-5 py-2 min-h-0">
+            {/* FOR argument */}
+            <div className={cn(
+              'flex flex-col gap-1.5 p-3 rounded-xl border overflow-hidden',
+              topic.top_for ? 'bg-for-600/8 border-for-600/20' : 'bg-surface-300/20 border-surface-400/20'
+            )}>
+              <div className="flex items-center gap-1 flex-shrink-0">
+                <Quote className="h-2.5 w-2.5 text-for-500 flex-shrink-0" aria-hidden />
+                <span className="text-[9px] font-mono font-semibold text-for-400 uppercase tracking-wide">
+                  Top FOR
+                </span>
+              </div>
+              {topic.top_for ? (
+                <p className="text-[11px] text-surface-600 leading-snug line-clamp-4">
+                  {topic.top_for.content}
+                </p>
+              ) : (
+                <p className="text-[11px] text-surface-600 italic">No argument yet</p>
+              )}
+            </div>
+
+            {/* AGAINST argument */}
+            <div className={cn(
+              'flex flex-col gap-1.5 p-3 rounded-xl border overflow-hidden',
+              topic.top_against ? 'bg-against-600/8 border-against-600/20' : 'bg-surface-300/20 border-surface-400/20'
+            )}>
+              <div className="flex items-center gap-1 flex-shrink-0">
+                <Quote className="h-2.5 w-2.5 text-against-500 flex-shrink-0 rotate-180" aria-hidden />
+                <span className="text-[9px] font-mono font-semibold text-against-400 uppercase tracking-wide">
+                  Top AGAINST
+                </span>
+              </div>
+              {topic.top_against ? (
+                <p className="text-[11px] text-surface-600 leading-snug line-clamp-4">
+                  {topic.top_against.content}
+                </p>
+              ) : (
+                <p className="text-[11px] text-surface-600 italic">No argument yet</p>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Stats row */}
         <div className="flex items-center gap-4 px-5 pt-2 pb-4 flex-shrink-0">
@@ -296,52 +345,90 @@ function SwipeCard({ topic, onVote, onSkip, isTop, stackIndex }: SwipeCardProps)
         {/* Action buttons */}
         {isTop && (
           <div className="flex items-center gap-3 px-5 pb-5 flex-shrink-0">
-            {/* AGAINST */}
-            <button
-              onClick={() => {
-                animate(x, -600, { duration: 0.3 }).then(() => commit('red'))
-              }}
-              className={cn(
-                'flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl',
-                'bg-against-600/15 border border-against-600/30',
-                'text-against-400 font-mono font-semibold text-sm',
-                'hover:bg-against-600/25 active:scale-95 transition-all',
-              )}
-              aria-label="Vote against"
-            >
-              <ThumbsDown className="h-4 w-4" aria-hidden />
-              Against
-            </button>
+            {alreadyVoted ? (
+              /* Already-voted state — show result pill + skip */
+              <>
+                <div className={cn(
+                  'flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl border font-mono font-semibold text-sm',
+                  alreadyVoted === 'red'
+                    ? 'bg-against-600/20 border-against-500/40 text-against-300'
+                    : 'bg-surface-300/30 border-surface-400/30 text-surface-500'
+                )}>
+                  {alreadyVoted === 'red' && <><Check className="h-4 w-4" aria-hidden /> Voted Against</>}
+                  {alreadyVoted !== 'red' && 'Against'}
+                </div>
+                <button
+                  onClick={onSkip}
+                  className={cn(
+                    'flex-shrink-0 h-12 w-12 rounded-xl flex items-center justify-center',
+                    'bg-surface-300/80 border border-surface-400/40',
+                    'text-surface-500 hover:text-white hover:bg-surface-300 transition-all active:scale-95',
+                  )}
+                  aria-label="Skip topic"
+                >
+                  <ArrowUp className="h-4 w-4" aria-hidden />
+                </button>
+                <div className={cn(
+                  'flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl border font-mono font-semibold text-sm',
+                  alreadyVoted === 'blue'
+                    ? 'bg-for-600/20 border-for-500/40 text-for-300'
+                    : 'bg-surface-300/30 border-surface-400/30 text-surface-500'
+                )}>
+                  {alreadyVoted === 'blue' && <><Check className="h-4 w-4" aria-hidden /> Voted For</>}
+                  {alreadyVoted !== 'blue' && 'For'}
+                </div>
+              </>
+            ) : (
+              /* Normal vote buttons */
+              <>
+                {/* AGAINST */}
+                <button
+                  onClick={() => {
+                    animate(x, -600, { duration: 0.3 }).then(() => commit('red'))
+                  }}
+                  className={cn(
+                    'flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl',
+                    'bg-against-600/15 border border-against-600/30',
+                    'text-against-400 font-mono font-semibold text-sm',
+                    'hover:bg-against-600/25 active:scale-95 transition-all',
+                  )}
+                  aria-label="Vote against"
+                >
+                  <ThumbsDown className="h-4 w-4" aria-hidden />
+                  Against
+                </button>
 
-            {/* Skip */}
-            <button
-              onClick={onSkip}
-              className={cn(
-                'flex-shrink-0 h-12 w-12 rounded-xl flex items-center justify-center',
-                'bg-surface-300/80 border border-surface-400/40',
-                'text-surface-500 hover:text-white hover:bg-surface-300 transition-all active:scale-95',
-              )}
-              aria-label="Skip topic"
-            >
-              <ArrowUp className="h-4 w-4" aria-hidden />
-            </button>
+                {/* Skip */}
+                <button
+                  onClick={onSkip}
+                  className={cn(
+                    'flex-shrink-0 h-12 w-12 rounded-xl flex items-center justify-center',
+                    'bg-surface-300/80 border border-surface-400/40',
+                    'text-surface-500 hover:text-white hover:bg-surface-300 transition-all active:scale-95',
+                  )}
+                  aria-label="Skip topic"
+                >
+                  <ArrowUp className="h-4 w-4" aria-hidden />
+                </button>
 
-            {/* FOR */}
-            <button
-              onClick={() => {
-                animate(x, 600, { duration: 0.3 }).then(() => commit('blue'))
-              }}
-              className={cn(
-                'flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl',
-                'bg-for-600/15 border border-for-600/30',
-                'text-for-400 font-mono font-semibold text-sm',
-                'hover:bg-for-600/25 active:scale-95 transition-all',
-              )}
-              aria-label="Vote for"
-            >
-              <ThumbsUp className="h-4 w-4" aria-hidden />
-              For
-            </button>
+                {/* FOR */}
+                <button
+                  onClick={() => {
+                    animate(x, 600, { duration: 0.3 }).then(() => commit('blue'))
+                  }}
+                  className={cn(
+                    'flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl',
+                    'bg-for-600/15 border border-for-600/30',
+                    'text-for-400 font-mono font-semibold text-sm',
+                    'hover:bg-for-600/25 active:scale-95 transition-all',
+                  )}
+                  aria-label="Vote for"
+                >
+                  <ThumbsUp className="h-4 w-4" aria-hidden />
+                  For
+                </button>
+              </>
+            )}
           </div>
         )}
       </div>
@@ -446,7 +533,7 @@ function SessionSummary({ stats, onReset }: { stats: SessionStats; onReset: () =
 export function SwipeClient() {
   const router = useRouter()
 
-  const [deck, setDeck] = useState<TopicWithAuthor[]>([])
+  const [deck, setDeck] = useState<SwipeTopic[]>([])
   const [loading, setLoading] = useState(true)
   const [fetching, setFetching] = useState(false)
   const [done, setDone] = useState(false)
@@ -458,33 +545,26 @@ export function SwipeClient() {
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const seen = useRef<Set<string>>(new Set())
 
-  const { hasVoted } = useVoteStore()
-
-  // Fetch topics and filter out already-seen ones
+  // Fetch topics from the dedicated swipe API (includes argument previews + user vote state)
   const fetchTopics = useCallback(async (currentOffset: number) => {
     if (fetching) return
     setFetching(true)
 
     try {
-      const params = new URLSearchParams({
-        limit: String(BATCH_SIZE),
-        offset: String(currentOffset),
-        sort: 'hot',
-        status: 'active',
-      })
-
-      const res = await fetch(`/api/feed?${params.toString()}`)
+      const res = await fetch(`/api/swipe?offset=${currentOffset}`)
       if (!res.ok) return
 
-      const fresh = (await res.json()) as TopicWithAuthor[]
+      const data = (await res.json()) as { topics: SwipeTopic[]; has_more: boolean }
+      const fresh = data.topics
 
       // Filter out already-seen in this session
       const sessionSeen = getSeenIds()
       const newTopics = fresh.filter(
-        (t) => !seen.current.has(t.id) && !sessionSeen.has(t.id) && !hasVoted(t.id)
+        (t) => !seen.current.has(t.id) && !sessionSeen.has(t.id)
       )
+      // Include already-voted topics but mark them so the card can show voted state
 
-      if (fresh.length < BATCH_SIZE) setHasMore(false)
+      if (!data.has_more) setHasMore(false)
 
       setDeck((prev) => [...prev, ...newTopics])
       setOffset(currentOffset + fresh.length)
@@ -494,7 +574,7 @@ export function SwipeClient() {
       setFetching(false)
       setLoading(false)
     }
-  }, [fetching, hasVoted])
+  }, [fetching])
 
   // Initial load
   useEffect(() => {

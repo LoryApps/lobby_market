@@ -278,6 +278,20 @@ export default async function TagPage({ params, searchParams }: PageProps) {
             All tags
           </Link>
           <Link
+            href={`/tags/${encodeURIComponent(tag)}/topics`}
+            className="inline-flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-for-400 transition-colors"
+          >
+            <TrendingUp className="h-3.5 w-3.5" />
+            Topics
+          </Link>
+          <Link
+            href={`/tags/${encodeURIComponent(tag)}/laws`}
+            className="inline-flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-gold transition-colors"
+          >
+            <Gavel className="h-3.5 w-3.5" />
+            Laws
+          </Link>
+          <Link
             href={`/tags/${encodeURIComponent(tag)}/arguments`}
             className="inline-flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-for-400 transition-colors"
           >
