@@ -3682,6 +3682,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'quotes',
+    label: 'Argument Gallery',
+    sublabel: 'Platform-wide gallery of the most memorable arguments — filtered by category, side, and time',
+    href: '/quotes',
+    icon: Quote,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
     id: 'vote-map',
     label: 'Civic Scope Map',
     sublabel: 'Topics nested by geographic scope — global, national, regional, and local issues',
