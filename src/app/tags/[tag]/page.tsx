@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { ArrowLeft, BarChart2, Bell, Gavel, GitCompare, HelpCircle, Network, Tag, TrendingUp, Zap, LineChart } from 'lucide-react'
+import { ArrowLeft, BarChart2, Bell, Gavel, GitCompare, HelpCircle, MessageSquare, Network, Tag, TrendingUp, Zap, LineChart } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -141,6 +141,15 @@ export default async function TagPage({ params, searchParams }: PageProps) {
     : { count: 0 }
   const questionCount = questionCountRes.count ?? 0
 
+  // ── Argument count for this tag ───────────────────────────────────────────
+  const argumentCountRes = tagTopicIds.length
+    ? await supabase
+        .from('topic_arguments')
+        .select('id', { count: 'exact', head: true })
+        .in('topic_id', tagTopicIds)
+    : { count: 0 }
+  const argumentCount = argumentCountRes.count ?? 0
+
   // ── Aggregate sentiment ────────────────────────────────────────────────────
   const votedTopics = allTagTopics.filter((t) => (t.total_votes ?? 0) > 0)
   const totalVotesAcrossTag = votedTopics.reduce((sum, t) => sum + (t.total_votes ?? 0), 0)
@@ -256,6 +265,16 @@ export default async function TagPage({ params, searchParams }: PageProps) {
           >
             <ArrowLeft className="h-3.5 w-3.5" />
             All tags
+          </Link>
+          <Link
+            href={`/tags/${encodeURIComponent(tag)}/arguments`}
+            className="inline-flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-for-400 transition-colors"
+          >
+            <MessageSquare className="h-3.5 w-3.5" />
+            Arguments
+            {argumentCount > 0 && (
+              <span className="text-for-400/70 font-semibold">{argumentCount}</span>
+            )}
           </Link>
           <Link
             href={`/tags/${encodeURIComponent(tag)}/questions`}
