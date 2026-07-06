@@ -486,6 +486,12 @@ export default function AMAPage() {
             {isAuth && (
               <div className="flex items-center gap-2 flex-shrink-0">
                 <Link
+                  href="/ama/experts"
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-100 hover:bg-surface-200 border border-surface-300 text-surface-400 hover:text-white text-xs font-mono font-semibold transition-colors"
+                >
+                  Experts
+                </Link>
+                <Link
                   href="/ama/highlights"
                   className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-100 hover:bg-surface-200 border border-surface-300 text-surface-400 hover:text-white text-xs font-mono font-semibold transition-colors"
                 >

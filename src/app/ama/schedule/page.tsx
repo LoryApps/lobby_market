@@ -66,11 +66,6 @@ export default async function AMASchedulePage() {
     let rsvpedSessionIds = new Set<string>()
 
     if (user) {
-      const { data: rsvps } = await supabase
-        .from('debate_rsvps')
-        .select('debate_id')
-        .eq('user_id', user.id)
-
       // Use ama_rsvps if it exists, otherwise skip
       const { data: amaRsvps } = await supabase
         .from('ama_rsvps')
