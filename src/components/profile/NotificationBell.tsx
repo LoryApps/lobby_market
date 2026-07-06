@@ -9,10 +9,13 @@ import {
   Bell,
   Bookmark,
   CheckCheck,
+  Flame,
   Gavel,
   Hash,
+  HelpCircle,
   MessageCircle,
   MessageSquare,
+  Newspaper,
   Scale,
   Swords,
   TrendingUp,
@@ -53,6 +56,10 @@ const TYPE_CONFIG: Record<
   vote_phase_started:        { icon: Scale,          color: 'text-purple',      bg: 'bg-purple/10' },
   direct_message:            { icon: MessageSquare,  color: 'text-for-300',     bg: 'bg-for-500/10' },
   new_topic_in_tag:          { icon: Hash,            color: 'text-purple',      bg: 'bg-purple/10' },
+  streak_at_risk:            { icon: Flame,           color: 'text-against-400', bg: 'bg-against-500/10' },
+  weekly_digest:             { icon: Newspaper,       color: 'text-purple',      bg: 'bg-purple/10' },
+  qa_question_answered:      { icon: HelpCircle,      color: 'text-for-400',     bg: 'bg-for-500/10' },
+  qa_answer_accepted:        { icon: CheckCircle,     color: 'text-emerald',     bg: 'bg-emerald/10' },
 }
 
 const FALLBACK_CONFIG = { icon: AlertCircle, color: 'text-surface-500', bg: 'bg-surface-200' }
