@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { ArrowLeft, BarChart2, Bell, Gavel, GitCompare, HelpCircle, MessageSquare, Mic, Network, Tag, TrendingUp, Users, Zap, LineChart } from 'lucide-react'
+import { ArrowLeft, BarChart2, Bell, Gavel, GitCompare, HelpCircle, MessageSquare, Mic, Network, Swords, Tag, TrendingUp, Users, Zap, LineChart } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -150,6 +150,16 @@ export default async function TagPage({ params, searchParams }: PageProps) {
     : { count: 0 }
   const argumentCount = argumentCountRes.count ?? 0
 
+  // ── Debate count for this tag ─────────────────────────────────────────────
+  const debateCountRes = tagTopicIds.length
+    ? await supabase
+        .from('debates')
+        .select('id', { count: 'exact', head: true })
+        .in('topic_id', tagTopicIds)
+        .neq('status', 'cancelled')
+    : { count: 0 }
+  const debateCount = debateCountRes.count ?? 0
+
   // ── Aggregate sentiment ────────────────────────────────────────────────────
   const votedTopics = allTagTopics.filter((t) => (t.total_votes ?? 0) > 0)
   const totalVotesAcrossTag = votedTopics.reduce((sum, t) => sum + (t.total_votes ?? 0), 0)
@@ -290,6 +300,16 @@ export default async function TagPage({ params, searchParams }: PageProps) {
           >
             <Gavel className="h-3.5 w-3.5" />
             Laws
+          </Link>
+          <Link
+            href={`/tags/${encodeURIComponent(tag)}/debates`}
+            className="inline-flex items-center gap-1.5 text-xs font-mono text-surface-500 hover:text-purple transition-colors"
+          >
+            <Swords className="h-3.5 w-3.5" />
+            Debates
+            {debateCount > 0 && (
+              <span className="text-purple/70 font-semibold">{debateCount}</span>
+            )}
           </Link>
           <Link
             href={`/tags/${encodeURIComponent(tag)}/arguments`}
