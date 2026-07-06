@@ -1961,6 +1961,210 @@ export type Database = {
         };
         Relationships: [];
       };
+      ama_sessions: {
+        Row: {
+          id: string;
+          host_id: string;
+          title: string;
+          description: string | null;
+          category: string | null;
+          scheduled_at: string;
+          started_at: string | null;
+          ended_at: string | null;
+          status: 'upcoming' | 'live' | 'ended' | 'cancelled';
+          question_count: number;
+          answer_count: number;
+          rsvp_count: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          host_id: string;
+          title: string;
+          description?: string | null;
+          category?: string | null;
+          scheduled_at: string;
+          started_at?: string | null;
+          ended_at?: string | null;
+          status?: 'upcoming' | 'live' | 'ended' | 'cancelled';
+          question_count?: number;
+          answer_count?: number;
+          rsvp_count?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          host_id?: string;
+          title?: string;
+          description?: string | null;
+          category?: string | null;
+          scheduled_at?: string;
+          started_at?: string | null;
+          ended_at?: string | null;
+          status?: 'upcoming' | 'live' | 'ended' | 'cancelled';
+          question_count?: number;
+          answer_count?: number;
+          rsvp_count?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      ama_questions: {
+        Row: {
+          id: string;
+          session_id: string;
+          author_id: string;
+          content: string;
+          upvotes: number;
+          is_answered: boolean;
+          is_pinned: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          session_id: string;
+          author_id: string;
+          content: string;
+          upvotes?: number;
+          is_answered?: boolean;
+          is_pinned?: boolean;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          session_id?: string;
+          author_id?: string;
+          content?: string;
+          upvotes?: number;
+          is_answered?: boolean;
+          is_pinned?: boolean;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      ama_answers: {
+        Row: {
+          id: string;
+          question_id: string;
+          session_id: string;
+          host_id: string;
+          content: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          question_id: string;
+          session_id: string;
+          host_id: string;
+          content: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          question_id?: string;
+          session_id?: string;
+          host_id?: string;
+          content?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      ama_rsvps: {
+        Row: {
+          session_id: string;
+          user_id: string;
+          created_at: string;
+        };
+        Insert: {
+          session_id: string;
+          user_id: string;
+          created_at?: string;
+        };
+        Update: {
+          session_id?: string;
+          user_id?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      ama_question_votes: {
+        Row: {
+          question_id: string;
+          user_id: string;
+          created_at: string;
+        };
+        Insert: {
+          question_id: string;
+          user_id: string;
+          created_at?: string;
+        };
+        Update: {
+          question_id?: string;
+          user_id?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      ama_requests: {
+        Row: {
+          id: string;
+          author_id: string;
+          title: string;
+          description: string | null;
+          category: string | null;
+          topic_id: string | null;
+          upvote_count: number;
+          fulfilled_session_id: string | null;
+          fulfilled_at: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          author_id: string;
+          title: string;
+          description?: string | null;
+          category?: string | null;
+          topic_id?: string | null;
+          upvote_count?: number;
+          fulfilled_session_id?: string | null;
+          fulfilled_at?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          author_id?: string;
+          title?: string;
+          description?: string | null;
+          category?: string | null;
+          topic_id?: string | null;
+          upvote_count?: number;
+          fulfilled_session_id?: string | null;
+          fulfilled_at?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      ama_request_votes: {
+        Row: {
+          request_id: string;
+          user_id: string;
+          created_at: string;
+        };
+        Insert: {
+          request_id: string;
+          user_id: string;
+          created_at?: string;
+        };
+        Update: {
+          request_id?: string;
+          user_id?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -2114,11 +2318,7 @@ export type NotificationType =
   | "direct_message"
   | "new_topic_in_tag"
   | "streak_at_risk"
-  | "weekly_digest"
-  | "qa_question_answered"
-  | "qa_answer_accepted"
-  | "ama_question_answered"
-  | "ama_session_starting";
+  | "weekly_digest";
 
 export type AchievementTier = "common" | "rare" | "epic" | "legendary";
 

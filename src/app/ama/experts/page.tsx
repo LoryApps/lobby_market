@@ -91,7 +91,7 @@ export default async function AMAExpertsPage() {
       if (row.category) stats.categories.add(row.category)
     }
 
-    const hostIds = [...hostMap.keys()]
+    const hostIds = Array.from(hostMap.keys())
     const { data: profiles } = await supabase
       .from('profiles')
       .select('id, username, display_name, avatar_url, role, clout')
@@ -99,9 +99,9 @@ export default async function AMAExpertsPage() {
 
     const profileMap = new Map(profiles?.map((p) => [p.id, p]) ?? [])
 
-    for (const [hostId, stats] of hostMap.entries()) {
+    Array.from(hostMap.entries()).forEach(([hostId, stats]) => {
       const profile = profileMap.get(hostId)
-      if (!profile) continue
+      if (!profile) return
       experts.push({
         host: profile as AMAHost,
         totalSessions: stats.totalSessions,
@@ -110,11 +110,11 @@ export default async function AMAExpertsPage() {
         totalAnswers: stats.totalAnswers,
         totalQuestions: stats.totalQuestions,
         totalRsvps: stats.totalRsvps,
-        categories: [...stats.categories],
+        categories: Array.from(stats.categories),
         lastSessionAt: stats.lastSessionAt,
         nextSessionAt: stats.nextSessionAt,
       })
-    }
+    })
 
     experts.sort((a, b) => {
       if (b.endedSessions !== a.endedSessions) return b.endedSessions - a.endedSessions

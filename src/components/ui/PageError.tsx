@@ -8,10 +8,18 @@ import { BottomNav } from '@/components/layout/BottomNav'
 import { cn } from '@/lib/utils/cn'
 
 interface PageErrorProps {
-  error: Error & { digest?: string }
-  reset: () => void
-  /** Human-readable page title used in the error message */
+  // Standard Next.js error boundary props
+  error?: Error & { digest?: string }
+  reset?: () => void
+  // Alias props used across legacy error.tsx files
+  onReset?: () => void
+  onRetry?: () => void
+  /** Human-readable page title / heading */
   page?: string
+  title?: string
+  /** Subtitle / detail message */
+  message?: string
+  description?: string
   /** Where to navigate on "Back" — defaults to "/" */
   backHref?: string
   backLabel?: string
@@ -20,18 +28,28 @@ interface PageErrorProps {
 export function PageError({
   error,
   reset,
+  onReset,
+  onRetry,
   page,
+  title,
+  message,
+  description,
   backHref = '/',
   backLabel = 'Back to feed',
 }: PageErrorProps) {
   useEffect(() => {
-    console.error(`[${page ?? 'page'}]`, error)
-  }, [error, page])
+    if (error) console.error(`[${page ?? title ?? 'page'}]`, error)
+  }, [error, page, title])
 
-  const title = page ? `${page} couldn't load` : 'Something went wrong'
-  const subtitle = page
-    ? `The ${page} page ran into a problem. Your data is safe — try again or return to the feed.`
-    : 'This page ran into a problem. Your data is safe.'
+  const resetFn = reset ?? onReset ?? onRetry ?? (() => window.location.reload())
+
+  const derivedTitle = title ?? (page ? `${page} couldn't load` : 'Something went wrong')
+  const derivedSubtitle =
+    description ??
+    message ??
+    (page
+      ? `The ${page} page ran into a problem. Your data is safe — try again or return to the feed.`
+      : 'This page ran into a problem. Your data is safe.')
 
   return (
     <div className="min-h-screen bg-surface-50">
@@ -47,13 +65,13 @@ export function PageError({
         </div>
 
         <h1 className="font-mono text-xl font-bold text-white mb-2">
-          {title}
+          {derivedTitle}
         </h1>
         <p className="text-sm text-surface-500 font-mono mb-6 max-w-sm mx-auto leading-relaxed">
-          {subtitle}
+          {derivedSubtitle}
         </p>
 
-        {error.digest && (
+        {error?.digest && (
           <p className="text-[11px] text-surface-600 font-mono mb-6">
             Error ID: {error.digest}
           </p>
@@ -61,7 +79,7 @@ export function PageError({
 
         <div className="flex items-center justify-center gap-3">
           <button
-            onClick={reset}
+            onClick={resetFn}
             className={cn(
               'inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-mono font-semibold',
               'bg-for-600/20 border border-for-600/30 text-for-400',

@@ -9,5 +9,5 @@ export default function AMARequestError({
   error: Error & { digest?: string }
   reset: () => void
 }) {
-  return <PageError message={error.message} onReset={reset} />
+  return <PageError error={error} reset={reset} message={error.message} />
 }

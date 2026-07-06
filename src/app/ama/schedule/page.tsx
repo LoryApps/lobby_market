@@ -53,7 +53,7 @@ export default async function AMASchedulePage() {
   const sessions: SessionWithHost[] = []
 
   if (rows && rows.length > 0) {
-    const hostIds = [...new Set(rows.map((r) => r.host_id))]
+    const hostIds = Array.from(new Set(rows.map((r) => r.host_id)))
     const { data: profiles } = await supabase
       .from('profiles')
       .select('id, username, display_name, avatar_url, role, clout')

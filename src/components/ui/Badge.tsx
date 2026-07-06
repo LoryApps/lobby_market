@@ -15,6 +15,17 @@ const badgeVariants = {
   // Utility variants
   gold: 'bg-gold/20 text-gold',
   outline: '',
+  // Extended variants — rely on className for custom styling
+  default: 'bg-surface-300/40 text-surface-400 border border-surface-400/30',
+  secondary: 'bg-surface-200/60 text-surface-500',
+  ghost: 'bg-transparent text-surface-500',
+  subtle: 'bg-surface-300/30 text-surface-600',
+  neutral: 'bg-surface-300/40 text-surface-500',
+  surface: 'bg-surface-200 text-surface-400',
+  category: 'bg-surface-300/40 text-surface-400',
+  status: 'bg-surface-300/40 text-surface-500 border border-surface-400/30',
+  against: 'bg-against-500/20 text-against-400',
+  success: 'bg-emerald/20 text-emerald',
 } as const
 
 type BadgeVariant = keyof typeof badgeVariants
