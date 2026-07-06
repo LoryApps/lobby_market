@@ -67,6 +67,7 @@ import {
   ChevronDown,
   CheckCircle2,
   HelpCircle,
+  Shield,
   X,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
@@ -156,6 +157,11 @@ const SECTIONS: FeatureSection[] = [
       { href: '/crossfire', label: 'Crossfire', description: 'The most contested topics with best FOR vs. AGAINST arguments side by side.', icon: Flame },
       { href: '/questions', label: 'Community Q&A Hub', description: 'Browse open clarifying questions from every debate — answer what you know, earn Clout.', icon: HelpCircle, isNew: true },
       { href: '/questions/best', label: 'Best Answers', description: 'The highest-voted Q&A pairs — community questions with accepted answers, curated across every civic debate.', icon: Award, isNew: true },
+      { href: '/ama', label: 'Expert AMA Sessions', description: 'Ask Me Anything sessions hosted by civic experts — economists, legal scholars, policy wonks. Live Q&A with verified voices.', icon: Mic, isNew: true },
+      { href: '/ama/experts', label: 'AMA Expert Directory', description: 'Browse all civic experts who host AMA sessions — filter by category and track record.', icon: Users, isNew: true },
+      { href: '/ama/schedule', label: 'AMA Calendar', description: 'Upcoming expert AMA sessions by date — RSVP and get notified when your category goes live.', icon: Calendar, isNew: true },
+      { href: '/ama/request', label: 'Request an AMA', description: 'Nominate a civic expert for an AMA session. Community votes on the most-wanted voices.', icon: Sparkles, isNew: true },
+      { href: '/ama/highlights', label: 'AMA Insights Archive', description: 'Best Q&A pairs from completed expert AMAs — the most upvoted answers, curated by category.', icon: BookOpen, isNew: true },
     ],
   },
   {
@@ -198,6 +204,7 @@ const SECTIONS: FeatureSection[] = [
       { href: '/leaderboard/wiki', label: 'Wiki Authors', description: 'Citizens who have contributed most to topic wiki content.', icon: FileEdit },
       { href: '/leaderboard/relay', label: 'Relay Runners', description: 'Citizens who build the best collaborative argument chains — ranked by legs written, completions, and compelling rate.', icon: Link2, isNew: true },
       { href: '/leaderboard/dissent', label: 'The Dissent Index', description: 'The Lobby\'s most principled contrarians — citizens who vote in the minority and argue their case.', icon: Shuffle, isNew: true },
+      { href: '/leaderboard/ama', label: 'AMA Expert Rankings', description: 'Top AMA hosts ranked by sessions, questions answered, and community upvotes — the most trusted civic voices.', icon: Mic, isNew: true },
       { href: '/podium', label: 'Weekly Podium', description: 'Top 3 contributors per category — resets every Monday.', icon: Medal },
     ],
   },
@@ -238,6 +245,7 @@ const SECTIONS: FeatureSection[] = [
       { href: '/messages', label: 'Messages', description: 'Direct messages with fellow citizens and coalition coordination.', icon: MessageSquare },
       { href: '/challenges', label: 'Debate Challenges', description: 'Challenge any citizen to a structured formal debate.', icon: Swords },
       { href: '/compare-users', label: 'Compare Profiles', description: 'Side-by-side comparison of any two citizens\' civic records.', icon: GitCompare },
+      { href: '/oath', label: 'Civic Oath', description: 'Take the Lobby\'s founding oath — a public pledge to civic good faith, honest debate, and pursuit of truth.', icon: Scroll, isNew: true },
     ],
   },
   {
@@ -264,6 +272,11 @@ const SECTIONS: FeatureSection[] = [
       { href: '/tribunal', label: 'The Civic Tribunal', description: 'Community peer-review of arguments: challenge, deliberate, verdict.', icon: Gavel },
       { href: '/civic-nominations', label: 'Civic Nominations', description: 'Nominate and endorse citizens for formal civic roles — Council, Tribunal, Fact Checker, and more.', icon: Award, isNew: true },
       { href: '/civic-petitions', label: 'Civic Petitions', description: 'File and sign citizen petitions that force formal hearings, referendums, or assembly sessions.', icon: Scroll },
+      { href: '/hearings', label: 'Civic Hearings', description: 'Committee testimonies before major votes — experts and citizens present evidence before the community decides.', icon: Mic, isNew: true },
+      { href: '/ombudsman', label: 'Civic Ombudsman', description: 'Independent oversight body for civic complaints — file a case about process fairness, bias, or norm breaches.', icon: Shield, isNew: true },
+      { href: '/appeals', label: 'Civic Appeals Panel', description: 'The final civic recourse tier — formally contest Ombudsman findings, Council outcomes, and disputed results.', icon: Scale, isNew: true },
+      { href: '/vetoes', label: 'Civic Vetoes', description: 'Citizen-led veto mechanism — gather signatures to block or delay a newly established law.', icon: Vote, isNew: true },
+      { href: '/fact-bank', label: 'Civic Fact Bank', description: 'Community-verified factual claims supporting active debates — crowd-sourced evidence and source verification.', icon: FileText, isNew: true },
     ],
   },
   {
