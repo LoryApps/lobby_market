@@ -155,6 +155,7 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
   const [activeTab, setActiveTab] = useState<TopicTab>('details')
   const [voteSheetOpen, setVoteSheetOpen] = useState(false)
   const [editorUsername, setEditorUsername] = useState<string | null>(null)
+  const [nextTopic, setNextTopic] = useState<{ id: string; statement: string; category: string | null } | null>(null)
   const { castVote, hasVoted, getVoteSide } = useVoteStore()
   const updateTopic = useFeedStore((s) => s.updateTopic)
   const votedSide = getVoteSide(topic.id)
@@ -243,6 +244,11 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
       blue_pct: (newBlue / newTotal) * 100,
     })
     await castVote(topic.id, side, reason)
+    // Prefetch the next unvoted topic so the button appears promptly
+    fetch(`/api/topics/${topic.id}/next`)
+      .then((r) => (r.status === 200 ? r.json() : null))
+      .then((data) => { if (data?.topic) setNextTopic(data.topic) })
+      .catch(() => {/* best-effort */})
   }
 
   const handleSupport = async () => {
@@ -1172,6 +1178,28 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                       category={topic.category}
                     />
                   </div>
+                )}
+                {/* Next unvoted topic — appears after voting */}
+                {hasVoted(topic.id) && nextTopic && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                    className="flex justify-center"
+                  >
+                    <button
+                      onClick={() => router.push(`/topic/${nextTopic.id}`)}
+                      className="group flex items-center gap-2 px-4 py-2 rounded-full bg-surface-800 border border-surface-700 hover:border-gold/60 hover:bg-surface-700 transition-all text-sm font-medium text-surface-300 hover:text-white"
+                    >
+                      {nextTopic.category && (
+                        <span className="text-xs text-surface-500 group-hover:text-gold transition-colors truncate max-w-[120px]">
+                          {nextTopic.category}
+                        </span>
+                      )}
+                      <span className="truncate max-w-[200px]">{nextTopic.statement.length > 60 ? nextTopic.statement.slice(0, 60) + '…' : nextTopic.statement}</span>
+                      <ArrowUpRight className="h-3.5 w-3.5 shrink-0 text-surface-500 group-hover:text-gold transition-colors" />
+                    </button>
+                  </motion.div>
                 )}
                 {topic.voting_ends_at && (
                   <div className="flex justify-center">
