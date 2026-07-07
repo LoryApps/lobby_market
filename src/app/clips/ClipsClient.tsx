@@ -23,6 +23,7 @@ import {
   ArrowLeft,
   Bookmark,
   BookmarkCheck,
+  Check,
   ChevronDown,
   ChevronUp,
   ExternalLink,
@@ -31,6 +32,7 @@ import {
   Loader2,
   MessageSquare,
   Scale,
+  Share2,
   Sparkles,
   Star,
   ThumbsUp,
@@ -239,6 +241,32 @@ function ClipCard({
   const forPct = Math.round(clip.topic?.blue_pct ?? 50)
   const againstPct = 100 - forPct
 
+  const [shared, setShared] = useState(false)
+
+  async function handleShare(e: React.MouseEvent) {
+    e.stopPropagation()
+    haptics.light()
+    const url = `${window.location.origin}/arguments/${clip.id}`
+    const shareData = {
+      title: `${SIDE_LABEL[clip.side]}: ${clip.content.slice(0, 100)}`,
+      text: `"${clip.content.slice(0, 160)}" — Lobby Market`,
+      url,
+    }
+    if (typeof navigator !== 'undefined' && navigator.share && navigator.canShare?.(shareData)) {
+      try {
+        await navigator.share(shareData)
+      } catch {
+        // user cancelled
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(url)
+        setShared(true)
+        setTimeout(() => setShared(false), 2000)
+      } catch { /* nothing */ }
+    }
+  }
+
   // Drag-to-navigate
   const y = useMotionValue(0)
   const opacity = useTransform(y, [-SWIPE_THRESHOLD, 0, SWIPE_THRESHOLD], [0.4, 1, 0.4])
@@ -434,6 +462,20 @@ function ClipCard({
               )}
             >
               {isBookmarked ? <BookmarkCheck className="h-4 w-4" /> : <Bookmark className="h-4 w-4" />}
+            </button>
+
+            {/* Share */}
+            <button
+              onClick={handleShare}
+              aria-label="Share this argument"
+              className={cn(
+                'flex items-center justify-center h-10 w-10 rounded-xl transition-all border',
+                shared
+                  ? 'bg-emerald/10 border-emerald/30 text-emerald'
+                  : 'bg-surface-200 border-surface-300 text-surface-500 hover:border-surface-400 hover:text-white'
+              )}
+            >
+              {shared ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
             </button>
 
             {/* Reply */}
