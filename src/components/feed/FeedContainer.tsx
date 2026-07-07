@@ -537,12 +537,19 @@ function EndOfFeed({
 // ─── Main feed container ──────────────────────────────────────────────
 
 export function FeedContainer() {
-  const { topics, isLoading, hasMore, feedMode, followingCount, hasPreferences, preferenceSource, fetchNextPage, updateTopic, prependTopic, setFeedMode } = useFeedStore()
+  const { topics, isLoading, hasMore, feedMode, followingCount, hasPreferences, preferenceSource, fetchNextPage, updateTopic, prependTopic, setFeedMode, refresh } = useFeedStore()
   const { castVote } = useVoteStore()
   const [pendingNew, setPendingNew] = useState<TopicWithAuthor[]>([])
   const [isLive, setIsLive] = useState(false)
   const sentinelRef = useRef<HTMLDivElement>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
+
+  // ── Pull-to-refresh state ───────────────────────────────────────────────
+  const [pullY, setPullY] = useState(0)
+  const [isRefreshing, setIsRefreshing] = useState(false)
+  const touchStartY = useRef(0)
+  const isPulling = useRef(false)
+  const PULL_THRESHOLD = 72
 
   // Handle ?mode=mytags URL param to switch feed mode on arrival
   useEffect(() => {
@@ -708,8 +715,69 @@ export function FeedContainer() {
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [castVote, updateTopic])
 
+  // ── Pull-to-refresh touch handlers ─────────────────────────────────────
+  function handleTouchStart(e: React.TouchEvent) {
+    const el = scrollRef.current
+    if (!el || el.scrollTop > 0) return
+    touchStartY.current = e.touches[0].clientY
+    isPulling.current = true
+  }
+
+  function handleTouchMove(e: React.TouchEvent) {
+    if (!isPulling.current || isRefreshing) return
+    const el = scrollRef.current
+    if (!el || el.scrollTop > 0) { isPulling.current = false; return }
+    const delta = e.touches[0].clientY - touchStartY.current
+    if (delta <= 0) { isPulling.current = false; return }
+    // Apply rubber-band resistance: sqrt curve so it feels natural
+    const clamped = Math.min(delta * 0.5, PULL_THRESHOLD * 1.4)
+    setPullY(clamped)
+  }
+
+  async function handleTouchEnd() {
+    if (!isPulling.current) return
+    isPulling.current = false
+    if (pullY >= PULL_THRESHOLD) {
+      setIsRefreshing(true)
+      setPullY(PULL_THRESHOLD)
+      haptics.success()
+      refresh()
+      // Brief delay so the spinner is visible before the feed reloads
+      await new Promise((r) => setTimeout(r, 600))
+      setIsRefreshing(false)
+    }
+    setPullY(0)
+  }
+
   return (
     <div className="relative">
+      {/* Pull-to-refresh indicator — overlaid above the feed, outside scroll container */}
+      <AnimatePresence>
+        {(pullY > 0 || isRefreshing) && (
+          <motion.div
+            key="ptr-indicator"
+            initial={{ opacity: 0, y: -16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -16 }}
+            transition={{ duration: 0.15 }}
+            className="fixed top-28 left-0 right-0 z-50 flex justify-center pointer-events-none"
+          >
+            <motion.div
+              animate={isRefreshing ? { rotate: 360 } : { rotate: (pullY / PULL_THRESHOLD) * 180 }}
+              transition={isRefreshing ? { duration: 0.7, repeat: Infinity, ease: 'linear' } : { duration: 0 }}
+              className={cn(
+                'flex items-center justify-center h-9 w-9 rounded-full border shadow-lg backdrop-blur-sm',
+                pullY >= PULL_THRESHOLD || isRefreshing
+                  ? 'bg-for-600/30 border-for-500/50 text-for-400'
+                  : 'bg-surface-200/80 border-surface-400/60 text-surface-400'
+              )}
+            >
+              <RefreshCw className="h-4 w-4" />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Filter bar — floats below the TopBar (h-14 = top-14) over the feed */}
       <div className="fixed top-14 left-0 right-0 z-40 pointer-events-none">
         <div className="pointer-events-auto bg-gradient-to-b from-surface-50/95 via-surface-50/70 to-transparent pb-2">
@@ -806,7 +874,14 @@ export function FeedContainer() {
         <kbd className="text-[10px]">?</kbd>
       </button>
 
-      <div ref={scrollRef} className="feed-scroll" aria-label="Topic feed">
+      <div
+        ref={scrollRef}
+        className="feed-scroll"
+        aria-label="Topic feed"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
         <PersonalDailyBar />
         <FeedTutorial />
         <SetupChecklist />

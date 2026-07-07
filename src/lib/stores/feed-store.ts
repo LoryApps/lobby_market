@@ -40,7 +40,9 @@ interface FeedState {
   setTagFilter: (tag: FeedTag) => void;
   setFeedMode: (mode: FeedMode) => void;
   clearFilters: () => void;
-  /** Realtime-injected topics don't have author data — treated as TopicWithAuthor with null author */
+  /** Reset topics and re-fetch from scratch (preserves current mode + filters) */
+  refresh: () => void;
+  /** Realtime-injected topics don't have router data — treated as TopicWithAuthor with null author */
   prependTopic: (topic: Topic | TopicWithAuthor) => void;
   updateTopic: (id: string, updates: Partial<Topic>) => void;
 }
@@ -353,6 +355,12 @@ export const useFeedStore = create<FeedState>()(
           isLoading: false,
           _generation: gen,
         });
+        get().fetchNextPage();
+      },
+
+      refresh: () => {
+        const gen = get()._generation + 1;
+        set({ topics: [], offset: 0, hasMore: true, isLoading: false, _generation: gen });
         get().fetchNextPage();
       },
 
