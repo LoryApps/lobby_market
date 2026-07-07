@@ -528,15 +528,24 @@ export function RelaysClient() {
             </div>
           </div>
 
-          <button
-            onClick={() => load(filter)}
-            disabled={loading}
-            aria-label="Refresh relays"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-200 border border-surface-300 text-surface-500 hover:text-white hover:border-surface-400 transition-colors text-xs font-mono flex-shrink-0"
-          >
-            <RefreshCw className={cn('h-3.5 w-3.5', loading && 'animate-spin')} />
-            Refresh
-          </button>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <Link
+              href="/relays/create"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple/20 border border-purple/40 text-purple hover:bg-purple/30 hover:border-purple/60 transition-colors text-xs font-mono"
+            >
+              <GitMerge className="h-3.5 w-3.5" />
+              Start Relay
+            </Link>
+            <button
+              onClick={() => load(filter)}
+              disabled={loading}
+              aria-label="Refresh relays"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-200 border border-surface-300 text-surface-500 hover:text-white hover:border-surface-400 transition-colors text-xs font-mono"
+            >
+              <RefreshCw className={cn('h-3.5 w-3.5', loading && 'animate-spin')} />
+              Refresh
+            </button>
+          </div>
         </div>
 
         {/* ── Filter tabs ─────────────────────────────────────────────── */}
@@ -574,7 +583,10 @@ export function RelaysClient() {
                 ? 'Civic relays are collaborative argument chains. Start one from any topic page.'
                 : `No ${filter.replace('_', ' ')} relays right now — check back soon.`
             }
-            actions={[{ label: 'Browse Topics', href: '/' }]}
+            actions={[
+              { label: 'Start a Relay', href: '/relays/create' },
+              { label: 'Browse Topics', href: '/' },
+            ]}
           />
         ) : (
           <AnimatePresence mode="popLayout">
