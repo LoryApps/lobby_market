@@ -425,6 +425,19 @@ export function LawPage({
                   <Ban className="h-3.5 w-3.5" />
                   Veto Chamber
                 </Link>
+                <Link
+                  href={`/law/${law.id}/counsel`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-gold/10 border border-gold/30 text-gold',
+                    'hover:bg-gold/20 hover:border-gold/50',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="Get AI analysis of this law"
+                >
+                  <Sparkles className="h-3.5 w-3.5" />
+                  Ask Counsel
+                </Link>
               </div>
             </div>
 
