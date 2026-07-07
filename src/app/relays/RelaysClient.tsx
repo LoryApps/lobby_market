@@ -224,6 +224,13 @@ function RelayCard({
         <div className="flex items-center gap-2 flex-shrink-0">
           <LegDots filled={legCount} total={relay.max_legs} isFor={isFor} />
           <StatusPill status={relay.status} />
+          <Link
+            href={`/relays/${relay.id}`}
+            className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono text-surface-500 hover:text-white border border-surface-400/30 hover:border-surface-400 bg-surface-200/30 hover:bg-surface-200/60 transition-colors"
+            title="View relay permalink"
+          >
+            <ArrowRight className="h-3 w-3" />
+          </Link>
         </div>
       </div>
 

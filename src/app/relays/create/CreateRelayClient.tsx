@@ -174,8 +174,9 @@ function CreateRelayInner() {
         throw new Error(data.error ?? 'Failed to start relay')
       }
 
+      const data = (await res.json()) as { relay_id?: string }
       setDone(true)
-      setTimeout(() => router.push('/relays'), 1800)
+      setTimeout(() => router.push(data.relay_id ? `/relays/${data.relay_id}` : '/relays'), 1800)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong')
       setSubmitting(false)
