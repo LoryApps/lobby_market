@@ -12,6 +12,7 @@ import { haptics } from '@/lib/hooks/useHaptics'
 import { TopicCard } from '@/components/feed/TopicCard'
 import { FeedTutorial } from '@/components/feed/FeedTutorial'
 import { DailyQuorumNudge } from '@/components/feed/DailyQuorumNudge'
+import { DailyPromptBanner } from '@/components/feed/DailyPromptBanner'
 import { SetupChecklist } from '@/components/feed/SetupChecklist'
 import { FeedInsightStrip } from '@/components/feed/FeedInsightStrip'
 import { QuestionFeedCard } from '@/components/feed/QuestionFeedCard'
@@ -810,6 +811,7 @@ export function FeedContainer() {
         <FeedTutorial />
         <SetupChecklist />
         <DailyQuorumNudge />
+        {feedMode === 'discover' && <DailyPromptBanner />}
         {topics.map((topic, index) => (
           <div key={topic.id}>
             <ErrorBoundary
