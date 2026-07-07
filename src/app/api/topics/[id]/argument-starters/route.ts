@@ -26,6 +26,15 @@ export interface ArgumentStartersResponse {
 // Generates AI-powered argument starters for both sides of a topic.
 // Requires authentication. No caching — each call is fresh.
 
+type ArgFormat = 'free' | 'peel' | 'toulmin' | 'narrative'
+
+const FORMAT_INSTRUCTIONS: Record<ArgFormat, string> = {
+  free: '',
+  peel: 'Each starter should read as the opening "Point" in a PEEL-structured argument (Point → Evidence → Explanation → Link), setting up a clear claim that evidence can follow.',
+  toulmin: 'Each starter should serve as the opening "Claim" in a Toulmin-structured argument (Claim → Data → Warrant → Rebuttal) — a clear, debatable assertion that calls for evidence.',
+  narrative: 'Each starter should work as the opening "Hook" in a narrative argument (Hook → Stakes → Case → Call to Action) — vivid, story-driven, and emotionally engaging.',
+}
+
 export async function POST(
   req: NextRequest,
   { params }: { params: { id: string } }
@@ -51,6 +60,16 @@ export async function POST(
 
   if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  let requestFormat: ArgFormat = 'free'
+  try {
+    const body = await req.json()
+    if (body.format && ['free', 'peel', 'toulmin', 'narrative'].includes(body.format)) {
+      requestFormat = body.format as ArgFormat
+    }
+  } catch {
+    // body parse error — use default
   }
 
   // Fetch topic
@@ -82,6 +101,8 @@ export async function POST(
     .map((a) => a.content)
     .slice(0, 3)
 
+  const formatInstruction = FORMAT_INSTRUCTIONS[requestFormat]
+
   const prompt = `You are helping citizens engage in civic debate on Lobby Market, a democratic consensus platform.
 
 Topic: "${topic.statement}"
@@ -95,6 +116,7 @@ Generate 3 FOR (supporting) and 3 AGAINST (opposing) argument starters for this 
 - Distinct in angle (e.g., economic, moral, practical, rights-based, evidence-based)
 - Written as a citizen arguing their position, not as a neutral summary
 - Fresh and not duplicating the existing arguments listed above
+${formatInstruction ? `- ${formatInstruction}` : ''}
 
 Respond with ONLY valid JSON in this exact format:
 {

@@ -11,8 +11,8 @@
  *   /coach      — critiques a draft you've written
  *   /spar/[id]  — live AI debate opponent
  *
- * This is quick inspiration: pick a side, get 3 sharp opening angles,
- * copy one, and go write your argument.
+ * This is quick inspiration: pick a side, choose an argument format,
+ * get 3 sharp opening angles, copy one, and go write your argument.
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react'
@@ -24,6 +24,8 @@ import {
   ArrowRight,
   Bot,
   Check,
+  ChevronDown,
+  ChevronUp,
   Copy,
   ExternalLink,
   Lightbulb,
@@ -44,6 +46,73 @@ import type { ArgumentStartersResponse, ArgumentStarter } from '@/app/api/topics
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 type Side = 'for' | 'against' | null
+type ArgFormat = 'free' | 'peel' | 'toulmin' | 'narrative'
+
+interface FormatStep {
+  label: string
+  hint: string
+}
+
+interface FormatTemplate {
+  id: ArgFormat
+  label: string
+  tagline: string
+  steps: FormatStep[]
+  colorClasses: string
+  activeClasses: string
+}
+
+// ─── Format template definitions ─────────────────────────────────────────────
+
+const FORMAT_TEMPLATES: FormatTemplate[] = [
+  {
+    id: 'free',
+    label: 'Free-form',
+    tagline: 'Write naturally',
+    steps: [],
+    colorClasses: 'text-surface-300 border-surface-500/40 bg-surface-500/5',
+    activeClasses: 'border-surface-300 bg-surface-400/15 text-white',
+  },
+  {
+    id: 'peel',
+    label: 'PEEL',
+    tagline: 'Point · Evidence · Explain · Link',
+    steps: [
+      { label: 'Point', hint: 'State your main argument clearly' },
+      { label: 'Evidence', hint: 'Cite data, examples, or quotes' },
+      { label: 'Explanation', hint: 'Show why the evidence proves your point' },
+      { label: 'Link', hint: 'Tie it back to the topic statement' },
+    ],
+    colorClasses: 'text-gold border-gold/30 bg-gold/5',
+    activeClasses: 'border-gold bg-gold/15 text-gold',
+  },
+  {
+    id: 'toulmin',
+    label: 'Toulmin',
+    tagline: 'Claim · Data · Warrant',
+    steps: [
+      { label: 'Claim', hint: 'Your core position on the issue' },
+      { label: 'Data', hint: 'Facts, statistics, or expert opinion' },
+      { label: 'Warrant', hint: 'Why this data logically supports your claim' },
+      { label: 'Rebuttal', hint: 'Acknowledge and counter the opposing view' },
+    ],
+    colorClasses: 'text-for-300 border-for-400/30 bg-for-400/5',
+    activeClasses: 'border-for-400 bg-for-500/15 text-for-300',
+  },
+  {
+    id: 'narrative',
+    label: 'Narrative',
+    tagline: 'Hook · Stakes · Case · Call',
+    steps: [
+      { label: 'Hook', hint: 'Open with a striking story or scenario' },
+      { label: 'Stakes', hint: "Describe what's at risk if nothing changes" },
+      { label: 'Case', hint: 'Make your core argument' },
+      { label: 'Call to Action', hint: 'State what should happen next' },
+    ],
+    colorClasses: 'text-purple border-purple/30 bg-purple/5',
+    activeClasses: 'border-purple bg-purple/15 text-purple',
+  },
+]
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -65,6 +134,109 @@ const ANGLE_COLORS: Record<string, string> = {
 
 function angleClass(angle: string): string {
   return ANGLE_COLORS[angle] ?? 'text-surface-400 border-surface-500/30 bg-surface-500/10'
+}
+
+// ─── FormatPicker ─────────────────────────────────────────────────────────────
+
+function FormatPicker({
+  value,
+  onChange,
+}: {
+  value: ArgFormat
+  onChange: (f: ArgFormat) => void
+}) {
+  return (
+    <div className="mb-6">
+      <p className="text-xs font-mono text-surface-500 uppercase tracking-widest mb-3">
+        Argument format
+      </p>
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+        {FORMAT_TEMPLATES.map((tpl) => (
+          <button
+            key={tpl.id}
+            onClick={() => onChange(tpl.id)}
+            className={cn(
+              'flex flex-col gap-0.5 px-3 py-2.5 rounded-xl border text-left transition-all',
+              value === tpl.id
+                ? tpl.activeClasses
+                : cn('hover:border-surface-400 hover:bg-surface-100', tpl.colorClasses)
+            )}
+          >
+            <span className="text-xs font-mono font-bold leading-tight">{tpl.label}</span>
+            <span className="text-[10px] font-mono text-surface-500 leading-snug">{tpl.tagline}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// ─── FormatGuide ──────────────────────────────────────────────────────────────
+
+function FormatGuide({ format }: { format: ArgFormat }) {
+  const [open, setOpen] = useState(false)
+
+  const tpl = FORMAT_TEMPLATES.find((t) => t.id === format)
+  if (!tpl || tpl.steps.length === 0) return null
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.35 }}
+      className="mt-5 rounded-xl border border-surface-300 bg-surface-100 overflow-hidden"
+    >
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-surface-200 transition-colors"
+      >
+        <div className="flex items-center gap-2">
+          <span className={cn('text-xs font-mono font-bold px-2 py-0.5 rounded-full border', tpl.colorClasses)}>
+            {tpl.label}
+          </span>
+          <span className="text-xs font-mono text-surface-400">Format guide</span>
+        </div>
+        {open
+          ? <ChevronUp className="h-3.5 w-3.5 text-surface-500" />
+          : <ChevronDown className="h-3.5 w-3.5 text-surface-500" />
+        }
+      </button>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden"
+          >
+            <div className="px-4 pb-4 space-y-2.5 border-t border-surface-300 pt-3">
+              <p className="text-[11px] font-mono text-surface-500 mb-3">
+                Expand your starter into a full argument using this structure:
+              </p>
+              {tpl.steps.map((step, i) => (
+                <div key={step.label} className="flex gap-3 items-start">
+                  <span
+                    className={cn(
+                      'flex-shrink-0 flex items-center justify-center h-5 w-5 rounded-full text-[10px] font-mono font-bold border',
+                      tpl.colorClasses
+                    )}
+                  >
+                    {i + 1}
+                  </span>
+                  <div>
+                    <span className="text-xs font-mono font-semibold text-white">{step.label}</span>
+                    <span className="text-[11px] font-mono text-surface-500 ml-1.5">{step.hint}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  )
 }
 
 // ─── StarterCard ──────────────────────────────────────────────────────────────
@@ -184,6 +356,7 @@ export default function ArguePage() {
   const [loading, setLoading] = useState(false)
   const [generating, setGenerating] = useState(false)
   const [side, setSide] = useState<Side>(null)
+  const [format, setFormat] = useState<ArgFormat>('free')
   const [error, setError] = useState<string | null>(null)
   const generatedRef = useRef(false)
 
@@ -195,7 +368,6 @@ export default function ArguePage() {
         const res = await fetch(`/api/topics/${id}/preview`)
         if (!res.ok) return
         const t = await res.json()
-        // Prime the data with topic info so we can show the statement before generation
         setData({
           topic_id: t.id,
           statement: t.statement,
@@ -211,7 +383,7 @@ export default function ArguePage() {
     loadTopic()
   }, [id])
 
-  const generate = useCallback(async (chosenSide: Side) => {
+  const generate = useCallback(async (chosenSide: Side, chosenFormat?: ArgFormat) => {
     if (!chosenSide || generating) return
     setSide(chosenSide)
     setGenerating(true)
@@ -222,7 +394,7 @@ export default function ArguePage() {
       const res = await fetch(`/api/topics/${id}/argument-starters`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ side: chosenSide }),
+        body: JSON.stringify({ side: chosenSide, format: chosenFormat ?? format }),
       })
 
       if (res.status === 401) {
@@ -249,11 +421,19 @@ export default function ArguePage() {
     } finally {
       setGenerating(false)
     }
-  }, [id, generating, router])
+  }, [id, generating, router, format])
 
   function handleSideSelect(chosen: 'for' | 'against') {
     if (chosen === side && data?.starters[chosen].length) return
     generate(chosen)
+  }
+
+  function handleFormatChange(newFormat: ArgFormat) {
+    setFormat(newFormat)
+    // If we already have results, regenerate with new format
+    if (side && data?.starters[side]?.length) {
+      generate(side, newFormat)
+    }
   }
 
   const activeStarters = side ? (data?.starters[side] ?? []) : []
@@ -369,6 +549,9 @@ export default function ArguePage() {
           </div>
         </div>
 
+        {/* Format picker */}
+        <FormatPicker value={format} onChange={handleFormatChange} />
+
         {/* Results area */}
         <AnimatePresence mode="wait">
           {!side && !generating && (
@@ -443,6 +626,11 @@ export default function ArguePage() {
                   >
                     3 {side === 'for' ? 'FOR' : 'AGAINST'} starters
                   </span>
+                  {format !== 'free' && (
+                    <span className="text-[10px] font-mono text-surface-500 border border-surface-500/40 rounded-full px-2 py-0.5">
+                      {FORMAT_TEMPLATES.find((t) => t.id === format)?.label} format
+                    </span>
+                  )}
                 </div>
 
                 <button
@@ -466,6 +654,9 @@ export default function ArguePage() {
                   />
                 ))}
               </div>
+
+              {/* Format guide */}
+              <FormatGuide format={format} />
 
               {/* Switch side nudge */}
               <motion.div
