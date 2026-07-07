@@ -8,7 +8,6 @@ import {
   ArrowLeft,
   Check,
   ChevronRight,
-  Copy,
   ExternalLink,
   Gavel,
   GitMerge,
@@ -23,7 +22,6 @@ import {
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { Avatar } from '@/components/ui/Avatar'
-import { Badge } from '@/components/ui/Badge'
 import { cn } from '@/lib/utils/cn'
 import type { RelayRow, RelayLeg } from '@/app/api/relays/route'
 
@@ -62,13 +60,11 @@ const TOPIC_STATUS_ICON: Record<string, React.ComponentType<{ className?: string
 function LegCard({
   leg,
   legNumber,
-  total,
   isFor,
   isLast,
 }: {
   leg: RelayLeg
   legNumber: number
-  total: number
   isFor: boolean
   isLast: boolean
 }) {
@@ -473,7 +469,6 @@ export function RelayDetailClient() {
               key={leg.id}
               leg={leg}
               legNumber={leg.leg_number}
-              total={relay.max_legs}
               isFor={isFor}
               isLast={i === relay.legs.length - 1 && openSlots === 0}
             />
