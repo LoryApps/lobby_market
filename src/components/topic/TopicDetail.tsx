@@ -771,6 +771,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                       Steelman
                     </Link>
                     <Link
+                      href={`/topic/${topic.id}/counsel`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-purple hover:text-purple/80 transition-colors"
+                    >
+                      <Sparkles className="h-3.5 w-3.5" />
+                      Ask Counsel
+                    </Link>
+                    <Link
                       href={`/topic/${topic.id}/narrative`}
                       className="inline-flex items-center gap-1.5 text-xs font-mono text-purple hover:text-purple/80 transition-colors"
                     >
