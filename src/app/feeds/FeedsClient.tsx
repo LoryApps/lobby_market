@@ -29,6 +29,7 @@ import {
   MessageSquare,
   Mic,
   Music2,
+  Repeat2,
   Rss,
   Scale,
   Shield,
@@ -102,6 +103,17 @@ const MAIN_FEEDS: FeedEntry[] = [
     iconBorder: 'border-emerald/30',
     tag: 'Arguments',
     tagColor: 'bg-emerald/20 text-emerald border-emerald/40',
+  },
+  {
+    title: 'Civic Relays',
+    description: 'Completed multi-author relay chains — civic arguments built leg by leg, then rated compelling or not by the community.',
+    url: `${BASE}/api/rss/relays`,
+    icon: Repeat2,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+    iconBorder: 'border-purple/30',
+    tag: 'Relays',
+    tagColor: 'bg-purple/20 text-purple border-purple/40',
   },
 ]
 
