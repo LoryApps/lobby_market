@@ -16,6 +16,7 @@ import {
   GraduationCap,
   Heart,
   Landmark,
+  LayoutGrid,
   Leaf,
   Loader2,
   Mic,
@@ -662,6 +663,7 @@ export default function DiscoverPage() {
                   {[
                     { href: '/trending', label: 'Trending', icon: TrendingUp, color: 'text-against-400', bg: 'bg-against-500/10', border: 'border-against-500/30' },
                     { href: '/arguments', label: 'Arguments', icon: Scale, color: 'text-for-400', bg: 'bg-for-500/10', border: 'border-for-500/30' },
+                    { href: '/arguments/categories', label: 'By Category', icon: LayoutGrid, color: 'text-emerald', bg: 'bg-emerald/10', border: 'border-emerald/30' },
                     { href: '/debate', label: 'Debates', icon: Mic, color: 'text-purple', bg: 'bg-purple/10', border: 'border-purple/30' },
                     { href: '/law', label: 'The Codex', icon: Gavel, color: 'text-gold', bg: 'bg-gold/10', border: 'border-gold/30' },
                     { href: '/predictions', label: 'Predictions', icon: Zap, color: 'text-emerald', bg: 'bg-emerald/10', border: 'border-emerald/30' },

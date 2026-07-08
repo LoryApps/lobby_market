@@ -734,6 +734,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'arguments-categories',
+    label: 'Arguments by Category',
+    sublabel: 'Best FOR & AGAINST arguments in each civic category — Economics, Tech, Ethics, and more',
+    href: '/arguments/categories',
+    icon: LayoutGrid,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+  },
+  {
+    type: 'link',
     id: 'discussions',
     label: 'Active Discussions',
     sublabel: 'Arguments with the most reply threads right now — filter by side, category, and time',

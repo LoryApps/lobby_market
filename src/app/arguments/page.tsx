@@ -12,6 +12,7 @@ import {
   FileEdit,
   Flame,
   GitBranch,
+  LayoutGrid,
   Loader2,
   MessageSquare,
   RefreshCw,
@@ -475,6 +476,13 @@ export default function ArgumentsPage() {
               >
                 <MessageSquare className="h-3 w-3" aria-hidden />
                 Discussions
+              </Link>
+              <Link
+                href="/arguments/categories"
+                className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald/10 border border-emerald/30 text-[11px] font-mono font-semibold text-emerald hover:bg-emerald/20 transition-colors flex-shrink-0"
+              >
+                <LayoutGrid className="h-3 w-3" aria-hidden />
+                By Category
               </Link>
               <Link
                 href="/word-cloud"
