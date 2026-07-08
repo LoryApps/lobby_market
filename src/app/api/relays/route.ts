@@ -57,6 +57,8 @@ export async function GET(req: NextRequest) {
   const supabase = await createClient()
   const { searchParams } = new URL(req.url)
   const statusFilter = (searchParams.get('status') ?? 'all') as StatusFilter
+  const topicId = searchParams.get('topic_id') ?? null
+  const sideFilter = searchParams.get('side') ?? 'all'
   const limit = Math.min(parseInt(searchParams.get('limit') ?? '20', 10), 50)
   const offset = parseInt(searchParams.get('offset') ?? '0', 10)
 
@@ -74,6 +76,12 @@ export async function GET(req: NextRequest) {
 
   if (statusFilter !== 'all') {
     query = query.eq('status', statusFilter)
+  }
+  if (topicId) {
+    query = query.eq('topic_id', topicId)
+  }
+  if (sideFilter === 'for' || sideFilter === 'against') {
+    query = query.eq('side', sideFilter)
   }
 
   const { data: rawRelays, count } = await query
