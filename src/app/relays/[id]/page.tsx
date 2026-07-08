@@ -49,6 +49,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     ? `A collaborative ${side} argument for "${topic.statement.slice(0, 80)}". ${legCount}/${relay.max_legs} legs contributed. Join the chain on Lobby Market.`
     : `A collaborative ${side} civic argument chain — ${legCount}/${relay.max_legs} legs contributed.`
 
+  const ogImageUrl = `/api/og/relay/${params.id}`
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://lobby.market'
+
   return {
     title,
     description,
@@ -57,11 +60,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description,
       type: 'article',
       siteName: 'Lobby Market',
+      images: [
+        {
+          url: `${siteUrl}${ogImageUrl}`,
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
     },
     twitter: {
-      card: 'summary',
+      card: 'summary_large_image',
       title,
       description,
+      images: [`${siteUrl}${ogImageUrl}`],
     },
     robots: { index: relay.status === 'open' ? 'noindex' : 'index' },
   }
