@@ -9,6 +9,7 @@ import {
   Check,
   ChevronRight,
   ExternalLink,
+  FileText,
   Gavel,
   GitMerge,
   Loader2,
@@ -373,6 +374,17 @@ export function RelayDetailClient() {
               Civic Relay
             </span>
           </div>
+          {/* Transcript link (only for complete/voted relays with legs) */}
+          {(relay?.status === 'complete' || relay?.status === 'voted') && (relay?.legs?.length ?? 0) > 0 && (
+            <Link
+              href={`/relays/${id}/transcript`}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-200 border border-surface-300 text-surface-500 hover:text-white hover:border-surface-400 transition-colors text-xs font-mono flex-shrink-0"
+              aria-label="Read relay as position paper"
+            >
+              <FileText className="h-3.5 w-3.5" />
+              Read
+            </Link>
+          )}
           <button
             onClick={handleCopy}
             aria-label="Copy link to this relay"
