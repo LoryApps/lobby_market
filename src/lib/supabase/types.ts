@@ -2318,7 +2318,14 @@ export type NotificationType =
   | "direct_message"
   | "new_topic_in_tag"
   | "streak_at_risk"
-  | "weekly_digest";
+  | "weekly_digest"
+  | "qa_question_answered"
+  | "qa_answer_accepted"
+  | "ama_question_answered"
+  | "ama_session_starting"
+  | "relay_leg_added"
+  | "relay_completed"
+  | "relay_voted";
 
 export type AchievementTier = "common" | "rare" | "epic" | "legendary";
 

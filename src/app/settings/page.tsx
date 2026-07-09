@@ -56,6 +56,7 @@ interface NotifPrefs {
   weekly_digest: boolean
   qa_notifications: boolean
   ama_notifications: boolean
+  relay_notifications: boolean
 }
 
 const DEFAULT_PREFS: NotifPrefs = {
@@ -72,6 +73,7 @@ const DEFAULT_PREFS: NotifPrefs = {
   weekly_digest: true,
   qa_notifications: true,
   ama_notifications: true,
+  relay_notifications: true,
 }
 
 function loadPrefs(): NotifPrefs {
@@ -572,6 +574,12 @@ export default function SettingsPage() {
                   description="When a host answers your AMA question or a session you RSVP'd to goes live"
                   checked={prefs.ama_notifications ?? true}
                   onChange={(v) => updatePref('ama_notifications', v)}
+                />
+                <SettingRow
+                  label="Relay notifications"
+                  description="When someone joins your relay chain, your relay completes, or gets voted on"
+                  checked={prefs.relay_notifications ?? true}
+                  onChange={(v) => updatePref('relay_notifications', v)}
                 />
               </div>
             </div>

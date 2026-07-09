@@ -11,12 +11,14 @@ import {
   Bookmark,
   Flame,
   Gavel,
+  GitMerge,
   Hash,
   Link2,
   MessageCircle,
   MessageSquare,
   Scale,
   Swords,
+  Trophy,
   TrendingUp,
   User,
   UserPlus,
@@ -26,6 +28,7 @@ import {
   Mic,
   Newspaper,
   Radio,
+  ThumbsUp,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
@@ -68,17 +71,21 @@ const typeConfig: Record<
   qa_answer_accepted:     { icon: CheckCircle,  color: 'text-emerald' },
   ama_question_answered:  { icon: Mic,          color: 'text-gold'    },
   ama_session_starting:   { icon: Radio,        color: 'text-gold'    },
+  relay_leg_added:        { icon: GitMerge,     color: 'text-for-400' },
+  relay_completed:        { icon: Trophy,       color: 'text-gold'    },
+  relay_voted:            { icon: ThumbsUp,     color: 'text-emerald' },
 }
 
 // ─── Filter tabs ──────────────────────────────────────────────────────────────
 
-type FilterTab = 'all' | 'unread' | 'social' | 'debates' | 'achievements' | 'qa' | 'ama'
+type FilterTab = 'all' | 'unread' | 'social' | 'debates' | 'achievements' | 'qa' | 'ama' | 'relays'
 
 const FILTER_TABS: { id: FilterTab; label: string }[] = [
   { id: 'all', label: 'All' },
   { id: 'unread', label: 'Unread' },
   { id: 'social', label: 'Social' },
   { id: 'debates', label: 'Debates' },
+  { id: 'relays', label: 'Relays' },
   { id: 'achievements', label: 'Achievements' },
   { id: 'qa', label: 'Q&A' },
   { id: 'ama', label: 'AMA' },
@@ -100,6 +107,8 @@ const ACHIEVEMENT_TYPES: NotificationType[] = ['achievement_earned']
 const QA_TYPES: NotificationType[] = ['qa_question_answered', 'qa_answer_accepted']
 
 const AMA_TYPES: NotificationType[] = ['ama_question_answered', 'ama_session_starting']
+
+const RELAY_TYPES: NotificationType[] = ['relay_leg_added', 'relay_completed', 'relay_voted']
 
 function filterNotifications(
   notifications: Notification[],
@@ -127,6 +136,10 @@ function filterNotifications(
     case 'ama':
       return notifications.filter((n) =>
         AMA_TYPES.includes(n.type as NotificationType)
+      )
+    case 'relays':
+      return notifications.filter((n) =>
+        RELAY_TYPES.includes(n.type as NotificationType)
       )
     default:
       return notifications
@@ -156,6 +169,8 @@ function buildHref(notification: Notification): string {
       return `/questions/${reference_id}`
     case 'ama_session':
       return `/ama/${reference_id}`
+    case 'relay':
+      return `/relays/${reference_id}`
     default:
       return '#'
   }
