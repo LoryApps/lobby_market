@@ -15,6 +15,7 @@ import {
   RefreshCw,
   ThumbsDown,
   ThumbsUp,
+  Trophy,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -538,8 +539,15 @@ export function RelaysClient() {
 
           <div className="flex items-center gap-2 flex-shrink-0">
             <Link
-              href="/relays/champions"
+              href="/relays/league"
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gold/10 border border-gold/30 text-gold hover:bg-gold/20 hover:border-gold/50 transition-colors text-xs font-mono"
+            >
+              <Trophy className="h-3.5 w-3.5" />
+              League
+            </Link>
+            <Link
+              href="/relays/champions"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-200 border border-surface-300 text-surface-400 hover:text-white hover:border-surface-400 transition-colors text-xs font-mono"
             >
               <Award className="h-3.5 w-3.5" />
               Champions
