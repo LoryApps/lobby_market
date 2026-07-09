@@ -2123,10 +2123,10 @@ const CHAPTERS: Chapter[] = [
 ]
 
 const STATS = [
-  { value: '355', label: 'chapters shipped' },
-  { value: '1011+', label: 'features built' },
-  { value: '112', label: 'DB migrations' },
-  { value: '620+', label: 'API routes' },
+  { value: '357', label: 'chapters shipped' },
+  { value: '1015+', label: 'features built' },
+  { value: '118', label: 'DB migrations' },
+  { value: '623+', label: 'API routes' },
 ]
 
 interface RecentBuild {
@@ -2139,6 +2139,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Relay Leg Stars & Champions Leaderboard',
+    description: 'New per-leg star upvotes for relay chains (Ch. 357) — citizens can now star individual legs in a civic relay to signal the strongest arguments in the chain. Each leg card shows a live star count and highlights legs you\'ve starred. Own-leg starring is blocked server-side. Backed by a new relay_leg_upvotes table (migration 00118) with a unique (leg_id, voter_id) constraint and DB triggers that maintain a denormalized upvote_count on relay_legs. New /api/relays/[id]/legs/[leg_id]/upvote POST endpoint toggles the star and returns the updated count. Also shipped: /relays/champions leaderboard with three tabs — Overall (composite score), Top Starters (compelling chains started), and Top Legs (stars received). Platform stat pills show total relays, total legs, and number of champions. "Champions" button added to the Relays browser header. /relays/champions added to sitemap.',
+    href: '/relays/champions',
+    icon: Star,
+    color: 'text-gold',
+    tag: 'Ch. 357',
+  },
   {
     title: 'Coalition Recruiting Board',
     description: 'New /coalitions/recruit page (Ch. 356) — a dedicated hiring board for civic alliances. Browse every coalition with open spots, filter by Most Active / Newest / Most Open / Smallest, and search by name or mission. Each card shows member capacity with a fill-bar, influence score, win rate, and stance count. Public coalitions offer a one-click "Join Coalition" button; private coalitions show "Request Access" which submits a coalition_join_request. Backed by a new /api/coalitions/recruit route that returns non-full coalitions enriched with creator profiles and stance counts. "Recruit" quick-link added to the Coalitions nav and ⌘K Command Palette. /coalitions/recruit added to sitemap.',

@@ -45,12 +45,25 @@ export async function GET(
     topic = t
   }
 
-  // Fetch legs with authors
+  // Fetch legs with authors and upvote counts
   const { data: legsRaw } = await supabase
     .from('relay_legs')
     .select('*, profiles:author_id(id, username, display_name, avatar_url, role)')
     .eq('relay_id', relayId)
     .order('leg_number', { ascending: true })
+
+  const legIds = (legsRaw ?? []).map((l) => l.id)
+
+  // Fetch which legs the current user has upvoted
+  let userUpvotedLegIds = new Set<string>()
+  if (user && legIds.length > 0) {
+    const { data: upvoteData } = await supabase
+      .from('relay_leg_upvotes')
+      .select('leg_id')
+      .in('leg_id', legIds)
+      .eq('voter_id', user.id)
+    userUpvotedLegIds = new Set((upvoteData ?? []).map((r) => r.leg_id))
+  }
 
   const legs: RelayLeg[] = (legsRaw ?? []).map((leg) => ({
     id: leg.id,
@@ -59,6 +72,8 @@ export async function GET(
     leg_number: leg.leg_number,
     content: leg.content,
     created_at: leg.created_at,
+    upvote_count: (leg as { upvote_count?: number }).upvote_count ?? 0,
+    user_upvoted: userUpvotedLegIds.has(leg.id),
     author: (leg as { profiles?: RelayLeg['author'] }).profiles ?? null,
   }))
 

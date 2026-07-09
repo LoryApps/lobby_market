@@ -12,6 +12,8 @@ export interface RelayLeg {
   leg_number: number
   content: string
   created_at: string
+  upvote_count: number
+  user_upvoted: boolean
   author: {
     id: string
     username: string
@@ -133,6 +135,8 @@ export async function GET(req: NextRequest) {
       leg_number: leg.leg_number,
       content: leg.content,
       created_at: leg.created_at,
+      upvote_count: (leg as { upvote_count?: number }).upvote_count ?? 0,
+      user_upvoted: false,
       author,
     }
     const arr = legsByRelay.get(leg.relay_id) ?? []

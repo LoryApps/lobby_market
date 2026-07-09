@@ -13,6 +13,7 @@ import {
   MessageSquare,
   Plus,
   Share2,
+  Star,
   ThumbsDown,
   ThumbsUp,
   Users,
@@ -89,9 +90,41 @@ function LegSteps({ total, filled }: { total: number; filled: number }) {
 
 // ─── Single leg card ──────────────────────────────────────────────────────────
 
-function LegCard({ leg, index, total, side }: { leg: RelayLeg; index: number; total: number; side: 'for' | 'against' }) {
+function LegCard({
+  leg,
+  index,
+  total,
+  side,
+  relayId,
+  canStar,
+}: {
+  leg: RelayLeg
+  index: number
+  total: number
+  side: 'for' | 'against'
+  relayId: string
+  canStar: boolean
+}) {
   const isLast = index === total - 1
   const lineColor = side === 'for' ? 'bg-for-500/40' : 'bg-against-500/40'
+  const [upvoted, setUpvoted] = useState(leg.user_upvoted)
+  const [upvoteCount, setUpvoteCount] = useState(leg.upvote_count)
+  const [starring, setStarring] = useState(false)
+
+  async function toggleStar() {
+    if (!canStar || starring) return
+    setStarring(true)
+    try {
+      const res = await fetch(`/api/relays/${relayId}/legs/${leg.id}/upvote`, { method: 'POST' })
+      if (res.ok) {
+        const json = await res.json()
+        setUpvoted(json.upvoted)
+        setUpvoteCount(json.upvote_count)
+      }
+    } finally {
+      setStarring(false)
+    }
+  }
 
   return (
     <motion.div
@@ -120,7 +153,7 @@ function LegCard({ leg, index, total, side }: { leg: RelayLeg; index: number; to
 
       {/* Content */}
       <div className="flex-1 pb-5">
-        <div className="flex items-center gap-2 mb-2">
+        <div className="flex items-center gap-2 mb-2 flex-wrap">
           {leg.author ? (
             <Link
               href={`/profile/${leg.author.username}`}
@@ -155,6 +188,25 @@ function LegCard({ leg, index, total, side }: { leg: RelayLeg; index: number; to
               CLOSER
             </span>
           )}
+
+          {/* Star upvote */}
+          <button
+            onClick={toggleStar}
+            disabled={!canStar || starring}
+            className={cn(
+              'ml-auto flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-mono transition-colors',
+              upvoted
+                ? 'border-gold/50 bg-gold/10 text-gold'
+                : canStar
+                ? 'border-surface-400/40 bg-surface-200/60 text-surface-500 hover:border-gold/40 hover:text-gold hover:bg-gold/5'
+                : 'border-surface-400/20 bg-surface-200/30 text-surface-600 cursor-default'
+            )}
+            aria-label={upvoted ? 'Remove star' : 'Star this leg'}
+            title={canStar ? (upvoted ? 'Remove star' : 'Star this leg') : 'Sign in to star'}
+          >
+            <Star className={cn('h-3 w-3', upvoted ? 'fill-gold text-gold' : '')} />
+            {upvoteCount > 0 && <span>{upvoteCount}</span>}
+          </button>
         </div>
         <div className="rounded-xl border border-surface-300 bg-surface-200/60 p-4">
           <p className="text-sm text-surface-700 leading-relaxed">{leg.content}</p>
@@ -550,6 +602,8 @@ export function RelayDetailClient({ relayId }: { relayId: string }) {
               index={i}
               total={relay.max_legs}
               side={relay.side}
+              relayId={relayId}
+              canStar={true}
             />
           ))}
 

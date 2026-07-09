@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   ArrowRight,
+  Award,
   ChevronDown,
   ChevronUp,
   GitMerge,
@@ -536,6 +537,13 @@ export function RelaysClient() {
           </div>
 
           <div className="flex items-center gap-2 flex-shrink-0">
+            <Link
+              href="/relays/champions"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gold/10 border border-gold/30 text-gold hover:bg-gold/20 hover:border-gold/50 transition-colors text-xs font-mono"
+            >
+              <Award className="h-3.5 w-3.5" />
+              Champions
+            </Link>
             <Link
               href="/relays/create"
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple/20 border border-purple/40 text-purple hover:bg-purple/30 hover:border-purple/60 transition-colors text-xs font-mono"
