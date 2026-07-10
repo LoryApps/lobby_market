@@ -20,10 +20,12 @@ import {
   Star,
   ThumbsDown,
   ThumbsUp,
+  UserPlus,
   Zap,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
+import { RelayInviteSheet } from '@/components/relay/RelayInviteSheet'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
 import type { RelayRow, RelayLeg } from '@/app/api/relays/route'
@@ -247,6 +249,9 @@ export function RelayDetailClient() {
   const [copied, setCopied] = useState(false)
   const copyTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
+  // Invite sheet state
+  const [inviteSheetOpen, setInviteSheetOpen] = useState(false)
+
   const fetchRelay = useCallback(async () => {
     setLoading(true)
     try {
@@ -388,6 +393,8 @@ export function RelayDetailClient() {
 
   const canVote = userId && !localVote && relay.status === 'complete'
 
+  const canInvite = userId && isAccepting && (relay.starter_id === userId || relay.user_has_leg)
+
   const charCount = legText.length
   const charColorCls =
     charCount > 280 ? 'text-against-400' : charCount > 250 ? 'text-gold' : 'text-surface-500'
@@ -441,6 +448,16 @@ export function RelayDetailClient() {
                 Read
               </Link>
             </>
+          )}
+          {canInvite && (
+            <button
+              onClick={() => setInviteSheetOpen(true)}
+              aria-label="Invite a collaborator to this relay"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-200 border border-surface-300 text-surface-500 hover:text-white hover:border-surface-400 transition-colors text-xs font-mono flex-shrink-0"
+            >
+              <UserPlus className="h-3.5 w-3.5" />
+              Invite
+            </button>
           )}
           <button
             onClick={handleCopy}
@@ -799,6 +816,16 @@ export function RelayDetailClient() {
       </main>
 
       <BottomNav />
+
+      {canInvite && (
+        <RelayInviteSheet
+          relayId={id}
+          relayTopicStatement={relay.topic_statement ?? undefined}
+          isFor={isFor}
+          open={inviteSheetOpen}
+          onClose={() => setInviteSheetOpen(false)}
+        />
+      )}
     </div>
   )
 }

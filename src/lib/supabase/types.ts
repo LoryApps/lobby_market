@@ -2325,7 +2325,8 @@ export type NotificationType =
   | "ama_session_starting"
   | "relay_leg_added"
   | "relay_completed"
-  | "relay_voted";
+  | "relay_voted"
+  | "relay_invitation";
 
 export type AchievementTier = "common" | "rare" | "epic" | "legendary";
 

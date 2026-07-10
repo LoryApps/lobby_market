@@ -74,6 +74,7 @@ const typeConfig: Record<
   relay_leg_added:        { icon: GitMerge,     color: 'text-for-400' },
   relay_completed:        { icon: Trophy,       color: 'text-gold'    },
   relay_voted:            { icon: ThumbsUp,     color: 'text-emerald' },
+  relay_invitation:       { icon: UserPlus,     color: 'text-purple'  },
 }
 
 // ─── Filter tabs ──────────────────────────────────────────────────────────────
@@ -108,7 +109,7 @@ const QA_TYPES: NotificationType[] = ['qa_question_answered', 'qa_answer_accepte
 
 const AMA_TYPES: NotificationType[] = ['ama_question_answered', 'ama_session_starting']
 
-const RELAY_TYPES: NotificationType[] = ['relay_leg_added', 'relay_completed', 'relay_voted']
+const RELAY_TYPES: NotificationType[] = ['relay_leg_added', 'relay_completed', 'relay_voted', 'relay_invitation']
 
 function filterNotifications(
   notifications: Notification[],
