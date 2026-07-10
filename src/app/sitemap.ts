@@ -188,6 +188,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/relays/showdown`, changeFrequency: 'always', priority: 0.78 },
   { url: `${BASE_URL}/relays/stats`, changeFrequency: 'hourly', priority: 0.72 },
   { url: `${BASE_URL}/relays/mine`, changeFrequency: 'daily', priority: 0.70 },
+  { url: `${BASE_URL}/relays/invitations`, changeFrequency: 'always', priority: 0.65 },
   { url: `${BASE_URL}/relays/champions`, changeFrequency: 'hourly', priority: 0.72 },
   { url: `${BASE_URL}/relays/top-legs`, changeFrequency: 'hourly', priority: 0.72 },
   { url: `${BASE_URL}/relays/categories`, changeFrequency: 'daily', priority: 0.70 },

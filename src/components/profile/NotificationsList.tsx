@@ -153,6 +153,7 @@ function buildHref(notification: Notification): string {
   const { reference_id, reference_type, type } = notification
   if (!reference_id) return '#'
   if (type === 'direct_message') return '/messages'
+  if (type === 'relay_invitation') return '/relays/invitations'
   switch (reference_type) {
     case 'topic':
       return `/topic/${reference_id}`

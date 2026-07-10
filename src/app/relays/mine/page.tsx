@@ -15,6 +15,7 @@ import {
   ThumbsDown,
   ThumbsUp,
   Trophy,
+  UserPlus,
   Users,
   Zap,
 } from 'lucide-react'
@@ -412,6 +413,11 @@ export default function MyRelaysPage() {
           <span className="text-surface-600">·</span>
           <Link href="/relays/create" className="text-for-400 hover:text-for-300 transition-colors">
             + New relay
+          </Link>
+          <span className="text-surface-600">·</span>
+          <Link href="/relays/invitations" className="inline-flex items-center gap-1 text-purple hover:text-purple/80 transition-colors">
+            <UserPlus className="h-3 w-3" />
+            Invitations
           </Link>
         </div>
 
