@@ -77,6 +77,7 @@ import {
   Play,
   Database,
   Server,
+  ShieldAlert,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -2123,10 +2124,10 @@ const CHAPTERS: Chapter[] = [
 ]
 
 const STATS = [
-  { value: '357', label: 'chapters shipped' },
-  { value: '1015+', label: 'features built' },
+  { value: '358', label: 'chapters shipped' },
+  { value: '1020+', label: 'features built' },
   { value: '118', label: 'DB migrations' },
-  { value: '623+', label: 'API routes' },
+  { value: '625+', label: 'API routes' },
 ]
 
 interface RecentBuild {
@@ -2139,6 +2140,14 @@ interface RecentBuild {
 }
 
 const RECENT_BUILDS: RecentBuild[] = [
+  {
+    title: 'Relay Leg Stars in /relays/[id] + Uncontested Relays Page',
+    description: 'Ch. 358: Two relay-system enhancements. (1) Per-leg star upvotes wired into /relays/[id] — the relay detail page all browser links point to. Adds star/unstar toggle per leg with live count, gold highlight when starred, and spinner feedback. Calls /api/relays/[id]/legs/[leg_id]/upvote; blocks own-leg starring client-side. (2) New /relays/uncontested page — surfaces topics where only one side (FOR or AGAINST) has a completed relay chain. Algorithm: fetch all complete/voted relays → build topic→sides map → filter to single-side topics. Filter tabs for missing side (all/for/against), sort modes (votes/newest/compelling), category pills, and load-more pagination. Each card shows the existing relay summary (starter avatar, leg count, compelling %) plus a CTA "Start the FOR/AGAINST Relay" linking to /relays/create pre-filled with topic and side. New /api/relays/uncontested route. "Uncontested" nav button added to Relays browser header and ⌘K Command Palette. /relays/uncontested + other relay sub-pages added to sitemap.',
+    href: '/relays/uncontested',
+    icon: ShieldAlert,
+    color: 'text-against-400',
+    tag: 'Ch. 358',
+  },
   {
     title: 'Relay Leg Stars & Champions Leaderboard',
     description: 'New per-leg star upvotes for relay chains (Ch. 357) — citizens can now star individual legs in a civic relay to signal the strongest arguments in the chain. Each leg card shows a live star count and highlights legs you\'ve starred. Own-leg starring is blocked server-side. Backed by a new relay_leg_upvotes table (migration 00118) with a unique (leg_id, voter_id) constraint and DB triggers that maintain a denormalized upvote_count on relay_legs. New /api/relays/[id]/legs/[leg_id]/upvote POST endpoint toggles the star and returns the updated count. Also shipped: /relays/champions leaderboard with three tabs — Overall (composite score), Top Starters (compelling chains started), and Top Legs (stars received). Platform stat pills show total relays, total legs, and number of champions. "Champions" button added to the Relays browser header. /relays/champions added to sitemap.',

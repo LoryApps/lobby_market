@@ -16,6 +16,7 @@ import {
   MessageSquarePlus,
   RefreshCw,
   Share2,
+  Star,
   ThumbsDown,
   ThumbsUp,
   Zap,
@@ -63,12 +64,35 @@ function LegCard({
   legNumber,
   isFor,
   isLast,
+  relayId,
+  canStar,
 }: {
   leg: RelayLeg
   legNumber: number
   isFor: boolean
   isLast: boolean
+  relayId: string
+  canStar: boolean
 }) {
+  const [upvoted, setUpvoted] = useState(leg.user_upvoted)
+  const [upvoteCount, setUpvoteCount] = useState(leg.upvote_count)
+  const [starring, setStarring] = useState(false)
+
+  async function toggleStar() {
+    if (!canStar || starring) return
+    setStarring(true)
+    try {
+      const res = await fetch(`/api/relays/${relayId}/legs/${leg.id}/upvote`, { method: 'POST' })
+      if (res.ok) {
+        const json = await res.json()
+        setUpvoted(json.upvoted)
+        setUpvoteCount(json.upvote_count)
+      }
+    } finally {
+      setStarring(false)
+    }
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 8 }}
@@ -117,6 +141,28 @@ function LegCard({
           <span className="text-[11px] font-mono text-surface-600">
             {relativeTime(leg.created_at)}
           </span>
+
+          {/* Star upvote */}
+          <button
+            onClick={toggleStar}
+            disabled={!canStar || starring}
+            className={cn(
+              'ml-auto flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-mono transition-colors',
+              upvoted
+                ? 'border-gold/50 bg-gold/10 text-gold'
+                : canStar
+                ? 'border-surface-400/40 bg-surface-200/60 text-surface-500 hover:border-gold/40 hover:text-gold hover:bg-gold/5'
+                : 'border-surface-400/20 bg-surface-200/30 text-surface-600 cursor-default'
+            )}
+            aria-label={upvoted ? 'Remove star' : 'Star this leg'}
+            title={canStar ? (upvoted ? 'Remove star' : 'Star this leg') : 'Sign in to star'}
+          >
+            {starring
+              ? <Loader2 className="h-3 w-3 animate-spin" />
+              : <Star className={cn('h-3 w-3', upvoted ? 'fill-gold text-gold' : '')} />
+            }
+            {upvoteCount > 0 && <span>{upvoteCount}</span>}
+          </button>
         </div>
 
         {/* Argument text */}
@@ -483,6 +529,8 @@ export function RelayDetailClient() {
               legNumber={leg.leg_number}
               isFor={isFor}
               isLast={i === relay.legs.length - 1 && openSlots === 0}
+              relayId={relay.id}
+              canStar={userId !== null && leg.author_id !== userId}
             />
           ))}
 

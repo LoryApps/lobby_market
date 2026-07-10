@@ -13,6 +13,7 @@ import {
   Loader2,
   MessageSquarePlus,
   RefreshCw,
+  ShieldAlert,
   Star,
   ThumbsDown,
   ThumbsUp,
@@ -581,6 +582,13 @@ function RelaysInner() {
             >
               <Star className="h-3.5 w-3.5" />
               Top Legs
+            </Link>
+            <Link
+              href="/relays/uncontested"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-against-900/40 border border-against-700/30 text-against-400 hover:text-against-300 hover:border-against-600/50 transition-colors text-xs font-mono"
+            >
+              <ShieldAlert className="h-3.5 w-3.5" />
+              Uncontested
             </Link>
             <Link
               href="/relays/create"
