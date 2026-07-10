@@ -1,8 +1,8 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { Suspense, useCallback, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   ArrowRight,
@@ -472,8 +472,10 @@ const FILTER_TABS: { id: StatusFilter; label: string }[] = [
 
 // ─── Main export ──────────────────────────────────────────────────────────────
 
-export function RelaysClient() {
+function RelaysInner() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const categoryParam = searchParams.get('category') ?? null
   const [data, setData] = useState<RelaysResponse | null>(null)
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<StatusFilter>('all')
@@ -482,7 +484,10 @@ export function RelaysClient() {
   const load = useCallback(async (status: StatusFilter = filter) => {
     setLoading(true)
     try {
-      const params = status === 'all' ? '' : `?status=${status}`
+      const sp = new URLSearchParams()
+      if (status !== 'all') sp.set('status', status)
+      if (categoryParam) sp.set('category', categoryParam)
+      const params = sp.toString() ? `?${sp.toString()}` : ''
       const res = await fetch(`/api/relays${params}`, { cache: 'no-store' })
       if (res.status === 401) {
         router.push('/login')
@@ -497,7 +502,7 @@ export function RelaysClient() {
     } finally {
       setLoading(false)
     }
-  }, [filter, router])
+  }, [filter, router, categoryParam])
 
   useEffect(() => {
     async function getUser() {
@@ -532,8 +537,18 @@ export function RelaysClient() {
             <div>
               <h1 className="font-mono text-2xl font-bold text-white">Civic Relays</h1>
               <p className="text-sm font-mono text-surface-500 mt-0.5">
-                Collaborative argument chains built leg by leg
+                {categoryParam
+                  ? <><span className="text-purple">{categoryParam}</span> relay chains</>
+                  : 'Collaborative argument chains built leg by leg'}
               </p>
+              {categoryParam && (
+                <Link
+                  href="/relays"
+                  className="inline-flex items-center gap-1 text-[10px] font-mono text-surface-500 hover:text-white transition-colors mt-0.5"
+                >
+                  ← All categories
+                </Link>
+              )}
             </div>
           </div>
 
@@ -544,6 +559,13 @@ export function RelaysClient() {
             >
               <Trophy className="h-3.5 w-3.5" />
               League
+            </Link>
+            <Link
+              href="/relays/categories"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-200 border border-surface-300 text-surface-400 hover:text-white hover:border-surface-400 transition-colors text-xs font-mono"
+            >
+              <GitMerge className="h-3.5 w-3.5" />
+              By Category
             </Link>
             <Link
               href="/relays/champions"
@@ -653,5 +675,13 @@ export function RelaysClient() {
 
       <BottomNav />
     </div>
+  )
+}
+
+export function RelaysClient() {
+  return (
+    <Suspense>
+      <RelaysInner />
+    </Suspense>
   )
 }

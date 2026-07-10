@@ -61,12 +61,24 @@ export async function GET(req: NextRequest) {
   const statusFilter = (searchParams.get('status') ?? 'all') as StatusFilter
   const topicId = searchParams.get('topic_id') ?? null
   const sideFilter = searchParams.get('side') ?? 'all'
+  const categoryFilter = searchParams.get('category') ?? null
   const limit = Math.min(parseInt(searchParams.get('limit') ?? '20', 10), 50)
   const offset = parseInt(searchParams.get('offset') ?? '0', 10)
 
   const {
     data: { user },
   } = await supabase.auth.getUser()
+
+  // ─── Resolve category filter to topic IDs ────────────────────────────────
+
+  let categoryTopicIds: string[] | null = null
+  if (categoryFilter) {
+    const { data: catTopics } = await supabase
+      .from('topics')
+      .select('id')
+      .eq('category', categoryFilter)
+    categoryTopicIds = (catTopics ?? []).map((t) => t.id)
+  }
 
   // ─── Fetch relays ─────────────────────────────────────────────────────────
 
@@ -84,6 +96,12 @@ export async function GET(req: NextRequest) {
   }
   if (sideFilter === 'for' || sideFilter === 'against') {
     query = query.eq('side', sideFilter)
+  }
+  if (categoryTopicIds !== null) {
+    if (categoryTopicIds.length === 0) {
+      return NextResponse.json({ relays: [], total: 0 } satisfies RelaysResponse)
+    }
+    query = query.in('topic_id', categoryTopicIds)
   }
 
   const { data: rawRelays, count } = await query
