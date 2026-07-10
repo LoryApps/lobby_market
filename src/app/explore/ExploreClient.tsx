@@ -239,6 +239,7 @@ const SECTIONS: FeatureSection[] = [
     features: [
       { href: '/relays', label: 'Relay Browser', description: 'Browse all open relay chains — find ones where your voice can add the next leg.', icon: Link2, isNew: true },
       { href: '/relays/create', label: 'Start a Relay', description: 'Kick off a new collaborative argument chain on any active civic topic.', icon: GitBranch, isNew: true },
+      { href: '/relays/weekly', label: 'Relay of the Week', description: "This week's champion relay chain — the community's most compelling collaborative argument, updated every week.", icon: Crown, isNew: true },
       { href: '/relays/league', label: 'Relay League', description: 'Competitive relay standings — teams of debaters building the strongest argument chains.', icon: Trophy, isNew: true },
       { href: '/relays/showdown', label: 'Relay Showdown', description: 'Head-to-head relay battles where FOR and AGAINST chains go head-to-head for community votes.', icon: Swords, isNew: true },
       { href: '/relays/stats', label: 'Relay Stats', description: 'Platform-wide relay analytics — completions, leg counts, and top contributors.', icon: BarChart2, isNew: true },

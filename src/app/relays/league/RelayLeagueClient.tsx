@@ -541,6 +541,13 @@ export function RelayLeagueClient() {
                   Start a relay
                 </Link>
                 <Link
+                  href="/relays/weekly"
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gold/10 border border-gold/30 text-gold text-sm font-mono font-semibold hover:bg-gold/20 transition-colors"
+                >
+                  <Crown className="h-4 w-4" />
+                  Relay of the Week
+                </Link>
+                <Link
                   href="/relays"
                   className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-surface-200 border border-surface-300 text-white text-sm font-mono font-semibold hover:bg-surface-300 transition-colors"
                 >
