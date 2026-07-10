@@ -25,6 +25,7 @@ import {
   ThumbsDown,
   HelpCircle,
   CheckCircle2,
+  GitMerge,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -45,7 +46,7 @@ const SEARCH_SIGNAL_ICONS: Record<string, typeof TrendingUp> = {
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type Tab = 'topics' | 'laws' | 'people' | 'arguments' | 'questions'
+type Tab = 'topics' | 'laws' | 'people' | 'arguments' | 'questions' | 'relays'
 
 interface TopicResult {
   id: string
@@ -121,6 +122,30 @@ interface QuestionResult {
   } | null
 }
 
+interface RelayResult {
+  id: string
+  side: 'for' | 'against'
+  status: 'complete' | 'voted'
+  max_legs: number
+  vote_compelling: number
+  vote_not_compelling: number
+  completed_at: string | null
+  created_at: string
+  topic: {
+    id: string
+    statement: string
+    category: string | null
+    status: string
+  } | null
+  starter: {
+    id: string
+    username: string
+    display_name: string | null
+    avatar_url: string | null
+    role: string
+  } | null
+}
+
 interface SuggestedUser {
   id: string
   username: string
@@ -139,7 +164,7 @@ interface TrendingData {
   recentLaws: { id: string; statement: string; category: string | null; established_at: string }[]
 }
 
-type SearchResult = TopicResult | LawResult | PersonResult | ArgumentResult | QuestionResult
+type SearchResult = TopicResult | LawResult | PersonResult | ArgumentResult | QuestionResult | RelayResult
 
 // ─── Config ───────────────────────────────────────────────────────────────────
 
@@ -152,6 +177,7 @@ const tabs: { id: Tab; label: string; icon: typeof FileText }[] = [
   { id: 'people',    label: 'People',    icon: Users },
   { id: 'arguments', label: 'Arguments', icon: MessageSquare },
   { id: 'questions', label: 'Q&A',       icon: HelpCircle },
+  { id: 'relays',    label: 'Relays',    icon: GitMerge },
 ]
 
 const statusBadge: Record<string, 'proposed' | 'active' | 'law' | 'failed'> = {
@@ -250,8 +276,8 @@ function SearchFilters({
         <span>Filter</span>
       </div>
 
-      {/* Category picker — not shown for arguments (filter by topic side instead) */}
-      {tab !== 'arguments' && (
+      {/* Category picker — not shown for arguments or relays (filter by topic side instead) */}
+      {tab !== 'arguments' && tab !== 'relays' && (
         <div className="relative">
           <button
             onClick={() => setCategoryOpen((o) => !o)}
@@ -346,8 +372,8 @@ function SearchFilters({
         </div>
       )}
 
-      {/* Side filter pills — arguments tab only */}
-      {tab === 'arguments' && (
+      {/* Side filter pills — arguments and relays tabs */}
+      {(tab === 'arguments' || tab === 'relays') && (
         <div className="flex items-center gap-1.5" role="group" aria-label="Filter by side">
           <button
             onClick={() => onSide(sideFilter === 'for' ? null : 'for')}
@@ -729,6 +755,96 @@ function QuestionRow({ item }: { item: QuestionResult }) {
   )
 }
 
+// ─── Relay result row ─────────────────────────────────────────────────────────
+
+function RelayRow({ item }: { item: RelayResult }) {
+  const isFor = item.side === 'for'
+  const totalVotes = (item.vote_compelling ?? 0) + (item.vote_not_compelling ?? 0)
+  const compellingPct = totalVotes > 0 ? Math.round((item.vote_compelling / totalVotes) * 100) : null
+
+  return (
+    <Link
+      href={`/relays/${item.id}`}
+      className={cn(
+        'block p-4 rounded-xl',
+        'bg-surface-100 border transition-colors group',
+        isFor
+          ? 'border-for-500/20 hover:border-for-500/40'
+          : 'border-against-500/20 hover:border-against-500/40'
+      )}
+    >
+      {/* Side + starter + meta */}
+      <div className="flex items-center gap-2 mb-2.5">
+        <span
+          className={cn(
+            'inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-mono font-bold border flex-shrink-0',
+            isFor
+              ? 'bg-for-500/10 border-for-500/30 text-for-400'
+              : 'bg-against-500/10 border-against-500/30 text-against-400'
+          )}
+        >
+          <GitMerge className="h-2.5 w-2.5" aria-hidden="true" />
+          {isFor ? 'FOR' : 'AGAINST'}
+        </span>
+
+        {item.starter && (
+          <div className="flex items-center gap-1.5 min-w-0">
+            <Avatar
+              src={item.starter.avatar_url}
+              fallback={item.starter.display_name || item.starter.username}
+              size="xs"
+            />
+            <span className="text-xs text-surface-500 truncate">
+              {item.starter.display_name || item.starter.username}
+            </span>
+          </div>
+        )}
+
+        <div className="ml-auto flex items-center gap-2 flex-shrink-0">
+          {compellingPct !== null && (
+            <span className="text-xs font-mono text-emerald">{compellingPct}% compelling</span>
+          )}
+          {item.completed_at && (
+            <span className="text-[10px] font-mono text-surface-600">
+              {relativeTime(item.completed_at)}
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* Topic statement */}
+      {item.topic && (
+        <div className={cn(
+          'flex items-start gap-1.5 rounded-lg px-2.5 py-2 border mb-2',
+          isFor
+            ? 'bg-for-500/5 border-for-500/15'
+            : 'bg-against-500/5 border-against-500/15'
+        )}>
+          <FileText className="h-3 w-3 text-surface-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
+          <span className="text-[11px] text-surface-400 line-clamp-2 leading-snug group-hover:text-white transition-colors">
+            {item.topic.statement}
+          </span>
+        </div>
+      )}
+
+      {/* Stats footer */}
+      <div className="flex items-center gap-3">
+        <span className="text-[11px] font-mono text-surface-600">
+          <span className="text-surface-400">{item.max_legs}</span> leg{item.max_legs !== 1 ? 's' : ''}
+        </span>
+        {totalVotes > 0 && (
+          <span className="text-[11px] font-mono text-surface-600">
+            <span className="text-surface-400">{totalVotes}</span> vote{totalVotes !== 1 ? 's' : ''}
+          </span>
+        )}
+        {item.topic?.category && (
+          <span className="text-[11px] font-mono text-surface-600 ml-auto">{item.topic.category}</span>
+        )}
+      </div>
+    </Link>
+  )
+}
+
 // ─── Suggested person card (with inline follow button) ───────────────────────
 
 function SuggestPersonCard({ user }: { user: SuggestedUser }) {
@@ -1091,6 +1207,7 @@ function EmptyState({ query, tab }: { query: string; tab: Tab }) {
     people:    'No people match your search.',
     arguments: 'No arguments match your search.',
     questions: 'No questions match your search.',
+    relays:    'No relay chains match your search.',
   }
   return (
     <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
@@ -1248,7 +1365,7 @@ function SearchContent() {
               onChange={(e) => setQuery(e.target.value)}
               onBlur={commitQuery}
               onKeyDown={(e) => { if (e.key === 'Enter') { commitQuery(); inputRef.current?.blur() } }}
-              placeholder="Search topics, laws, people, arguments, questions..."
+              placeholder="Search topics, laws, people, arguments, relays..."
               aria-label="Search"
               className={cn(
                 'w-full h-10 pl-9 pr-4 rounded-xl',
@@ -1338,6 +1455,9 @@ function SearchContent() {
                 }
                 if (activeTab === 'questions') {
                   return <QuestionRow key={item.id} item={item as QuestionResult} />
+                }
+                if (activeTab === 'relays') {
+                  return <RelayRow key={item.id} item={item as RelayResult} />
                 }
                 return <PersonRow key={item.id} item={item as PersonResult} />
               })

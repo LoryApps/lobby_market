@@ -237,5 +237,65 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ results: data ?? [], engine: 'ilike' })
   }
 
+  // ── Relays ───────────────────────────────────────────────────────────────────
+  // Searches completed relay chains by topic statement or starter name.
+
+  if (tab === 'relays') {
+    const dbSide = side === 'for' ? 'for' : side === 'against' ? 'against' : null
+
+    // Collect topic IDs and starter IDs matching the query in parallel
+    const [topicRes, profileRes] = await Promise.all([
+      supabase
+        .from('topics')
+        .select('id')
+        .ilike('statement', pattern)
+        .limit(50),
+      supabase
+        .from('profiles')
+        .select('id')
+        .or(`username.ilike.${pattern},display_name.ilike.${pattern}`)
+        .limit(50),
+    ])
+
+    const topicIds = (topicRes.data ?? []).map((t) => t.id as string)
+    const starterIds = (profileRes.data ?? []).map((p) => p.id as string)
+
+    if (topicIds.length === 0 && starterIds.length === 0) {
+      return NextResponse.json({ results: [], engine: 'ilike' })
+    }
+
+    let query = supabase
+      .from('civic_relays')
+      .select(`
+        id,
+        side,
+        status,
+        max_legs,
+        vote_compelling,
+        vote_not_compelling,
+        completed_at,
+        created_at,
+        topic:topics!topic_id(id, statement, category, status),
+        starter:profiles!starter_id(id, username, display_name, avatar_url, role)
+      `)
+      .in('status', ['complete', 'voted'])
+      .order('completed_at', { ascending: false })
+      .limit(20)
+
+    if (topicIds.length > 0 && starterIds.length > 0) {
+      query = query.or(`topic_id.in.(${topicIds.join(',')}),starter_id.in.(${starterIds.join(',')})`)
+    } else if (topicIds.length > 0) {
+      query = query.in('topic_id', topicIds)
+    } else {
+      query = query.in('starter_id', starterIds)
+    }
+
+    if (dbSide) query = query.eq('side', dbSide)
+
+    const { data, error } = await query
+    if (error) return NextResponse.json({ error: 'Search failed' }, { status: 500 })
+    return NextResponse.json({ results: data ?? [], engine: 'ilike' })
+  }
+
   return NextResponse.json({ results: [] })
 }
