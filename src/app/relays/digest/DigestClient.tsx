@@ -19,6 +19,7 @@ import { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
+  Activity,
   ArrowRight,
   Award,
   BarChart2,
@@ -603,6 +604,7 @@ export function DigestClient() {
                 <div className="grid grid-cols-2 gap-2">
                   {[
                     { href: '/relays', label: 'All Relays', icon: GitMerge },
+                    { href: '/relays/pulse', label: 'Live Pulse', icon: Activity },
                     { href: '/relays/for-you', label: 'For You', icon: Zap },
                     { href: '/relays/hall-of-fame', label: 'Hall of Fame', icon: Trophy },
                     { href: '/relays/league', label: 'Weekly League', icon: Award },

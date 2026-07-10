@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
+  Activity,
   ArrowRight,
   Award,
   ChevronDown,
@@ -556,6 +557,13 @@ function RelaysInner() {
           </div>
 
           <div className="flex items-center gap-2 flex-shrink-0">
+            <Link
+              href="/relays/pulse"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald/10 border border-emerald/30 text-emerald hover:bg-emerald/20 hover:border-emerald/50 transition-colors text-xs font-mono"
+            >
+              <Activity className="h-3.5 w-3.5" />
+              Pulse
+            </Link>
             <Link
               href="/relays/for-you"
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple/20 border border-purple/30 text-purple hover:bg-purple/30 hover:border-purple/50 transition-colors text-xs font-mono"
