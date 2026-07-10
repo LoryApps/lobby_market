@@ -17,6 +17,7 @@ import { SetupChecklist } from '@/components/feed/SetupChecklist'
 import { FeedInsightStrip } from '@/components/feed/FeedInsightStrip'
 import { QuestionFeedCard } from '@/components/feed/QuestionFeedCard'
 import { FeedFilters } from '@/components/feed/FeedFilters'
+import { RelaySpotlightCard } from '@/components/feed/RelaySpotlightCard'
 import { LivePlatformBanner } from '@/components/feed/LivePlatformBanner'
 import { PersonalDailyBar } from '@/components/feed/PersonalDailyBar'
 import { DebateCountdownBanner } from '@/components/debate/DebateCountdownBanner'
@@ -910,6 +911,12 @@ export function FeedContainer() {
             {(index + 1) % 5 === 0 && (
               <ErrorBoundary size="xs">
                 <QuestionFeedCard slotIndex={Math.floor((index + 1) / 5)} />
+              </ErrorBoundary>
+            )}
+            {/* Inject a relay spotlight card after every 12th topic */}
+            {(index + 1) % 12 === 0 && (
+              <ErrorBoundary size="xs">
+                <RelaySpotlightCard />
               </ErrorBoundary>
             )}
           </div>
