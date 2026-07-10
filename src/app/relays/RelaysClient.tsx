@@ -14,6 +14,7 @@ import {
   MessageSquarePlus,
   RefreshCw,
   ShieldAlert,
+  Sparkles,
   Star,
   ThumbsDown,
   ThumbsUp,
@@ -555,6 +556,13 @@ function RelaysInner() {
           </div>
 
           <div className="flex items-center gap-2 flex-shrink-0">
+            <Link
+              href="/relays/for-you"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple/20 border border-purple/30 text-purple hover:bg-purple/30 hover:border-purple/50 transition-colors text-xs font-mono"
+            >
+              <Sparkles className="h-3.5 w-3.5" />
+              For You
+            </Link>
             <Link
               href="/relays/league"
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gold/10 border border-gold/30 text-gold hover:bg-gold/20 hover:border-gold/50 transition-colors text-xs font-mono"
