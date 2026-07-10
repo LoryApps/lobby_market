@@ -890,6 +890,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                       Scorecard
                     </Link>
                     <Link
+                      href={`/topic/${topic.id}/report`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-surface-400 hover:text-white transition-colors"
+                    >
+                      <FileText className="h-3.5 w-3.5" />
+                      Civic Report
+                    </Link>
+                    <Link
                       href={`/topic/${topic.id}/swing`}
                       className="inline-flex items-center gap-1.5 text-xs font-mono text-against-300 hover:text-against-200 transition-colors"
                     >
