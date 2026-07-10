@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   ArrowLeft,
+  BarChart2,
   Check,
   ChevronRight,
   ExternalLink,
@@ -420,16 +421,26 @@ export function RelayDetailClient() {
               Civic Relay
             </span>
           </div>
-          {/* Transcript link (only for complete/voted relays with legs) */}
+          {/* Transcript + Scorecard links (only for complete/voted relays with legs) */}
           {(relay?.status === 'complete' || relay?.status === 'voted') && (relay?.legs?.length ?? 0) > 0 && (
-            <Link
-              href={`/relays/${id}/transcript`}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-200 border border-surface-300 text-surface-500 hover:text-white hover:border-surface-400 transition-colors text-xs font-mono flex-shrink-0"
-              aria-label="Read relay as position paper"
-            >
-              <FileText className="h-3.5 w-3.5" />
-              Read
-            </Link>
+            <>
+              <Link
+                href={`/relays/${id}/scorecard`}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-200 border border-surface-300 text-surface-500 hover:text-white hover:border-surface-400 transition-colors text-xs font-mono flex-shrink-0"
+                aria-label="View relay scorecard"
+              >
+                <BarChart2 className="h-3.5 w-3.5" />
+                Score
+              </Link>
+              <Link
+                href={`/relays/${id}/transcript`}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-200 border border-surface-300 text-surface-500 hover:text-white hover:border-surface-400 transition-colors text-xs font-mono flex-shrink-0"
+                aria-label="Read relay as position paper"
+              >
+                <FileText className="h-3.5 w-3.5" />
+                Read
+              </Link>
+            </>
           )}
           <button
             onClick={handleCopy}
@@ -755,6 +766,18 @@ export function RelayDetailClient() {
               All Relays
             </Link>
             <span className="text-surface-600">·</span>
+            {(relay.status === 'complete' || relay.status === 'voted') && (
+              <>
+                <Link
+                  href={`/relays/${id}/scorecard`}
+                  className="text-xs font-mono text-gold hover:text-gold/80 transition-colors flex items-center gap-1"
+                >
+                  <BarChart2 className="h-3 w-3" />
+                  Scorecard
+                </Link>
+                <span className="text-surface-600">·</span>
+              </>
+            )}
             <Link
               href="/relays/create"
               className="text-xs font-mono text-purple hover:text-purple/80 transition-colors flex items-center gap-1"

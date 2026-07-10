@@ -390,7 +390,7 @@ function ShowdownCard({ pair, initialExpand = false }: { pair: ShowdownPair; ini
           Full AGAINST relay →
         </Link>
       </div>
-      <div className="flex items-center gap-3 px-4 pb-4">
+      <div className="flex items-center gap-3 px-4 pb-2">
         <Link
           href={`/relays/${forRelay.id}/transcript`}
           className="flex-1 text-center py-1.5 rounded-xl border border-surface-400/20 text-surface-500 text-[11px] font-mono hover:text-for-300 hover:border-for-500/20 transition-colors"
@@ -402,6 +402,20 @@ function ShowdownCard({ pair, initialExpand = false }: { pair: ShowdownPair; ini
           className="flex-1 text-center py-1.5 rounded-xl border border-surface-400/20 text-surface-500 text-[11px] font-mono hover:text-against-300 hover:border-against-500/20 transition-colors"
         >
           Read AGAINST transcript
+        </Link>
+      </div>
+      <div className="flex items-center gap-3 px-4 pb-4">
+        <Link
+          href={`/relays/${forRelay.id}/scorecard`}
+          className="flex-1 text-center py-1.5 rounded-xl border border-gold/20 text-gold/70 text-[11px] font-mono hover:text-gold hover:border-gold/40 transition-colors"
+        >
+          FOR scorecard
+        </Link>
+        <Link
+          href={`/relays/${againstRelay.id}/scorecard`}
+          className="flex-1 text-center py-1.5 rounded-xl border border-gold/20 text-gold/70 text-[11px] font-mono hover:text-gold hover:border-gold/40 transition-colors"
+        >
+          AGAINST scorecard
         </Link>
       </div>
     </div>
