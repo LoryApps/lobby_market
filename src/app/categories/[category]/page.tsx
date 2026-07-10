@@ -95,6 +95,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const name = CANONICAL_CATEGORIES[params.category.toLowerCase()]
   if (!name) return { title: 'Category · Lobby Market' }
 
+  const ogImageUrl = `/api/og/category/${params.category}`
+
   return {
     title: `${name} · Lobby Market`,
     description: `Browse all ${name} debates, laws, and proposals on Lobby Market.`,
@@ -103,6 +105,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       description: `Explore ${name} topics — proposed, active, and established as law.`,
       type: 'website',
       siteName: 'Lobby Market',
+      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: `${name} category on Lobby Market` }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${name} Debates · Lobby Market`,
+      description: `Explore ${name} topics — proposed, active, and established as law.`,
+      images: [ogImageUrl],
     },
   }
 }
