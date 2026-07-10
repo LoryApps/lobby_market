@@ -262,7 +262,7 @@ export function RelaySpotlightCard() {
       {/* Subtle "Browse all relays" link */}
       <div className="flex justify-end mt-1 pr-1">
         <Link
-          href="/relay"
+          href="/relays"
           className="text-[10px] font-mono text-surface-500 hover:text-surface-700 transition-colors flex items-center gap-0.5"
           tabIndex={-1}
         >
