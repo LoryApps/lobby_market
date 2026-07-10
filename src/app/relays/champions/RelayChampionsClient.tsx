@@ -337,6 +337,11 @@ export function RelayChampionsClient() {
                 <Users className="h-3.5 w-3.5" />
                 My Relays
               </Link>
+              <span className="text-surface-700">·</span>
+              <Link href="/relays/top-legs" className="hover:text-gold transition-colors flex items-center gap-1">
+                <Star className="h-3.5 w-3.5" />
+                Top Legs
+              </Link>
             </div>
           </>
         )}

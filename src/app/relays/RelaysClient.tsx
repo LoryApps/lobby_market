@@ -13,6 +13,7 @@ import {
   Loader2,
   MessageSquarePlus,
   RefreshCw,
+  Star,
   ThumbsDown,
   ThumbsUp,
   Trophy,
@@ -573,6 +574,13 @@ function RelaysInner() {
             >
               <Award className="h-3.5 w-3.5" />
               Champions
+            </Link>
+            <Link
+              href="/relays/top-legs"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gold/10 border border-gold/20 text-gold/80 hover:text-gold hover:border-gold/40 transition-colors text-xs font-mono"
+            >
+              <Star className="h-3.5 w-3.5" />
+              Top Legs
             </Link>
             <Link
               href="/relays/create"
