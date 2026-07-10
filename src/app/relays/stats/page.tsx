@@ -545,11 +545,18 @@ export default function RelayStatsPage() {
                   Browse Relays
                 </Link>
                 <Link
+                  href="/relays/network"
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-surface-300 text-sm font-mono text-surface-400 hover:text-white hover:border-surface-400 transition-all"
+                >
+                  <Users className="h-4 w-4" />
+                  Network
+                </Link>
+                <Link
                   href="/leaderboard/relay"
                   className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-surface-300 text-sm font-mono text-surface-400 hover:text-white hover:border-surface-400 transition-all"
                 >
                   <Users className="h-4 w-4" />
-                  Relay Leaderboard
+                  Leaderboard
                 </Link>
                 <Link
                   href="/relays/create"
