@@ -415,6 +415,7 @@ const SUITE_SECTIONS: Array<{
       { label: 'Civic Groups',       href: '/analytics/groups',           icon: Users },
       { label: 'Faceoff Record',     href: '/analytics/faceoffs',         icon: Swords },
       { label: 'Debate Stats',       href: '/analytics/debates',          icon: Gavel },
+      { label: 'Relay Chain Stats',  href: '/analytics/relays',           icon: GitMerge },
       { label: 'Persuasion Power',   href: '/analytics/persuasion',       icon: Sparkles },
       { label: 'Influence Cascade',  href: '/analytics/cascade',          icon: GitMerge },
     ],
@@ -1096,6 +1097,21 @@ export default function AnalyticsPage() {
                   </div>
                 </div>
                 <ChevronRight className="h-4 w-4 text-surface-500 group-hover:text-emerald transition-colors flex-shrink-0" />
+              </Link>
+            </motion.div>
+            {/* Relay Chain Analytics card */}
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.4455 }}>
+              <Link href="/analytics/relays" className="flex items-center justify-between rounded-2xl bg-surface-100 border border-for-500/20 p-5 hover:border-for-500/40 hover:bg-for-500/5 transition-colors group">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center justify-center h-10 w-10 rounded-xl bg-for-500/10 border border-for-500/30 flex-shrink-0">
+                    <GitMerge className="h-5 w-5 text-for-400" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-mono font-semibold text-white">Relay Chain Analytics</div>
+                    <div className="text-xs font-mono text-surface-500 mt-0.5">Legs authored, upvotes received, archetype, and your relay contribution patterns</div>
+                  </div>
+                </div>
+                <ChevronRight className="h-4 w-4 text-surface-500 group-hover:text-for-400 transition-colors flex-shrink-0" />
               </Link>
             </motion.div>
             <PoliticalKinSection />
