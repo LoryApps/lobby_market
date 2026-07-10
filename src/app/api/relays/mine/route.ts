@@ -13,6 +13,7 @@ export interface MyRelayStat {
   compelling_votes: number
   not_compelling_votes: number
   compelling_rate: number | null
+  leg_stars_received: number
 }
 
 export interface MyRelayEntry {
@@ -59,7 +60,7 @@ export async function GET(req: NextRequest) {
 
   const { data: myLegsRaw } = await supabase
     .from('relay_legs')
-    .select('id, relay_id, leg_number, content, created_at, author_id')
+    .select('id, relay_id, leg_number, content, created_at, author_id, upvote_count')
     .eq('author_id', user.id)
     .order('created_at', { ascending: false })
 
@@ -72,6 +73,7 @@ export async function GET(req: NextRequest) {
         compelling_votes: 0,
         not_compelling_votes: 0,
         compelling_rate: null,
+        leg_stars_received: 0,
       },
       entries: [],
       total: 0,
@@ -106,6 +108,7 @@ export async function GET(req: NextRequest) {
         compelling_votes: 0,
         not_compelling_votes: 0,
         compelling_rate: null,
+        leg_stars_received: myLegsRaw.reduce((sum, l) => sum + (l.upvote_count ?? 0), 0),
       },
       entries: [],
       total: 0,
@@ -164,6 +167,7 @@ export async function GET(req: NextRequest) {
 
   const totalVotes = totalCompelling + totalNotCompelling
   const compelling_rate = totalVotes > 0 ? Math.round((totalCompelling / totalVotes) * 100) : null
+  const leg_stars_received = myLegsRaw.reduce((sum, l) => sum + (l.upvote_count ?? 0), 0)
 
   const stats: MyRelayStat = {
     legs_written: myLegsRaw.length,
@@ -172,6 +176,7 @@ export async function GET(req: NextRequest) {
     compelling_votes: totalCompelling,
     not_compelling_votes: totalNotCompelling,
     compelling_rate,
+    leg_stars_received,
   }
 
   // ── 6. Assemble entries ───────────────────────────────────────────────────
@@ -212,6 +217,8 @@ export async function GET(req: NextRequest) {
       leg_number: leg.leg_number,
       content: leg.content,
       created_at: leg.created_at,
+      upvote_count: leg.upvote_count ?? 0,
+      user_upvoted: false,
       author: authorStub,
     }))
     const fullRow = relayRowMap.get(r.id)

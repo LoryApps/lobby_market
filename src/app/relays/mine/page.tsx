@@ -11,6 +11,7 @@ import {
   GitBranch,
   Link2,
   RefreshCw,
+  Star,
   ThumbsDown,
   ThumbsUp,
   Trophy,
@@ -104,24 +105,37 @@ function StatsPanel({ stats }: { stats: MyRelayStat }) {
       label: 'Legs Written',
       value: stats.legs_written,
       cls: 'text-for-400',
+      sub: null,
     },
     {
       icon: <GitBranch className="h-4 w-4" />,
       label: 'Relays Started',
       value: stats.relays_started,
       cls: 'text-gold',
+      sub: null,
     },
     {
       icon: <Trophy className="h-4 w-4" />,
       label: 'Completed',
       value: stats.relays_completed,
       cls: 'text-emerald',
+      sub: null,
+    },
+    {
+      icon: <Star className="h-4 w-4" />,
+      label: 'Stars Received',
+      value: stats.leg_stars_received,
+      cls: 'text-gold',
+      sub: null,
     },
     {
       icon: <Zap className="h-4 w-4" />,
       label: 'Compelling Rate',
       value: stats.compelling_rate !== null ? `${stats.compelling_rate}%` : '—',
       cls: stats.compelling_rate !== null && stats.compelling_rate >= 60 ? 'text-emerald' : 'text-surface-400',
+      sub: stats.compelling_votes + stats.not_compelling_votes > 0
+        ? `${stats.compelling_votes}↑ / ${stats.not_compelling_votes}↓`
+        : null,
     },
   ]
 
@@ -129,7 +143,7 @@ function StatsPanel({ stats }: { stats: MyRelayStat }) {
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="grid grid-cols-2 gap-2 sm:grid-cols-4"
+      className="grid grid-cols-2 gap-2 sm:grid-cols-5"
     >
       {tiles.map((t) => (
         <div
@@ -141,10 +155,8 @@ function StatsPanel({ stats }: { stats: MyRelayStat }) {
             <span className="text-[10px] font-mono text-surface-400 uppercase tracking-wider">{t.label}</span>
           </div>
           <span className={cn('text-2xl font-bold tabular-nums', t.cls)}>{t.value}</span>
-          {t.label === 'Compelling Rate' && stats.compelling_votes + stats.not_compelling_votes > 0 && (
-            <span className="text-[10px] font-mono text-surface-500">
-              {stats.compelling_votes}↑ / {stats.not_compelling_votes}↓
-            </span>
+          {t.sub && (
+            <span className="text-[10px] font-mono text-surface-500">{t.sub}</span>
           )}
         </div>
       ))}
@@ -278,6 +290,12 @@ function EntryRow({ entry, index }: { entry: MyRelayEntry; index: number }) {
                       Leg {leg.leg_number}
                     </span>
                     <span className="text-[10px] font-mono text-surface-500">{relativeTime(leg.created_at)}</span>
+                    {leg.upvote_count > 0 && (
+                      <span className="ml-auto inline-flex items-center gap-0.5 text-[10px] font-mono text-gold">
+                        <Star className="h-3 w-3 fill-gold" />
+                        {leg.upvote_count}
+                      </span>
+                    )}
                   </div>
                   <p className="text-xs text-surface-300 leading-relaxed line-clamp-4">{leg.content}</p>
                 </div>
@@ -399,8 +417,8 @@ export default function MyRelaysPage() {
 
         {/* Stats */}
         {loading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-            {Array.from({ length: 4 }).map((_, i) => (
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+            {Array.from({ length: 5 }).map((_, i) => (
               <Skeleton key={i} className="h-20 rounded-xl" />
             ))}
           </div>
