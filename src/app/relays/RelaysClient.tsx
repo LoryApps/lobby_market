@@ -8,6 +8,7 @@ import {
   Activity,
   ArrowRight,
   Award,
+  CalendarDays,
   ChevronDown,
   ChevronUp,
   GitMerge,
@@ -557,6 +558,13 @@ function RelaysInner() {
           </div>
 
           <div className="flex items-center gap-2 flex-shrink-0">
+            <Link
+              href="/relays/today"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gold/10 border border-gold/30 text-gold hover:bg-gold/20 hover:border-gold/50 transition-colors text-xs font-mono"
+            >
+              <CalendarDays className="h-3.5 w-3.5" />
+              Today
+            </Link>
             <Link
               href="/relays/pulse"
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald/10 border border-emerald/30 text-emerald hover:bg-emerald/20 hover:border-emerald/50 transition-colors text-xs font-mono"
