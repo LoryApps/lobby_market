@@ -23,6 +23,7 @@ import {
   ExternalLink,
   GitMerge,
   Loader2,
+  MessageCircle,
   RefreshCw,
   ThumbsDown,
   ThumbsUp,
@@ -499,6 +500,14 @@ export function TranscriptClient({ relayId, initialSide }: TranscriptClientProps
               All topic relays
             </Link>
           )}
+
+          <Link
+            href={`/relays/${relayId}/discussion`}
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-surface-300 bg-surface-200/60 text-sm font-mono text-surface-400 hover:text-white hover:border-surface-400 transition-colors"
+          >
+            <MessageCircle className="h-4 w-4" />
+            Discussion
+          </Link>
 
           <Link
             href={`/relays/${relayId}/intelligence`}
