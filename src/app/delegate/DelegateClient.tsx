@@ -24,6 +24,7 @@ import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   ArrowRight,
+  BarChart2,
   Check,
   Crown,
   Globe,
@@ -783,6 +784,27 @@ export function DelegateClient() {
             </div>
           </div>
           <ArrowRight className="h-4 w-4 text-surface-600 group-hover:text-emerald transition-colors" />
+        </Link>
+
+        {/* Delegation Impact link */}
+        <Link
+          href="/delegate/impact"
+          className="flex items-center justify-between w-full p-4 rounded-xl bg-gold/5 border border-gold/20 hover:border-gold/40 transition-colors group"
+        >
+          <div className="flex items-center gap-3">
+            <div className="h-8 w-8 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center flex-shrink-0">
+              <BarChart2 className="h-4 w-4 text-gold" />
+            </div>
+            <div>
+              <p className="text-sm font-mono font-semibold text-white group-hover:text-gold transition-colors">
+                Delegation Impact
+              </p>
+              <p className="text-[11px] font-mono text-surface-600">
+                Platform trust network analytics
+              </p>
+            </div>
+          </div>
+          <ArrowRight className="h-4 w-4 text-surface-600 group-hover:text-gold transition-colors" />
         </Link>
 
         {/* Explainer footer */}
