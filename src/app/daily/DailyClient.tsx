@@ -524,10 +524,10 @@ function DelegateMirrorsSection({ auth }: { auth: boolean }) {
           ))}
         </div>
         <Link
-          href="/delegation"
+          href="/delegate/inbox"
           className="mt-3 flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-purple/20 text-xs font-mono text-purple/70 hover:text-purple hover:border-purple/40 transition-all"
         >
-          Manage delegations <ArrowRight className="h-3.5 w-3.5" />
+          Open mirror inbox <ArrowRight className="h-3.5 w-3.5" />
         </Link>
       </motion.section>
     </AnimatePresence>

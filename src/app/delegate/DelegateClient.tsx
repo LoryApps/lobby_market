@@ -29,6 +29,7 @@ import {
   Crown,
   Globe,
   History,
+  Inbox,
   Loader2,
   Plus,
   RefreshCw,
@@ -797,6 +798,27 @@ export function DelegateClient() {
             </button>
           </div>
         )}
+
+        {/* Delegate Inbox link */}
+        <Link
+          href="/delegate/inbox"
+          className="flex items-center justify-between w-full p-4 rounded-xl bg-purple/5 border border-purple/20 hover:border-purple/40 transition-colors group"
+        >
+          <div className="flex items-center gap-3">
+            <div className="h-8 w-8 rounded-lg bg-purple/10 border border-purple/20 flex items-center justify-center flex-shrink-0">
+              <Inbox className="h-4 w-4 text-purple" />
+            </div>
+            <div>
+              <p className="text-sm font-mono font-semibold text-white group-hover:text-purple transition-colors">
+                Mirror-Vote Inbox
+              </p>
+              <p className="text-[11px] font-mono text-surface-600">
+                Review and act on pending delegate votes
+              </p>
+            </div>
+          </div>
+          <ArrowRight className="h-4 w-4 text-surface-600 group-hover:text-purple transition-colors" />
+        </Link>
 
         {/* Delegate leaderboard link */}
         <Link
