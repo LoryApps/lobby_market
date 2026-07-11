@@ -135,7 +135,7 @@ export default async function AchievementsPage() {
           <div className="flex-1 min-w-0">
             <h1 className="font-mono text-2xl font-bold text-white">Achievements</h1>
             <p className="text-sm font-mono text-surface-500 mt-0.5">
-              {allAchievements.length} badge{allAchievements.length !== 1 ? 's' : ''} across four tiers and six civic branches
+              {allAchievements.length} badge{allAchievements.length !== 1 ? 's' : ''} across four tiers and seven civic branches
               {user
                 ? ` · you've earned ${totalEarned} of ${allAchievements.length}`
                 : ''}

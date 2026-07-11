@@ -7,6 +7,7 @@ import {
   HelpCircle,
   Lock,
   Mic,
+  Radio,
   Target,
   ThumbsUp,
   TrendingUp,
@@ -30,7 +31,7 @@ interface AchievementsGalleryProps {
 }
 
 type TierFilter = 'all' | AchievementTier
-type BranchFilter = 'all' | 'voter' | 'orator' | 'scholar' | 'economist' | 'strategist' | 'citizen'
+type BranchFilter = 'all' | 'voter' | 'orator' | 'scholar' | 'economist' | 'strategist' | 'citizen' | 'relay'
 
 const TIER_FILTERS: { id: TierFilter; label: string }[] = [
   { id: 'all', label: 'All' },
@@ -155,9 +156,18 @@ const BRANCH_META: Record<string, BranchMeta> = {
     pill: 'bg-surface-300/20 border-surface-400/30 text-surface-300',
     barColor: '#a1a1aa',
   },
+  relay: {
+    label: 'Relay',
+    icon: Radio,
+    border: 'border-emerald/40',
+    bg: 'bg-emerald/8',
+    text: 'text-emerald',
+    pill: 'bg-emerald/15 border-emerald/40 text-emerald',
+    barColor: '#10b981',
+  },
 }
 
-const BRANCH_ORDER: BranchFilter[] = ['voter', 'orator', 'scholar', 'economist', 'strategist', 'citizen']
+const BRANCH_ORDER: BranchFilter[] = ['voter', 'orator', 'scholar', 'economist', 'strategist', 'citizen', 'relay']
 const TIER_ORDER: AchievementTier[] = ['legendary', 'epic', 'rare', 'common']
 
 function resolveIcon(name: string): LucideIcon {

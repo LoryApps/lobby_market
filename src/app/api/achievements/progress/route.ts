@@ -41,6 +41,11 @@ const METRIC_LABELS: Record<string, string> = {
   follower_count: 'followers',
   predictions_count: 'predictions made',
   topics_supported: 'laws you helped pass',
+  relays_started: 'relay chains started',
+  relay_legs_added: 'relay legs contributed',
+  relays_completed: 'relays fully completed',
+  relay_compelling_votes: 'relays voted compelling',
+  relay_leg_stars: 'stars on your best relay leg',
 }
 
 async function computeMetric(
@@ -190,6 +195,72 @@ async function computeMetric(
         .in('id', topicIds)
         .eq('status', 'law')
       return count ?? 0
+    }
+    case 'relays_started': {
+      const { count } = await supabase
+        .from('civic_relays')
+        .select('*', { count: 'exact', head: true })
+        .eq('starter_id', userId)
+      return count ?? 0
+    }
+    case 'relay_legs_added': {
+      const { count } = await supabase
+        .from('relay_legs')
+        .select('*', { count: 'exact', head: true })
+        .eq('author_id', userId)
+      return count ?? 0
+    }
+    case 'relays_completed': {
+      const { count } = await supabase
+        .from('civic_relays')
+        .select('*', { count: 'exact', head: true })
+        .eq('starter_id', userId)
+        .in('status', ['complete', 'voted'])
+      return count ?? 0
+    }
+    case 'relay_compelling_votes': {
+      // Number of the user's relays that have ≥1 compelling vote
+      const { data: myRelays } = await supabase
+        .from('civic_relays')
+        .select('id')
+        .eq('starter_id', userId)
+      if (!myRelays?.length) return 0
+      const relayIds = myRelays.map((r) => r.id)
+      const { count } = await supabase
+        .from('relay_votes')
+        .select('relay_id', { count: 'exact', head: false })
+        .in('relay_id', relayIds)
+        .eq('vote', 'compelling')
+      // Count distinct relays with at least one compelling vote (rough approximation)
+      // A proper DISTINCT COUNT requires a separate approach
+      if (!count || count === 0) return 0
+      // Fetch distinct relay_ids with compelling votes
+      const { data: compellingRows } = await supabase
+        .from('relay_votes')
+        .select('relay_id')
+        .in('relay_id', relayIds)
+        .eq('vote', 'compelling')
+      const distinctRelays = new Set((compellingRows ?? []).map((r) => r.relay_id))
+      return distinctRelays.size
+    }
+    case 'relay_leg_stars': {
+      // Max stars any single leg of the user has received
+      const { data: myLegs } = await supabase
+        .from('relay_legs')
+        .select('id')
+        .eq('author_id', userId)
+      if (!myLegs?.length) return 0
+      const legIds = myLegs.map((l) => l.id)
+      const { data: starRows } = await supabase
+        .from('relay_leg_upvotes')
+        .select('leg_id')
+        .in('leg_id', legIds)
+      if (!starRows?.length) return 0
+      const starsByLeg = new Map<string, number>()
+      for (const row of starRows) {
+        starsByLeg.set(row.leg_id, (starsByLeg.get(row.leg_id) ?? 0) + 1)
+      }
+      return Math.max(...Array.from(starsByLeg.values()))
     }
     default:
       return 0

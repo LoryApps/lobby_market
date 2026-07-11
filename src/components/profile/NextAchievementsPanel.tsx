@@ -95,6 +95,16 @@ function actionHint(type: string, remaining: number): string {
       return `Make ${plural(remaining, 'more prediction')}`
     case 'topics_supported':
       return `Vote on ${plural(remaining, 'more topic')} that become law`
+    case 'relays_started':
+      return `Start ${plural(remaining, 'more relay chain')}`
+    case 'relay_legs_added':
+      return `Add ${plural(remaining, 'more relay leg')}`
+    case 'relays_completed':
+      return `Start a relay that reaches full completion`
+    case 'relay_compelling_votes':
+      return `Earn ${plural(remaining, 'more compelling vote')} on your relays`
+    case 'relay_leg_stars':
+      return `Earn ${plural(remaining, 'more star')} on a relay leg`
     default:
       return `${remaining.toLocaleString()} more needed`
   }
