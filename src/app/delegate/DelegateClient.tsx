@@ -273,6 +273,35 @@ function ReceivedCard({ entry }: { entry: ReceivedDelegation }) {
   )
 }
 
+// ─── Alignment badge ──────────────────────────────────────────────────────────
+
+function AlignmentBadge({ pct, common }: { pct: number; common: number }) {
+  const color =
+    pct >= 75 ? 'bg-emerald/15 border-emerald/40 text-emerald' :
+    pct >= 50 ? 'bg-for-500/15 border-for-500/40 text-for-300' :
+    pct >= 30 ? 'bg-gold/15 border-gold/40 text-gold' :
+                'bg-against-500/10 border-against-500/30 text-against-300'
+
+  const label =
+    pct >= 75 ? 'Aligned' :
+    pct >= 50 ? 'Moderate' :
+    pct >= 30 ? 'Mixed' :
+                'Divergent'
+
+  return (
+    <span
+      title={`${pct}% alignment on ${common} shared topics`}
+      className={cn(
+        'inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full',
+        'text-[10px] font-mono font-semibold border leading-none flex-shrink-0',
+        color,
+      )}
+    >
+      {pct}% {label}
+    </span>
+  )
+}
+
 function CandidateRow({
   candidate,
   onDelegate,
@@ -324,11 +353,14 @@ function CandidateRow({
               </span>
             )}
           </div>
-          <div className="flex items-center gap-2 mt-0.5">
+          <div className="flex items-center gap-2 mt-0.5 flex-wrap">
             <span className="text-[10px] text-gold font-mono">{candidate.clout.toLocaleString()} clout</span>
             <span className="text-[10px] text-surface-500">{candidate.total_votes.toLocaleString()} votes</span>
             {candidate.trusted_by > 0 && (
               <span className="text-[10px] text-emerald">{candidate.trusted_by} trust</span>
+            )}
+            {candidate.alignment_pct !== null && candidate.topics_in_common >= 5 && (
+              <AlignmentBadge pct={candidate.alignment_pct} common={candidate.topics_in_common} />
             )}
           </div>
         </div>
