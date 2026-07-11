@@ -27,6 +27,7 @@ import {
   BarChart2,
   Check,
   Crown,
+  GitCompare,
   Globe,
   History,
   Inbox,
@@ -818,6 +819,27 @@ export function DelegateClient() {
             </div>
           </div>
           <ArrowRight className="h-4 w-4 text-surface-600 group-hover:text-for-400 transition-colors" />
+        </Link>
+
+        {/* Compare Delegates link */}
+        <Link
+          href="/delegate/compare"
+          className="flex items-center justify-between w-full p-4 rounded-xl bg-against-500/5 border border-against-500/20 hover:border-against-500/40 transition-colors group"
+        >
+          <div className="flex items-center gap-3">
+            <div className="h-8 w-8 rounded-lg bg-against-500/10 border border-against-500/20 flex items-center justify-center flex-shrink-0">
+              <GitCompare className="h-4 w-4 text-against-400" />
+            </div>
+            <div>
+              <p className="text-sm font-mono font-semibold text-white group-hover:text-against-400 transition-colors">
+                Compare Delegates
+              </p>
+              <p className="text-[11px] font-mono text-surface-600">
+                Head-to-head: pick the delegate who votes more like you
+              </p>
+            </div>
+          </div>
+          <ArrowRight className="h-4 w-4 text-surface-600 group-hover:text-against-400 transition-colors" />
         </Link>
 
         {/* Delegate Inbox link */}
