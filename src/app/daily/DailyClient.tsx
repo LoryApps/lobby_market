@@ -21,7 +21,7 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   Activity,
   ArrowRight,
@@ -31,6 +31,7 @@ import {
   Calendar,
   Flame,
   Gavel,
+  GitMerge,
   Landmark,
   Mic,
   RefreshCw,
@@ -50,6 +51,7 @@ import { Skeleton } from '@/components/ui/Skeleton'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { cn } from '@/lib/utils/cn'
 import type { DailyResponse, DailyTopic, DailyDebate, DailyLaw, DailyEngagement } from '@/app/api/daily/route'
+import type { PendingMirrorTopic } from '@/app/api/me/pending-mirrors/route'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -438,6 +440,100 @@ function DailySkeleton() {
   )
 }
 
+// ─── Pending mirror votes ─────────────────────────────────────────────────────
+
+function MirrorTopicRow({ topic }: { topic: PendingMirrorTopic }) {
+  const isFor = topic.delegateSide === 'blue'
+  const displayName = topic.delegateDisplayName || `@${topic.delegateUsername}`
+  const scopeLabel =
+    topic.delegationScope === 'topic'
+      ? 'topic delegate'
+      : topic.delegationScope === 'category'
+      ? `${topic.category} delegate`
+      : 'global delegate'
+
+  return (
+    <Link
+      href={`/topic/${topic.topicId}`}
+      className="flex items-start gap-3 rounded-xl border border-surface-300 bg-surface-100 p-3 hover:border-surface-400 hover:bg-surface-200/50 transition-all group"
+    >
+      <div className="flex-shrink-0 mt-0.5">
+        <Avatar
+          src={topic.delegateAvatarUrl}
+          fallback={displayName}
+          size="xs"
+        />
+      </div>
+
+      <div className="flex-1 min-w-0">
+        <p className="text-xs font-mono text-surface-400 mb-1 leading-tight truncate">
+          <span className="text-white font-semibold">{displayName}</span>
+          <span className="text-surface-600"> · {scopeLabel} · voted </span>
+          <span className={cn('font-bold', isFor ? 'text-for-300' : 'text-against-300')}>
+            {isFor ? 'FOR' : 'AGAINST'}
+          </span>
+        </p>
+        <p className="text-xs font-mono text-surface-300 line-clamp-2 leading-snug group-hover:text-white transition-colors">
+          {topic.statement}
+        </p>
+      </div>
+
+      <div className="flex-shrink-0 flex flex-col items-end gap-1">
+        <CategoryBadge category={topic.category} />
+        <div className="w-14">
+          <VoteBar pct={topic.bluePct} size="xs" />
+        </div>
+      </div>
+    </Link>
+  )
+}
+
+function DelegateMirrorsSection({ auth }: { auth: boolean }) {
+  const [topics, setTopics] = useState<PendingMirrorTopic[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    if (!auth) { setLoading(false); return }
+    let cancelled = false
+    fetch('/api/me/pending-mirrors')
+      .then((r) => (r.ok ? r.json() : { topics: [] }))
+      .then((data) => { if (!cancelled) setTopics(data.topics ?? []) })
+      .catch(() => {})
+      .finally(() => { if (!cancelled) setLoading(false) })
+    return () => { cancelled = true }
+  }, [auth])
+
+  if (!auth || loading || topics.length === 0) return null
+
+  return (
+    <AnimatePresence>
+      <motion.section
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        <SectionHeader
+          icon={GitMerge}
+          title="Pending Mirror Votes"
+          subtitle={`${topics.length} topic${topics.length !== 1 ? 's' : ''} voted on by your delegate — review and optionally mirror`}
+          color="text-purple"
+        />
+        <div className="space-y-2">
+          {topics.map((t) => (
+            <MirrorTopicRow key={t.topicId} topic={t} />
+          ))}
+        </div>
+        <Link
+          href="/delegation"
+          className="mt-3 flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-purple/20 text-xs font-mono text-purple/70 hover:text-purple hover:border-purple/40 transition-all"
+        >
+          Manage delegations <ArrowRight className="h-3.5 w-3.5" />
+        </Link>
+      </motion.section>
+    </AnimatePresence>
+  )
+}
+
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export function DailyClient() {
@@ -607,6 +703,9 @@ export function DailyClient() {
                 </div>
               </section>
             )}
+
+            {/* ── Pending Mirror Votes (liquid democracy) ── */}
+            <DelegateMirrorsSection auth={!!data.auth} />
 
             {/* ── Recommended Topics ── */}
             {data.recommended_topics.length > 0 && (
