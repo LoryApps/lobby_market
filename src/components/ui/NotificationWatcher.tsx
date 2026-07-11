@@ -275,6 +275,11 @@ const TYPE_CONFIG: Record<NotificationType, TypeConfig> = {
     emoji: '✅',
     duration: 7000,
   },
+  delegate_voted: {
+    prefKey: null,
+    emoji: '🤝',
+    duration: 5000,
+  },
 }
 
 // ─── Achievement body parser (reused logic from AchievementWatcher) ───────────
