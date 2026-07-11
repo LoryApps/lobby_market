@@ -115,6 +115,7 @@ import {
   Ban,
   ShieldAlert,
   Star,
+  UserCheck,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -2437,6 +2438,16 @@ const QUICK_LINKS: QuickLink[] = [
     icon: Scale,
     iconColor: 'text-for-400',
     iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
+    id: 'delegate',
+    label: 'Vote Delegation',
+    sublabel: 'Liquid democracy — delegate your vote to trusted citizens by topic or category',
+    href: '/delegate',
+    icon: UserCheck,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
   },
   {
     type: 'link',
