@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   ArrowLeft,
   BarChart2,
+  Brain,
   Check,
   ChevronRight,
   ExternalLink,
@@ -447,6 +448,14 @@ export function RelayDetailClient() {
               >
                 <FileText className="h-3.5 w-3.5" />
                 Read
+              </Link>
+              <Link
+                href={`/relays/${id}/intelligence`}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-200 border border-surface-300 text-surface-500 hover:text-white hover:border-surface-400 transition-colors text-xs font-mono flex-shrink-0"
+                aria-label="View relay intelligence analysis"
+              >
+                <Brain className="h-3.5 w-3.5" />
+                Intel
               </Link>
               <Link
                 href={`/relays/${id}/discussion`}

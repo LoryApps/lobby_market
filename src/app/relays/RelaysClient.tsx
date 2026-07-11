@@ -18,6 +18,7 @@ import {
   ShieldAlert,
   Sparkles,
   Star,
+  Swords,
   ThumbsDown,
   ThumbsUp,
   Trophy,
@@ -585,6 +586,13 @@ function RelaysInner() {
             >
               <Trophy className="h-3.5 w-3.5" />
               League
+            </Link>
+            <Link
+              href="/relays/bracket"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gold/10 border border-gold/30 text-gold hover:bg-gold/20 hover:border-gold/50 transition-colors text-xs font-mono"
+            >
+              <Swords className="h-3.5 w-3.5" />
+              Bracket
             </Link>
             <Link
               href="/relays/categories"
