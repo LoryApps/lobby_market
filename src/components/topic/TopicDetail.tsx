@@ -53,6 +53,7 @@ import {
   Waypoints,
   Sprout,
   RotateCcw,
+  Mic,
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { Topic, Profile, VoteSide } from '@/lib/supabase/types'
@@ -1170,6 +1171,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                     >
                       <Scale className="h-3.5 w-3.5" />
                       Bias Check
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/filibuster`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-gold hover:text-gold/80 transition-colors"
+                    >
+                      <Mic className="h-3.5 w-3.5" />
+                      Filibuster
                     </Link>
                     <Link
                       href={`/topic/${topic.id}/replay`}
