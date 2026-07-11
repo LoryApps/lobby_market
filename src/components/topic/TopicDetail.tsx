@@ -1165,6 +1165,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                       Fact-check
                     </Link>
                     <Link
+                      href={`/topic/${topic.id}/bias-check`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-gold hover:text-gold/80 transition-colors"
+                    >
+                      <Scale className="h-3.5 w-3.5" />
+                      Bias Check
+                    </Link>
+                    <Link
                       href={`/topic/${topic.id}/replay`}
                       className="inline-flex items-center gap-1.5 text-xs font-mono text-purple hover:text-purple/80 transition-colors"
                     >
