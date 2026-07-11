@@ -860,6 +860,11 @@ export default function SettingsPage() {
                   description="View your vote timeline on your profile"
                   href="/profile/me"
                 />
+                <LinkRow
+                  label="Vote Delegation"
+                  description="Delegate your vote to trusted citizens via Liquid Democracy"
+                  href="/delegation"
+                />
               </div>
             </div>
 
