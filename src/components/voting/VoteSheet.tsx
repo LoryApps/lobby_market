@@ -17,12 +17,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowLeft, ArrowRight, CheckCircle2, Compass, MessageSquare, ThumbsDown, ThumbsUp, Timer } from 'lucide-react'
+import { ArrowLeft, ArrowRight, CheckCircle2, Compass, GitMerge, MessageSquare, ThumbsDown, ThumbsUp, Timer } from 'lucide-react'
 import { BottomSheet } from '@/components/ui/BottomSheet'
 import { StanceShareButton } from '@/components/voting/StanceShareButton'
+import { Avatar } from '@/components/ui/Avatar'
 import { haptics } from '@/lib/hooks/useHaptics'
 import { cn } from '@/lib/utils/cn'
 import type { Topic, VoteSide } from '@/lib/supabase/types'
+import type { DelegateVoteResponse } from '@/app/api/topics/[id]/delegate-vote/route'
 
 // ─── Argument type (matches /api/topics/[id]/top-arguments response) ─────────
 
@@ -523,6 +525,113 @@ function ReasonStep({
   )
 }
 
+// ─── Delegate vote banner ─────────────────────────────────────────────────────
+
+function DelegateVoteBanner({
+  topicId,
+  onMirror,
+}: {
+  topicId: string
+  onMirror: (side: VoteSide) => void
+}) {
+  const [delegation, setDelegation] = useState<DelegateVoteResponse | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [dismissed, setDismissed] = useState(false)
+
+  useEffect(() => {
+    let cancelled = false
+    setLoading(true)
+    fetch(`/api/topics/${topicId}/delegate-vote`)
+      .then((r) => (r.ok ? r.json() : { delegation: null }))
+      .then((data) => {
+        if (!cancelled) setDelegation(data.delegation ?? null)
+      })
+      .catch(() => {})
+      .finally(() => { if (!cancelled) setLoading(false) })
+    return () => { cancelled = true }
+  }, [topicId])
+
+  if (loading || dismissed || !delegation) return null
+  // Only show if the delegate has actually voted
+  if (!delegation.delegateSide) return null
+
+  const isFor = delegation.delegateSide === 'blue'
+  const displayName = delegation.delegateDisplayName || `@${delegation.delegateUsername}`
+  const scopeLabel = delegation.delegationScope === 'topic'
+    ? 'on this topic'
+    : delegation.delegationScope === 'category'
+    ? 'for this category'
+    : 'globally'
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -6 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -6 }}
+      transition={{ duration: 0.25 }}
+      className={cn(
+        'rounded-xl border px-3 py-2.5 flex items-center gap-3',
+        isFor
+          ? 'bg-for-500/10 border-for-500/30'
+          : 'bg-against-500/10 border-against-500/30'
+      )}
+    >
+      <div className="flex-shrink-0">
+        <Avatar
+          src={delegation.delegateAvatarUrl}
+          fallback={displayName}
+          size="sm"
+        />
+      </div>
+
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-1.5 flex-wrap">
+          <GitMerge className="h-3 w-3 text-surface-500 flex-shrink-0" aria-hidden />
+          <span className="text-[11px] font-mono text-surface-400 leading-tight">
+            Your delegate{' '}
+            <Link
+              href={`/profile/${delegation.delegateUsername}`}
+              className="text-white font-semibold hover:underline"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {displayName}
+            </Link>{' '}
+            voted{' '}
+            <span className={cn('font-bold', isFor ? 'text-for-300' : 'text-against-300')}>
+              {isFor ? 'FOR' : 'AGAINST'}
+            </span>{' '}
+            <span className="text-surface-600">{scopeLabel}</span>
+          </span>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-1 flex-shrink-0">
+        <button
+          type="button"
+          onClick={() => onMirror(delegation.delegateSide!)}
+          className={cn(
+            'text-[10px] font-mono font-bold px-2.5 py-1 rounded-lg border transition-all active:scale-95',
+            isFor
+              ? 'bg-for-600/20 border-for-500/40 text-for-300 hover:bg-for-600/30'
+              : 'bg-against-600/20 border-against-500/40 text-against-300 hover:bg-against-600/30'
+          )}
+          aria-label={`Mirror delegate's ${isFor ? 'FOR' : 'AGAINST'} vote`}
+        >
+          Mirror
+        </button>
+        <button
+          type="button"
+          onClick={() => setDismissed(true)}
+          className="flex items-center justify-center h-5 w-5 rounded text-surface-600 hover:text-surface-400 transition-colors"
+          aria-label="Dismiss delegate suggestion"
+        >
+          ×
+        </button>
+      </div>
+    </motion.div>
+  )
+}
+
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
 interface VoteSheetProps {
@@ -574,6 +683,16 @@ export function VoteSheet({
   const handleSideSelect = useCallback(
     (side: VoteSide) => {
       if (submitting || hasVoted) return
+      setSelectedSide(side)
+      setStep('reason')
+    },
+    [submitting, hasVoted]
+  )
+
+  const handleMirror = useCallback(
+    (side: VoteSide) => {
+      if (submitting || hasVoted) return
+      haptics.selection()
       setSelectedSide(side)
       setStep('reason')
     },
@@ -646,6 +765,14 @@ export function VoteSheet({
               <p className="text-white font-semibold text-lg leading-snug line-clamp-3">
                 {topic.statement}
               </p>
+
+              {/* Delegate vote suggestion — only for users who haven't voted yet */}
+              {!hasVoted && (
+                <DelegateVoteBanner
+                  topicId={topic.id}
+                  onMirror={handleMirror}
+                />
+              )}
 
               {/* Live vote bar */}
               <LiveBar bluePct={topic.blue_pct ?? 50} />
