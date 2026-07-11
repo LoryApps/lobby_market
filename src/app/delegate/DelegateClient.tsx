@@ -764,6 +764,27 @@ export function DelegateClient() {
           </div>
         )}
 
+        {/* Delegate leaderboard link */}
+        <Link
+          href="/leaderboard/delegates"
+          className="flex items-center justify-between w-full p-4 rounded-xl bg-emerald/5 border border-emerald/20 hover:border-emerald/40 transition-colors group"
+        >
+          <div className="flex items-center gap-3">
+            <div className="h-8 w-8 rounded-lg bg-emerald/10 border border-emerald/20 flex items-center justify-center flex-shrink-0">
+              <Users className="h-4 w-4 text-emerald" />
+            </div>
+            <div>
+              <p className="text-sm font-mono font-semibold text-white group-hover:text-emerald transition-colors">
+                Top Trusted Delegates
+              </p>
+              <p className="text-[11px] font-mono text-surface-600">
+                See who the community trusts most
+              </p>
+            </div>
+          </div>
+          <ArrowRight className="h-4 w-4 text-surface-600 group-hover:text-emerald transition-colors" />
+        </Link>
+
         {/* Explainer footer */}
         <div className="rounded-2xl bg-surface-100 border border-surface-300 p-4 space-y-3">
           <p className="text-xs font-semibold text-white">About Liquid Democracy</p>
