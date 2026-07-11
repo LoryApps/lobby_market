@@ -28,6 +28,7 @@ import {
   BarChart2,
   CheckCircle2,
   ChevronDown,
+  FileText,
   Filter,
   GitMerge,
   Loader2,
@@ -682,7 +683,7 @@ export function VerdictsClient() {
         <div className="mt-8 grid grid-cols-2 gap-3">
           {[
             { href: '/relays', label: 'Browse Relays', icon: GitMerge },
-            { href: '/relays/showdown', label: 'Showdown', icon: Scale },
+            { href: '/position-papers', label: 'Position Papers', icon: FileText },
             { href: '/relays/hall-of-fame', label: 'Hall of Fame', icon: Trophy },
             { href: '/relays/stats', label: 'Platform Stats', icon: BarChart2 },
           ].map((link) => (

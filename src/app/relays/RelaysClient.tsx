@@ -11,6 +11,7 @@ import {
   CalendarDays,
   ChevronDown,
   ChevronUp,
+  FileText,
   GitMerge,
   Loader2,
   MessageSquarePlus,
@@ -600,6 +601,13 @@ function RelaysInner() {
             >
               <Trophy className="h-3.5 w-3.5" />
               Verdicts
+            </Link>
+            <Link
+              href="/position-papers"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald/10 border border-emerald/30 text-emerald hover:bg-emerald/20 hover:border-emerald/50 transition-colors text-xs font-mono"
+            >
+              <FileText className="h-3.5 w-3.5" />
+              Position Papers
             </Link>
             <Link
               href="/relays/categories"

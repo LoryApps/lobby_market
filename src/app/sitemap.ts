@@ -195,6 +195,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/relays/categories`, changeFrequency: 'daily', priority: 0.70 },
   { url: `${BASE_URL}/relays/hall-of-fame`, changeFrequency: 'daily', priority: 0.68 },
   { url: `${BASE_URL}/relays/uncontested`, changeFrequency: 'always', priority: 0.74 },
+  { url: `${BASE_URL}/position-papers`, changeFrequency: 'daily', priority: 0.76 },
   { url: `${BASE_URL}/assembly`, changeFrequency: 'always', priority: 0.82 },
   { url: `${BASE_URL}/referendum`, changeFrequency: 'always', priority: 0.82 },
   { url: `${BASE_URL}/civic-referendums`, changeFrequency: 'daily', priority: 0.80 },
