@@ -839,6 +839,27 @@ export function DelegateClient() {
           <ArrowRight className="h-4 w-4 text-surface-600 group-hover:text-gold transition-colors" />
         </Link>
 
+        {/* Network Graph link */}
+        <Link
+          href="/delegate/network"
+          className="flex items-center justify-between w-full p-4 rounded-xl bg-for-500/5 border border-for-500/20 hover:border-for-500/40 transition-colors group"
+        >
+          <div className="flex items-center gap-3">
+            <div className="h-8 w-8 rounded-lg bg-for-500/10 border border-for-500/20 flex items-center justify-center flex-shrink-0">
+              <Zap className="h-4 w-4 text-for-400" />
+            </div>
+            <div>
+              <p className="text-sm font-mono font-semibold text-white group-hover:text-for-400 transition-colors">
+                Trust Network Graph
+              </p>
+              <p className="text-[11px] font-mono text-surface-600">
+                Visualise how voting power flows
+              </p>
+            </div>
+          </div>
+          <ArrowRight className="h-4 w-4 text-surface-600 group-hover:text-for-400 transition-colors" />
+        </Link>
+
         {/* Explainer footer */}
         <div className="rounded-2xl bg-surface-100 border border-surface-300 p-4 space-y-3">
           <p className="text-xs font-semibold text-white">About Liquid Democracy</p>
