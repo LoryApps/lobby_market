@@ -615,6 +615,13 @@ function RelaysInner() {
               Uncontested
             </Link>
             <Link
+              href="/relays/achievements"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gold/10 border border-gold/30 text-gold hover:bg-gold/20 hover:border-gold/50 transition-colors text-xs font-mono"
+            >
+              <Trophy className="h-3.5 w-3.5" />
+              Achievements
+            </Link>
+            <Link
               href="/relays/create"
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple/20 border border-purple/40 text-purple hover:bg-purple/30 hover:border-purple/60 transition-colors text-xs font-mono"
             >
