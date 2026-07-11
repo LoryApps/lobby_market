@@ -595,6 +595,13 @@ function RelaysInner() {
               Bracket
             </Link>
             <Link
+              href="/relays/verdicts"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald/10 border border-emerald/30 text-emerald hover:bg-emerald/20 hover:border-emerald/50 transition-colors text-xs font-mono"
+            >
+              <Trophy className="h-3.5 w-3.5" />
+              Verdicts
+            </Link>
+            <Link
               href="/relays/categories"
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-200 border border-surface-300 text-surface-400 hover:text-white hover:border-surface-400 transition-colors text-xs font-mono"
             >
