@@ -17,6 +17,7 @@ import {
   Loader2,
   MessageCircle,
   MessageSquarePlus,
+  Play,
   RefreshCw,
   Share2,
   Star,
@@ -464,6 +465,14 @@ export function RelayDetailClient() {
               >
                 <MessageCircle className="h-3.5 w-3.5" />
                 Discuss
+              </Link>
+              <Link
+                href={`/relays/${id}/replay`}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-200 border border-surface-300 text-surface-500 hover:text-white hover:border-surface-400 transition-colors text-xs font-mono flex-shrink-0"
+                aria-label="Watch relay replay"
+              >
+                <Play className="h-3.5 w-3.5" />
+                Replay
               </Link>
             </>
           )}
