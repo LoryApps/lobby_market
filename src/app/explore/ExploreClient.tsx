@@ -69,6 +69,7 @@ import {
   HelpCircle,
   Shield,
   ShieldAlert,
+  ScrollText,
   X,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
@@ -301,6 +302,7 @@ const SECTIONS: FeatureSection[] = [
       { href: '/appeals', label: 'Civic Appeals Panel', description: 'The final civic recourse tier — formally contest Ombudsman findings, Council outcomes, and disputed results.', icon: Scale, isNew: true },
       { href: '/vetoes', label: 'Civic Vetoes', description: 'Citizen-led veto mechanism — gather signatures to block or delay a newly established law.', icon: Vote, isNew: true },
       { href: '/fact-bank', label: 'Civic Fact Bank', description: 'Community-verified factual claims supporting active debates — crowd-sourced evidence and source verification.', icon: FileText, isNew: true },
+      { href: '/order-paper', label: 'Order Paper', description: 'The official parliamentary Order Paper — all bills, recent laws, debates, committee reports, and council motions in one formal document.', icon: ScrollText, isNew: true },
     ],
   },
   {
