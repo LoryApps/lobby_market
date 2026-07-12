@@ -822,18 +822,18 @@ export default async function GovernmentPage() {
             </section>
 
             {/* No confidence prompt */}
-            <section className="p-4 rounded-xl bg-surface-100 border border-surface-300/40">
+            <section className="p-4 rounded-xl bg-surface-100 border border-against-500/20">
               <div className="flex items-start gap-3">
                 <AlertTriangle className="h-4 w-4 text-against-400 shrink-0 mt-0.5" />
                 <div className="flex-1 min-w-0">
                   <p className="text-xs font-semibold text-white">Challenge the Government</p>
                   <p className="text-[11px] text-surface-500 mt-0.5 leading-relaxed">
-                    Think another coalition should be in power? Build influence, win debates, and grow
-                    your coalition&apos;s membership to overtake the ruling party.
+                    Table a formal motion of no confidence. Citizens will vote over 7 days. A
+                    majority carries the motion — triggering a constitutional crisis.
                   </p>
                 </div>
                 <Link
-                  href="/grand-council"
+                  href="/confidence"
                   className="shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-lg bg-against-500/10 border border-against-500/20 text-against-400 text-xs font-semibold hover:bg-against-500/20 transition-all"
                 >
                   <Scale className="h-3 w-3" />

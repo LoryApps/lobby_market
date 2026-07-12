@@ -620,22 +620,13 @@ export default async function OppositionPage() {
                         </p>
                       </div>
 
-                      <div className="flex gap-2">
-                        <Link
-                          href="/debate/create"
-                          className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-against-500/10 border border-against-500/30 text-xs font-mono text-against-400 hover:bg-against-500/20 transition-colors"
-                        >
-                          <XCircle className="h-3.5 w-3.5" />
-                          No Confidence
-                        </Link>
-                        <Link
-                          href="/debate/create"
-                          className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-for-500/10 border border-for-500/30 text-xs font-mono text-for-400 hover:bg-for-500/20 transition-colors"
-                        >
-                          <CheckCircle2 className="h-3.5 w-3.5" />
-                          Confidence
-                        </Link>
-                      </div>
+                      <Link
+                        href="/confidence"
+                        className="flex items-center justify-center gap-1.5 py-2 rounded-lg bg-against-500/10 border border-against-500/30 text-xs font-mono text-against-400 hover:bg-against-500/20 transition-colors"
+                      >
+                        <Scale className="h-3.5 w-3.5" />
+                        Vote on Motion
+                      </Link>
                     </div>
                   ) : (
                     <div className="p-5 rounded-2xl bg-surface-100 border border-surface-300/40 space-y-3">
@@ -648,10 +639,10 @@ export default async function OppositionPage() {
                           Government stable
                         </span>
                         <Link
-                          href="/civic-questions"
+                          href="/confidence"
                           className="text-against-400 hover:text-against-300 transition-colors"
                         >
-                          Table a question →
+                          Table a motion →
                         </Link>
                       </div>
                     </div>

@@ -797,6 +797,7 @@ export default async function ParliamentPage() {
                   { href: '/grand-council', label: 'Table a Motion', sublabel: 'Move a binding resolution', icon: Landmark, color: 'text-gold' },
                   { href: '/civic-questions/ask', label: 'Ask a Question', sublabel: 'Submit to Civic Questions Time', icon: MessageSquare, color: 'text-for-300' },
                   { href: '/hearings/new', label: 'Open a Hearing', sublabel: 'Call for formal testimony', icon: Mic, color: 'text-emerald' },
+                  { href: '/confidence', label: 'Motion of No Confidence', sublabel: 'Formally challenge the governing coalition', icon: Scale, color: 'text-against-400' },
                   { href: '/oversight', label: 'Review a Law', sublabel: 'Submit established law for scrutiny', icon: Shield, color: 'text-against-300' },
                 ].map((action) => {
                   const ActionIcon = action.icon
