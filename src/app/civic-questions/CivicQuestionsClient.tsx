@@ -714,6 +714,14 @@ export function CivicQuestionsClient() {
             <span className="flex items-center gap-1.5">
               <Flame className="h-3.5 w-3.5 text-against-400" />5 questions / day
             </span>
+            <Link
+              href="/civic-questions/hall-of-fame"
+              className="ml-auto flex items-center gap-1.5 text-gold hover:text-gold/80 transition-colors"
+            >
+              <Sparkles className="h-3.5 w-3.5" />
+              Hall of Fame
+              <ChevronRight className="h-3 w-3" />
+            </Link>
           </div>
         </div>
 
