@@ -205,6 +205,7 @@ const SECTIONS: FeatureSection[] = [
       { href: '/leaderboard/relay', label: 'Relay Runners', description: 'Citizens who build the best collaborative argument chains — ranked by legs written, completions, and compelling rate.', icon: Link2, isNew: true },
       { href: '/leaderboard/dissent', label: 'The Dissent Index', description: 'The Lobby\'s most principled contrarians — citizens who vote in the minority and argue their case.', icon: Shuffle, isNew: true },
       { href: '/leaderboard/ama', label: 'AMA Expert Rankings', description: 'Top AMA hosts ranked by sessions, questions answered, and community upvotes — the most trusted civic voices.', icon: Mic, isNew: true },
+      { href: '/shadow-cabinet', label: 'Shadow Cabinet', description: 'The top civic voice in each policy domain — Economics, Technology, Ethics, and more. Challenge for a seat.', icon: Crown, isNew: true },
       { href: '/podium', label: 'Weekly Podium', description: 'Top 3 contributors per category — resets every Monday.', icon: Medal },
     ],
   },
