@@ -318,6 +318,17 @@ export default async function ParliamentPage() {
       countLabel: 'active motions',
     },
     {
+      title: 'HM Government',
+      description: 'The ruling coalition, Prime Minister, and legislative programme in power.',
+      href: '/government',
+      icon: Crown,
+      color: 'text-gold',
+      bg: 'bg-gold/5',
+      border: 'border-gold/20',
+      status: 'In Power',
+      statusColor: 'bg-gold/10 border-gold/30 text-gold',
+    },
+    {
       title: 'Shadow Cabinet',
       description: "The opposition's top voices challenging the platform's leading positions.",
       href: '/shadow-cabinet',
