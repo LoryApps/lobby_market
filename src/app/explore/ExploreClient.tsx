@@ -68,6 +68,7 @@ import {
   CheckCircle2,
   HelpCircle,
   Shield,
+  ShieldAlert,
   X,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
@@ -284,6 +285,7 @@ const SECTIONS: FeatureSection[] = [
       { href: '/law/categories', label: 'Laws by Category', description: 'Filter established laws by civic category.', icon: LayoutGrid },
       { href: '/law/graph', label: 'Law Network', description: 'Visual graph of how laws connect to parent topics and chains.', icon: Network },
       { href: '/amendments', label: 'Amendment Chamber', description: 'Propose and vote on amendments to existing laws.', icon: FileEdit },
+      { href: '/oversight', label: 'Civic Oversight', description: 'Health dashboard for all established laws — shows which laws are under scrutiny via amendments, petitions, and community reviews.', icon: ShieldAlert, isNew: true },
       { href: '/pledges', label: 'Civic Pledge Wall', description: 'Public commitments to civic action, witnessed by the community.', icon: Scroll },
       { href: '/elections', label: 'Civic Elections', description: 'Vote on proposed constitutional changes and major resolutions.', icon: Vote },
       { href: '/referendums', label: 'Civic Referendums', description: 'Community-wide votes on fundamental civic questions.', icon: Scale },
