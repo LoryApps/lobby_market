@@ -37,6 +37,7 @@ import {
   Search,
   Shield,
   Tag,
+  Sun,
   ThumbsUp,
   Trash2,
   UserCheck,
@@ -861,6 +862,27 @@ export function DelegateClient() {
             </div>
           </div>
           <ArrowRight className="h-4 w-4 text-surface-600 group-hover:text-purple transition-colors" />
+        </Link>
+
+        {/* Daily Brief link */}
+        <Link
+          href="/delegate/daily-brief"
+          className="flex items-center justify-between w-full p-4 rounded-xl bg-gold/5 border border-gold/20 hover:border-gold/40 transition-colors group"
+        >
+          <div className="flex items-center gap-3">
+            <div className="h-8 w-8 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center flex-shrink-0">
+              <Sun className="h-4 w-4 text-gold" />
+            </div>
+            <div>
+              <p className="text-sm font-mono font-semibold text-white group-hover:text-gold transition-colors">
+                Daily Brief
+              </p>
+              <p className="text-[11px] font-mono text-surface-600">
+                What your delegates voted on today
+              </p>
+            </div>
+          </div>
+          <ArrowRight className="h-4 w-4 text-surface-600 group-hover:text-gold transition-colors" />
         </Link>
 
         {/* Delegate leaderboard link */}
