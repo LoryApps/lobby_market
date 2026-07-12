@@ -5,6 +5,7 @@ import {
   ChevronRight,
   Crown,
   FileText,
+  Flag,
   Gavel,
   Landmark,
   MessageSquare,
@@ -748,6 +749,15 @@ export default async function GovernmentPage() {
                     color: 'text-purple',
                     bg: 'bg-purple/5',
                     border: 'border-purple/20',
+                  },
+                  {
+                    href: '/opposition',
+                    label: 'HM Opposition',
+                    sublabel: 'Official opposition bench',
+                    icon: Flag,
+                    color: 'text-against-400',
+                    bg: 'bg-against-500/5',
+                    border: 'border-against-500/20',
                   },
                   {
                     href: '/shadow-cabinet',

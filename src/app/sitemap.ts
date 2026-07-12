@@ -344,6 +344,18 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/questions/best`, changeFrequency: 'hourly', priority: 0.75 },
   { url: `${BASE_URL}/questions/unanswered`, changeFrequency: 'always', priority: 0.73 },
   { url: `${BASE_URL}/questions/leaders`, changeFrequency: 'daily', priority: 0.72 },
+  // Parliamentary / Westminster institutions
+  { url: `${BASE_URL}/parliament`,        changeFrequency: 'daily',  priority: 0.78 },
+  { url: `${BASE_URL}/government`,        changeFrequency: 'daily',  priority: 0.78 },
+  { url: `${BASE_URL}/opposition`,        changeFrequency: 'daily',  priority: 0.78 },
+  { url: `${BASE_URL}/speaker`,           changeFrequency: 'weekly', priority: 0.72 },
+  { url: `${BASE_URL}/shadow-cabinet`,    changeFrequency: 'daily',  priority: 0.75 },
+  { url: `${BASE_URL}/order-paper`,       changeFrequency: 'daily',  priority: 0.73 },
+  { url: `${BASE_URL}/committee-reports`, changeFrequency: 'weekly', priority: 0.70 },
+  { url: `${BASE_URL}/oversight`,         changeFrequency: 'weekly', priority: 0.70 },
+  { url: `${BASE_URL}/civic-questions`,   changeFrequency: 'always', priority: 0.78 },
+  { url: `${BASE_URL}/motions`,           changeFrequency: 'hourly', priority: 0.75 },
+  { url: `${BASE_URL}/grand-council`,     changeFrequency: 'daily',  priority: 0.72 },
 ]
 
 export const dynamic = 'force-dynamic'
