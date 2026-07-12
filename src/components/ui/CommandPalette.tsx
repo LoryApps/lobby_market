@@ -177,6 +177,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'parliament',
+    label: 'The Parliament',
+    sublabel: 'Westminster hub — Speaker, Order Paper, Committees, and more',
+    href: '/parliament',
+    icon: Landmark,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
     id: 'floor',
     label: 'The Floor',
     sublabel: 'Watch consensus form in real-time',
