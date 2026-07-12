@@ -16,6 +16,7 @@ import {
   X,
   Zap,
 } from 'lucide-react'
+
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { Avatar } from '@/components/ui/Avatar'
@@ -346,7 +347,7 @@ export function ShadowCabinetClient() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.1 }}
-          className="bg-surface-100 border border-surface-300 rounded-xl px-4 py-3 mb-6 flex items-start gap-3"
+          className="bg-surface-100 border border-surface-300 rounded-xl px-4 py-3 mb-3 flex items-start gap-3"
         >
           <Sparkles className="h-4 w-4 text-gold mt-0.5 shrink-0" aria-hidden="true" />
           <div className="text-xs text-surface-500 leading-relaxed">
@@ -354,6 +355,28 @@ export function ShadowCabinetClient() {
             Vote on topics and write strong arguments in your chosen policy category. The more active
             and credible you are, the higher you rank. Rankings update in real-time.
           </div>
+        </motion.div>
+
+        {/* Questions Time CTA */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.15 }}
+          className="mb-6"
+        >
+          <Link
+            href="/civic-questions"
+            className="flex items-center justify-between bg-surface-100 border border-for-500/20 hover:border-for-500/40 rounded-xl px-4 py-3 transition-colors group"
+          >
+            <div className="flex items-center gap-3">
+              <MessageSquare className="h-4 w-4 text-for-400" aria-hidden="true" />
+              <div>
+                <p className="text-xs font-mono font-semibold text-white">Questions Time</p>
+                <p className="text-xs font-mono text-surface-500">Hold ministers accountable — Westminster-style Q&amp;A</p>
+              </div>
+            </div>
+            <ChevronRight className="h-4 w-4 text-surface-500 group-hover:text-for-400 transition-colors" />
+          </Link>
         </motion.div>
 
         {/* Error */}
