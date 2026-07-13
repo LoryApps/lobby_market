@@ -29,6 +29,10 @@ const nextConfig = {
 
   // ── Bundle optimisations ──────────────────────────────────────────────────
   experimental: {
+    // Exclude .git from file tracing to prevent EMFILE errors during static generation.
+    outputFileTracingExcludes: {
+      '*': ['.git/**', '.git/logs/**'],
+    },
     // Reduces bundle size by only importing the specific sub-paths used.
     // Critical for lucide-react (300+ icons), framer-motion, and Three.js helpers.
     optimizePackageImports: [
