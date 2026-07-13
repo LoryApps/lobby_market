@@ -207,6 +207,7 @@ const SECTIONS: FeatureSection[] = [
       { href: '/edm', label: 'Early Day Motions', sublabel: 'Parliamentary notice board', icon: ScrollText },
       { href: '/petitions', label: 'Civic Petitions', sublabel: 'Community-backed demands', icon: FileText },
       { href: '/grand-council', label: 'Grand Council', sublabel: 'Top-level governing body', icon: Crown },
+      { href: '/lords', label: 'House of Lords', sublabel: 'Second chamber reviewing laws', icon: Crown },
     ],
   },
   {

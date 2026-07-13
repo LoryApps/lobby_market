@@ -322,6 +322,17 @@ export default async function ParliamentPage() {
       countLabel: 'active motions',
     },
     {
+      title: 'House of Lords',
+      description: 'The revising chamber — Lords review newly established laws and vote to ratify or send them back.',
+      href: '/lords',
+      icon: Shield,
+      color: 'text-gold',
+      bg: 'bg-gold/5',
+      border: 'border-gold/20',
+      status: 'In Session',
+      statusColor: 'bg-gold/10 border-gold/30 text-gold',
+    },
+    {
       title: 'HM Government',
       description: 'The ruling coalition, Prime Minister, and legislative programme in power.',
       href: '/government',
