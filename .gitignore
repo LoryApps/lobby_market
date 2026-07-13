@@ -34,3 +34,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# profiling artifacts
+*.cpuprofile
+*.heapprofile
