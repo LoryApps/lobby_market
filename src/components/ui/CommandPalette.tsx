@@ -627,6 +627,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'dispatch',
+    label: 'The Civic Dispatch',
+    sublabel: 'Official daily gazette — new laws, near-consensus topics, upcoming debates, and top arguments',
+    href: '/dispatch',
+    icon: Scroll,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'daily',
     label: 'Daily Dashboard',
     sublabel: 'Platform stats, hot topics, controversy of the day, and your unvoted recommendations',
