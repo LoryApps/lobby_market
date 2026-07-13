@@ -33,6 +33,8 @@ const nextConfig = {
     outputFileTracingExcludes: {
       '*': ['.git/**', '.git/logs/**'],
     },
+    // Limit parallel workers to avoid EMFILE (too many open files) with 700+ routes.
+    cpus: 1,
     // Reduces bundle size by only importing the specific sub-paths used.
     // Critical for lucide-react (300+ icons), framer-motion, and Three.js helpers.
     optimizePackageImports: [

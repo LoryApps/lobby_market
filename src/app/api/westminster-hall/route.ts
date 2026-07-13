@@ -38,11 +38,13 @@ export interface WHListResponse {
   sessions: WHSession[]
 }
 
-export async function GET() {
+export async function GET(req: Request) {
+  const url = new URL(req.url)
+  const past = url.searchParams.get('past') === '1'
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  const { data: rows, error } = await supabase
+  const base = supabase
     .from('westminster_hall_sessions')
     .select(`
       id, title, motion, status, scheduled_at, duration_mins,
@@ -55,10 +57,16 @@ export async function GET() {
         id, statement, category, status, blue_pct
       )
     `)
-    .in('status', ['live', 'scheduled', 'approved', 'requested'])
-    .order('status')
-    .order('scheduled_at', { ascending: true, nullsFirst: false })
     .limit(50)
+
+  const { data: rows, error } = past
+    ? await base
+        .in('status', ['concluded', 'withdrawn'])
+        .order('concluded_at', { ascending: false, nullsFirst: false })
+    : await base
+        .in('status', ['live', 'scheduled', 'approved', 'requested'])
+        .order('status')
+        .order('scheduled_at', { ascending: true, nullsFirst: false })
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })

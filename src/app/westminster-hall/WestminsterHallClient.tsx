@@ -266,6 +266,11 @@ function SessionCard({
               · {session.speech_count} speech{session.speech_count !== 1 ? 'es' : ''}
             </span>
           )}
+          {session.status === 'concluded' && session.concluded_at && (
+            <span className="text-[10px] font-mono text-surface-600">
+              · ended {new Date(session.concluded_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+            </span>
+          )}
         </div>
 
         {needsSupport && (
@@ -851,6 +856,7 @@ const TABS = [
   { id: 'live',      label: 'Live' },
   { id: 'scheduled', label: 'Scheduled' },
   { id: 'requested', label: 'Petitioning' },
+  { id: 'past',      label: 'Past' },
 ] as const
 
 type TabId = typeof TABS[number]['id']
@@ -860,6 +866,8 @@ type TabId = typeof TABS[number]['id']
 export function WestminsterHallClient() {
   const [data, setData] = useState<WHListResponse | null>(null)
   const [loading, setLoading] = useState(true)
+  const [pastData, setPastData] = useState<WHListResponse | null>(null)
+  const [pastLoading, setPastLoading] = useState(false)
   const [tab, setTab] = useState<TabId>('all')
   const [selectedSession, setSelectedSession] = useState<WHSession | null>(null)
   const [showRequestForm, setShowRequestForm] = useState(false)
@@ -874,10 +882,26 @@ export function WestminsterHallClient() {
     }
   }, [])
 
+  const loadPast = useCallback(async () => {
+    setPastLoading(true)
+    try {
+      const res = await fetch('/api/westminster-hall?past=1')
+      if (res.ok) setPastData(await res.json() as WHListResponse)
+    } finally {
+      setPastLoading(false)
+    }
+  }, [])
+
   useEffect(() => { load() }, [load])
 
+  useEffect(() => {
+    if (tab === 'past' && pastData === null && !pastLoading) {
+      loadPast()
+    }
+  }, [tab, pastData, pastLoading, loadPast])
+
   function handleSupportToggle(id: string, nowSupported: boolean) {
-    setData((d) => {
+    const updater = (d: WHListResponse | null): WHListResponse | null => {
       if (!d) return d
       return {
         sessions: d.sessions.map((s) =>
@@ -886,7 +910,9 @@ export function WestminsterHallClient() {
             : s
         ),
       }
-    })
+    }
+    setData(updater)
+    setPastData(updater)
   }
 
   const allSessions = data?.sessions ?? []
@@ -894,7 +920,11 @@ export function WestminsterHallClient() {
     ? allSessions
     : tab === 'requested'
       ? allSessions.filter((s) => s.status === 'requested' || s.status === 'approved')
-      : allSessions.filter((s) => s.status === tab)
+      : tab === 'past'
+        ? (pastData?.sessions ?? [])
+        : allSessions.filter((s) => s.status === tab)
+
+  const isLoading = tab === 'past' ? pastLoading : loading
 
   const liveSessions = allSessions.filter((s) => s.status === 'live')
 
@@ -1015,7 +1045,9 @@ export function WestminsterHallClient() {
               ? allSessions.length
               : t.id === 'requested'
                 ? allSessions.filter((s) => s.status === 'requested' || s.status === 'approved').length
-                : allSessions.filter((s) => s.status === t.id).length
+                : t.id === 'past'
+                  ? (pastData?.sessions.length ?? 0)
+                  : allSessions.filter((s) => s.status === t.id).length
             return (
               <button
                 key={t.id}
@@ -1043,7 +1075,7 @@ export function WestminsterHallClient() {
 
         {/* Sessions grid */}
         <AnimatePresence mode="wait">
-          {loading ? (
+          {isLoading ? (
             <motion.div key="skel" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {Array.from({ length: 4 }).map((_, i) => (
@@ -1055,18 +1087,29 @@ export function WestminsterHallClient() {
             <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
               <EmptyState
                 icon={Mic}
-                title={tab === 'live' ? 'No live sessions' : tab === 'scheduled' ? 'Nothing scheduled' : 'No sessions yet'}
+                title={
+                  tab === 'live' ? 'No live sessions'
+                  : tab === 'scheduled' ? 'Nothing scheduled'
+                  : tab === 'past' ? 'No concluded sessions'
+                  : 'No sessions yet'
+                }
                 description={
                   tab === 'live'
                     ? 'Check back later — live debates appear here as they start.'
-                    : tab === 'all'
-                      ? 'Be the first to request a Westminster Hall debate slot.'
-                      : 'No sessions in this category yet.'
+                    : tab === 'past'
+                      ? 'Concluded Westminster Hall debates will appear here once sessions have run.'
+                      : tab === 'all'
+                        ? 'Be the first to request a Westminster Hall debate slot.'
+                        : 'No sessions in this category yet.'
                 }
-                actions={[
-                  { label: 'Request a slot', onClick: () => setShowRequestForm(true) },
-                  { label: 'View Parliament', href: '/parliament' },
-                ]}
+                actions={
+                  tab === 'past'
+                    ? [{ label: 'View Parliament', href: '/parliament' }]
+                    : [
+                        { label: 'Request a slot', onClick: () => setShowRequestForm(true) },
+                        { label: 'View Parliament', href: '/parliament' },
+                      ]
+                }
               />
             </motion.div>
           ) : (
