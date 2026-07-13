@@ -208,7 +208,7 @@ function AssentCard({ record }: { record: AssentRecord }) {
 
           {record.proclamation && (
             <blockquote className="text-xs text-surface-400 italic border-l-2 border-gold/30 pl-3 mb-3 line-clamp-2">
-              "{record.proclamation}"
+              &ldquo;{record.proclamation}&rdquo;
             </blockquote>
           )}
 
