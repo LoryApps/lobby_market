@@ -244,6 +244,7 @@ export function TopBar() {
                   </div>
                 </Link>
               )}
+              <Link href="/hub" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><LayoutGrid className="h-3.5 w-3.5 flex-shrink-0 text-gold" aria-hidden="true" />Feature Hub</Link>
               <Link href="/topics" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Layers className="h-3.5 w-3.5 flex-shrink-0 text-for-300" aria-hidden="true" />All Topics</Link>
               <Link href="/issues" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><Globe className="h-3.5 w-3.5 flex-shrink-0 text-emerald" aria-hidden="true" />Civic Issues Hub</Link>
               <Link href="/profile/me" role="menuitem" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-200 hover:text-white transition-colors"><User className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />My Profile</Link>

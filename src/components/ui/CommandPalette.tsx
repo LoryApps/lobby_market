@@ -2167,6 +2167,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'hub',
+    label: 'Feature Hub',
+    sublabel: 'All 100+ Lobby Market features organized by category — vote, debate, analyse, discover',
+    href: '/hub',
+    icon: LayoutGrid,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'explore',
     label: 'Explore',
     sublabel: 'Browse all Lobby Market features — AI tools, games, analytics, and more',
