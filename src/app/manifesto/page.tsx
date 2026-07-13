@@ -17,6 +17,7 @@ import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   ArrowLeft,
+  ArrowRight,
   BarChart2,
   BookOpen,
   Check,
@@ -24,6 +25,7 @@ import {
   ExternalLink,
   FileText,
   Gavel,
+  Globe,
   Loader2,
   RefreshCw,
   Scroll,
@@ -230,12 +232,14 @@ function ManifestoSkeleton() {
 // ─── Page ──────────────────────────────────────────────────────────────────
 
 type Phase = 'idle' | 'generating' | 'done' | 'error' | 'insufficient' | 'unavailable'
+type PublishState = 'idle' | 'publishing' | 'published' | 'error'
 
 export default function ManifestoPage() {
   const [phase, setPhase] = useState<Phase>('idle')
   const [manifesto, setManifesto] = useState<ManifestoResult | null>(null)
   const [username, setUsername] = useState<string>('')
   const [copied, setCopied] = useState(false)
+  const [publishState, setPublishState] = useState<PublishState>('idle')
   const copyTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Load username for attribution
@@ -307,6 +311,23 @@ export default function ManifestoPage() {
       '_blank',
       'noopener,noreferrer'
     )
+  }
+
+  async function handlePublish() {
+    if (!manifesto || publishState === 'publishing' || publishState === 'published') return
+    setPublishState('publishing')
+    try {
+      const res = await fetch('/api/manifesto/publish', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(manifesto),
+      })
+      if (!res.ok) throw new Error('publish failed')
+      setPublishState('published')
+    } catch {
+      setPublishState('error')
+      setTimeout(() => setPublishState('idle'), 3000)
+    }
   }
 
   return (
@@ -475,7 +496,51 @@ export default function ManifestoPage() {
               className="space-y-4"
             >
               {/* Action bar */}
-              <div className="flex items-center gap-2 justify-end">
+              <div className="flex items-center gap-2 flex-wrap">
+                {/* Publish to gallery — primary CTA */}
+                {publishState === 'published' ? (
+                  <div className="flex items-center gap-1.5 mr-auto">
+                    <Link
+                      href="/manifestos"
+                      className={cn(
+                        'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-semibold',
+                        'bg-emerald/10 border border-emerald/40 text-emerald',
+                        'hover:bg-emerald/20 transition-colors',
+                        'focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald/50'
+                      )}
+                    >
+                      <Check className="h-3.5 w-3.5" aria-hidden="true" />
+                      Published — View Gallery
+                      <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                    </Link>
+                  </div>
+                ) : (
+                  <button
+                    onClick={handlePublish}
+                    disabled={publishState === 'publishing'}
+                    aria-label="Publish manifesto to public gallery"
+                    className={cn(
+                      'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-semibold mr-auto',
+                      'border transition-colors',
+                      'focus:outline-none focus-visible:ring-2 focus-visible:ring-for-500/40',
+                      publishState === 'error'
+                        ? 'bg-against-500/10 border-against-500/40 text-against-400'
+                        : 'bg-for-500/10 border-for-500/40 text-for-300 hover:bg-for-500/20'
+                    )}
+                  >
+                    {publishState === 'publishing' ? (
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
+                    ) : (
+                      <Globe className="h-3.5 w-3.5" aria-hidden="true" />
+                    )}
+                    {publishState === 'error'
+                      ? 'Publish failed'
+                      : publishState === 'publishing'
+                      ? 'Publishing…'
+                      : 'Publish to Gallery'}
+                  </button>
+                )}
+
                 <button
                   onClick={handleTweet}
                   aria-label="Share manifesto on X / Twitter"
@@ -536,7 +601,14 @@ export default function ManifestoPage() {
                 >
                   Regenerate
                 </button>{' '}
-                for a fresh perspective.
+                for a fresh perspective.{' '}
+                <Link
+                  href="/manifestos"
+                  className="text-for-400 hover:text-for-300 underline underline-offset-2 transition-colors"
+                >
+                  Browse all manifestos
+                </Link>
+                .
               </p>
             </motion.div>
           )}
