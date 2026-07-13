@@ -19,6 +19,8 @@ import {
   Archive,
   ArrowRight,
   BookOpen,
+  Check,
+  ChevronDown,
   ChevronRight,
   Crown,
   FileText,
@@ -26,8 +28,11 @@ import {
   Gavel,
   Loader2,
   MessageSquare,
+  PenLine,
+  Plus,
   RefreshCw,
   Scroll,
+  Send,
   Shield,
   Sparkles,
   Star,
@@ -687,6 +692,395 @@ function ArchivePanel({ data }: { data: KingsSpeechData }) {
   )
 }
 
+// ─── Deliver Speech Panel ─────────────────────────────────────────────────────
+
+type BillDraft = {
+  topic_id: string
+  statement: string
+  category: string | null
+  priority_label: 'flagship' | 'priority' | 'secondary'
+}
+
+function DeliverSpeechPanel({
+  candidateTopics,
+  coalitionName,
+  onDelivered,
+}: {
+  candidateTopics: ProgrammeBill[]
+  coalitionName: string | null
+  onDelivered: () => void
+}) {
+  const [expanded, setExpanded] = useState(false)
+  const [sessionName, setSessionName] = useState('')
+  const [preamble, setPreamble] = useState('')
+  const [selectedBills, setSelectedBills] = useState<BillDraft[]>([])
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  function toggleBill(topic: ProgrammeBill) {
+    setSelectedBills((prev) => {
+      const exists = prev.find((b) => b.topic_id === topic.topic_id)
+      if (exists) return prev.filter((b) => b.topic_id !== topic.topic_id)
+      return [...prev, {
+        topic_id: topic.topic_id,
+        statement: topic.statement,
+        category: topic.category,
+        priority_label: 'secondary' as const,
+      }]
+    })
+  }
+
+  function setPriority(topicId: string, label: 'flagship' | 'priority' | 'secondary') {
+    setSelectedBills((prev) =>
+      prev.map((b) => b.topic_id === topicId ? { ...b, priority_label: label } : b)
+    )
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!sessionName.trim() || preamble.length < 50 || selectedBills.length === 0) return
+    setSubmitting(true)
+    setError(null)
+    try {
+      const res = await fetch('/api/kings-speech', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'deliver',
+          session_name: sessionName.trim(),
+          preamble,
+          bills: selectedBills.map((b) => ({ topic_id: b.topic_id, priority_label: b.priority_label })),
+        }),
+      })
+      const json = await res.json()
+      if (!res.ok) throw new Error(json.error ?? 'Failed to deliver speech')
+      onDelivered()
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to deliver speech')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const PRIORITY_OPTS: Array<{ label: 'flagship' | 'priority' | 'secondary'; text: string; cls: string }> = [
+    { label: 'flagship',  text: 'Flagship',  cls: 'border-gold/40 text-gold bg-gold/10' },
+    { label: 'priority',  text: 'Priority',  cls: 'border-for-500/40 text-for-400 bg-for-500/10' },
+    { label: 'secondary', text: 'Secondary', cls: 'border-surface-400/30 text-surface-400 bg-surface-200' },
+  ]
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="rounded-2xl border border-gold/25 bg-gradient-to-b from-gold/5 to-surface-100 overflow-hidden"
+    >
+      <button
+        onClick={() => setExpanded((v) => !v)}
+        className="w-full flex items-center gap-3 p-4 text-left hover:bg-white/5 transition-colors"
+      >
+        <div className="w-9 h-9 rounded-xl bg-gold/10 border border-gold/20 flex items-center justify-center flex-shrink-0">
+          <Crown className="w-4.5 h-4.5 text-gold" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-bold text-gold">Deliver the King&apos;s Speech</p>
+          <p className="text-xs text-surface-400">
+            {coalitionName ? `As leader of ${coalitionName}` : 'Table the governing programme'}
+          </p>
+        </div>
+        <ChevronDown className={cn('w-4 h-4 text-surface-400 transition-transform', expanded && 'rotate-180')} />
+      </button>
+
+      <AnimatePresence>
+        {expanded && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="overflow-hidden"
+          >
+            <form onSubmit={handleSubmit} className="px-4 pb-5 space-y-4 border-t border-gold/10 pt-4">
+              {/* Session name */}
+              <div>
+                <label className="block text-xs font-semibold text-surface-400 mb-1.5 uppercase tracking-wider">
+                  Session Name
+                </label>
+                <input
+                  value={sessionName}
+                  onChange={(e) => setSessionName(e.target.value)}
+                  placeholder="e.g. Third Session 2026"
+                  maxLength={120}
+                  className="w-full px-3 py-2 rounded-lg bg-surface-200 border border-surface-300/60 text-sm text-white placeholder-surface-500 focus:outline-none focus:border-gold/40"
+                />
+              </div>
+
+              {/* Preamble */}
+              <div>
+                <label className="block text-xs font-semibold text-surface-400 mb-1.5 uppercase tracking-wider">
+                  Preamble
+                  <span className={cn('ml-2 font-mono', preamble.length < 50 ? 'text-against-400' : 'text-emerald')}>
+                    {preamble.length}/2000
+                  </span>
+                </label>
+                <textarea
+                  value={preamble}
+                  onChange={(e) => setPreamble(e.target.value)}
+                  rows={5}
+                  maxLength={2000}
+                  placeholder="My Government's priority is to…"
+                  className="w-full px-3 py-2 rounded-lg bg-surface-200 border border-surface-300/60 text-sm text-white placeholder-surface-500 focus:outline-none focus:border-gold/40 resize-none"
+                />
+                {preamble.length < 50 && preamble.length > 0 && (
+                  <p className="text-xs text-against-400 mt-1">{50 - preamble.length} more characters needed</p>
+                )}
+              </div>
+
+              {/* Bill picker */}
+              <div>
+                <label className="block text-xs font-semibold text-surface-400 mb-2 uppercase tracking-wider">
+                  Legislative Programme
+                  <span className="ml-2 text-surface-500 normal-case font-normal">
+                    {selectedBills.length} selected
+                  </span>
+                </label>
+
+                {/* Selected bills with priority */}
+                {selectedBills.length > 0 && (
+                  <div className="space-y-2 mb-3">
+                    {selectedBills.map((b) => (
+                      <div key={b.topic_id} className="flex items-start gap-2 p-2 rounded-lg bg-surface-200/60 border border-surface-300/40">
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs text-white leading-snug mb-1.5 line-clamp-1">{b.statement}</p>
+                          <div className="flex gap-1">
+                            {PRIORITY_OPTS.map((opt) => (
+                              <button
+                                key={opt.label}
+                                type="button"
+                                onClick={() => setPriority(b.topic_id, opt.label)}
+                                className={cn(
+                                  'px-2 py-0.5 rounded border text-xs font-medium transition-colors',
+                                  b.priority_label === opt.label
+                                    ? opt.cls
+                                    : 'border-surface-400/20 text-surface-500 bg-transparent hover:bg-surface-300/30'
+                                )}
+                              >
+                                {opt.text}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setSelectedBills((prev) => prev.filter((s) => s.topic_id !== b.topic_id))}
+                          className="p-1 rounded text-surface-500 hover:text-against-400 hover:bg-against-500/10 transition-colors flex-shrink-0"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Candidate topics */}
+                <div className="space-y-1 max-h-56 overflow-y-auto pr-1">
+                  {candidateTopics.map((topic) => {
+                    const isSelected = !!selectedBills.find((b) => b.topic_id === topic.topic_id)
+                    return (
+                      <button
+                        key={topic.topic_id}
+                        type="button"
+                        onClick={() => toggleBill(topic)}
+                        className={cn(
+                          'w-full flex items-center gap-2 p-2 rounded-lg border text-left transition-colors text-xs',
+                          isSelected
+                            ? 'bg-for-500/10 border-for-500/30 text-for-300'
+                            : 'bg-surface-200/40 border-surface-300/30 text-surface-400 hover:border-surface-400/50 hover:text-surface-300'
+                        )}
+                      >
+                        <div className={cn(
+                          'w-4 h-4 rounded border flex items-center justify-center flex-shrink-0',
+                          isSelected ? 'bg-for-500 border-for-500' : 'border-surface-400/40'
+                        )}>
+                          {isSelected && <Check className="w-2.5 h-2.5 text-white" />}
+                        </div>
+                        <span className="flex-1 leading-snug line-clamp-1">{topic.statement}</span>
+                        {topic.category && (
+                          <span className={cn('text-xs shrink-0', catColor(topic.category).text)}>
+                            {topic.category}
+                          </span>
+                        )}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {error && (
+                <p className="text-xs text-against-400 bg-against-500/10 border border-against-500/20 rounded-lg px-3 py-2">
+                  {error}
+                </p>
+              )}
+
+              <button
+                type="submit"
+                disabled={submitting || !sessionName.trim() || preamble.length < 50 || selectedBills.length === 0}
+                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gold/15 border border-gold/30 text-gold text-sm font-semibold hover:bg-gold/25 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                {submitting ? 'Delivering…' : 'Deliver the Speech'}
+              </button>
+            </form>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  )
+}
+
+// ─── Respond Panel ────────────────────────────────────────────────────────────
+
+function RespondPanel({
+  speechId,
+  coalitionName,
+  onResponded,
+}: {
+  speechId: string
+  coalitionName: string | null
+  onResponded: () => void
+}) {
+  const [expanded, setExpanded] = useState(false)
+  const [responseType, setResponseType] = useState<'gracious_address' | 'opposition' | 'amendment'>('opposition')
+  const [content, setContent] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (content.length < 20) return
+    setSubmitting(true)
+    setError(null)
+    try {
+      const res = await fetch('/api/kings-speech', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'respond', speech_id: speechId, response_type: responseType, content }),
+      })
+      const json = await res.json()
+      if (!res.ok) throw new Error(json.error ?? 'Failed to submit response')
+      onResponded()
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to submit response')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const RT_OPTS: Array<{ value: 'gracious_address' | 'opposition' | 'amendment'; label: string; desc: string; cls: string }> = [
+    { value: 'gracious_address', label: 'Gracious Address', desc: 'Support the programme', cls: 'border-emerald/40 text-emerald bg-emerald/10' },
+    { value: 'opposition',       label: 'Opposition',       desc: 'Reject the programme', cls: 'border-against-400/40 text-against-400 bg-against-500/10' },
+    { value: 'amendment',        label: 'Amendment',        desc: 'Propose changes',       cls: 'border-gold/40 text-gold bg-gold/10' },
+  ]
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="rounded-2xl border border-surface-200/80 bg-surface-100 overflow-hidden"
+    >
+      <button
+        onClick={() => setExpanded((v) => !v)}
+        className="w-full flex items-center gap-3 p-4 text-left hover:bg-white/5 transition-colors"
+      >
+        <div className="w-9 h-9 rounded-xl bg-surface-200 border border-surface-300/50 flex items-center justify-center flex-shrink-0">
+          <PenLine className="w-4 h-4 text-surface-400" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-bold text-white">Submit a Formal Response</p>
+          <p className="text-xs text-surface-400">
+            {coalitionName ? `Respond on behalf of ${coalitionName}` : 'Table your coalition\'s formal response'}
+          </p>
+        </div>
+        <ChevronDown className={cn('w-4 h-4 text-surface-400 transition-transform', expanded && 'rotate-180')} />
+      </button>
+
+      <AnimatePresence>
+        {expanded && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="overflow-hidden"
+          >
+            <form onSubmit={handleSubmit} className="px-4 pb-5 space-y-4 border-t border-surface-200/60 pt-4">
+              {/* Response type */}
+              <div>
+                <label className="block text-xs font-semibold text-surface-400 mb-2 uppercase tracking-wider">
+                  Response Type
+                </label>
+                <div className="grid grid-cols-3 gap-2">
+                  {RT_OPTS.map((opt) => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      onClick={() => setResponseType(opt.value)}
+                      className={cn(
+                        'flex flex-col items-center gap-0.5 px-2 py-2 rounded-lg border text-xs font-medium transition-colors',
+                        responseType === opt.value
+                          ? opt.cls
+                          : 'border-surface-300/40 text-surface-400 hover:border-surface-400/60 hover:text-surface-300'
+                      )}
+                    >
+                      <span>{opt.label}</span>
+                      <span className={cn('text-xs font-normal opacity-60', responseType === opt.value ? '' : 'text-surface-500')}>
+                        {opt.desc}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Content */}
+              <div>
+                <label className="block text-xs font-semibold text-surface-400 mb-1.5 uppercase tracking-wider">
+                  Address
+                  <span className={cn('ml-2 font-mono', content.length < 20 && content.length > 0 ? 'text-against-400' : 'text-surface-500')}>
+                    {content.length}/1000
+                  </span>
+                </label>
+                <textarea
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  rows={5}
+                  maxLength={1000}
+                  placeholder="We rise to address the legislative programme set out…"
+                  className="w-full px-3 py-2 rounded-lg bg-surface-200 border border-surface-300/60 text-sm text-white placeholder-surface-500 focus:outline-none focus:border-surface-400 resize-none"
+                />
+                {content.length < 20 && content.length > 0 && (
+                  <p className="text-xs text-against-400 mt-1">{20 - content.length} more characters needed</p>
+                )}
+              </div>
+
+              {error && (
+                <p className="text-xs text-against-400 bg-against-500/10 border border-against-500/20 rounded-lg px-3 py-2">
+                  {error}
+                </p>
+              )}
+
+              <button
+                type="submit"
+                disabled={submitting || content.length < 20}
+                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-surface-200 border border-surface-300/60 text-white text-sm font-semibold hover:bg-surface-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
+                {submitting ? 'Submitting…' : 'Submit Response'}
+              </button>
+            </form>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  )
+}
+
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export function KingsSpeechClient() {
@@ -723,7 +1117,7 @@ export function KingsSpeechClient() {
     await fetch('/api/kings-speech', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ speech_id: speechId, reaction }),
+      body: JSON.stringify({ action: 'react', speech_id: speechId, reaction }),
     })
   }
 
@@ -768,6 +1162,15 @@ export function KingsSpeechClient() {
             </div>
           ) : data ? (
             <div className="space-y-8">
+              {/* Deliver panel — shown to governing coalition leader when no recent speech */}
+              {data.can_deliver && (
+                <DeliverSpeechPanel
+                  candidateTopics={data.candidate_topics}
+                  coalitionName={data.user_coalition_name}
+                  onDelivered={fetchData}
+                />
+              )}
+
               {data.latest ? (
                 <SpeechView
                   speech={data.latest}
@@ -776,6 +1179,15 @@ export function KingsSpeechClient() {
                 />
               ) : (
                 <FallbackProgramme data={data.fallback} />
+              )}
+
+              {/* Respond panel — shown to non-governing coalition officers after a speech */}
+              {data.can_respond && data.latest && (
+                <RespondPanel
+                  speechId={data.latest.id}
+                  coalitionName={data.user_coalition_name}
+                  onResponded={fetchData}
+                />
               )}
 
               <ArchivePanel data={data} />
