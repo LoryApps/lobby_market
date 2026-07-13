@@ -631,6 +631,7 @@ export function LordsClient() {
             { href: '/government', label: 'HM Government' },
             { href: '/laws', label: 'Law Codex' },
             { href: '/grand-council', label: 'Grand Council' },
+            { href: '/royal-assent', label: 'Royal Assent' },
           ].map((l) => (
             <Link
               key={l.href}
