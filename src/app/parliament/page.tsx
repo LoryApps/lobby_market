@@ -22,6 +22,7 @@ import {
   AlertCircle,
   MessageSquare,
   ClipboardList,
+  BarChart3,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
@@ -797,6 +798,7 @@ export default async function ParliamentPage() {
                   { href: '/grand-council', label: 'Table a Motion', sublabel: 'Move a binding resolution', icon: Landmark, color: 'text-gold' },
                   { href: '/civic-questions/ask', label: 'Ask a Question', sublabel: 'Submit to Civic Questions Time', icon: MessageSquare, color: 'text-for-300' },
                   { href: '/hearings/new', label: 'Open a Hearing', sublabel: 'Call for formal testimony', icon: Mic, color: 'text-emerald' },
+                  { href: '/budget', label: 'The Civic Budget', sublabel: 'Annual allocation — approve or reject', icon: BarChart3, color: 'text-gold' },
                   { href: '/confidence', label: 'Motion of No Confidence', sublabel: 'Formally challenge the governing coalition', icon: Scale, color: 'text-against-400' },
                   { href: '/oversight', label: 'Review a Law', sublabel: 'Submit established law for scrutiny', icon: Shield, color: 'text-against-300' },
                 ].map((action) => {

@@ -20,6 +20,7 @@ import {
   CheckCircle2,
   AlertTriangle,
   TrendingUp,
+  BarChart3,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
@@ -740,6 +741,15 @@ export default async function GovernmentPage() {
                     color: 'text-for-400',
                     bg: 'bg-for-500/5',
                     border: 'border-for-500/20',
+                  },
+                  {
+                    href: '/budget',
+                    label: 'Civic Budget',
+                    sublabel: 'Annual category allocation',
+                    icon: BarChart3,
+                    color: 'text-gold',
+                    bg: 'bg-gold/5',
+                    border: 'border-gold/20',
                   },
                   {
                     href: '/order-paper',
