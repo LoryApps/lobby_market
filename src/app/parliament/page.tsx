@@ -300,6 +300,17 @@ export default async function ParliamentPage() {
       countLabel: 'active items',
     },
     {
+      title: 'Select Committees',
+      description: 'Ten standing committees scrutinising policy across all civic domains. Follow inquiries, submit evidence.',
+      href: '/committees',
+      icon: Scale,
+      color: 'text-for-400',
+      bg: 'bg-for-500/5',
+      border: 'border-for-500/20',
+      count: 10,
+      countLabel: 'standing committees',
+    },
+    {
       title: 'Committee Reports',
       description: 'Formal findings and policy recommendations from civic inquiry committees.',
       href: '/committee-reports',
@@ -807,6 +818,7 @@ export default async function ParliamentPage() {
               <div className="space-y-2">
                 {[
                   { href: '/topic/create', label: 'Propose a Topic', sublabel: 'Start new civic legislation', icon: FileText, color: 'text-for-400' },
+                  { href: '/committees', label: 'Select Committees', sublabel: 'Follow inquiries and submit evidence', icon: Scale, color: 'text-for-400' },
                   { href: '/committee-reports/new', label: 'Submit Committee Report', sublabel: 'Publish findings and recommendations', icon: ScrollText, color: 'text-purple' },
                   { href: '/grand-council', label: 'Table a Motion', sublabel: 'Move a binding resolution', icon: Landmark, color: 'text-gold' },
                   { href: '/civic-questions/ask', label: 'Ask a Question', sublabel: 'Submit to Civic Questions Time', icon: MessageSquare, color: 'text-for-300' },
