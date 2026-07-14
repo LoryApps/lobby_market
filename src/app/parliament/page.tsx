@@ -825,6 +825,7 @@ export default async function ParliamentPage() {
                   { href: '/hearings/new', label: 'Open a Hearing', sublabel: 'Call for formal testimony', icon: Mic, color: 'text-emerald' },
                   { href: '/pmqs', label: 'Prime Minister\'s Questions', sublabel: 'Submit and upvote questions for the PM', icon: HelpCircle, color: 'text-gold' },
                   { href: '/adjournment', label: 'Adjournment Debates', sublabel: 'Apply to raise any civic issue at end of sitting', icon: Mic, color: 'text-purple' },
+                  { href: '/urgent-questions', label: 'Urgent Questions', sublabel: 'Table a question demanding an immediate ministerial response', icon: Bell, color: 'text-gold' },
                   { href: '/hansard', label: 'The Civic Hansard', sublabel: 'Official daily record of all proceedings', icon: BookOpen, color: 'text-gold' },
                   { href: '/budget', label: 'The Civic Budget', sublabel: 'Annual allocation — approve or reject', icon: BarChart3, color: 'text-gold' },
                   { href: '/confidence', label: 'Motion of No Confidence', sublabel: 'Formally challenge the governing coalition', icon: Scale, color: 'text-against-400' },
