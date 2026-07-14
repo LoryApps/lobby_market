@@ -363,6 +363,10 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/hansard`,           changeFrequency: 'daily',  priority: 0.70 },
   { url: `${BASE_URL}/royal-assent`,      changeFrequency: 'daily',  priority: 0.75 },
   { url: `${BASE_URL}/confidence`,        changeFrequency: 'daily',  priority: 0.68 },
+  { url: `${BASE_URL}/divisions`,         changeFrequency: 'always', priority: 0.80 },
+  { url: `${BASE_URL}/supply-day`,        changeFrequency: 'always', priority: 0.78 },
+  { url: `${BASE_URL}/kings-speech`,      changeFrequency: 'weekly', priority: 0.72 },
+  { url: `${BASE_URL}/westminster-hall`,  changeFrequency: 'daily',  priority: 0.74 },
 ]
 
 export const dynamic = 'force-dynamic'
