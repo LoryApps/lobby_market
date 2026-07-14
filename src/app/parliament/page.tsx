@@ -597,7 +597,7 @@ export default async function ParliamentPage() {
                 icon={Bell}
                 title="Whip Guidance"
                 subtitle="Active coalition voting instructions"
-                href="/coalitions"
+                href="/whips"
                 badge={criticalWhips > 0 ? `${criticalWhips} critical` : undefined}
               />
               {whipGuidance.length === 0 ? (
