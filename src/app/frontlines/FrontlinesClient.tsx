@@ -35,6 +35,7 @@ import {
   ChevronUp,
   Filter,
   Flame,
+  Gavel,
   Globe,
   Loader2,
   RefreshCw,
@@ -748,12 +749,13 @@ export function FrontlinesClient() {
             {/* ── Related links ────────────────────────────────────────────── */}
             <div className="flex flex-wrap gap-2">
               {[
-                { href: '/triage',  label: 'Triage',   icon: Flame },
-                { href: '/seismic', label: 'Seismic',  icon: Zap },
-                { href: '/canary',  label: 'Canary',   icon: TrendingUp },
-                { href: '/surge',   label: 'Surge',    icon: TrendingUp },
-                { href: '/signals', label: 'Signals',  icon: BarChart2 },
-                { href: '/map',     label: 'Map View', icon: Globe },
+                { href: '/triage',    label: 'Triage',     icon: Flame },
+                { href: '/law-watch', label: 'Law Watch',  icon: Gavel },
+                { href: '/seismic',   label: 'Seismic',    icon: Zap },
+                { href: '/canary',    label: 'Canary',     icon: TrendingUp },
+                { href: '/surge',     label: 'Surge',      icon: TrendingUp },
+                { href: '/signals',   label: 'Signals',    icon: BarChart2 },
+                { href: '/map',       label: 'Map View',   icon: Globe },
               ].map(({ href, label, icon: Icon }) => (
                 <Link
                   key={href}

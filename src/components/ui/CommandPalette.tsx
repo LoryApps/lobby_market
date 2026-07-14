@@ -1397,6 +1397,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'law-watch',
+    label: 'Law Watch',
+    sublabel: 'Real-time tracker for topics in the voting phase — law probability, countdown timers, and momentum signals',
+    href: '/law-watch',
+    icon: Gavel,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'canary',
     label: 'The Civic Canary',
     sublabel: 'Early-warning signals — debates rising fast, quiet storms building, and argument surges before they trend',

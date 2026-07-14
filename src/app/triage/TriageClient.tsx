@@ -455,6 +455,9 @@ export function TriageClient() {
             <div className="mt-8 pt-6 border-t border-surface-300/50 flex items-center justify-between text-[11px] font-mono text-surface-500">
               <span>Updated {new Date(data.generated_at).toLocaleTimeString()}</span>
               <div className="flex items-center gap-3">
+                <Link href="/law-watch" className="hover:text-white transition-colors">
+                  Law Watch →
+                </Link>
                 <Link href="/tipping-point" className="hover:text-white transition-colors">
                   Tipping Point →
                 </Link>
