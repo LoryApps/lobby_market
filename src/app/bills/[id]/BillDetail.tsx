@@ -295,10 +295,61 @@ function VotePanel({
 
 // ─── Amendments ───────────────────────────────────────────────────────────────
 
-function AmendmentCard({ amendment }: { amendment: BillAmendment }) {
+function AmendmentCard({
+  amendment,
+  billId,
+  onVoted,
+}: {
+  amendment: BillAmendment
+  billId: string
+  onVoted: (amendmentId: string, result: { votes_for: number; votes_against: number; user_vote: boolean | null }) => void
+}) {
+  const [localVote, setLocalVote] = useState<boolean | null>(amendment.user_vote)
+  const [localFor, setLocalFor] = useState(amendment.votes_for)
+  const [localAgainst, setLocalAgainst] = useState(amendment.votes_against)
+  const [voting, setVoting] = useState(false)
+
   const statusConf = AMENDMENT_STATUS_CONFIG[amendment.status] ?? AMENDMENT_STATUS_CONFIG.tabled
-  const total = amendment.votes_for + amendment.votes_against
-  const forPct = total > 0 ? Math.round((amendment.votes_for / total) * 100) : null
+  const total = localFor + localAgainst
+  const forPct = total > 0 ? Math.round((localFor / total) * 100) : null
+  const canVote = amendment.status === 'tabled'
+
+  const castVote = async (v: boolean) => {
+    if (voting) return
+    const newVote = localVote === v ? null : v
+    setVoting(true)
+    // Optimistic update
+    const prevFor = localFor
+    const prevAgainst = localAgainst
+    const prevVote = localVote
+    if (localVote !== null) {
+      if (localVote) setLocalFor((n) => n - 1); else setLocalAgainst((n) => n - 1)
+    }
+    if (newVote !== null) {
+      if (newVote) setLocalFor((n) => n + 1); else setLocalAgainst((n) => n + 1)
+    }
+    setLocalVote(newVote)
+
+    try {
+      const res = await fetch(`/api/bills/${billId}/amendments/${amendment.id}/vote`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ vote: newVote }),
+      })
+      if (!res.ok) throw new Error('Vote failed')
+      const data = await res.json() as { votes_for: number; votes_against: number; user_vote: boolean | null }
+      setLocalFor(data.votes_for)
+      setLocalAgainst(data.votes_against)
+      setLocalVote(data.user_vote)
+      onVoted(amendment.id, data)
+    } catch {
+      setLocalFor(prevFor)
+      setLocalAgainst(prevAgainst)
+      setLocalVote(prevVote)
+    } finally {
+      setVoting(false)
+    }
+  }
 
   return (
     <div className="rounded-lg border border-surface-700/50 bg-surface-800/40 p-3">
@@ -314,14 +365,64 @@ function AmendmentCard({ amendment }: { amendment: BillAmendment }) {
         )}
       </div>
       <p className="text-surface-300 text-xs leading-relaxed">{amendment.amendment}</p>
-      {amendment.proposer && (
-        <div className="flex items-center gap-1.5 mt-2">
-          <Avatar src={amendment.proposer.avatar_url} username={amendment.proposer.username} size="xs" />
-          <span className="text-surface-500 text-[11px]">
-            {amendment.proposer.display_name ?? amendment.proposer.username}
-          </span>
-        </div>
-      )}
+
+      <div className="flex items-center justify-between mt-3">
+        {amendment.proposer && (
+          <div className="flex items-center gap-1.5">
+            <Avatar src={amendment.proposer.avatar_url} username={amendment.proposer.username} size="xs" />
+            <span className="text-surface-500 text-[11px]">
+              {amendment.proposer.display_name ?? amendment.proposer.username}
+            </span>
+          </div>
+        )}
+
+        {canVote && (
+          <div className="flex items-center gap-1.5 ml-auto">
+            <button
+              onClick={() => castVote(true)}
+              disabled={voting}
+              className={cn(
+                'flex items-center gap-1 px-2 py-1 rounded text-[11px] font-medium transition-colors disabled:opacity-50',
+                localVote === true
+                  ? 'bg-for-600/30 border border-for-600/60 text-for-300'
+                  : 'border border-surface-700/60 text-surface-400 hover:border-for-700/60 hover:text-for-400'
+              )}
+            >
+              {voting ? (
+                <Loader2 className="h-3 w-3 animate-spin" />
+              ) : (
+                <ThumbsUp className="h-3 w-3" />
+              )}
+              {localFor > 0 && <span>{localFor}</span>}
+            </button>
+            <button
+              onClick={() => castVote(false)}
+              disabled={voting}
+              className={cn(
+                'flex items-center gap-1 px-2 py-1 rounded text-[11px] font-medium transition-colors disabled:opacity-50',
+                localVote === false
+                  ? 'bg-against-900/30 border border-against-700/60 text-against-300'
+                  : 'border border-surface-700/60 text-surface-400 hover:border-against-700/60 hover:text-against-400'
+              )}
+            >
+              {voting ? (
+                <Loader2 className="h-3 w-3 animate-spin" />
+              ) : (
+                <ThumbsDown className="h-3 w-3" />
+              )}
+              {localAgainst > 0 && <span>{localAgainst}</span>}
+            </button>
+          </div>
+        )}
+
+        {!canVote && total > 0 && (
+          <div className="flex items-center gap-2 ml-auto text-[11px] text-surface-500">
+            <span className="text-for-400">{localFor} for</span>
+            <span>·</span>
+            <span className="text-against-400">{localAgainst} against</span>
+          </div>
+        )}
+      </div>
     </div>
   )
 }
@@ -677,7 +778,24 @@ export function BillDetail({ billId }: { billId: string }) {
               </h2>
               <div className="space-y-2">
                 {bill.amendments.map((amendment) => (
-                  <AmendmentCard key={amendment.id} amendment={amendment} />
+                  <AmendmentCard
+                    key={amendment.id}
+                    amendment={amendment}
+                    billId={billId}
+                    onVoted={(amendmentId, result) => {
+                      setBill((prev) => {
+                        if (!prev) return prev
+                        return {
+                          ...prev,
+                          amendments: prev.amendments.map((a) =>
+                            a.id === amendmentId
+                              ? { ...a, votes_for: result.votes_for, votes_against: result.votes_against, user_vote: result.user_vote }
+                              : a
+                          ),
+                        }
+                      })
+                    }}
+                  />
                 ))}
               </div>
             </div>

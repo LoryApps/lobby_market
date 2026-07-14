@@ -15,6 +15,7 @@ export interface BillAmendment {
   votes_against: number
   created_at: string
   proposer: { id: string; username: string; display_name: string | null; avatar_url: string | null } | null
+  user_vote: boolean | null
 }
 
 export interface BillDetail {
@@ -91,13 +92,16 @@ export async function GET(
     .eq('bill_id', params.id)
     .order('created_at', { ascending: true })
 
-  // Fetch user's vote + role
+  // Fetch user's vote + role + amendment votes
   let userVote: string | null = null
   let isSponsor = false
   let userRole: string | null = null
+  const userAmendmentVotes: Record<string, boolean> = {}
 
   if (user) {
-    const [{ data: vote }, { data: profile }] = await Promise.all([
+    const amendmentIds = (amendments ?? []).map((a) => a.id)
+
+    const queries: Promise<unknown>[] = [
       supabase
         .from('bill_reading_votes')
         .select('position')
@@ -109,11 +113,33 @@ export async function GET(
         .select('role')
         .eq('id', user.id)
         .single(),
-    ])
+    ]
 
-    userVote  = vote?.position ?? null
+    if (amendmentIds.length > 0) {
+      queries.push(
+        supabase
+          .from('bill_amendment_votes')
+          .select('amendment_id, vote')
+          .eq('user_id', user.id)
+          .in('amendment_id', amendmentIds)
+      )
+    }
+
+    const [voteRes, profileRes, amendVotesRes] = await Promise.all(queries) as [
+      { data: { position: string } | null },
+      { data: { role: string } | null },
+      { data: Array<{ amendment_id: string; vote: boolean }> | null } | undefined,
+    ]
+
+    userVote  = voteRes.data?.position ?? null
     isSponsor = bill.sponsor_id === user.id
-    userRole  = profile?.role ?? null
+    userRole  = profileRes.data?.role ?? null
+
+    if (amendVotesRes?.data) {
+      for (const av of amendVotesRes.data) {
+        userAmendmentVotes[av.amendment_id] = av.vote
+      }
+    }
   }
 
   const sponsor = Array.isArray(bill.sponsor) ? bill.sponsor[0] ?? null : bill.sponsor
@@ -124,6 +150,7 @@ export async function GET(
     amendments: (amendments ?? []).map((a) => ({
       ...a,
       proposer: Array.isArray(a.proposer) ? a.proposer[0] ?? null : a.proposer,
+      user_vote: userAmendmentVotes[a.id] ?? null,
     })),
     user_vote: userVote,
     is_sponsor: isSponsor || userRole === 'elder' || userRole === 'troll_catcher',
