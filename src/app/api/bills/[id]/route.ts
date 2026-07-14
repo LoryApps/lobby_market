@@ -41,6 +41,8 @@ export interface BillDetail {
   sponsor: { id: string; username: string; display_name: string | null; avatar_url: string | null; role: string } | null
   amendments: BillAmendment[]
   user_vote: string | null
+  is_sponsor: boolean
+  user_role: string | null
 }
 
 // ─── GET /api/bills/[id] ──────────────────────────────────────────────────────
@@ -89,27 +91,43 @@ export async function GET(
     .eq('bill_id', params.id)
     .order('created_at', { ascending: true })
 
-  // Fetch user's vote
+  // Fetch user's vote + role
   let userVote: string | null = null
-  if (user) {
-    const { data: vote } = await supabase
-      .from('bill_reading_votes')
-      .select('position')
-      .eq('bill_id', params.id)
-      .eq('user_id', user.id)
-      .maybeSingle()
+  let isSponsor = false
+  let userRole: string | null = null
 
-    userVote = vote?.position ?? null
+  if (user) {
+    const [{ data: vote }, { data: profile }] = await Promise.all([
+      supabase
+        .from('bill_reading_votes')
+        .select('position')
+        .eq('bill_id', params.id)
+        .eq('user_id', user.id)
+        .maybeSingle(),
+      supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single(),
+    ])
+
+    userVote  = vote?.position ?? null
+    isSponsor = bill.sponsor_id === user.id
+    userRole  = profile?.role ?? null
   }
+
+  const sponsor = Array.isArray(bill.sponsor) ? bill.sponsor[0] ?? null : bill.sponsor
 
   const detail: BillDetail = {
     ...bill,
-    sponsor: Array.isArray(bill.sponsor) ? bill.sponsor[0] ?? null : bill.sponsor,
+    sponsor,
     amendments: (amendments ?? []).map((a) => ({
       ...a,
       proposer: Array.isArray(a.proposer) ? a.proposer[0] ?? null : a.proposer,
     })),
     user_vote: userVote,
+    is_sponsor: isSponsor || userRole === 'elder' || userRole === 'troll_catcher',
+    user_role:  userRole,
   }
 
   return NextResponse.json(detail)

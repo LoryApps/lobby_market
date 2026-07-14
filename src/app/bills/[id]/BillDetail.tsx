@@ -11,7 +11,9 @@
 import { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
 import {
+  AlertTriangle,
   ArrowLeft,
+  ArrowRight,
   CheckCircle2,
   ChevronRight,
   Crown,
@@ -20,6 +22,7 @@ import {
   Loader2,
   Scale,
   ScrollText,
+  Settings2,
   Shield,
   ThumbsDown,
   ThumbsUp,
@@ -323,12 +326,145 @@ function AmendmentCard({ amendment }: { amendment: BillAmendment }) {
   )
 }
 
+// ─── Sponsor controls ─────────────────────────────────────────────────────────
+
+const NEXT_STAGE_LABEL: Record<string, string> = {
+  first_reading:   'Second Reading',
+  second_reading:  'Committee Stage',
+  committee_stage: 'Report Stage',
+  report_stage:    'Third Reading',
+  third_reading:   'Lords Consideration',
+  lords:           'Royal Assent',
+}
+
+function SponsorControls({
+  bill,
+  onAdvance,
+  advancing,
+}: {
+  bill: BillDetailType
+  onAdvance: (action: string) => void
+  advancing: boolean
+}) {
+  const [confirmWithdraw, setConfirmWithdraw] = useState(false)
+
+  const isTerminal   = ['royal_assent', 'defeated', 'withdrawn'].includes(bill.stage)
+  const isLords      = bill.stage === 'lords'
+  const isReadingVote = bill.stage === 'second_reading' || bill.stage === 'third_reading'
+
+  // Determine vote outcome label if at a reading stage
+  const total    = bill.votes_for + bill.votes_against
+  const forPct   = total > 0 ? bill.votes_for / total : 0.5
+  const passesByVote = total > 0 && forPct > 0.5
+
+  const nextLabel = NEXT_STAGE_LABEL[bill.stage] ?? 'Next Stage'
+
+  if (isTerminal) return null
+
+  return (
+    <div className="rounded-xl border border-for-700/40 bg-for-950/20 p-4 mb-4">
+      <h2 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+        <Settings2 className="h-4 w-4 text-for-400" />
+        Sponsor Controls
+      </h2>
+
+      {/* Vote outcome hint at reading stages */}
+      {isReadingVote && total > 0 && (
+        <div className={cn(
+          'rounded-lg border px-3 py-2 text-xs mb-3 flex items-center gap-2',
+          passesByVote
+            ? 'border-emerald/30 bg-emerald/10 text-emerald'
+            : 'border-against-700/40 bg-against-900/20 text-against-400'
+        )}>
+          {passesByVote ? (
+            <CheckCircle2 className="h-4 w-4 shrink-0" />
+          ) : (
+            <AlertTriangle className="h-4 w-4 shrink-0" />
+          )}
+          {passesByVote
+            ? `Bill passes with ${Math.round(forPct * 100)}% in favour — advancing will move it to ${nextLabel}.`
+            : `Bill currently fails with ${Math.round(forPct * 100)}% in favour — advancing will defeat the bill.`}
+        </div>
+      )}
+
+      {isReadingVote && total === 0 && (
+        <div className="rounded-lg border border-surface-700/40 bg-surface-800/40 px-3 py-2 text-xs mb-3 text-surface-400 flex items-center gap-2">
+          <AlertTriangle className="h-4 w-4 shrink-0 text-gold" />
+          No votes yet. Advancing will move the bill to {nextLabel} regardless.
+        </div>
+      )}
+
+      <div className="flex flex-col gap-2">
+        {/* Lords-stage has pass/reject instead of generic advance */}
+        {isLords ? (
+          <>
+            <button
+              onClick={() => onAdvance('lords_pass')}
+              disabled={advancing}
+              className="flex items-center justify-center gap-2 rounded-lg bg-gold/10 border border-gold/40 text-gold text-sm font-medium px-4 py-2.5 hover:bg-gold/20 transition-colors disabled:opacity-50"
+            >
+              {advancing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trophy className="h-4 w-4" />}
+              Lords Pass — Grant Royal Assent
+            </button>
+            <button
+              onClick={() => onAdvance('lords_reject')}
+              disabled={advancing}
+              className="flex items-center justify-center gap-2 rounded-lg bg-against-900/20 border border-against-700/40 text-against-400 text-sm font-medium px-4 py-2.5 hover:bg-against-900/40 transition-colors disabled:opacity-50"
+            >
+              {advancing ? <Loader2 className="h-4 w-4 animate-spin" /> : <XCircle className="h-4 w-4" />}
+              Lords Reject — Bill Defeated
+            </button>
+          </>
+        ) : (
+          <button
+            onClick={() => onAdvance('advance')}
+            disabled={advancing}
+            className="flex items-center justify-center gap-2 rounded-lg bg-for-600/20 border border-for-600/40 text-for-300 text-sm font-medium px-4 py-2.5 hover:bg-for-600/30 transition-colors disabled:opacity-50"
+          >
+            {advancing ? <Loader2 className="h-4 w-4 animate-spin" /> : <ArrowRight className="h-4 w-4" />}
+            {isReadingVote && total > 0 && !passesByVote
+              ? 'Close Vote — Bill Defeated'
+              : `Advance to ${nextLabel}`}
+          </button>
+        )}
+
+        {/* Withdraw */}
+        {confirmWithdraw ? (
+          <div className="flex gap-2">
+            <button
+              onClick={() => { onAdvance('withdraw'); setConfirmWithdraw(false) }}
+              disabled={advancing}
+              className="flex-1 flex items-center justify-center gap-1.5 rounded-lg bg-surface-800 border border-against-700/40 text-against-400 text-xs font-medium px-3 py-2 hover:bg-against-900/30 transition-colors disabled:opacity-50"
+            >
+              Confirm Withdraw
+            </button>
+            <button
+              onClick={() => setConfirmWithdraw(false)}
+              className="flex-1 flex items-center justify-center rounded-lg bg-surface-800 border border-surface-700 text-surface-400 text-xs font-medium px-3 py-2 hover:border-surface-600 transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={() => setConfirmWithdraw(true)}
+            className="text-xs text-surface-500 hover:text-surface-300 text-center py-1 transition-colors"
+          >
+            Withdraw this bill
+          </button>
+        )}
+      </div>
+    </div>
+  )
+}
+
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export function BillDetail({ billId }: { billId: string }) {
   const [bill, setBill] = useState<BillDetailType | null>(null)
   const [loading, setLoading] = useState(true)
   const [voting, setVoting] = useState(false)
+  const [advancing, setAdvancing] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const fetchBill = useCallback(async () => {
@@ -345,6 +481,33 @@ export function BillDetail({ billId }: { billId: string }) {
   }, [billId])
 
   useEffect(() => { fetchBill() }, [fetchBill])
+
+  const handleAdvance = useCallback(async (action: string) => {
+    setAdvancing(true)
+    try {
+      const res = await fetch(`/api/bills/${billId}/advance`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action }),
+      })
+      if (!res.ok) {
+        const body = await res.json() as { error?: string }
+        throw new Error(body.error ?? 'Failed to advance bill')
+      }
+      const result = await res.json() as {
+        stage: string; status: string
+        second_reading_at: string | null; committee_at: string | null
+        report_at: string | null; third_reading_at: string | null
+        lords_at: string | null; royal_assent_at: string | null
+        defeated_at: string | null
+      }
+      setBill((prev) => prev ? { ...prev, ...result } : prev)
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setAdvancing(false)
+    }
+  }, [billId])
 
   const handleVote = useCallback(async (position: 'for' | 'against' | 'abstain') => {
     if (!bill) return
@@ -493,6 +656,11 @@ export function BillDetail({ billId }: { billId: string }) {
               </div>
             )}
           </div>
+
+          {/* Sponsor controls (only visible to the bill sponsor / elders) */}
+          {bill.is_sponsor && !isEnacted && !isDefeated && (
+            <SponsorControls bill={bill} onAdvance={handleAdvance} advancing={advancing} />
+          )}
 
           {/* Vote panel (only at 2nd/3rd reading) */}
           <VotePanel bill={bill} onVote={handleVote} voting={voting} />
