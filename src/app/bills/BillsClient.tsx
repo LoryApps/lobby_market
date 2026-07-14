@@ -23,6 +23,7 @@ import {
   FileText,
   Filter,
   Landmark,
+  Plus,
   RefreshCw,
   Scale,
   ScrollText,
@@ -361,6 +362,13 @@ export function BillsClient() {
                 </p>
               </div>
               <div className="flex items-center gap-2">
+                <Link
+                  href="/bills/introduce"
+                  className="flex items-center gap-1.5 rounded-lg border border-gold/40 bg-gold/10 px-3 py-1.5 text-sm text-gold hover:bg-gold/20 transition-colors"
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                  <span className="hidden sm:inline">Introduce</span>
+                </Link>
                 <button
                   onClick={() => setShowFilters(!showFilters)}
                   className={cn(

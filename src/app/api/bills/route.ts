@@ -130,3 +130,91 @@ export async function GET(request: Request) {
 
   return NextResponse.json({ bills: enriched, stats } satisfies BillsResponse)
 }
+
+// ─── POST /api/bills — introduce a new bill ───────────────────────────────────
+
+interface IntroduceBillBody {
+  short_title: string
+  long_title: string
+  category: string
+  bill_type: string
+  topic_id?: string | null
+}
+
+export interface IntroduceBillResponse {
+  id: string
+  short_title: string
+}
+
+export async function POST(request: Request) {
+  const supabase = await createClient()
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) {
+    return NextResponse.json({ error: 'You must be signed in to introduce a bill' }, { status: 401 })
+  }
+
+  let body: IntroduceBillBody
+  try {
+    body = await request.json() as IntroduceBillBody
+  } catch {
+    return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
+  }
+
+  const { short_title, long_title, category, bill_type, topic_id } = body
+
+  if (!short_title || short_title.trim().length < 5 || short_title.trim().length > 80) {
+    return NextResponse.json({ error: 'Short title must be between 5 and 80 characters' }, { status: 400 })
+  }
+
+  if (!long_title || long_title.trim().length < 10 || long_title.trim().length > 300) {
+    return NextResponse.json({ error: 'Long title must be between 10 and 300 characters' }, { status: 400 })
+  }
+
+  const validCategories = ['Politics', 'Economics', 'Technology', 'Science', 'Ethics', 'Philosophy', 'Culture', 'Health', 'Environment', 'Education', 'Law', 'Other']
+  if (!validCategories.includes(category)) {
+    return NextResponse.json({ error: 'Invalid category' }, { status: 400 })
+  }
+
+  const validBillTypes = ['government', 'private_members', 'opposition', 'lords']
+  if (!validBillTypes.includes(bill_type)) {
+    return NextResponse.json({ error: 'Invalid bill type' }, { status: 400 })
+  }
+
+  // Validate topic_id if provided
+  if (topic_id) {
+    const { data: topic } = await supabase
+      .from('topics')
+      .select('id')
+      .eq('id', topic_id)
+      .maybeSingle()
+    if (!topic) {
+      return NextResponse.json({ error: 'Topic not found' }, { status: 400 })
+    }
+  }
+
+  const { data: bill, error } = await supabase
+    .from('civic_bills')
+    .insert({
+      short_title: short_title.trim(),
+      long_title: long_title.trim(),
+      category,
+      bill_type,
+      sponsor_id: user.id,
+      topic_id: topic_id ?? null,
+      stage: 'first_reading',
+      status: 'introduced',
+      first_reading_at: new Date().toISOString(),
+    })
+    .select('id, short_title')
+    .single()
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+
+  return NextResponse.json(bill satisfies IntroduceBillResponse, { status: 201 })
+}
