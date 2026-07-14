@@ -872,6 +872,13 @@ export default async function OrderPaperPage() {
                   <Clock className="h-3 w-3" />
                   Calendar
                 </Link>
+                <Link
+                  href="/adjournment"
+                  className="inline-flex items-center gap-1.5 text-xs text-purple hover:text-purple/70 transition-colors"
+                >
+                  <Mic className="h-3 w-3" />
+                  Adjournment
+                </Link>
               </div>
             </div>
           </div>
