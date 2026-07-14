@@ -208,6 +208,7 @@ const SECTIONS: FeatureSection[] = [
       { href: '/petitions', label: 'Civic Petitions', sublabel: 'Community-backed demands', icon: FileText },
       { href: '/grand-council', label: 'Grand Council', sublabel: 'Top-level governing body', icon: Crown },
       { href: '/lords', label: 'House of Lords', sublabel: 'Second chamber reviewing laws', icon: Crown },
+      { href: '/consultations', label: 'Consultations', sublabel: 'Green & White Papers, calls for evidence', icon: FileText },
     ],
   },
   {

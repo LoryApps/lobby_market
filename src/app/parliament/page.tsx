@@ -828,6 +828,7 @@ export default async function ParliamentPage() {
                   { href: '/budget', label: 'The Civic Budget', sublabel: 'Annual allocation — approve or reject', icon: BarChart3, color: 'text-gold' },
                   { href: '/confidence', label: 'Motion of No Confidence', sublabel: 'Formally challenge the governing coalition', icon: Scale, color: 'text-against-400' },
                   { href: '/oversight', label: 'Review a Law', sublabel: 'Submit established law for scrutiny', icon: Shield, color: 'text-against-300' },
+                  { href: '/consultations', label: 'Consultations', sublabel: 'Read Green & White Papers, submit your response', icon: FileText, color: 'text-emerald' },
                   { href: '/royal-assent', label: 'Royal Assent', sublabel: 'Elders formally seal established laws', icon: Crown, color: 'text-gold' },
                 ].map((action) => {
                   const ActionIcon = action.icon
