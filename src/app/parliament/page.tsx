@@ -25,6 +25,7 @@ import {
   BarChart3,
   HelpCircle,
   BookOpen,
+  AlertTriangle,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
@@ -825,6 +826,7 @@ export default async function ParliamentPage() {
                   { href: '/hearings/new', label: 'Open a Hearing', sublabel: 'Call for formal testimony', icon: Mic, color: 'text-emerald' },
                   { href: '/pmqs', label: 'Prime Minister\'s Questions', sublabel: 'Submit and upvote questions for the PM', icon: HelpCircle, color: 'text-gold' },
                   { href: '/adjournment', label: 'Adjournment Debates', sublabel: 'Apply to raise any civic issue at end of sitting', icon: Mic, color: 'text-purple' },
+                  { href: '/emergency-debates', label: 'Emergency Debates', sublabel: 'Propose an urgent debate — 10 endorsements auto-convenes the chamber', icon: AlertTriangle, color: 'text-gold' },
                   { href: '/urgent-questions', label: 'Urgent Questions', sublabel: 'Table a question demanding an immediate ministerial response', icon: Bell, color: 'text-gold' },
                   { href: '/statutory-instruments', label: 'Statutory Instruments', sublabel: 'Secondary legislation — lay orders, regulations, and rules', icon: ScrollText, color: 'text-purple' },
                   { href: '/ministerial-statements', label: 'Ministerial Statements', sublabel: 'Oral & written statements from government ministers', icon: FileText, color: 'text-for-300' },
