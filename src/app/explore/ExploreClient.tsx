@@ -343,6 +343,7 @@ const SECTIONS: FeatureSection[] = [
       { href: '/heatmap', label: 'Category Heatmap', description: 'Vote intensity and consensus across all 10 civic categories.', icon: PieChart },
       { href: '/momentum', label: 'Momentum Tracker', description: 'Topics with the fastest vote velocity right now.', icon: TrendingUp },
       { href: '/tipping-point', label: 'Tipping Points', description: 'Topics at critical transition moments — approaching law or failure.', icon: Flame },
+      { href: '/exchange', label: 'Civic Exchange', description: 'Prediction market view of every debate — price, volume, momentum, and settlement.', icon: BarChart, isNew: true },
     ],
   },
   {
