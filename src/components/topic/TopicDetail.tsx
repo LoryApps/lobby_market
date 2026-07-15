@@ -110,6 +110,7 @@ import { TopicCorrelationsPanel } from '@/components/topic/TopicCorrelationsPane
 import { TopicResolutionBanner } from '@/components/topic/TopicResolutionBanner'
 import { TopicChangemakersPanel } from '@/components/topic/TopicChangemakersPanel'
 import { TopicQAPanel } from '@/components/topic/TopicQAPanel'
+import { ExchangeMarketPanel } from '@/components/topic/ExchangeMarketPanel'
 
 const SIGNAL_ICONS_DETAIL: Record<string, typeof Flame> = {
   ending_soon:     Clock,
@@ -791,6 +792,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                     >
                       <Target className="h-3.5 w-3.5" />
                       Prediction market
+                    </Link>
+                    <Link
+                      href={`/exchange/${topic.id}`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-for-400 hover:text-for-300 transition-colors"
+                    >
+                      <Activity className="h-3.5 w-3.5" />
+                      Trade on exchange
                     </Link>
                     <Link
                       href={`/topic/${topic.id}/resolution`}
@@ -1492,6 +1500,19 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
             <ErrorBoundary size="sm" label="Couldn't load prediction market">
               <PredictionPanel topicId={topic.id} topicStatus={topic.status} />
             </ErrorBoundary>
+
+            {/* Exchange market widget — live price, sparkline, and link to trade */}
+            {topic.status !== 'proposed' && (
+              <ErrorBoundary size="sm" label="Couldn't load market panel">
+                <ExchangeMarketPanel
+                  topicId={topic.id}
+                  currentPrice={topic.blue_pct ?? 50}
+                  volume={topic.total_votes ?? 0}
+                  topicStatus={topic.status}
+                  className="mt-6"
+                />
+              </ErrorBoundary>
+            )}
 
             {/* Related topics — discovery section */}
             <ErrorBoundary size="sm" label="Couldn't load related topics" className="mt-8">
