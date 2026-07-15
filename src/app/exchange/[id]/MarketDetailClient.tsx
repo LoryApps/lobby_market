@@ -30,6 +30,7 @@ import { Avatar } from '@/components/ui/Avatar'
 import { Badge } from '@/components/ui/Badge'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { EmptyState } from '@/components/ui/EmptyState'
+import { WatchButton } from '@/components/ui/WatchButton'
 import { cn } from '@/lib/utils/cn'
 import type { MarketDetail, PriceSnapshot, MarketArgument } from '@/app/api/exchange/[id]/route'
 
@@ -487,6 +488,7 @@ export function MarketDetailClient({ id }: { id: string }) {
             )}
           </div>
           <div className="flex items-center gap-1.5">
+            <WatchButton topicId={id} iconOnly />
             <Link
               href={`/exchange/alerts?topic=${id}`}
               className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-for-500/40 text-xs text-surface-500 hover:text-for-300 transition-colors"

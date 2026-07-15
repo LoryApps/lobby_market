@@ -7,6 +7,7 @@ import {
   Activity,
   BarChart2,
   Bell,
+  Bookmark,
   Calendar,
   ChevronRight,
   Clock,
@@ -484,6 +485,13 @@ export function ExchangeClient() {
               >
                 <SlidersHorizontal className="h-3.5 w-3.5" />
                 Screener
+              </Link>
+              <Link
+                href="/exchange/watchlist"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-100 border border-surface-300 hover:border-for-400/40 text-xs font-medium text-surface-500 hover:text-for-300 transition-colors"
+              >
+                <Bookmark className="h-3.5 w-3.5" />
+                Watchlist
               </Link>
               <button
                 onClick={() => setRefreshKey((k) => k + 1)}
