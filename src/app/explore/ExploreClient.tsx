@@ -394,6 +394,7 @@ const SECTIONS: FeatureSection[] = [
       { href: '/kings-speech', label: "King's Speech", description: "The government's formal legislative programme — all bills for the civic year announced from the throne.", icon: Scroll, isNew: true },
       { href: '/supply-day', label: 'Supply Day', description: 'Opposition supply days — the civic opposition picks the debate topic and challenges government spending.', icon: Scale, isNew: true },
       { href: '/hansard', label: 'Hansard', description: 'The official verbatim record of all parliamentary proceedings — every word spoken in the Lobby chamber.', icon: BookOpen, isNew: true },
+      { href: '/confidence-vote', label: 'Confidence Votes', description: 'Table a formal vote of no confidence in any civic body — 10 seconds opens a 48-hour division that can bring down a coalition.', icon: Scale, isNew: true },
     ],
   },
 ]
