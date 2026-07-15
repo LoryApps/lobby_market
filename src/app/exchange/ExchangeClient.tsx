@@ -11,6 +11,7 @@ import {
   Clock,
   Flame,
   Gavel,
+  LayoutGrid,
   RefreshCw,
   Scale,
   TrendingDown,
@@ -411,6 +412,13 @@ export function ExchangeClient() {
               </p>
             </div>
             <div className="flex items-center gap-2">
+              <Link
+                href="/exchange/categories"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-100 border border-surface-300 hover:border-purple/40 text-xs font-medium text-surface-500 hover:text-purple transition-colors"
+              >
+                <LayoutGrid className="h-3.5 w-3.5" />
+                Sectors
+              </Link>
               <Link
                 href="/exchange/movers"
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-100 border border-surface-300 hover:border-gold/40 text-xs font-medium text-surface-500 hover:text-gold transition-colors"
