@@ -344,6 +344,7 @@ const SECTIONS: FeatureSection[] = [
       { href: '/momentum', label: 'Momentum Tracker', description: 'Topics with the fastest vote velocity right now.', icon: TrendingUp },
       { href: '/tipping-point', label: 'Tipping Points', description: 'Topics at critical transition moments — approaching law or failure.', icon: Flame },
       { href: '/exchange', label: 'Civic Exchange', description: 'Prediction market view of every debate — price, volume, momentum, and settlement.', icon: BarChart, isNew: true },
+      { href: '/exchange/heatmap', label: 'Market Heat Map', description: 'Finviz-style treemap of all civic markets — sized by volume, colored by consensus direction.', icon: Map, isNew: true },
     ],
   },
   {
