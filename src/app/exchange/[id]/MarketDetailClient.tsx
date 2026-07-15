@@ -8,6 +8,7 @@ import {
   ArrowLeft,
   ArrowRight,
   BarChart2,
+  Bell,
   Clock,
   ExternalLink,
   Flame,
@@ -485,13 +486,23 @@ export function MarketDetailClient({ id }: { id: string }) {
               </>
             )}
           </div>
-          <Link
-            href="/exchange/portfolio"
-            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-surface-400 text-xs text-surface-500 hover:text-white transition-colors"
-          >
-            <Wallet className="h-3 w-3" />
-            Portfolio
-          </Link>
+          <div className="flex items-center gap-1.5">
+            <Link
+              href={`/exchange/alerts?topic=${id}`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-for-500/40 text-xs text-surface-500 hover:text-for-300 transition-colors"
+              title="Set price alert"
+            >
+              <Bell className="h-3 w-3" />
+              Alert
+            </Link>
+            <Link
+              href="/exchange/portfolio"
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-surface-400 text-xs text-surface-500 hover:text-white transition-colors"
+            >
+              <Wallet className="h-3 w-3" />
+              Portfolio
+            </Link>
+          </div>
         </div>
 
         {/* Header */}
