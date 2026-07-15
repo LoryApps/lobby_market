@@ -182,7 +182,7 @@ function MarketCard({ market, rank, ticks }: { market: Market; rank: number; tic
       transition={{ duration: 0.18 }}
     >
       <Link
-        href={`/topic/${market.id}`}
+        href={`/exchange/${market.id}`}
         className={cn(
           'group block rounded-xl border p-3.5 transition-all duration-200',
           'bg-surface-200/50 hover:bg-surface-200/80',
