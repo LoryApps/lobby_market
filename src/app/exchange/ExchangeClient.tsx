@@ -7,6 +7,7 @@ import {
   Activity,
   BarChart2,
   Bell,
+  Calendar,
   ChevronRight,
   Clock,
   Flame,
@@ -461,6 +462,20 @@ export function ExchangeClient() {
               >
                 <GitCompare className="h-3.5 w-3.5" />
                 Correlations
+              </Link>
+              <Link
+                href="/exchange/indices"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-100 border border-surface-300 hover:border-for-400/40 text-xs font-medium text-surface-500 hover:text-for-400 transition-colors"
+              >
+                <LayoutGrid className="h-3.5 w-3.5" />
+                Indices
+              </Link>
+              <Link
+                href="/exchange/calendar"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-100 border border-surface-300 hover:border-gold/40 text-xs font-medium text-surface-500 hover:text-gold transition-colors"
+              >
+                <Calendar className="h-3.5 w-3.5" />
+                Calendar
               </Link>
               <button
                 onClick={() => setRefreshKey((k) => k + 1)}
