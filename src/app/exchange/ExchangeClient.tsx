@@ -15,6 +15,7 @@ import {
   TrendingDown,
   TrendingUp,
   Timer,
+  Trophy,
   Wallet,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
@@ -408,6 +409,13 @@ export function ExchangeClient() {
               </p>
             </div>
             <div className="flex items-center gap-2">
+              <Link
+                href="/exchange/leaderboard"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-100 border border-surface-300 hover:border-surface-400 text-xs font-medium text-surface-500 hover:text-white transition-colors"
+              >
+                <Trophy className="h-3.5 w-3.5" />
+                Leaders
+              </Link>
               <Link
                 href="/exchange/portfolio"
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-100 border border-surface-300 hover:border-surface-400 text-xs font-medium text-surface-500 hover:text-white transition-colors"

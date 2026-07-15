@@ -424,13 +424,20 @@ export function PortfolioClient() {
             >
               <ArrowLeft className="h-4 w-4" />
             </Link>
-            <div>
+            <div className="flex-1 min-w-0">
               <h1 className="text-xl font-bold text-white flex items-center gap-2">
                 <BarChart2 className="h-5 w-5 text-for-400" />
                 My Portfolio
               </h1>
               <p className="text-xs text-surface-500">Your civic market positions &amp; returns</p>
             </div>
+            <Link
+              href="/exchange/leaderboard"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-100 border border-surface-300 hover:border-gold/40 text-xs font-medium text-surface-500 hover:text-gold transition-colors"
+            >
+              <Trophy className="h-3.5 w-3.5" />
+              Leaders
+            </Link>
             <button
               onClick={load}
               disabled={loading}
