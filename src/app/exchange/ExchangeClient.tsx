@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -12,6 +12,7 @@ import {
   Gavel,
   RefreshCw,
   Scale,
+  TrendingDown,
   TrendingUp,
   Timer,
 } from 'lucide-react'
@@ -21,6 +22,7 @@ import { Skeleton } from '@/components/ui/Skeleton'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { cn } from '@/lib/utils/cn'
 import type { ExchangeResponse, Market, ExchangeStats } from '@/app/api/exchange/route'
+import type { TrendsResponse, PriceTick } from '@/app/api/exchange/trends/route'
 
 // ─── Sort options ─────────────────────────────────────────────────────────────
 
@@ -136,11 +138,40 @@ function StatsBar({ stats }: { stats: ExchangeStats }) {
   )
 }
 
+// ─── Sparkline ───────────────────────────────────────────────────────────────
+
+function Sparkline({ ticks, width = 56, height = 20 }: { ticks: PriceTick[]; width?: number; height?: number }) {
+  const points = useMemo(() => {
+    if (ticks.length < 2) return null
+    const prices = ticks.map((t) => t.price)
+    const min = Math.min(...prices)
+    const max = Math.max(...prices)
+    const range = max - min || 1
+    const step = width / (prices.length - 1)
+    return prices
+      .map((p, i) => `${i * step},${height - ((p - min) / range) * height}`)
+      .join(' ')
+  }, [ticks, width, height])
+
+  if (!points) return null
+
+  const first = ticks[0].price
+  const last = ticks[ticks.length - 1].price
+  const color = last > first + 1 ? '#22c55e' : last < first - 1 ? '#ef4444' : '#6b7280'
+
+  return (
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} aria-hidden="true" className="overflow-visible">
+      <polyline points={points} fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.85" />
+    </svg>
+  )
+}
+
 // ─── Market Card ──────────────────────────────────────────────────────────────
 
-function MarketCard({ market, rank }: { market: Market; rank: number }) {
+function MarketCard({ market, rank, ticks }: { market: Market; rank: number; ticks?: PriceTick[] }) {
   const badge = marketStatusBadge(market)
   const priceBarWidth = `${Math.round(market.price)}%`
+  const priceDelta = ticks && ticks.length >= 2 ? market.price - ticks[0].price : null
 
   return (
     <motion.div
@@ -230,39 +261,57 @@ function MarketCard({ market, rank }: { market: Market; rank: number }) {
                 {formatVolume(market.volume)}
               </p>
             </div>
+            {/* Delta badge */}
+            {priceDelta !== null && Math.abs(priceDelta) >= 1 && (
+              <div className="flex items-center gap-0.5">
+                {priceDelta > 0
+                  ? <TrendingUp className="h-3 w-3 text-emerald" aria-hidden="true" />
+                  : <TrendingDown className="h-3 w-3 text-against-400" aria-hidden="true" />}
+                <span className={cn('text-[10px] font-mono font-semibold', priceDelta > 0 ? 'text-emerald' : 'text-against-400')}>
+                  {priceDelta > 0 ? '+' : ''}{Math.round(priceDelta)}
+                </span>
+              </div>
+            )}
           </div>
 
-          {/* Right side: signals + category */}
-          <div className="flex items-center gap-1.5 flex-wrap justify-end">
-            {market.category && (
-              <span className="text-[10px] text-surface-500 font-mono bg-surface-300/40 px-1.5 py-0.5 rounded">
-                {market.category}
-              </span>
+          {/* Right side: sparkline + signals + category */}
+          <div className="flex items-center gap-2">
+            {ticks && ticks.length >= 2 && (
+              <div className="opacity-70 group-hover:opacity-100 transition-opacity">
+                <Sparkline ticks={ticks} />
+              </div>
             )}
-            {market.is_hot && (
-              <span className="inline-flex items-center gap-0.5 text-[10px] font-mono font-semibold text-against-400">
-                <Flame className="h-2.5 w-2.5" aria-hidden="true" />
-                HOT
-              </span>
-            )}
-            {market.is_closing_soon && (
-              <span className="inline-flex items-center gap-0.5 text-[10px] font-mono font-semibold text-gold animate-pulse">
-                <Clock className="h-2.5 w-2.5" aria-hidden="true" />
-                {market.voting_ends_at ? timeUntil(market.voting_ends_at) : 'SOON'}
-              </span>
-            )}
-            {market.is_near_law && !market.is_closing_soon && (
-              <span className="inline-flex items-center gap-0.5 text-[10px] font-mono font-semibold text-gold">
-                <Gavel className="h-2.5 w-2.5" aria-hidden="true" />
-                NEAR LAW
-              </span>
-            )}
-            {market.is_deadlocked && (
-              <span className="inline-flex items-center gap-0.5 text-[10px] font-mono font-semibold text-surface-500">
-                <Scale className="h-2.5 w-2.5" aria-hidden="true" />
-                SPLIT
-              </span>
-            )}
+            <div className="flex items-center gap-1.5 flex-wrap justify-end">
+              {market.category && (
+                <span className="text-[10px] text-surface-500 font-mono bg-surface-300/40 px-1.5 py-0.5 rounded">
+                  {market.category}
+                </span>
+              )}
+              {market.is_hot && (
+                <span className="inline-flex items-center gap-0.5 text-[10px] font-mono font-semibold text-against-400">
+                  <Flame className="h-2.5 w-2.5" aria-hidden="true" />
+                  HOT
+                </span>
+              )}
+              {market.is_closing_soon && (
+                <span className="inline-flex items-center gap-0.5 text-[10px] font-mono font-semibold text-gold animate-pulse">
+                  <Clock className="h-2.5 w-2.5" aria-hidden="true" />
+                  {market.voting_ends_at ? timeUntil(market.voting_ends_at) : 'SOON'}
+                </span>
+              )}
+              {market.is_near_law && !market.is_closing_soon && (
+                <span className="inline-flex items-center gap-0.5 text-[10px] font-mono font-semibold text-gold">
+                  <Gavel className="h-2.5 w-2.5" aria-hidden="true" />
+                  NEAR LAW
+                </span>
+              )}
+              {market.is_deadlocked && (
+                <span className="inline-flex items-center gap-0.5 text-[10px] font-mono font-semibold text-surface-500">
+                  <Scale className="h-2.5 w-2.5" aria-hidden="true" />
+                  SPLIT
+                </span>
+              )}
+            </div>
           </div>
         </div>
       </Link>
@@ -294,6 +343,7 @@ function MarketSkeleton() {
 
 export function ExchangeClient() {
   const [data, setData] = useState<ExchangeResponse | null>(null)
+  const [trends, setTrends] = useState<TrendsResponse>({})
   const [loading, setLoading] = useState(true)
   const [sort, setSort] = useState<SortId>('volume')
   const [category, setCategory] = useState<string | null>(null)
@@ -310,6 +360,15 @@ export function ExchangeClient() {
       if (!res.ok) throw new Error('Failed to load')
       const json: ExchangeResponse = await res.json()
       setData(json)
+
+      // Fetch price trends for the first 30 markets (non-blocking)
+      if (json.markets.length > 0) {
+        const ids = json.markets.slice(0, 30).map((m) => m.id).join(',')
+        fetch(`/api/exchange/trends?ids=${ids}&limit=12`)
+          .then((r) => r.ok ? r.json() : {})
+          .then((t: TrendsResponse) => setTrends(t))
+          .catch(() => {})
+      }
     } catch {
       setData(null)
     } finally {
@@ -451,7 +510,7 @@ export function ExchangeClient() {
           <div className="space-y-2">
             <AnimatePresence mode="popLayout">
               {data.markets.map((market, i) => (
-                <MarketCard key={market.id} market={market} rank={i + 1} />
+                <MarketCard key={market.id} market={market} rank={i + 1} ticks={trends[market.id]} />
               ))}
             </AnimatePresence>
           </div>
