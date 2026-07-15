@@ -15,6 +15,7 @@ import {
   TrendingDown,
   TrendingUp,
   Timer,
+  Wallet,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -406,14 +407,23 @@ export function ExchangeClient() {
                 Civic consensus as prediction markets — track every debate in real time.
               </p>
             </div>
-            <button
-              onClick={() => setRefreshKey((k) => k + 1)}
-              disabled={loading}
-              aria-label="Refresh markets"
-              className="flex-shrink-0 p-2 rounded-lg text-surface-500 hover:text-white hover:bg-surface-300/60 transition-colors disabled:opacity-40"
-            >
-              <RefreshCw className={cn('h-4 w-4', loading && 'animate-spin')} aria-hidden="true" />
-            </button>
+            <div className="flex items-center gap-2">
+              <Link
+                href="/exchange/portfolio"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-100 border border-surface-300 hover:border-surface-400 text-xs font-medium text-surface-500 hover:text-white transition-colors"
+              >
+                <Wallet className="h-3.5 w-3.5" />
+                Portfolio
+              </Link>
+              <button
+                onClick={() => setRefreshKey((k) => k + 1)}
+                disabled={loading}
+                aria-label="Refresh markets"
+                className="flex-shrink-0 p-2 rounded-lg text-surface-500 hover:text-white hover:bg-surface-300/60 transition-colors disabled:opacity-40"
+              >
+                <RefreshCw className={cn('h-4 w-4', loading && 'animate-spin')} aria-hidden="true" />
+              </button>
+            </div>
           </div>
         </div>
 

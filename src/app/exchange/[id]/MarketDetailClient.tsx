@@ -20,6 +20,7 @@ import {
   TrendingUp,
   Users,
   Vote,
+  Wallet,
   Zap,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
@@ -468,20 +469,29 @@ export function MarketDetailClient({ id }: { id: string }) {
       <main className="flex-1 max-w-2xl mx-auto w-full px-4 py-4 pb-24 space-y-5">
 
         {/* Back breadcrumb */}
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => router.push('/exchange')}
-            className="flex items-center gap-1.5 text-xs text-surface-500 hover:text-white transition-colors"
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => router.push('/exchange')}
+              className="flex items-center gap-1.5 text-xs text-surface-500 hover:text-white transition-colors"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" />
+              Exchange
+            </button>
+            {detail.category && (
+              <>
+                <span className="text-surface-600">/</span>
+                <span className="text-xs text-surface-500">{detail.category}</span>
+              </>
+            )}
+          </div>
+          <Link
+            href="/exchange/portfolio"
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-surface-400 text-xs text-surface-500 hover:text-white transition-colors"
           >
-            <ArrowLeft className="h-3.5 w-3.5" />
-            Exchange
-          </button>
-          {detail.category && (
-            <>
-              <span className="text-surface-600">/</span>
-              <span className="text-xs text-surface-500">{detail.category}</span>
-            </>
-          )}
+            <Wallet className="h-3 w-3" />
+            Portfolio
+          </Link>
         </div>
 
         {/* Header */}
