@@ -388,6 +388,7 @@ export function CategoriesClient() {
             { href: '/exchange', label: 'Markets' },
             { href: '/exchange/categories', label: 'Sectors', active: true },
             { href: '/exchange/movers', label: 'Movers' },
+            { href: '/exchange/resolved', label: 'Resolved' },
             { href: '/exchange/portfolio', label: 'Portfolio' },
             { href: '/exchange/leaderboard', label: 'Leaderboard' },
             { href: '/exchange/alerts', label: 'Alerts' },
