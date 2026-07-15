@@ -16,6 +16,7 @@ import {
   LayoutGrid,
   RefreshCw,
   Scale,
+  SlidersHorizontal,
   TrendingDown,
   TrendingUp,
   Timer,
@@ -476,6 +477,13 @@ export function ExchangeClient() {
               >
                 <Calendar className="h-3.5 w-3.5" />
                 Calendar
+              </Link>
+              <Link
+                href="/exchange/screener"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-100 border border-surface-300 hover:border-purple/40 text-xs font-medium text-surface-500 hover:text-purple transition-colors"
+              >
+                <SlidersHorizontal className="h-3.5 w-3.5" />
+                Screener
               </Link>
               <button
                 onClick={() => setRefreshKey((k) => k + 1)}
