@@ -15,6 +15,7 @@ import {
   Clock,
   Compass,
   Flame,
+  Gauge,
   Gavel,
   GitCompare,
   LayoutGrid,
@@ -572,6 +573,13 @@ export function ExchangeClient() {
               >
                 <Zap className="h-3.5 w-3.5" />
                 Signals
+              </Link>
+              <Link
+                href="/exchange/sentiment"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-100 border border-surface-300 hover:border-purple/40 text-xs font-medium text-surface-500 hover:text-purple transition-colors"
+              >
+                <Gauge className="h-3.5 w-3.5" />
+                Sentiment
               </Link>
               <Link
                 href="/exchange/opportunity"
