@@ -16,6 +16,7 @@ import {
   GitCompare,
   LayoutGrid,
   Map,
+  NewspaperIcon,
   RefreshCw,
   Scale,
   SlidersHorizontal,
@@ -507,6 +508,13 @@ export function ExchangeClient() {
               >
                 <Map className="h-3.5 w-3.5" />
                 Heat Map
+              </Link>
+              <Link
+                href="/exchange/wrap"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-100 border border-surface-300 hover:border-for-500/40 text-xs font-medium text-surface-500 hover:text-for-400 transition-colors"
+              >
+                <NewspaperIcon className="h-3.5 w-3.5" />
+                Daily Wrap
               </Link>
               <button
                 onClick={() => setRefreshKey((k) => k + 1)}
