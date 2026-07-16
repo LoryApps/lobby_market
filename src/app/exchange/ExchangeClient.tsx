@@ -22,6 +22,8 @@ import {
   Scale,
   Shield,
   SlidersHorizontal,
+  Sparkles,
+  Target,
   TrendingDown,
   TrendingUp,
   Timer,
@@ -520,6 +522,13 @@ export function ExchangeClient() {
                 Signals
               </Link>
               <Link
+                href="/exchange/opportunity"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gold/10 border border-gold/30 hover:border-gold/60 text-xs font-medium text-gold hover:text-gold/90 transition-colors"
+              >
+                <Target className="h-3.5 w-3.5" />
+                Opportunity
+              </Link>
+              <Link
                 href="/exchange/heatmap"
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-100 border border-surface-300 hover:border-gold/40 text-xs font-medium text-surface-500 hover:text-gold transition-colors"
               >
@@ -646,6 +655,21 @@ export function ExchangeClient() {
             </button>
           ))}
         </div>
+
+        {/* Opportunity banner */}
+        <Link
+          href="/exchange/opportunity"
+          className="flex items-center gap-3 px-3.5 py-2.5 mb-4 rounded-xl bg-gold/8 border border-gold/25 hover:border-gold/50 transition-all group"
+        >
+          <div className="p-1.5 rounded-lg bg-gold/15 flex-shrink-0">
+            <Target className="h-3.5 w-3.5 text-gold" aria-hidden="true" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-semibold text-gold">Market Opportunity</p>
+            <p className="text-[11px] text-surface-500 truncate">Where your vote has the most impact right now</p>
+          </div>
+          <Sparkles className="h-3.5 w-3.5 text-gold/60 group-hover:text-gold transition-colors flex-shrink-0" aria-hidden="true" />
+        </Link>
 
         {/* Market list */}
         {loading && !data ? (
