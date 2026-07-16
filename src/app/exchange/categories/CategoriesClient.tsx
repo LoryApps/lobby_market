@@ -261,15 +261,16 @@ function SectorCard({ sector, maxVolume }: { sector: CategorySector; maxVolume: 
         </Link>
       )}
 
-      {/* View all link */}
+      {/* View sector detail link */}
       <Link
-        href={`/exchange?category=${sector.category}`}
+        href={`/exchange/categories/${encodeURIComponent(sector.category)}`}
         className={cn(
           'flex items-center justify-center gap-2 rounded-xl border py-2.5 text-xs font-mono font-medium transition-colors',
-          'text-surface-400 border-surface-300 hover:text-white hover:border-surface-400 bg-surface-200/30 hover:bg-surface-200',
+          cfg.bg, cfg.color, cfg.border,
+          'hover:opacity-90',
         )}
       >
-        <span>View {sector.active_count + sector.voting_count} open markets</span>
+        <span>View sector report</span>
         <ChevronRight className="h-3.5 w-3.5" />
       </Link>
     </motion.div>
