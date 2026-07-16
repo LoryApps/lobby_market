@@ -14,6 +14,7 @@ import {
   ChevronRight,
   Clock,
   Compass,
+  Droplets,
   Flame,
   Gauge,
   Gavel,
@@ -587,6 +588,13 @@ export function ExchangeClient() {
               >
                 <Gavel className="h-3.5 w-3.5" />
                 Near Law
+              </Link>
+              <Link
+                href="/exchange/liquidity"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-for-500/10 border border-for-500/30 hover:border-for-500/60 text-xs font-medium text-for-400 hover:text-for-300 transition-colors"
+              >
+                <Droplets className="h-3.5 w-3.5" />
+                Liquidity
               </Link>
               <Link
                 href="/exchange/opportunity"
