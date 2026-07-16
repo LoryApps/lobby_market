@@ -12,6 +12,7 @@ import {
   Calendar,
   ChevronRight,
   Clock,
+  Compass,
   Flame,
   Gavel,
   GitCompare,
@@ -464,6 +465,20 @@ export function ExchangeClient() {
               >
                 <Brain className="h-3.5 w-3.5" />
                 Smart Money
+              </Link>
+              <Link
+                href="/exchange/arbitrage"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gold/10 border border-gold/30 hover:border-gold/60 text-xs font-medium text-gold hover:text-gold/90 transition-colors"
+              >
+                <Scale className="h-3.5 w-3.5" />
+                Arbitrage
+              </Link>
+              <Link
+                href="/exchange/rotation"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-100 border border-surface-300 hover:border-gold/40 text-xs font-medium text-surface-500 hover:text-gold transition-colors"
+              >
+                <Compass className="h-3.5 w-3.5" />
+                Rotation
               </Link>
               <Link
                 href="/exchange/alerts"
