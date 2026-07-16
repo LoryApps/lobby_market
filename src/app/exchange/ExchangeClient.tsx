@@ -505,6 +505,13 @@ export function ExchangeClient() {
                 Flow
               </Link>
               <Link
+                href="/exchange/signals"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-100 border border-surface-300 hover:border-emerald/40 text-xs font-medium text-surface-500 hover:text-emerald transition-colors"
+              >
+                <Zap className="h-3.5 w-3.5" />
+                Signals
+              </Link>
+              <Link
                 href="/exchange/heatmap"
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-100 border border-surface-300 hover:border-gold/40 text-xs font-medium text-surface-500 hover:text-gold transition-colors"
               >
