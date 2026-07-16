@@ -20,6 +20,7 @@ import {
   Radio,
   RefreshCw,
   Scale,
+  Shield,
   SlidersHorizontal,
   TrendingDown,
   TrendingUp,
@@ -531,6 +532,13 @@ export function ExchangeClient() {
               >
                 <Radio className="h-3.5 w-3.5" />
                 Market News
+              </Link>
+              <Link
+                href="/exchange/coalitions"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-100 border border-surface-300 hover:border-for-500/40 text-xs font-medium text-surface-500 hover:text-for-400 transition-colors"
+              >
+                <Shield className="h-3.5 w-3.5" />
+                Coalitions
               </Link>
               <button
                 onClick={() => setRefreshKey((k) => k + 1)}
