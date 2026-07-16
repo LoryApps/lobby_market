@@ -498,6 +498,14 @@ export function MarketDetailClient({ id }: { id: string }) {
               Alert
             </Link>
             <Link
+              href={`/exchange/compare?a=${id}`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-purple/10 border border-purple/30 hover:border-purple/60 text-xs text-purple hover:text-purple/90 transition-colors"
+              title="Compare with another market"
+            >
+              <Scale className="h-3 w-3" />
+              Compare
+            </Link>
+            <Link
               href="/exchange/portfolio"
               className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-surface-400 text-xs text-surface-500 hover:text-white transition-colors"
             >
