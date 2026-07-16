@@ -58,6 +58,15 @@ const config: Config = {
         sans: ['var(--font-inter)', 'system-ui', '-apple-system', 'sans-serif'],
         mono: ['var(--font-mono)', 'JetBrains Mono', 'monospace'],
       },
+      keyframes: {
+        'exchange-ticker': {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-50%)' },
+        },
+      },
+      animation: {
+        'exchange-ticker': 'exchange-ticker 60s linear infinite',
+      },
     },
   },
   plugins: [],

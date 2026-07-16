@@ -17,6 +17,7 @@ import {
   LayoutGrid,
   Map,
   NewspaperIcon,
+  Radio,
   RefreshCw,
   Scale,
   SlidersHorizontal,
@@ -31,6 +32,7 @@ import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { EmptyState } from '@/components/ui/EmptyState'
+import { ExchangeNewsTicker } from '@/components/exchange/ExchangeNewsTicker'
 import { cn } from '@/lib/utils/cn'
 import type { ExchangeResponse, Market, ExchangeStats } from '@/app/api/exchange/route'
 import type { TrendsResponse, PriceTick } from '@/app/api/exchange/trends/route'
@@ -516,6 +518,13 @@ export function ExchangeClient() {
                 <NewspaperIcon className="h-3.5 w-3.5" />
                 Daily Wrap
               </Link>
+              <Link
+                href="/exchange/news"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-100 border border-surface-300 hover:border-against-500/40 text-xs font-medium text-surface-500 hover:text-against-300 transition-colors"
+              >
+                <Radio className="h-3.5 w-3.5" />
+                Market News
+              </Link>
               <button
                 onClick={() => setRefreshKey((k) => k + 1)}
                 disabled={loading}
@@ -537,6 +546,11 @@ export function ExchangeClient() {
             ))}
           </div>
         )}
+
+        {/* Live news ticker */}
+        <div className="mb-4 -mx-4 border-y border-surface-300/60 overflow-hidden">
+          <ExchangeNewsTicker />
+        </div>
 
         {/* Sort tabs */}
         <div className="flex gap-1.5 mb-3 overflow-x-auto pb-1 scrollbar-none">
