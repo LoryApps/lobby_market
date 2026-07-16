@@ -506,6 +506,14 @@ export function MarketDetailClient({ id }: { id: string }) {
               Compare
             </Link>
             <Link
+              href={`/exchange/${id}/orderbook`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-for-500/40 text-xs text-surface-500 hover:text-for-300 transition-colors"
+              title="View order book depth chart"
+            >
+              <BarChart2 className="h-3 w-3" />
+              Order Book
+            </Link>
+            <Link
               href="/exchange/portfolio"
               className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-surface-400 text-xs text-surface-500 hover:text-white transition-colors"
             >
