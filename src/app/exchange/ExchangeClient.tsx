@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Activity,
+  Award,
   BarChart2,
   Bell,
   Bookmark,
@@ -493,6 +494,13 @@ export function ExchangeClient() {
               >
                 <Wallet className="h-3.5 w-3.5" />
                 Portfolio
+              </Link>
+              <Link
+                href="/exchange/performance"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-100 border border-surface-300 hover:border-gold/40 text-xs font-medium text-surface-500 hover:text-gold transition-colors"
+              >
+                <Award className="h-3.5 w-3.5" />
+                Performance
               </Link>
               <Link
                 href="/exchange/correlations"
