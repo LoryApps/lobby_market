@@ -30,6 +30,7 @@ import {
   TrendingUp,
   Timer,
   Trophy,
+  UserCheck,
   Wallet,
   Zap,
 } from 'lucide-react'
@@ -489,6 +490,13 @@ export function ExchangeClient() {
                 Alerts
               </Link>
               <Link
+                href="/exchange/following"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-for-500/10 border border-for-500/30 hover:border-for-500/60 text-xs font-medium text-for-400 hover:text-for-300 transition-colors"
+              >
+                <UserCheck className="h-3.5 w-3.5" />
+                Following
+              </Link>
+              <Link
                 href="/exchange/portfolio"
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-100 border border-surface-300 hover:border-surface-400 text-xs font-medium text-surface-500 hover:text-white transition-colors"
               >
@@ -717,6 +725,18 @@ export function ExchangeClient() {
             <div className="flex-1 min-w-0">
               <p className="text-xs font-semibold text-purple">Smart Money</p>
               <p className="text-[10px] text-surface-500 truncate">Where top traders position</p>
+            </div>
+          </Link>
+          <Link
+            href="/exchange/following"
+            className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-for-500/8 border border-for-500/25 hover:border-for-500/50 transition-all group col-span-2"
+          >
+            <div className="p-1.5 rounded-lg bg-for-500/15 flex-shrink-0">
+              <UserCheck className="h-3.5 w-3.5 text-for-400" aria-hidden="true" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-semibold text-for-400">Following Feed</p>
+              <p className="text-[10px] text-surface-500 truncate">Positions from traders you follow</p>
             </div>
           </Link>
         </div>
