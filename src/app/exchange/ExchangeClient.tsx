@@ -582,6 +582,13 @@ export function ExchangeClient() {
                 Sentiment
               </Link>
               <Link
+                href="/exchange/near-law"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gold/10 border border-gold/30 hover:border-gold/60 text-xs font-medium text-gold hover:text-gold/90 transition-colors"
+              >
+                <Gavel className="h-3.5 w-3.5" />
+                Near Law
+              </Link>
+              <Link
                 href="/exchange/opportunity"
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gold/10 border border-gold/30 hover:border-gold/60 text-xs font-medium text-gold hover:text-gold/90 transition-colors"
               >
