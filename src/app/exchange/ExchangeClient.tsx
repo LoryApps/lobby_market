@@ -8,6 +8,7 @@ import {
   BarChart2,
   Bell,
   Bookmark,
+  Brain,
   Calendar,
   ChevronRight,
   Clock,
@@ -22,7 +23,6 @@ import {
   Scale,
   Shield,
   SlidersHorizontal,
-  Sparkles,
   Target,
   TrendingDown,
   TrendingUp,
@@ -459,6 +459,13 @@ export function ExchangeClient() {
                 Leaders
               </Link>
               <Link
+                href="/exchange/smart-money"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple/10 border border-purple/30 hover:border-purple/60 text-xs font-medium text-purple hover:text-purple/90 transition-colors"
+              >
+                <Brain className="h-3.5 w-3.5" />
+                Smart Money
+              </Link>
+              <Link
                 href="/exchange/alerts"
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-100 border border-surface-300 hover:border-for-500/40 text-xs font-medium text-surface-500 hover:text-for-300 transition-colors"
               >
@@ -657,19 +664,32 @@ export function ExchangeClient() {
         </div>
 
         {/* Opportunity banner */}
-        <Link
-          href="/exchange/opportunity"
-          className="flex items-center gap-3 px-3.5 py-2.5 mb-4 rounded-xl bg-gold/8 border border-gold/25 hover:border-gold/50 transition-all group"
-        >
-          <div className="p-1.5 rounded-lg bg-gold/15 flex-shrink-0">
-            <Target className="h-3.5 w-3.5 text-gold" aria-hidden="true" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-xs font-semibold text-gold">Market Opportunity</p>
-            <p className="text-[11px] text-surface-500 truncate">Where your vote has the most impact right now</p>
-          </div>
-          <Sparkles className="h-3.5 w-3.5 text-gold/60 group-hover:text-gold transition-colors flex-shrink-0" aria-hidden="true" />
-        </Link>
+        <div className="grid grid-cols-2 gap-2 mb-4">
+          <Link
+            href="/exchange/opportunity"
+            className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-gold/8 border border-gold/25 hover:border-gold/50 transition-all group"
+          >
+            <div className="p-1.5 rounded-lg bg-gold/15 flex-shrink-0">
+              <Target className="h-3.5 w-3.5 text-gold" aria-hidden="true" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-semibold text-gold">Opportunity</p>
+              <p className="text-[10px] text-surface-500 truncate">Highest-impact markets</p>
+            </div>
+          </Link>
+          <Link
+            href="/exchange/smart-money"
+            className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-purple/8 border border-purple/25 hover:border-purple/50 transition-all group"
+          >
+            <div className="p-1.5 rounded-lg bg-purple/15 flex-shrink-0">
+              <Brain className="h-3.5 w-3.5 text-purple" aria-hidden="true" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-semibold text-purple">Smart Money</p>
+              <p className="text-[10px] text-surface-500 truncate">Where top traders position</p>
+            </div>
+          </Link>
+        </div>
 
         {/* Market list */}
         {loading && !data ? (
