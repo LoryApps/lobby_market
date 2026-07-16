@@ -28,6 +28,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       data.category ? `Category: ${data.category}.` : ''
     } Trade the consensus on Lobby Market.`
 
+    const ogImageUrl = `/api/og/exchange/${params.id}`
+
     return {
       title,
       description,
@@ -36,11 +38,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         description,
         type: 'website',
         siteName: 'Lobby Market',
+        images: [
+          {
+            url: ogImageUrl,
+            width: 1200,
+            height: 630,
+            alt: `${data.statement.slice(0, 80)} · ${price}¢`,
+          },
+        ],
       },
       twitter: {
-        card: 'summary',
+        card: 'summary_large_image',
         title,
         description,
+        images: [ogImageUrl],
       },
     }
   } catch {

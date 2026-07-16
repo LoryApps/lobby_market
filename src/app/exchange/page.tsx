@@ -14,12 +14,21 @@ export const metadata: Metadata = {
       'Trade the consensus. Every civic debate listed as a live prediction market — price, volume, and settlement in one view.',
     type: 'website',
     siteName: 'Lobby Market',
+    images: [
+      {
+        url: '/api/og/exchange',
+        width: 1200,
+        height: 630,
+        alt: 'Lobby Exchange — Live civic prediction markets',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Civic Exchange · Lobby Market',
     description:
       'Live prediction markets for civic consensus. Watch every debate as a contract, see prices move in real time.',
+    images: ['/api/og/exchange'],
   },
 }
 
