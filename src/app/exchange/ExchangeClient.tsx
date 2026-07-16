@@ -540,6 +540,13 @@ export function ExchangeClient() {
                 <Shield className="h-3.5 w-3.5" />
                 Coalitions
               </Link>
+              <Link
+                href="/exchange/trades"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-100 border border-surface-300 hover:border-against-500/40 text-xs font-medium text-surface-500 hover:text-against-400 transition-colors"
+              >
+                <Radio className="h-3.5 w-3.5" />
+                Live Trades
+              </Link>
               <button
                 onClick={() => setRefreshKey((k) => k + 1)}
                 disabled={loading}
