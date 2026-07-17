@@ -668,6 +668,13 @@ export function ExchangeClient() {
                 <FlaskConical className="h-3.5 w-3.5" />
                 Backtest
               </Link>
+              <Link
+                href="/exchange/strategy"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald/10 border border-emerald/30 hover:border-emerald/60 text-xs font-medium text-emerald hover:text-emerald/90 transition-colors"
+              >
+                <Target className="h-3.5 w-3.5" />
+                Monitor
+              </Link>
               <button
                 onClick={() => setRefreshKey((k) => k + 1)}
                 disabled={loading}
