@@ -9,12 +9,18 @@ import {
   ArrowRight,
   BarChart2,
   Bell,
+  ChevronDown,
+  ChevronUp,
   Clock,
   ExternalLink,
   Flame,
   Gavel,
+  Lightbulb,
+  PenLine,
   RefreshCw,
   Scale,
+  Sparkles,
+  Target,
   ThumbsDown,
   ThumbsUp,
   TrendingDown,
@@ -33,6 +39,7 @@ import { EmptyState } from '@/components/ui/EmptyState'
 import { WatchButton } from '@/components/ui/WatchButton'
 import { cn } from '@/lib/utils/cn'
 import type { MarketDetail, PriceSnapshot, MarketArgument } from '@/app/api/exchange/[id]/route'
+import type { MarketIdea } from '@/app/api/exchange/ideas/route'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -378,6 +385,150 @@ function RelatedCard({
   )
 }
 
+// ─── Community Ideas Preview ──────────────────────────────────────────────────
+
+const IDEA_DIR_CONFIG = {
+  for:     { label: 'For',     color: 'text-for-400',     bg: 'bg-for-500/10',     border: 'border-for-500/30' },
+  against: { label: 'Against', color: 'text-against-400', bg: 'bg-against-500/10', border: 'border-against-500/30' },
+  neutral: { label: 'Neutral', color: 'text-surface-400', bg: 'bg-surface-300/10', border: 'border-surface-300/30' },
+}
+
+function IdeaPreviewCard({ idea, onVote }: { idea: MarketIdea; onVote: (id: string, dir: 'up' | 'down' | null) => void }) {
+  const [localVote, setLocalVote] = useState<'up' | 'down' | null>(idea.viewer_vote)
+  const [localUp,   setLocalUp]   = useState(idea.upvotes)
+  const [localDown, setLocalDown] = useState(idea.downvotes)
+  const [voting,    setVoting]    = useState(false)
+  const dirCfg = IDEA_DIR_CONFIG[idea.direction]
+  const score = localUp - localDown
+
+  async function handleVote(dir: 'up' | 'down') {
+    if (voting) return
+    const newDir = localVote === dir ? null : dir
+    setVoting(true)
+    const prevVote = localVote; const prevUp = localUp; const prevDown = localDown
+    setLocalVote(newDir)
+    if (prevVote === 'up')   setLocalUp(u => Math.max(0, u - 1))
+    if (prevVote === 'down') setLocalDown(d => Math.max(0, d - 1))
+    if (newDir === 'up')   setLocalUp(u => u + 1)
+    if (newDir === 'down') setLocalDown(d => d + 1)
+    try {
+      const res = await fetch('/api/exchange/ideas/vote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idea_id: idea.id, direction: newDir }),
+      })
+      if (!res.ok) throw new Error()
+      const data = await res.json()
+      setLocalUp(data.upvotes); setLocalDown(data.downvotes); setLocalVote(data.viewer_vote)
+      onVote(idea.id, data.viewer_vote)
+    } catch {
+      setLocalVote(prevVote); setLocalUp(prevUp); setLocalDown(prevDown)
+    } finally { setVoting(false) }
+  }
+
+  return (
+    <div className="flex items-start gap-3 p-3 bg-surface-200/60 rounded-xl border border-surface-300/40 hover:border-surface-400/50 transition-colors">
+      <div className="flex flex-col items-center gap-0.5 flex-shrink-0">
+        <button
+          onClick={() => handleVote('up')} disabled={voting} aria-label="Upvote"
+          className={cn('flex items-center justify-center h-6 w-6 rounded-md border transition-all disabled:opacity-50',
+            localVote === 'up' ? 'bg-for-500/20 border-for-500/40 text-for-400' : 'border-surface-300/60 text-surface-500 hover:border-for-500/40 hover:text-for-400')}
+        >
+          <ChevronUp className="h-3.5 w-3.5" />
+        </button>
+        <span className={cn('text-[10px] font-mono font-bold', score > 0 ? 'text-for-400' : score < 0 ? 'text-against-400' : 'text-surface-500')}>
+          {score > 0 ? `+${score}` : score}
+        </span>
+        <button
+          onClick={() => handleVote('down')} disabled={voting} aria-label="Downvote"
+          className={cn('flex items-center justify-center h-6 w-6 rounded-md border transition-all disabled:opacity-50',
+            localVote === 'down' ? 'bg-against-500/20 border-against-500/40 text-against-400' : 'border-surface-300/60 text-surface-500 hover:border-against-500/40 hover:text-against-400')}
+        >
+          <ChevronDown className="h-3.5 w-3.5" />
+        </button>
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-1.5 flex-wrap mb-1">
+          <span className={cn('text-[10px] font-mono font-bold px-1.5 py-0.5 rounded border', dirCfg.color, dirCfg.bg, dirCfg.border)}>
+            {dirCfg.label}
+          </span>
+          {idea.target_price !== null && (
+            <span className="flex items-center gap-0.5 text-[10px] font-mono text-gold">
+              <Target className="h-2.5 w-2.5" />{idea.target_price}¢
+            </span>
+          )}
+          {idea.is_featured && (
+            <span className="flex items-center gap-0.5 text-[10px] font-mono text-gold">
+              <Sparkles className="h-2.5 w-2.5" />Featured
+            </span>
+          )}
+        </div>
+        <p className="text-xs font-semibold text-white leading-snug line-clamp-2">{idea.title}</p>
+        <p className="text-[11px] text-surface-500 mt-0.5 font-mono">
+          {idea.author?.display_name || idea.author?.username}
+        </p>
+      </div>
+    </div>
+  )
+}
+
+function CommunityIdeasPreview({ topicId }: { topicId: string }) {
+  const [ideas,   setIdeas]   = useState<MarketIdea[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    let cancelled = false
+    fetch(`/api/exchange/ideas?topic_id=${topicId}&sort=top&limit=3`)
+      .then(r => r.ok ? r.json() : null)
+      .then(data => { if (!cancelled && data) setIdeas(data.ideas ?? []) })
+      .catch(() => {})
+      .finally(() => { if (!cancelled) setLoading(false) })
+    return () => { cancelled = true }
+  }, [topicId])
+
+  function handleVote(id: string, newDir: 'up' | 'down' | null) {
+    setIdeas(prev => prev.map(idea => idea.id === id ? { ...idea, viewer_vote: newDir } : idea))
+  }
+
+  if (!loading && ideas.length === 0) return null
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between">
+        <h2 className="text-xs font-semibold uppercase tracking-widest text-surface-500 flex items-center gap-1.5">
+          <Lightbulb className="h-3.5 w-3.5 text-gold" />
+          Community Ideas
+        </h2>
+        <Link
+          href={`/exchange/${topicId}/ideas`}
+          className="text-xs text-surface-500 hover:text-gold transition-colors font-mono flex items-center gap-1"
+        >
+          View all <ArrowRight className="h-3 w-3" />
+        </Link>
+      </div>
+      {loading ? (
+        <div className="space-y-2">
+          <Skeleton className="h-20 rounded-xl" />
+          <Skeleton className="h-20 rounded-xl" />
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {ideas.map(idea => (
+            <IdeaPreviewCard key={idea.id} idea={idea} onVote={handleVote} />
+          ))}
+        </div>
+      )}
+      <Link
+        href={`/exchange/${topicId}/ideas`}
+        className="flex items-center justify-center gap-1.5 w-full py-2 rounded-xl border border-gold/20 bg-gold/5 hover:bg-gold/10 text-xs text-gold font-mono transition-colors"
+      >
+        <PenLine className="h-3.5 w-3.5" />
+        Post your prediction thesis
+      </Link>
+    </div>
+  )
+}
+
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export function MarketDetailClient({ id }: { id: string }) {
@@ -520,6 +671,14 @@ export function MarketDetailClient({ id }: { id: string }) {
             >
               <Users className="h-3 w-3" />
               Traders
+            </Link>
+            <Link
+              href={`/exchange/${id}/ideas`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-gold/40 text-xs text-surface-500 hover:text-gold transition-colors"
+              title="Community prediction theses for this market"
+            >
+              <Lightbulb className="h-3 w-3" />
+              Ideas
             </Link>
             <Link
               href="/exchange/portfolio"
@@ -794,6 +953,9 @@ export function MarketDetailClient({ id }: { id: string }) {
             </Link>
           </div>
         )}
+
+        {/* Community ideas */}
+        <CommunityIdeasPreview topicId={id} />
 
         {/* Related markets */}
         {detail.related.length > 0 && (
