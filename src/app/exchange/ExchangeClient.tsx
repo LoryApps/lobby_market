@@ -11,6 +11,7 @@ import {
   Bookmark,
   Brain,
   Calendar,
+  FlaskConical,
   ChevronRight,
   Clock,
   Compass,
@@ -659,6 +660,13 @@ export function ExchangeClient() {
               >
                 <Radio className="h-3.5 w-3.5" />
                 Live Trades
+              </Link>
+              <Link
+                href="/exchange/backtest"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple/10 border border-purple/30 hover:border-purple/60 text-xs font-medium text-purple hover:text-purple/90 transition-colors"
+              >
+                <FlaskConical className="h-3.5 w-3.5" />
+                Backtest
               </Link>
               <button
                 onClick={() => setRefreshKey((k) => k + 1)}
