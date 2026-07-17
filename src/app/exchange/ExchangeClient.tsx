@@ -22,6 +22,7 @@ import {
   GitCompare,
   GitMerge,
   LayoutGrid,
+  Lightbulb,
   Map,
   NewspaperIcon,
   Radio,
@@ -681,6 +682,13 @@ export function ExchangeClient() {
               >
                 <TrendingUp className="h-3.5 w-3.5" />
                 Drift
+              </Link>
+              <Link
+                href="/exchange/ideas"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gold/10 border border-gold/30 hover:border-gold/60 text-xs font-medium text-gold hover:text-gold/90 transition-colors"
+              >
+                <Lightbulb className="h-3.5 w-3.5" />
+                Ideas
               </Link>
               <button
                 onClick={() => setRefreshKey((k) => k + 1)}
