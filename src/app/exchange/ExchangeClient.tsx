@@ -675,6 +675,13 @@ export function ExchangeClient() {
                 <Target className="h-3.5 w-3.5" />
                 Monitor
               </Link>
+              <Link
+                href="/exchange/drift"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-for-500/10 border border-for-500/30 hover:border-for-500/60 text-xs font-medium text-for-400 hover:text-for-300 transition-colors"
+              >
+                <TrendingUp className="h-3.5 w-3.5" />
+                Drift
+              </Link>
               <button
                 onClick={() => setRefreshKey((k) => k + 1)}
                 disabled={loading}
