@@ -514,6 +514,14 @@ export function MarketDetailClient({ id }: { id: string }) {
               Order Book
             </Link>
             <Link
+              href={`/exchange/${id}/traders`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-emerald/40 text-xs text-surface-500 hover:text-emerald transition-colors"
+              title="See who's long and short on this market"
+            >
+              <Users className="h-3 w-3" />
+              Traders
+            </Link>
+            <Link
               href="/exchange/portfolio"
               className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-surface-400 text-xs text-surface-500 hover:text-white transition-colors"
             >
