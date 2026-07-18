@@ -481,6 +481,13 @@ export function ExchangeClient() {
                 Leaders
               </Link>
               <Link
+                href="/exchange/top-calls"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gold/10 border border-gold/30 hover:border-gold/60 text-xs font-medium text-gold hover:text-gold/90 transition-colors"
+              >
+                <Award className="h-3.5 w-3.5" />
+                Top Calls
+              </Link>
+              <Link
                 href="/exchange/smart-money"
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple/10 border border-purple/30 hover:border-purple/60 text-xs font-medium text-purple hover:text-purple/90 transition-colors"
               >
@@ -696,6 +703,13 @@ export function ExchangeClient() {
               >
                 <TrendingUp className="h-3.5 w-3.5" />
                 Drift
+              </Link>
+              <Link
+                href="/exchange/top-calls"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gold/15 border border-gold/40 hover:border-gold/70 text-xs font-medium text-gold hover:text-gold/90 transition-colors"
+              >
+                <Trophy className="h-3.5 w-3.5" />
+                Top Calls
               </Link>
               <Link
                 href="/exchange/ideas"
