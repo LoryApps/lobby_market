@@ -281,7 +281,15 @@ function IdeaCard({ idea, onVote }: {
             {idea.author?.display_name || idea.author?.username}
           </span>
         </Link>
-        <span className="text-xs text-surface-600 font-mono">{relTime(idea.created_at)}</span>
+        <div className="flex items-center gap-3">
+          <span className="text-xs text-surface-600 font-mono">{relTime(idea.created_at)}</span>
+          <Link
+            href={`/exchange/ideas/${idea.id}`}
+            className="text-xs text-surface-500 hover:text-for-400 font-mono transition-colors"
+          >
+            View →
+          </Link>
+        </div>
       </div>
     </motion.div>
   )
