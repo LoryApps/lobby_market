@@ -549,6 +549,14 @@ export function MarketDetailClient({ id }: { id: string }) {
               Forecasts
             </Link>
             <Link
+              href="/exchange/forecasts"
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-for-400/40 text-xs text-surface-500 hover:text-for-400 transition-colors"
+              title="My forecast track record"
+            >
+              <Zap className="h-3 w-3" />
+              My Forecasts
+            </Link>
+            <Link
               href="/exchange/portfolio"
               className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-surface-400 text-xs text-surface-500 hover:text-white transition-colors"
             >
