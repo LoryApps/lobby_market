@@ -712,6 +712,13 @@ export function ExchangeClient() {
                 Drift
               </Link>
               <Link
+                href="/exchange/catalysts"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-against-500/10 border border-against-500/30 hover:border-against-500/60 text-xs font-medium text-against-400 hover:text-against-300 transition-colors"
+              >
+                <Activity className="h-3.5 w-3.5" />
+                Catalysts
+              </Link>
+              <Link
                 href="/exchange/top-calls"
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gold/15 border border-gold/40 hover:border-gold/70 text-xs font-medium text-gold hover:text-gold/90 transition-colors"
               >
