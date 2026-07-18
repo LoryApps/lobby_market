@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
+  Activity,
   ArrowLeft,
   ArrowRight,
   BarChart2,
@@ -529,6 +530,14 @@ export function MarketDetailClient({ id }: { id: string }) {
             >
               <Lightbulb className="h-3 w-3" />
               Theses
+            </Link>
+            <Link
+              href={`/exchange/${id}/analysis`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-for-500/40 text-xs text-surface-500 hover:text-for-300 transition-colors"
+              title="Deep statistical analysis of this market"
+            >
+              <Activity className="h-3 w-3" />
+              Analysis
             </Link>
             <Link
               href="/exchange/portfolio"
