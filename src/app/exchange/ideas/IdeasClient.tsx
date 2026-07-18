@@ -16,6 +16,7 @@ import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   ArrowLeft,
+  Award,
   BarChart2,
   ChevronDown,
   ChevronUp,
@@ -700,6 +701,15 @@ export function IdeasClient() {
                 </button>
               ))}
             </div>
+
+            {/* Leaderboard link */}
+            <Link
+              href="/exchange/ideas/leaderboard"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-surface-100 border border-surface-300/60 rounded-lg text-xs font-mono text-surface-500 hover:text-gold hover:border-gold/30 transition-colors ml-auto"
+            >
+              <Award className="h-3 w-3" />
+              Leaderboard
+            </Link>
 
             {/* Direction filter */}
             <div className="flex items-center gap-1 p-1 bg-surface-100 border border-surface-300/60 rounded-lg">

@@ -13,6 +13,7 @@ import {
   ExternalLink,
   Flame,
   Gavel,
+  Lightbulb,
   RefreshCw,
   Scale,
   ThumbsDown,
@@ -520,6 +521,14 @@ export function MarketDetailClient({ id }: { id: string }) {
             >
               <Users className="h-3 w-3" />
               Traders
+            </Link>
+            <Link
+              href={`/exchange/${id}/ideas`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-gold/40 text-xs text-surface-500 hover:text-gold transition-colors"
+              title="Community prediction theses for this market"
+            >
+              <Lightbulb className="h-3 w-3" />
+              Theses
             </Link>
             <Link
               href="/exchange/portfolio"
