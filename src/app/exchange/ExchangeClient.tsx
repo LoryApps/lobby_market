@@ -530,6 +530,13 @@ export function ExchangeClient() {
                 My Forecasts
               </Link>
               <Link
+                href="/exchange/consensus"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-100 border border-surface-300 hover:border-purple/40 text-xs font-medium text-surface-500 hover:text-purple transition-colors"
+              >
+                <Brain className="h-3.5 w-3.5" />
+                Crowd Consensus
+              </Link>
+              <Link
                 href="/exchange/performance"
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-100 border border-surface-300 hover:border-gold/40 text-xs font-medium text-surface-500 hover:text-gold transition-colors"
               >
