@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -11,13 +11,17 @@ import {
   BarChart2,
   Bell,
   Brain,
+  ChevronDown,
   Clock,
   ExternalLink,
   Flame,
   Gavel,
+  Heart,
   Lightbulb,
+  MessageSquare,
   RefreshCw,
   Scale,
+  Send,
   Target,
   ThumbsDown,
   ThumbsUp,
@@ -37,6 +41,7 @@ import { EmptyState } from '@/components/ui/EmptyState'
 import { WatchButton } from '@/components/ui/WatchButton'
 import { cn } from '@/lib/utils/cn'
 import type { MarketDetail, PriceSnapshot, MarketArgument } from '@/app/api/exchange/[id]/route'
+import type { MarketCommentary } from '@/app/api/exchange/commentary/route'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -382,6 +387,296 @@ function RelatedCard({
   )
 }
 
+// ─── Market Commentary ────────────────────────────────────────────────────────
+
+const MAX_COMMENT_CHARS = 280
+const DIRECTION_CFG = {
+  for:     { label: 'For',     color: 'text-for-400',     bg: 'bg-for-500/10',     border: 'border-for-500/30',     dot: 'bg-for-400' },
+  against: { label: 'Against', color: 'text-against-400', bg: 'bg-against-500/10', border: 'border-against-500/30', dot: 'bg-against-400' },
+  neutral: { label: 'Neutral', color: 'text-surface-400', bg: 'bg-surface-300/20', border: 'border-surface-400/30', dot: 'bg-surface-500' },
+} as const
+
+function CommentaryNote({
+  note,
+  currentUserId,
+  onLike,
+}: {
+  note: MarketCommentary
+  currentUserId: string | null
+  onLike: (id: string, liked: boolean) => void
+}) {
+  const [liked, setLiked] = useState(note.viewer_liked)
+  const [likeCount, setLikeCount] = useState(note.likes)
+  const [liking, setLiking] = useState(false)
+  const dirCfg = note.direction ? DIRECTION_CFG[note.direction] : null
+
+  async function handleLike() {
+    if (!currentUserId || liking) return
+    setLiking(true)
+    const newLiked = !liked
+    setLiked(newLiked)
+    setLikeCount((c) => c + (newLiked ? 1 : -1))
+    try {
+      await fetch('/api/exchange/commentary/like', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ commentary_id: note.id }),
+      })
+      onLike(note.id, newLiked)
+    } catch {
+      setLiked(!newLiked)
+      setLikeCount((c) => c + (newLiked ? -1 : 1))
+    } finally {
+      setLiking(false)
+    }
+  }
+
+  const diff = Date.now() - new Date(note.created_at).getTime()
+  const m = Math.floor(diff / 60_000)
+  const h = Math.floor(m / 60)
+  const d = Math.floor(h / 24)
+  const ts = m < 1 ? 'just now' : m < 60 ? `${m}m` : h < 24 ? `${h}h` : `${d}d`
+
+  return (
+    <div className="flex gap-2.5 py-3 border-b border-surface-300/30 last:border-0">
+      <Avatar src={note.author.avatar_url} fallback={note.author.display_name || note.author.username} size="sm" />
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-1.5 mb-0.5 flex-wrap">
+          <span className="text-xs font-semibold text-white truncate">
+            {note.author.display_name || note.author.username}
+          </span>
+          {dirCfg && (
+            <span className={cn('text-[10px] font-mono px-1.5 py-0.5 rounded-full border', dirCfg.color, dirCfg.bg, dirCfg.border)}>
+              <span className={cn('inline-block w-1 h-1 rounded-full mr-0.5 align-middle', dirCfg.dot)} />
+              {dirCfg.label}
+            </span>
+          )}
+          <span className="ml-auto text-[10px] text-surface-600 font-mono flex-shrink-0">{ts}</span>
+        </div>
+        <p className="text-xs text-surface-200 leading-relaxed">{note.content}</p>
+        <button
+          onClick={handleLike}
+          disabled={!currentUserId || liking}
+          className={cn(
+            'mt-1.5 flex items-center gap-1 text-[11px] transition-colors',
+            liked ? 'text-against-400' : 'text-surface-600 hover:text-against-400',
+            !currentUserId && 'opacity-40 cursor-not-allowed',
+          )}
+        >
+          <Heart className={cn('h-3 w-3', liked && 'fill-current')} />
+          {likeCount > 0 && <span>{likeCount}</span>}
+        </button>
+      </div>
+    </div>
+  )
+}
+
+function MarketCommentaryPanel({
+  topicId,
+  currentUserId,
+}: {
+  topicId: string
+  currentUserId: string | null
+}) {
+  const [notes, setNotes] = useState<MarketCommentary[]>([])
+  const [loading, setLoading] = useState(true)
+  const [hasMore, setHasMore] = useState(false)
+  const [loadingMore, setLoadingMore] = useState(false)
+  const [content, setContent] = useState('')
+  const [direction, setDirection] = useState<'for' | 'against' | 'neutral' | null>(null)
+  const [posting, setPosting] = useState(false)
+  const [postError, setPostError] = useState<string | null>(null)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  const remaining = MAX_COMMENT_CHARS - content.length
+  const canPost = content.trim().length > 0 && remaining >= 0 && !posting
+
+  const load = useCallback(async (offset = 0, append = false) => {
+    if (append) setLoadingMore(true)
+    else setLoading(true)
+    try {
+      const res = await fetch(
+        `/api/exchange/commentary?topic_id=${topicId}&sort=newest&limit=10&offset=${offset}`,
+        { cache: 'no-store' },
+      )
+      if (!res.ok) return
+      const data = await res.json()
+      const newNotes: MarketCommentary[] = data.notes ?? []
+      setNotes((prev) => append ? [...prev, ...newNotes] : newNotes)
+      setHasMore(data.has_more ?? false)
+    } finally {
+      setLoading(false)
+      setLoadingMore(false)
+    }
+  }, [topicId])
+
+  useEffect(() => { load(0) }, [load])
+
+  async function handlePost() {
+    if (!canPost || !currentUserId) return
+    setPosting(true)
+    setPostError(null)
+    try {
+      const res = await fetch('/api/exchange/commentary', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: content.trim(), direction, topic_id: topicId }),
+      })
+      if (!res.ok) {
+        const d = await res.json()
+        throw new Error(d.error ?? 'Failed to post')
+      }
+      const note = await res.json() as MarketCommentary
+      setNotes((prev) => [note, ...prev])
+      setContent('')
+      setDirection(null)
+      if (textareaRef.current) textareaRef.current.style.height = 'auto'
+    } catch (err) {
+      setPostError(err instanceof Error ? err.message : 'Something went wrong')
+    } finally {
+      setPosting(false)
+    }
+  }
+
+  function handleLike(id: string, liked: boolean) {
+    setNotes((prev) =>
+      prev.map((n) =>
+        n.id === id
+          ? { ...n, viewer_liked: liked, likes: n.likes + (liked ? 1 : -1) }
+          : n,
+      ),
+    )
+  }
+
+  return (
+    <div className="space-y-3">
+      <h2 className="text-xs font-semibold uppercase tracking-widest text-surface-500 flex items-center gap-2">
+        <MessageSquare className="h-3.5 w-3.5" />
+        Market Commentary
+      </h2>
+
+      {/* Compose box */}
+      {currentUserId ? (
+        <div className="rounded-xl bg-surface-200/50 border border-surface-300/60 p-3">
+          <textarea
+            ref={textareaRef}
+            value={content}
+            onChange={(e) => {
+              setContent(e.target.value)
+              const el = textareaRef.current
+              if (el) { el.style.height = 'auto'; el.style.height = `${el.scrollHeight}px` }
+            }}
+            onKeyDown={(e) => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) handlePost() }}
+            placeholder="Share your take on this market… (⌘+Enter to post)"
+            rows={2}
+            maxLength={MAX_COMMENT_CHARS + 1}
+            className="w-full bg-transparent text-xs text-surface-100 placeholder:text-surface-600 resize-none outline-none leading-relaxed min-h-[48px]"
+          />
+          <div className="flex items-center gap-2 mt-2 pt-2 border-t border-surface-300/40 flex-wrap">
+            <div className="flex gap-1 flex-shrink-0">
+              {(['for', 'against', 'neutral'] as const).map((d) => {
+                const cfg = DIRECTION_CFG[d]
+                const active = direction === d
+                return (
+                  <button
+                    key={d}
+                    onClick={() => setDirection(active ? null : d)}
+                    className={cn(
+                      'text-[10px] font-mono px-2 py-0.5 rounded-full border transition-all',
+                      active ? `${cfg.color} ${cfg.bg} ${cfg.border}` : 'text-surface-500 border-surface-400/30 hover:border-surface-400/60',
+                    )}
+                  >
+                    {cfg.label}
+                  </button>
+                )
+              })}
+            </div>
+            <span className={cn('text-[10px] font-mono ml-auto', remaining < 20 ? 'text-against-400' : 'text-surface-600')}>
+              {remaining}
+            </span>
+            <button
+              onClick={handlePost}
+              disabled={!canPost}
+              className={cn(
+                'flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-semibold transition-all',
+                canPost
+                  ? 'bg-for-600 hover:bg-for-500 text-white'
+                  : 'bg-surface-300/40 text-surface-600 cursor-not-allowed',
+              )}
+            >
+              <Send className="h-3 w-3" />
+              Post
+            </button>
+          </div>
+          {postError && <p className="text-[11px] text-against-400 mt-1.5">{postError}</p>}
+        </div>
+      ) : (
+        <div className="rounded-xl bg-surface-200/50 border border-surface-300/60 p-3 text-center">
+          <p className="text-xs text-surface-500">
+            <Link href="/sign-in" className="text-for-400 hover:text-for-300">Sign in</Link>
+            {' '}to share your market take
+          </p>
+        </div>
+      )}
+
+      {/* Notes list */}
+      {loading ? (
+        <div className="space-y-2">
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="flex gap-2.5 py-3">
+              <Skeleton className="h-7 w-7 rounded-full flex-shrink-0" />
+              <div className="flex-1 space-y-1.5">
+                <Skeleton className="h-3 w-24 rounded" />
+                <Skeleton className="h-8 w-full rounded" />
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : notes.length === 0 ? (
+        <p className="text-xs text-surface-600 text-center py-4">
+          No commentary yet. Be the first to share your take.
+        </p>
+      ) : (
+        <div className="rounded-xl bg-surface-200/50 border border-surface-300/60 divide-y-0 px-3">
+          {notes.map((n) => (
+            <CommentaryNote
+              key={n.id}
+              note={n}
+              currentUserId={currentUserId}
+              onLike={handleLike}
+            />
+          ))}
+        </div>
+      )}
+
+      {hasMore && (
+        <button
+          onClick={() => load(notes.length, true)}
+          disabled={loadingMore}
+          className="w-full flex items-center justify-center gap-1.5 py-2 text-xs text-surface-500 hover:text-white transition-colors"
+        >
+          {loadingMore ? (
+            <RefreshCw className="h-3 w-3 animate-spin" />
+          ) : (
+            <>
+              <ChevronDown className="h-3 w-3" />
+              Load more
+            </>
+          )}
+        </button>
+      )}
+
+      <Link
+        href="/exchange/commentary"
+        className="flex items-center gap-1.5 text-xs text-surface-500 hover:text-white transition-colors"
+      >
+        View all market commentary
+        <ArrowRight className="h-3 w-3" />
+      </Link>
+    </div>
+  )
+}
+
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export function MarketDetailClient({ id }: { id: string }) {
@@ -390,6 +685,16 @@ export function MarketDetailClient({ id }: { id: string }) {
   const [loading, setLoading] = useState(true)
   const [range, setRange] = useState<TimeRange>('all')
   const [refreshing, setRefreshing] = useState(false)
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null)
+
+  useEffect(() => {
+    import('@/lib/supabase/client').then(({ createClient }) => {
+      const supabase = createClient()
+      supabase.auth.getUser().then(({ data }) => {
+        setCurrentUserId(data.user?.id ?? null)
+      })
+    })
+  }, [])
 
   const load = useCallback(async (showRefresh = false) => {
     if (showRefresh) setRefreshing(true)
@@ -838,6 +1143,9 @@ export function MarketDetailClient({ id }: { id: string }) {
             </Link>
           </div>
         )}
+
+        {/* Market commentary */}
+        <MarketCommentaryPanel topicId={id} currentUserId={currentUserId} />
 
         {/* Related markets */}
         {detail.related.length > 0 && (
