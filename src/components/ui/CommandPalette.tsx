@@ -587,6 +587,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'mission-control',
+    label: 'Mission Control',
+    sublabel: 'Your civic command center — pending votes, predictions, debates, streak',
+    href: '/mission-control',
+    icon: Target,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
     id: 'dashboard',
     label: 'Dashboard',
     sublabel: 'Personal command centre — league, predictions, watchlist',
