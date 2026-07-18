@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Activity,
+  AlertTriangle,
   Award,
   BarChart2,
   Bell,
@@ -25,6 +26,7 @@ import {
   Lightbulb,
   Map,
   MessageSquare,
+  Newspaper,
   NewspaperIcon,
   Radio,
   RefreshCw,
@@ -746,6 +748,20 @@ export function ExchangeClient() {
               >
                 <MessageSquare className="h-3.5 w-3.5" />
                 Commentary
+              </Link>
+              <Link
+                href="/exchange/daily"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-for-500/10 border border-for-500/30 hover:border-for-500/60 text-xs font-medium text-for-400 hover:text-for-300 transition-colors"
+              >
+                <Newspaper className="h-3.5 w-3.5" />
+                Daily Brief
+              </Link>
+              <Link
+                href="/exchange/risk"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-against-500/10 border border-against-500/30 hover:border-against-500/60 text-xs font-medium text-against-400 hover:text-against-300 transition-colors"
+              >
+                <AlertTriangle className="h-3.5 w-3.5" />
+                Risk Radar
               </Link>
               <button
                 onClick={() => setRefreshKey((k) => k + 1)}

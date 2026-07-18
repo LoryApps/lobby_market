@@ -14,6 +14,7 @@ import {
   ChevronDown,
   Clock,
   ExternalLink,
+  FileSearch,
   Flame,
   Gavel,
   Heart,
@@ -853,6 +854,14 @@ export function MarketDetailClient({ id }: { id: string }) {
             >
               <Target className="h-3 w-3" />
               Forecasts
+            </Link>
+            <Link
+              href={`/exchange/${id}/research`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gold/10 border border-gold/30 hover:border-gold/60 text-xs text-gold hover:text-gold/90 transition-colors"
+              title="Full market intelligence research report"
+            >
+              <FileSearch className="h-3 w-3" />
+              Research
             </Link>
             <Link
               href="/exchange/forecasts"
