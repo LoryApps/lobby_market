@@ -24,6 +24,7 @@ import {
   LayoutGrid,
   Lightbulb,
   Map,
+  MessageSquare,
   NewspaperIcon,
   Radio,
   RefreshCw,
@@ -738,6 +739,13 @@ export function ExchangeClient() {
               >
                 <Lightbulb className="h-3.5 w-3.5" />
                 Ideas
+              </Link>
+              <Link
+                href="/exchange/commentary"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald/10 border border-emerald/30 hover:border-emerald/60 text-xs font-medium text-emerald hover:text-emerald/90 transition-colors"
+              >
+                <MessageSquare className="h-3.5 w-3.5" />
+                Commentary
               </Link>
               <button
                 onClick={() => setRefreshKey((k) => k + 1)}
