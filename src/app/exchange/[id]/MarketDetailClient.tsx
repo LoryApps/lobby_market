@@ -18,6 +18,7 @@ import {
   Flame,
   Gavel,
   Heart,
+  Layers,
   Lightbulb,
   MessageSquare,
   RefreshCw,
@@ -919,6 +920,14 @@ export function MarketDetailClient({ id }: { id: string }) {
             >
               <Brain className="h-3 w-3" />
               Consensus
+            </Link>
+            <Link
+              href={`/exchange/${id}/similar`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-for-400/40 text-xs text-surface-500 hover:text-for-400 transition-colors"
+              title="Markets similar to this one — same category, consensus band, or scope"
+            >
+              <Layers className="h-3 w-3" />
+              Similar
             </Link>
           </div>
         </div>
