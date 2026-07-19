@@ -864,6 +864,14 @@ export function MarketDetailClient({ id }: { id: string }) {
               Research
             </Link>
             <Link
+              href={`/exchange/${id}/activity`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-for-500/40 text-xs text-surface-500 hover:text-for-300 transition-colors"
+              title="Chronological activity log — price milestones, arguments, commentary"
+            >
+              <Clock className="h-3 w-3" />
+              Activity
+            </Link>
+            <Link
               href="/exchange/forecasts"
               className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-for-400/40 text-xs text-surface-500 hover:text-for-400 transition-colors"
               title="My forecast track record"
