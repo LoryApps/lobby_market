@@ -405,14 +405,23 @@ function ForecasterRow({
                   </div>
                 )}
 
-                {/* View profile link */}
-                <Link
-                  href={`/profile/${forecaster.username}`}
-                  className="mt-3 inline-flex items-center gap-1 text-xs text-for-400 hover:underline"
-                >
-                  View profile
-                  <TrendingUp className="h-3 w-3" />
-                </Link>
+                {/* Profile links */}
+                <div className="mt-3 flex items-center gap-3">
+                  <Link
+                    href={`/exchange/forecasters/${forecaster.username}`}
+                    className="inline-flex items-center gap-1 text-xs text-gold hover:underline"
+                  >
+                    Forecaster profile
+                    <TrendingUp className="h-3 w-3" />
+                  </Link>
+                  <Link
+                    href={`/profile/${forecaster.username}`}
+                    className="inline-flex items-center gap-1 text-xs text-for-400 hover:underline"
+                  >
+                    Civic profile
+                    <TrendingUp className="h-3 w-3" />
+                  </Link>
+                </div>
               </div>
             </motion.div>
           )}
