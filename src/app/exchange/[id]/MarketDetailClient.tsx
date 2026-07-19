@@ -890,6 +890,14 @@ export function MarketDetailClient({ id }: { id: string }) {
               Debates
             </Link>
             <Link
+              href={`/exchange/${id}/leaderboard`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-gold/40 text-xs text-surface-500 hover:text-gold transition-colors"
+              title="Top forecasters on this market ranked by entry-price edge"
+            >
+              <Trophy className="h-3 w-3" />
+              Leaderboard
+            </Link>
+            <Link
               href="/exchange/forecasts"
               className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-for-400/40 text-xs text-surface-500 hover:text-for-400 transition-colors"
               title="My forecast track record"
