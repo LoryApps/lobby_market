@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -19,6 +19,7 @@ import {
   ThumbsDown,
   ThumbsUp,
   Trash2,
+  TrendingDown,
   TrendingUp,
   Users,
   X,
@@ -32,6 +33,7 @@ import { EmptyState } from '@/components/ui/EmptyState'
 import { cn } from '@/lib/utils/cn'
 import type { GroupDetail, GroupMarket } from '@/app/api/exchange/groups/[id]/route'
 import type { Market } from '@/app/api/exchange/route'
+import type { GroupHistoryResponse, MarketHistory, PriceTick } from '@/app/api/exchange/groups/[id]/history/route'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -221,15 +223,84 @@ function StatTile({ label, value, sub, color }: { label: string; value: string |
   )
 }
 
+// ─── Sparkline ────────────────────────────────────────────────────────────────
+
+function Sparkline({
+  ticks,
+  width = 60,
+  height = 22,
+}: {
+  ticks: PriceTick[]
+  width?: number
+  height?: number
+}) {
+  const points = useMemo(() => {
+    if (ticks.length < 2) return null
+    const prices = ticks.map((t) => t.price)
+    const min = Math.min(...prices)
+    const max = Math.max(...prices)
+    const range = max - min || 1
+    const step = width / (prices.length - 1)
+    return prices
+      .map((p, i) => `${(i * step).toFixed(1)},${(height - ((p - min) / range) * (height - 2) - 1).toFixed(1)}`)
+      .join(' ')
+  }, [ticks, width, height])
+
+  if (!points) return null
+
+  const first = ticks[0].price
+  const last = ticks[ticks.length - 1].price
+  const up = last > first + 1
+  const down = last < first - 1
+  const color = up ? '#22c55e' : down ? '#ef4444' : '#6b7280'
+
+  return (
+    <svg
+      width={width}
+      height={height}
+      viewBox={`0 0 ${width} ${height}`}
+      aria-hidden="true"
+      className="overflow-visible flex-shrink-0"
+    >
+      <polyline
+        points={points}
+        fill="none"
+        stroke={color}
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        opacity="0.9"
+      />
+    </svg>
+  )
+}
+
+function DeltaBadge({ delta }: { delta: number }) {
+  if (Math.abs(delta) < 1) {
+    return (
+      <span className="text-[10px] font-mono text-surface-500">—</span>
+    )
+  }
+  const up = delta > 0
+  const Icon = up ? TrendingUp : TrendingDown
+  return (
+    <span className={cn('flex items-center gap-0.5 text-[10px] font-mono font-semibold', up ? 'text-emerald' : 'text-against-400')}>
+      <Icon className="h-2.5 w-2.5" />
+      {up ? '+' : ''}{delta.toFixed(0)}¢
+    </span>
+  )
+}
+
 // ─── Market Row ────────────────────────────────────────────────────────────────
 
 interface MarketRowProps {
   market: GroupMarket
   isOwner: boolean
   onRemove: (topicId: string) => void
+  history?: MarketHistory
 }
 
-function MarketRow({ market, isOwner, onRemove }: MarketRowProps) {
+function MarketRow({ market, isOwner, onRemove, history }: MarketRowProps) {
   const [removing, setRemoving] = useState(false)
 
   async function handleRemove(e: React.MouseEvent) {
@@ -275,6 +346,13 @@ function MarketRow({ market, isOwner, onRemove }: MarketRowProps) {
             <div className={cn('text-sm font-mono font-bold px-2.5 py-1 rounded-lg border', priceBg(market.price, market.status), priceColor(market.price, market.status))}>
               {market.price_label}
             </div>
+            {/* Sparkline + delta */}
+            {history && history.ticks.length >= 2 && (
+              <div className="flex items-center gap-2">
+                <DeltaBadge delta={history.delta} />
+                <Sparkline ticks={history.ticks} />
+              </div>
+            )}
             <div className="flex items-center gap-1.5">
               <span className="text-[10px] font-mono text-surface-600 flex items-center gap-0.5">
                 <Users className="h-2.5 w-2.5" />{market.volume.toLocaleString()}
@@ -309,6 +387,7 @@ export function GroupDetailClient({ id }: Props) {
   const [showAdd, setShowAdd] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [sortBy, setSortBy] = useState<'added' | 'price_asc' | 'price_desc' | 'volume'>('added')
+  const [history, setHistory] = useState<GroupHistoryResponse | null>(null)
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -326,6 +405,18 @@ export function GroupDetailClient({ id }: Props) {
   }, [id])
 
   useEffect(() => { load() }, [load])
+
+  useEffect(() => {
+    fetch(`/api/exchange/groups/${id}/history`)
+      .then((r) => r.ok ? r.json() as Promise<GroupHistoryResponse> : null)
+      .then((data) => { if (data) setHistory(data) })
+      .catch(() => {})
+  }, [id])
+
+  const historyMap = useMemo<Record<string, MarketHistory>>(() => {
+    if (!history) return {}
+    return Object.fromEntries(history.markets.map((m) => [m.topic_id, m]))
+  }, [history])
 
   async function handleRemove(topicId: string) {
     if (!group) return
@@ -497,6 +588,17 @@ export function GroupDetailClient({ id }: Props) {
               />
             </div>
 
+            {/* Index trend sparkline */}
+            {history && history.index.length >= 2 && (
+              <div className="rounded-xl bg-surface-200 border border-surface-300 p-3 mb-5">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-[10px] font-mono text-surface-500 uppercase tracking-wider">30-Day Group Index</p>
+                  <DeltaBadge delta={history.index_delta} />
+                </div>
+                <Sparkline ticks={history.index} width={320} height={36} />
+              </div>
+            )}
+
             {/* Sort controls */}
             {group.markets.length > 1 && (
               <div className="flex items-center gap-2 mb-4">
@@ -547,6 +649,7 @@ export function GroupDetailClient({ id }: Props) {
                       market={market}
                       isOwner={group.is_owner}
                       onRemove={handleRemove}
+                      history={historyMap[market.id]}
                     />
                   ))}
                 </AnimatePresence>
