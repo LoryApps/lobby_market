@@ -28,6 +28,7 @@ import {
   ThumbsUp,
   TrendingDown,
   TrendingUp,
+  Swords,
   Trophy,
   Users,
   Vote,
@@ -879,6 +880,14 @@ export function MarketDetailClient({ id }: { id: string }) {
             >
               <Trophy className="h-3 w-3" />
               Milestones
+            </Link>
+            <Link
+              href={`/exchange/${id}/debates`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-surface-400 text-xs text-surface-500 hover:text-white transition-colors"
+              title="Debates linked to this market — live, scheduled, and completed"
+            >
+              <Swords className="h-3 w-3" />
+              Debates
             </Link>
             <Link
               href="/exchange/forecasts"
