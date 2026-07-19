@@ -17,6 +17,7 @@ import {
   RefreshCw,
   Sparkles,
   Trash2,
+  Trophy,
   Users,
   X,
 } from 'lucide-react'
@@ -364,7 +365,14 @@ export function GroupsClient() {
               )}
             </button>
           ))}
-          <button onClick={load} className="ml-auto p-2 rounded-xl bg-surface-200 border border-surface-400 hover:border-surface-300 transition-colors">
+          <Link
+            href="/exchange/groups/leaderboard"
+            className="flex items-center gap-1 px-3 py-2 rounded-xl bg-surface-200 border border-surface-400 hover:border-gold/40 hover:text-gold text-surface-500 font-mono text-xs font-semibold transition-colors"
+          >
+            <Trophy className="h-3 w-3" />
+            Top
+          </Link>
+          <button onClick={load} className="p-2 rounded-xl bg-surface-200 border border-surface-400 hover:border-surface-300 transition-colors">
             <RefreshCw className={cn('h-3.5 w-3.5 text-surface-500', loading && 'animate-spin')} />
           </button>
         </div>
