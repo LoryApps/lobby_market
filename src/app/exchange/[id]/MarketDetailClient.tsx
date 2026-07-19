@@ -45,6 +45,7 @@ import { Badge } from '@/components/ui/Badge'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { WatchButton } from '@/components/ui/WatchButton'
+import { AddToGroupButton } from '@/components/exchange/AddToGroupButton'
 import { cn } from '@/lib/utils/cn'
 import type { MarketDetail, PriceSnapshot, MarketArgument } from '@/app/api/exchange/[id]/route'
 import type { MarketCommentary } from '@/app/api/exchange/commentary/route'
@@ -811,8 +812,9 @@ export function MarketDetailClient({ id }: { id: string }) {
               </>
             )}
           </div>
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1.5 flex-wrap">
             <WatchButton topicId={id} iconOnly />
+            <AddToGroupButton topicId={id} />
             <Link
               href={`/exchange/alerts?topic=${id}`}
               className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-for-500/40 text-xs text-surface-500 hover:text-for-300 transition-colors"
