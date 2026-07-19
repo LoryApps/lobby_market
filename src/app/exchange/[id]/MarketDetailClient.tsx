@@ -15,6 +15,7 @@ import {
   Clock,
   ExternalLink,
   FileSearch,
+  FileText,
   Flame,
   Gavel,
   Heart,
@@ -937,6 +938,14 @@ export function MarketDetailClient({ id }: { id: string }) {
             >
               <Shield className="h-3 w-3" />
               Coalitions
+            </Link>
+            <Link
+              href={`/exchange/${id}/brief`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-for-400/40 text-xs text-surface-500 hover:text-for-400 transition-colors"
+              title="One-page market brief — consensus, top arguments, and resolution outlook"
+            >
+              <FileText className="h-3 w-3" />
+              Brief
             </Link>
           </div>
         </div>
