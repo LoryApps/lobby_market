@@ -672,13 +672,22 @@ function MarketCommentaryPanel({
         </button>
       )}
 
-      <Link
-        href="/exchange/commentary"
-        className="flex items-center gap-1.5 text-xs text-surface-500 hover:text-white transition-colors"
-      >
-        View all market commentary
-        <ArrowRight className="h-3 w-3" />
-      </Link>
+      <div className="flex items-center gap-3 flex-wrap">
+        <Link
+          href={`/exchange/${id}/commentary`}
+          className="flex items-center gap-1.5 text-xs text-for-400 hover:text-for-300 transition-colors font-mono font-semibold"
+        >
+          All notes on this market
+          <ArrowRight className="h-3 w-3" />
+        </Link>
+        <Link
+          href="/exchange/commentary"
+          className="flex items-center gap-1.5 text-xs text-surface-500 hover:text-white transition-colors"
+        >
+          Global feed
+          <ArrowRight className="h-3 w-3" />
+        </Link>
+      </div>
     </div>
   )
 }
@@ -946,6 +955,14 @@ export function MarketDetailClient({ id }: { id: string }) {
             >
               <FileText className="h-3 w-3" />
               Brief
+            </Link>
+            <Link
+              href={`/exchange/${id}/commentary`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-for-400/40 text-xs text-surface-500 hover:text-for-400 transition-colors"
+              title="Trader commentary and quick takes on this market"
+            >
+              <MessageSquare className="h-3 w-3" />
+              Commentary
             </Link>
           </div>
         </div>
