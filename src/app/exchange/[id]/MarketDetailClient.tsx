@@ -29,6 +29,7 @@ import {
   ThumbsUp,
   TrendingDown,
   TrendingUp,
+  Shield,
   Swords,
   Trophy,
   Users,
@@ -928,6 +929,14 @@ export function MarketDetailClient({ id }: { id: string }) {
             >
               <Layers className="h-3 w-3" />
               Similar
+            </Link>
+            <Link
+              href={`/exchange/${id}/coalitions`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-emerald/40 text-xs text-surface-500 hover:text-emerald transition-colors"
+              title="Coalition breakdown — which alliances are backing FOR vs AGAINST"
+            >
+              <Shield className="h-3 w-3" />
+              Coalitions
             </Link>
           </div>
         </div>
