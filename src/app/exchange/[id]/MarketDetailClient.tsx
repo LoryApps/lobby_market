@@ -881,6 +881,14 @@ export function MarketDetailClient({ id }: { id: string }) {
               News
             </Link>
             <Link
+              href={`/exchange/${id}/risk`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-against-300/40 text-xs text-surface-500 hover:text-against-300 transition-colors"
+              title="Six-dimension market risk — price extremity, volatility, liquidity, coalition alignment, deadline pressure, sentiment divergence"
+            >
+              <Shield className="h-3 w-3" />
+              Risk
+            </Link>
+            <Link
               href={`/exchange/${id}/catalysts`}
               className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-for-400/40 text-xs text-surface-500 hover:text-for-400 transition-colors"
               title="Arguments and events that moved this market's price"
