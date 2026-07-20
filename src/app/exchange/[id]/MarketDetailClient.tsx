@@ -952,6 +952,14 @@ export function MarketDetailClient({ id }: { id: string }) {
               Portfolio
             </Link>
             <Link
+              href="/exchange/command-center"
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-for-600/10 border border-for-600/30 hover:border-for-500/60 text-xs text-for-400 hover:text-for-300 transition-colors"
+              title="Your personal exchange command center — watchlist, alerts, forecasts"
+            >
+              <Activity className="h-3 w-3" />
+              Command Center
+            </Link>
+            <Link
               href={`/exchange/${id}/consensus`}
               className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-purple/40 text-xs text-surface-500 hover:text-purple transition-colors"
               title="Deep consensus breakdown — expert vs crowd, voter tiers, turning points"

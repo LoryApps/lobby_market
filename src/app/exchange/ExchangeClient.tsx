@@ -605,6 +605,13 @@ export function ExchangeClient() {
                 Watchlist
               </Link>
               <Link
+                href="/exchange/command-center"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-for-600/10 border border-for-600/30 hover:border-for-500/60 text-xs font-medium text-for-400 hover:text-for-300 transition-colors"
+              >
+                <Activity className="h-3.5 w-3.5" />
+                Command Center
+              </Link>
+              <Link
                 href="/exchange/groups"
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-100 border border-surface-300 hover:border-purple/40 text-xs font-medium text-surface-500 hover:text-purple transition-colors"
               >
