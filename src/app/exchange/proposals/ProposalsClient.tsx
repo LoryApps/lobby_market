@@ -112,9 +112,12 @@ function ProposalCard({ proposal, onVote, voting }: ProposalCardProps) {
               </span>
             )}
           </div>
-          <h3 className="text-sm font-semibold text-white leading-snug">
+          <Link
+            href={`/exchange/proposals/${proposal.id}`}
+            className="text-sm font-semibold text-white leading-snug hover:text-for-300 transition-colors"
+          >
             {proposal.title}
-          </h3>
+          </Link>
         </div>
 
         {/* Upvote button */}
@@ -192,9 +195,17 @@ function ProposalCard({ proposal, onVote, voting }: ProposalCardProps) {
           <span className="text-xs text-surface-500">{formatDate(proposal.created_at)}</span>
         </div>
 
-        <span className={cn('text-xs font-medium px-2 py-0.5 rounded-full', style.bg, style.color)}>
-          {style.label}
-        </span>
+        <div className="flex items-center gap-2">
+          <Link
+            href={`/exchange/proposals/${proposal.id}`}
+            className="text-xs text-surface-500 hover:text-for-400 transition-colors"
+          >
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+          <span className={cn('text-xs font-medium px-2 py-0.5 rounded-full', style.bg, style.color)}>
+            {style.label}
+          </span>
+        </div>
       </div>
     </motion.div>
   )
