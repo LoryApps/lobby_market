@@ -1007,6 +1007,14 @@ export function MarketDetailClient({ id }: { id: string }) {
               <Clock className="h-3 w-3" />
               Timeline
             </Link>
+            <Link
+              href={`/exchange/${id}/resolution`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-emerald/40 text-xs text-surface-500 hover:text-emerald transition-colors"
+              title="Resolution summary — final outcome, crowd accuracy, and top forecasters"
+            >
+              <Gavel className="h-3 w-3" />
+              Resolution
+            </Link>
           </div>
         </div>
 
