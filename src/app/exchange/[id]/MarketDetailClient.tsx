@@ -22,6 +22,7 @@ import {
   Layers,
   Lightbulb,
   MessageSquare,
+  Radio,
   RefreshCw,
   Scale,
   Send,
@@ -862,6 +863,14 @@ export function MarketDetailClient({ id }: { id: string }) {
             >
               <Activity className="h-3 w-3" />
               Analysis
+            </Link>
+            <Link
+              href={`/exchange/${id}/signal`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald/10 border border-emerald/30 hover:border-emerald/60 text-xs text-emerald hover:text-emerald/90 transition-colors"
+              title="Multi-factor civic signal — momentum, arguments, coalitions, debate activity"
+            >
+              <Radio className="h-3 w-3" />
+              Signal
             </Link>
             <Link
               href={`/exchange/${id}/forecast`}
