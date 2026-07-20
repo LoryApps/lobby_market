@@ -881,6 +881,14 @@ export function MarketDetailClient({ id }: { id: string }) {
               Catalysts
             </Link>
             <Link
+              href={`/exchange/${id}/depth`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-purple/40 text-xs text-surface-500 hover:text-purple transition-colors"
+              title="Voter conviction profiles, price sensitivity, and vote concentration"
+            >
+              <Layers className="h-3 w-3" />
+              Depth
+            </Link>
+            <Link
               href={`/exchange/${id}/forecast`}
               className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-purple/40 text-xs text-surface-500 hover:text-purple transition-colors"
               title="Community price forecasts and targets"
