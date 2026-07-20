@@ -486,6 +486,13 @@ export function ExchangeClient() {
                 Leaders
               </Link>
               <Link
+                href="/exchange/tournaments"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gold/10 border border-gold/20 hover:border-gold/50 text-xs font-medium text-gold/80 hover:text-gold transition-colors"
+              >
+                <Zap className="h-3.5 w-3.5" />
+                Tournaments
+              </Link>
+              <Link
                 href="/exchange/top-calls"
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gold/10 border border-gold/30 hover:border-gold/60 text-xs font-medium text-gold hover:text-gold/90 transition-colors"
               >
@@ -785,6 +792,13 @@ export function ExchangeClient() {
               >
                 <AlertTriangle className="h-3.5 w-3.5" />
                 Risk Radar
+              </Link>
+              <Link
+                href="/exchange/tournaments"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gold/15 border border-gold/30 hover:border-gold/60 text-xs font-medium text-gold hover:text-gold/90 transition-colors"
+              >
+                <Trophy className="h-3.5 w-3.5" />
+                Tournaments
               </Link>
               <button
                 onClick={() => setRefreshKey((k) => k + 1)}
