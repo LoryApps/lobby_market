@@ -873,6 +873,14 @@ export function MarketDetailClient({ id }: { id: string }) {
               Signal
             </Link>
             <Link
+              href={`/exchange/${id}/catalysts`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-for-400/40 text-xs text-surface-500 hover:text-for-400 transition-colors"
+              title="Arguments and events that moved this market's price"
+            >
+              <Zap className="h-3 w-3" />
+              Catalysts
+            </Link>
+            <Link
               href={`/exchange/${id}/forecast`}
               className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-purple/40 text-xs text-surface-500 hover:text-purple transition-colors"
               title="Community price forecasts and targets"
