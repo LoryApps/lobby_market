@@ -34,6 +34,7 @@ import {
   Scale,
   Shield,
   SlidersHorizontal,
+  Sparkles,
   Target,
   TrendingDown,
   TrendingUp,
@@ -749,6 +750,13 @@ export function ExchangeClient() {
               >
                 <Lightbulb className="h-3.5 w-3.5" />
                 Ideas
+              </Link>
+              <Link
+                href="/exchange/proposals"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-for-500/10 border border-for-500/30 hover:border-for-500/60 text-xs font-medium text-for-400 hover:text-for-300 transition-colors"
+              >
+                <Sparkles className="h-3.5 w-3.5" />
+                Proposals
               </Link>
               <Link
                 href="/exchange/commentary"
