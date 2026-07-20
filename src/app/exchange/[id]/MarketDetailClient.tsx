@@ -991,6 +991,14 @@ export function MarketDetailClient({ id }: { id: string }) {
               <MessageSquare className="h-3 w-3" />
               Commentary
             </Link>
+            <Link
+              href={`/exchange/${id}/timeline`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-gold/40 text-xs text-surface-500 hover:text-gold transition-colors"
+              title="Complete market timeline — all price events, debates, and milestones in chronological order"
+            >
+              <Clock className="h-3 w-3" />
+              Timeline
+            </Link>
           </div>
         </div>
 
