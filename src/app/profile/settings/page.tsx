@@ -3,12 +3,14 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Save, Calendar, Mail, ArrowLeft, AtSign, Code2, Globe, Sparkles, CheckCircle2, Circle } from 'lucide-react'
+import { Save, Calendar, Mail, ArrowLeft, AtSign, Code2, Globe, Sparkles, CheckCircle2, Circle, Eye } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { RoleBadge } from '@/components/profile/RoleBadge'
+import { Avatar } from '@/components/ui/Avatar'
 import { AvatarUploader } from '@/components/ui/AvatarUploader'
+import { BioMarkdownEditor, tokenize, renderTokens } from '@/components/ui/BioMarkdownEditor'
 import { ARCHETYPE_CONFIG, type ArchetypeId } from '@/lib/config/archetypes'
 import type { Profile } from '@/lib/supabase/types'
 import type { SetupProgress } from '@/app/api/me/setup/route'
@@ -285,24 +287,14 @@ export default function ProfileSettingsPage() {
 
           {/* Bio */}
           <div>
-            <label
-              htmlFor="bio"
-              className="block text-sm font-medium text-surface-600 mb-1.5"
-            >
+            <label className="block text-sm font-medium text-surface-600 mb-2">
               Bio
             </label>
-            <textarea
-              id="bio"
-              rows={4}
-              maxLength={280}
+            <BioMarkdownEditor
               value={bio}
-              onChange={(e) => setBio(e.target.value)}
-              className={cn(inputClass, 'resize-none')}
-              placeholder="Tell the Lobby who you are…"
+              onChange={setBio}
+              maxLength={280}
             />
-            <div className="text-[10px] font-mono text-surface-500 mt-1 text-right">
-              {bio.length}/280
-            </div>
           </div>
 
           {/* Social links */}
@@ -422,6 +414,61 @@ export default function ProfileSettingsPage() {
               Profile updated successfully.
             </div>
           )}
+
+          {/* Profile preview — "what others see" */}
+          <div className="pt-4 border-t border-surface-300">
+            <p className="flex items-center gap-2 text-xs font-mono font-semibold text-surface-500 uppercase tracking-wider mb-3">
+              <Eye className="h-3.5 w-3.5" aria-hidden="true" />
+              Public profile preview
+            </p>
+            <div className="flex items-start gap-4 p-4 rounded-xl bg-surface-200/50 border border-surface-300">
+              <Avatar
+                src={avatarUrl}
+                fallback={displayName || profile?.username || '?'}
+                size="lg"
+              />
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2 flex-wrap mb-0.5">
+                  <span className="text-base font-bold text-white truncate">
+                    {displayName || profile?.username}
+                  </span>
+                  {profile && <RoleBadge role={profile.role} size="sm" />}
+                </div>
+                <p className="text-[11px] font-mono text-surface-500 mb-2">
+                  @{profile?.username}
+                </p>
+                {bio.trim() ? (
+                  <p className="text-sm text-surface-600 leading-relaxed">
+                    {renderTokens(tokenize(bio))}
+                  </p>
+                ) : (
+                  <p className="text-sm text-surface-600 italic">No bio yet.</p>
+                )}
+                {(twitter || github || website) && (
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {twitter && (
+                      <span className="text-[11px] font-mono text-surface-500">
+                        @{twitter.replace(/^@/, '')}
+                      </span>
+                    )}
+                    {github && (
+                      <span className="text-[11px] font-mono text-surface-500">
+                        github/{github.replace(/^@/, '')}
+                      </span>
+                    )}
+                    {website && (
+                      <span className="text-[11px] font-mono text-surface-500 truncate">
+                        {website.replace(/^https?:\/\//, '')}
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+            <p className="text-[10px] font-mono text-surface-600 mt-1.5">
+              This reflects your current edits — save to publish.
+            </p>
+          </div>
 
           <div className="flex items-center gap-3 flex-wrap">
             <button
