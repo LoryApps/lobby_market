@@ -465,6 +465,13 @@ export function ExchangeClient() {
                 Pulse
               </Link>
               <Link
+                href="/exchange/health"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald/10 border border-emerald/30 hover:border-emerald/60 text-xs font-medium text-emerald hover:text-emerald/80 transition-colors"
+              >
+                <Shield className="h-3.5 w-3.5" />
+                Health
+              </Link>
+              <Link
                 href="/exchange/timeline"
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-100 border border-surface-300 hover:border-for-400/40 text-xs font-medium text-surface-500 hover:text-for-400 transition-colors"
               >
