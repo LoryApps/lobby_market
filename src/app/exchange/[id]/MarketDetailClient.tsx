@@ -973,6 +973,14 @@ export function MarketDetailClient({ id }: { id: string }) {
               Arguments
             </Link>
             <Link
+              href={`/exchange/${id}/anatomy`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-purple/40 text-xs text-surface-500 hover:text-purple transition-colors"
+              title="Structural analysis of this market's debate — quality distribution, citation rates, language patterns"
+            >
+              <Brain className="h-3 w-3" />
+              Anatomy
+            </Link>
+            <Link
               href={`/exchange/${id}/persuasion`}
               className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-purple-400/40 text-xs text-surface-500 hover:text-purple-300 transition-colors"
               title="Which arguments are shifting consensus? Rhetorical style analysis and cross-aisle breakthroughs"
