@@ -717,6 +717,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                       <Heart className="h-3.5 w-3.5" />
                       Live pulse
                     </Link>
+                    <Link
+                      href={`/topic/${topic.id}/weekly`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-purple hover:text-purple/80 transition-colors"
+                    >
+                      <Calendar className="h-3.5 w-3.5" />
+                      Weekly digest
+                    </Link>
                     {(topic.status === 'law' || topic.status === 'failed') && (
                       <Link
                         href={`/topic/${topic.id}/recap`}

@@ -12,6 +12,7 @@ import {
   BarChart2,
   Bell,
   Brain,
+  Calendar,
   ChevronDown,
   Clock,
   Droplets,
@@ -1057,6 +1058,14 @@ export function MarketDetailClient({ id }: { id: string }) {
             >
               <Award className="h-3 w-3" />
               Scorecard
+            </Link>
+            <Link
+              href={`/exchange/${id}/digest`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-purple/40 text-xs text-surface-500 hover:text-purple transition-colors"
+              title="Weekly digest — 7-day summary of price action, top arguments, and forecaster consensus"
+            >
+              <Calendar className="h-3 w-3" />
+              Weekly Digest
             </Link>
             <Link
               href={`/exchange/${id}/commentary`}
