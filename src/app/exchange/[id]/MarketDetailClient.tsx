@@ -938,6 +938,14 @@ export function MarketDetailClient({ id }: { id: string }) {
               Activity
             </Link>
             <Link
+              href={`/exchange/${id}/heat`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-orange-500/40 text-xs text-surface-500 hover:text-orange-300 transition-colors"
+              title="Activity heat map — peak trading hours, hottest price zones, and most engaged arguments"
+            >
+              <Flame className="h-3 w-3" />
+              Heat Map
+            </Link>
+            <Link
               href={`/exchange/${id}/milestones`}
               className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-gold/40 text-xs text-surface-500 hover:text-gold transition-colors"
               title="Consensus journey — key price thresholds and milestones"
