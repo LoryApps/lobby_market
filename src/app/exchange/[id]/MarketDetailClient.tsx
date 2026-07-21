@@ -42,6 +42,7 @@ import {
   Wallet,
   Zap,
   NotebookPen,
+  BookOpen,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -1122,6 +1123,22 @@ export function MarketDetailClient({ id }: { id: string }) {
             >
               <BarChart2 className="h-3 w-3" />
               Chart Studio
+            </Link>
+            <Link
+              href={`/exchange/${id}/steelman`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-gold/40 text-xs text-surface-500 hover:text-gold transition-colors"
+              title="Strongest arguments FOR and AGAINST — curated by upvotes and expert quality"
+            >
+              <Scale className="h-3 w-3" />
+              Steelman
+            </Link>
+            <Link
+              href={`/exchange/${id}/playbook`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald/10 border border-emerald/30 hover:border-emerald/60 text-xs text-emerald hover:text-emerald/90 transition-colors"
+              title="Market playbook — stage, trend signals, price levels, and category benchmarks"
+            >
+              <BookOpen className="h-3 w-3" />
+              Playbook
             </Link>
             <Link
               href={`/exchange/${id}/notes`}
