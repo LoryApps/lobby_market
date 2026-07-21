@@ -8,6 +8,7 @@ import {
   Activity,
   ArrowLeft,
   ArrowRight,
+  Award,
   BarChart2,
   Bell,
   Brain,
@@ -1048,6 +1049,14 @@ export function MarketDetailClient({ id }: { id: string }) {
             >
               <FileText className="h-3 w-3" />
               Brief
+            </Link>
+            <Link
+              href={`/exchange/${id}/scorecard`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-gold/40 text-xs text-surface-500 hover:text-gold transition-colors"
+              title="Market scorecard — letter-graded assessment of consensus, engagement, momentum, and quality"
+            >
+              <Award className="h-3 w-3" />
+              Scorecard
             </Link>
             <Link
               href={`/exchange/${id}/commentary`}
