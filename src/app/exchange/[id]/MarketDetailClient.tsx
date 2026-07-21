@@ -1031,6 +1031,22 @@ export function MarketDetailClient({ id }: { id: string }) {
               <Gavel className="h-3 w-3" />
               Resolution
             </Link>
+            <Link
+              href={`/exchange/${id}/scenarios`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-purple/40 text-xs text-surface-500 hover:text-purple transition-colors"
+              title="What-if scenario analysis — price milestones, time projections, and volume impact"
+            >
+              <BarChart2 className="h-3 w-3" />
+              Scenarios
+            </Link>
+            <Link
+              href={`/exchange/${id}/model`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-gold/40 text-xs text-surface-500 hover:text-gold transition-colors"
+              title="Fair value model — is this market over or underpriced vs its fundamentals?"
+            >
+              <BarChart2 className="h-3 w-3" />
+              Fair Value
+            </Link>
           </div>
         </div>
 
