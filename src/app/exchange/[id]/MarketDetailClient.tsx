@@ -1165,6 +1165,14 @@ export function MarketDetailClient({ id }: { id: string }) {
               <Award className="h-3 w-3" />
               Verdict
             </Link>
+            <Link
+              href={`/exchange/${id}/crowd`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-purple/10 border border-purple/30 hover:border-purple/60 text-xs text-purple hover:text-purple/90 transition-colors"
+              title="Crowd intelligence — smart money vs retail signal, confidence distribution, predictor cohorts"
+            >
+              <Brain className="h-3 w-3" />
+              Crowd
+            </Link>
           </div>
         </div>
 
