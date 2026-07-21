@@ -20,6 +20,7 @@ import {
   FileSearch,
   FileText,
   Flame,
+  Gauge,
   Gavel,
   Heart,
   Layers,
@@ -876,6 +877,14 @@ export function MarketDetailClient({ id }: { id: string }) {
             >
               <Radio className="h-3 w-3" />
               Signal
+            </Link>
+            <Link
+              href={`/exchange/${id}/sentiment`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-for-500/40 text-xs text-surface-500 hover:text-for-300 transition-colors"
+              title="Community sentiment — role-based vote breakdown, argument momentum, commentary direction"
+            >
+              <Gauge className="h-3 w-3" />
+              Sentiment
             </Link>
             <Link
               href={`/exchange/${id}/momentum`}
