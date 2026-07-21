@@ -1148,6 +1148,14 @@ export function MarketDetailClient({ id }: { id: string }) {
               <NotebookPen className="h-3 w-3" />
               My Notes
             </Link>
+            <Link
+              href={`/exchange/${id}/verdict`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gold/10 border border-gold/30 hover:border-gold/60 text-xs text-gold hover:text-gold/90 transition-colors"
+              title="Community verdict — synthesised judgment, confidence score, and key signals"
+            >
+              <Award className="h-3 w-3" />
+              Verdict
+            </Link>
           </div>
         </div>
 
