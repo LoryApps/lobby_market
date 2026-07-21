@@ -38,6 +38,7 @@ import {
   Vote,
   Wallet,
   Zap,
+  NotebookPen,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -1070,6 +1071,22 @@ export function MarketDetailClient({ id }: { id: string }) {
             >
               <BarChart2 className="h-3 w-3" />
               Fair Value
+            </Link>
+            <Link
+              href={`/exchange/${id}/chart`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-purple/40 text-xs text-surface-500 hover:text-purple transition-colors"
+              title="Full interactive chart studio — price history, moving averages, volume"
+            >
+              <BarChart2 className="h-3 w-3" />
+              Chart Studio
+            </Link>
+            <Link
+              href={`/exchange/${id}/notes`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-for-500/10 border border-for-500/30 hover:border-for-500/60 text-xs text-for-400 hover:text-for-300 transition-colors"
+              title="Write your private research thesis and notes for this market"
+            >
+              <NotebookPen className="h-3 w-3" />
+              My Notes
             </Link>
           </div>
         </div>
