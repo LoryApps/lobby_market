@@ -873,6 +873,14 @@ export function MarketDetailClient({ id }: { id: string }) {
               Signal
             </Link>
             <Link
+              href={`/exchange/${id}/momentum`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-for-400/40 text-xs text-surface-500 hover:text-for-400 transition-colors"
+              title="Price velocity, acceleration, and momentum phase analysis"
+            >
+              <TrendingUp className="h-3 w-3" />
+              Momentum
+            </Link>
+            <Link
               href={`/exchange/${id}/news`}
               className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-against-400/40 text-xs text-surface-500 hover:text-against-400 transition-colors"
               title="Live market news — price milestones, debates, coalition stances, and volume events"
