@@ -528,6 +528,13 @@ export function ExchangeClient() {
                 Arbitrage
               </Link>
               <Link
+                href="/exchange/conflicts"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-against-600/10 border border-against-500/30 hover:border-against-500/60 text-xs font-medium text-against-400 hover:text-against-300 transition-colors"
+              >
+                <Scale className="h-3.5 w-3.5" />
+                Conflicts
+              </Link>
+              <Link
                 href="/exchange/rotation"
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-100 border border-surface-300 hover:border-gold/40 text-xs font-medium text-surface-500 hover:text-gold transition-colors"
               >
