@@ -458,6 +458,13 @@ export function ExchangeClient() {
                 Crossings
               </Link>
               <Link
+                href="/exchange/activity"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-for-600/10 border border-for-500/30 hover:border-for-500/60 text-xs font-medium text-for-400 hover:text-for-300 transition-colors"
+              >
+                <Radio className="h-3.5 w-3.5" />
+                Live Feed
+              </Link>
+              <Link
                 href="/exchange/pulse"
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-against-500/10 border border-against-500/30 hover:border-against-500/60 text-xs font-medium text-against-400 hover:text-against-300 transition-colors"
               >
