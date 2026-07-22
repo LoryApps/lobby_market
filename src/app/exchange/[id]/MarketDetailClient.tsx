@@ -1190,6 +1190,22 @@ export function MarketDetailClient({ id }: { id: string }) {
               <Brain className="h-3 w-3" />
               Crowd
             </Link>
+            <Link
+              href={`/exchange/${id}/conviction`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-against-400/40 text-xs text-surface-500 hover:text-against-400 transition-colors"
+              title="Conviction analysis — how deeply voters believe their positions, persuadability, and argument weight"
+            >
+              <Flame className="h-3 w-3" />
+              Conviction
+            </Link>
+            <Link
+              href={`/exchange/${id}/prep`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gold/10 border border-gold/30 hover:border-gold/60 text-xs text-gold hover:text-gold/90 transition-colors"
+              title="Pre-trade research pack — systematic due-diligence before you commit a position"
+            >
+              <Target className="h-3 w-3" />
+              Prep
+            </Link>
           </div>
         </div>
 
