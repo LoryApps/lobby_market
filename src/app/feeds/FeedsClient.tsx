@@ -471,7 +471,7 @@ export function FeedsClient() {
           </div>
           <p className="text-sm font-mono text-surface-400 leading-relaxed max-w-2xl">
             Subscribe to Lobby Market in your favourite RSS reader — Feedly, Reeder, NetNewsWire, or any app that supports RSS 2.0.
-            Feeds update every few minutes and cover laws, active debates, top arguments, and every civic category.
+            Feeds update every few minutes and cover laws, active debates, top arguments, every civic category, and individual topics.
           </p>
         </motion.div>
 
@@ -490,6 +490,57 @@ export function FeedsClient() {
             {MAIN_FEEDS.map((feed) => (
               <FeedCard key={feed.url} feed={feed} />
             ))}
+          </div>
+        </motion.section>
+
+        {/* Per-topic feed callout */}
+        <motion.section
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, ease: 'easeOut', delay: 0.08 }}
+          className="mb-8"
+        >
+          <SectionHeader
+            title="Per-Topic Feeds"
+            description="Track a single debate — get updates whenever new arguments, status changes, or debates are added."
+          />
+          <div className="rounded-2xl border border-for-500/30 bg-for-500/5 p-5">
+            <div className="flex items-start gap-3 mb-4">
+              <div className="flex-shrink-0 flex items-center justify-center h-9 w-9 rounded-xl bg-for-500/10 border border-for-500/30">
+                <Rss className="h-4 w-4 text-for-400" />
+              </div>
+              <div>
+                <p className="text-sm font-mono font-semibold text-white">Subscribe to any topic</p>
+                <p className="text-xs font-mono text-surface-400 mt-0.5">
+                  Each topic has its own dedicated RSS feed — arguments, debates, and status updates in one stream.
+                </p>
+              </div>
+            </div>
+            <div className="bg-surface-100 border border-surface-300 rounded-xl p-3 mb-3">
+              <p className="text-[11px] font-mono text-surface-500 mb-1.5 uppercase tracking-wider">Feed URL pattern</p>
+              <code className="text-xs font-mono text-for-300 break-all">
+                https://lobby.market/api/rss/topic/[topic-id]
+              </code>
+            </div>
+            <p className="text-xs font-mono text-surface-400 mb-3">
+              Find the topic ID in the URL when viewing any topic — e.g.{' '}
+              <code className="bg-surface-200 text-for-300 px-1 rounded text-[10px]">/topic/abc-123</code>.
+              The RSS icon appears in each topic&apos;s toolbar for quick subscription.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-for-500/15 border border-for-500/30 text-for-400 text-[10px] font-mono font-semibold">
+                New arguments
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-purple/15 border border-purple/30 text-purple text-[10px] font-mono font-semibold">
+                Scheduled debates
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gold/15 border border-gold/30 text-gold text-[10px] font-mono font-semibold">
+                Status changes
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald/15 border border-emerald/30 text-emerald text-[10px] font-mono font-semibold">
+                Law established
+              </span>
+            </div>
           </div>
         </motion.section>
 
@@ -554,9 +605,9 @@ export function FeedsClient() {
           </h3>
           <ol className="space-y-2">
             {[
-              'Copy any feed URL from the list above.',
+              'Copy any feed URL from the list above — or click the RSS icon in any topic\'s toolbar.',
               'Open your RSS reader (Feedly, Reeder, NetNewsWire, Inoreader, etc.).',
-              'Find “Add feed” or “Subscribe” and paste the URL.',
+              'Find "Add feed" or "Subscribe" and paste the URL.',
               'New laws, active topics, and top arguments will appear automatically.',
             ].map((step, i) => (
               <li key={i} className="flex items-start gap-2.5 text-xs font-mono text-surface-400">

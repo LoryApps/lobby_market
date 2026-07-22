@@ -61,6 +61,12 @@ export async function generateMetadata({ params }: TopicPageProps): Promise<Meta
   return {
     title,
     description,
+    alternates: {
+      canonical: `https://lobby.market/topic/${params.id}`,
+      types: {
+        'application/rss+xml': `https://lobby.market/api/rss/topic/${params.id}`,
+      },
+    },
     openGraph: {
       title,
       description,

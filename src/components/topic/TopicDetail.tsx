@@ -26,6 +26,7 @@ import {
   MonitorPlay,
   Network,
   Newspaper,
+  Rss,
   Scale,
   ScrollText,
   Tag,
@@ -357,6 +358,20 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
             >
               <MonitorPlay className="h-3.5 w-3.5" />
             </Link>
+            <a
+              href={`/api/rss/topic/${topic.id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={cn(
+                'flex items-center justify-center h-8 w-8 rounded-lg',
+                'bg-surface-200 border border-surface-300 text-surface-500',
+                'hover:bg-surface-300 hover:text-gold transition-colors',
+              )}
+              title="Subscribe to RSS feed for this topic"
+              aria-label="RSS feed for this topic"
+            >
+              <Rss className="h-3.5 w-3.5" />
+            </a>
             <SharePanel
               url={typeof window !== 'undefined' ? window.location.href : `/topic/${topic.id}`}
               text={`${topic.statement} — ${Math.round(topic.blue_pct)}% For on Lobby Market`}
