@@ -458,6 +458,13 @@ export function ExchangeClient() {
                 Crossings
               </Link>
               <Link
+                href="/exchange/divergence"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple/10 border border-purple/30 hover:border-purple/60 text-xs font-medium text-purple hover:text-purple/80 transition-colors"
+              >
+                <GitCompare className="h-3.5 w-3.5" />
+                Divergence
+              </Link>
+              <Link
                 href="/exchange/activity"
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-for-600/10 border border-for-500/30 hover:border-for-500/60 text-xs font-medium text-for-400 hover:text-for-300 transition-colors"
               >

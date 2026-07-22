@@ -116,7 +116,7 @@ function ScoreRing({
 
 // ─── Conviction meter bar ─────────────────────────────────────────────────────
 
-function MeterBar({
+function _MeterBar({
   label,
   value,
   max = 100,
