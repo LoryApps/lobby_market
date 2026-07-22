@@ -920,6 +920,14 @@ export function MarketDetailClient({ id }: { id: string }) {
               Volatility
             </Link>
             <Link
+              href={`/exchange/${id}/flow`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-for-400/40 text-xs text-surface-500 hover:text-for-400 transition-colors"
+              title="Flow analysis — directional vote pressure, clout cohorts, smart money vs retail, argument momentum"
+            >
+              <Activity className="h-3 w-3" />
+              Flow
+            </Link>
+            <Link
               href={`/exchange/${id}/catalysts`}
               className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-for-400/40 text-xs text-surface-500 hover:text-for-400 transition-colors"
               title="Arguments and events that moved this market's price"
