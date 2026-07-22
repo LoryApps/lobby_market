@@ -44,6 +44,7 @@ import {
   Zap,
   NotebookPen,
   BookOpen,
+  Wind,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -909,6 +910,14 @@ export function MarketDetailClient({ id }: { id: string }) {
             >
               <Shield className="h-3 w-3" />
               Risk
+            </Link>
+            <Link
+              href={`/exchange/${id}/volatility`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-gold/40 text-xs text-surface-500 hover:text-gold transition-colors"
+              title="Volatility analysis — std dev, price range, choppiness, max drawdown, trend consistency"
+            >
+              <Wind className="h-3 w-3" />
+              Volatility
             </Link>
             <Link
               href={`/exchange/${id}/catalysts`}
