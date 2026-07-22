@@ -263,7 +263,7 @@ export default async function TopicWikiPage({ params }: WikiPageProps) {
               History
             </Link>
             <Link
-              href={`/topic/${topic.id}#wiki`}
+              href={`/topic/${topic.id}/wiki`}
               className={cn(
                 'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
                 'text-xs font-mono text-white border border-for-500/40',
@@ -271,7 +271,7 @@ export default async function TopicWikiPage({ params }: WikiPageProps) {
               )}
             >
               <FileEdit className="h-3.5 w-3.5" aria-hidden />
-              Edit
+              Edit wiki
             </Link>
           </div>
         </div>
