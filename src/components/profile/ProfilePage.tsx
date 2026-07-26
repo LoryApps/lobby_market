@@ -559,6 +559,27 @@ export function ProfilePage({
                 </p>
               </Link>
 
+              {/* Exchange Profile teaser */}
+              <Link
+                href={`/profile/${profile.username}/exchange`}
+                className="block rounded-2xl border border-gold/20 bg-surface-100 hover:bg-gold/5 hover:border-gold/30 transition-colors p-5"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <BarChart2 className="h-4 w-4 text-gold" aria-hidden="true" />
+                    <h3 className="text-[11px] font-mono text-gold uppercase tracking-wider">
+                      Exchange Profile
+                    </h3>
+                  </div>
+                  <span className="text-[10px] font-mono text-gold/70 hover:text-gold transition-colors">
+                    View profile →
+                  </span>
+                </div>
+                <p className="text-xs font-mono text-surface-500 mt-2">
+                  Market ideas, prediction tournament history, and analyst record on the Lobby Exchange — {profile.display_name ?? profile.username}&apos;s civic trading footprint.
+                </p>
+              </Link>
+
               {/* Coalitions teaser */}
               <Link
                 href={`/profile/${profile.username}/coalitions`}
