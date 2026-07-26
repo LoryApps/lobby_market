@@ -1008,6 +1008,14 @@ export function MarketDetailClient({ id }: { id: string }) {
               Anatomy
             </Link>
             <Link
+              href={`/exchange/${id}/fundamentals`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-emerald/40 text-xs text-surface-500 hover:text-emerald transition-colors"
+              title="Claim integrity score — citation rates, debate balance, AI quality, and category benchmarks"
+            >
+              <TrendingUp className="h-3 w-3" />
+              Fundamentals
+            </Link>
+            <Link
               href={`/exchange/${id}/persuasion`}
               className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-purple-400/40 text-xs text-surface-500 hover:text-purple-300 transition-colors"
               title="Which arguments are shifting consensus? Rhetorical style analysis and cross-aisle breakthroughs"
