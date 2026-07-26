@@ -32,6 +32,7 @@ import {
   Repeat2,
   Rss,
   Scale,
+  User,
   Shield,
   Thermometer,
   TreePine,
@@ -544,11 +545,59 @@ export function FeedsClient() {
           </div>
         </motion.section>
 
-        {/* Category feeds */}
+        {/* Per-User Feeds */}
         <motion.section
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, ease: 'easeOut', delay: 0.1 }}
+          className="mb-8"
+        >
+          <SectionHeader
+            title="Per-User Feeds"
+            description="Follow a specific member — get their new topics and arguments in one stream."
+          />
+          <div className="rounded-2xl border border-purple/30 bg-purple/5 p-5">
+            <div className="flex items-start gap-3 mb-4">
+              <div className="flex-shrink-0 flex items-center justify-center h-9 w-9 rounded-xl bg-purple/10 border border-purple/30">
+                <User className="h-4 w-4 text-purple" />
+              </div>
+              <div>
+                <p className="text-sm font-mono font-semibold text-white">Subscribe to any member</p>
+                <p className="text-xs font-mono text-surface-400 mt-0.5">
+                  Each Lobby Market member has a personal RSS feed — their new topics and arguments delivered directly to your reader.
+                </p>
+              </div>
+            </div>
+            <div className="bg-surface-100 border border-surface-300 rounded-xl p-3 mb-3">
+              <p className="text-[11px] font-mono text-surface-500 mb-1.5 uppercase tracking-wider">Feed URL pattern</p>
+              <code className="text-xs font-mono text-purple break-all">
+                https://lobby.market/api/rss/user/[username]
+              </code>
+            </div>
+            <p className="text-xs font-mono text-surface-400 mb-3">
+              Use the member&apos;s username exactly as it appears on their profile — e.g.{' '}
+              <code className="bg-surface-200 text-purple px-1 rounded text-[10px]">/api/rss/user/jane_doe</code>.
+              Feeds include their latest topics and top arguments, newest first.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-for-500/15 border border-for-500/30 text-for-400 text-[10px] font-mono font-semibold">
+                New topics
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-against-500/15 border border-against-500/30 text-against-400 text-[10px] font-mono font-semibold">
+                Arguments
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-purple/15 border border-purple/30 text-purple text-[10px] font-mono font-semibold">
+                Both sides
+              </span>
+            </div>
+          </div>
+        </motion.section>
+
+        {/* Category feeds */}
+        <motion.section
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, ease: 'easeOut', delay: 0.2 }}
           className="mb-8"
         >
           <SectionHeader
@@ -566,7 +615,7 @@ export function FeedsClient() {
         <motion.section
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35, ease: 'easeOut', delay: 0.15 }}
+          transition={{ duration: 0.35, ease: 'easeOut', delay: 0.25 }}
           className="mb-10"
         >
           <SectionHeader
