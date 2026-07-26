@@ -1088,6 +1088,22 @@ export function MarketDetailClient({ id }: { id: string }) {
               Impact
             </Link>
             <Link
+              href={`/exchange/${id}/exposure`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-gold/40 text-xs text-surface-500 hover:text-gold transition-colors"
+              title="Market exposure analysis — portfolio overlap, category concentration, and correlated risk"
+            >
+              <Gauge className="h-3 w-3" />
+              Exposure
+            </Link>
+            <Link
+              href={`/exchange/${id}/narrative`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-purple/40 text-xs text-surface-500 hover:text-purple transition-colors"
+              title="Narrative frame analysis — which argument frames are winning and where momentum is building"
+            >
+              <Lightbulb className="h-3 w-3" />
+              Narrative
+            </Link>
+            <Link
               href={`/exchange/${id}/coalitions`}
               className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-emerald/40 text-xs text-surface-500 hover:text-emerald transition-colors"
               title="Coalition breakdown — which alliances are backing FOR vs AGAINST"
