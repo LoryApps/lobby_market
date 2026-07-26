@@ -45,6 +45,7 @@ import {
   NotebookPen,
   BookOpen,
   Wind,
+  GitMerge,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -1077,6 +1078,14 @@ export function MarketDetailClient({ id }: { id: string }) {
             >
               <Droplets className="h-3 w-3" />
               Ripple
+            </Link>
+            <Link
+              href={`/exchange/${id}/impact`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-emerald/40 text-xs text-surface-500 hover:text-emerald transition-colors"
+              title="Civic impact analysis — how many topics and categories would be affected if this becomes law"
+            >
+              <GitMerge className="h-3 w-3" />
+              Impact
             </Link>
             <Link
               href={`/exchange/${id}/coalitions`}
