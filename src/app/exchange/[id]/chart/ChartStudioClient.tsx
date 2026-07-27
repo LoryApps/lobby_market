@@ -471,7 +471,7 @@ export function ChartStudioClient() {
 
   const topic = data?.topic
   const stats = data?.stats
-  const history = data?.history ?? []
+  const history = useMemo(() => data?.history ?? [], [data])
 
   const changePositive = (stats?.change ?? 0) > 0
   const changeNeutral = (stats?.change ?? 0) === 0
