@@ -9,6 +9,7 @@ import {
   Award,
   BarChart2,
   Bell,
+  BookOpen,
   Bookmark,
   Brain,
   Calendar,
@@ -848,6 +849,13 @@ export function ExchangeClient() {
               >
                 <Trophy className="h-3.5 w-3.5" />
                 Tournaments
+              </Link>
+              <Link
+                href="/exchange/guide"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple/10 border border-purple/30 hover:border-purple/60 text-xs font-medium text-purple hover:text-purple/90 transition-colors"
+              >
+                <BookOpen className="h-3.5 w-3.5" />
+                Guide
               </Link>
               <button
                 onClick={() => setRefreshKey((k) => k + 1)}
