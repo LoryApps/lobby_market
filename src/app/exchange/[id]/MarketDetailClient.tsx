@@ -46,6 +46,7 @@ import {
   BookOpen,
   Wind,
   GitMerge,
+  Sparkles,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -824,6 +825,14 @@ export function MarketDetailClient({ id }: { id: string }) {
           <div className="flex items-center gap-1.5 flex-wrap">
             <WatchButton topicId={id} iconOnly />
             <AddToGroupButton topicId={id} />
+            <Link
+              href={`/exchange/${id}/explore`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gold/10 border border-gold/30 hover:border-gold/60 text-xs text-gold hover:text-gold/90 transition-colors font-semibold"
+              title="Browse all analysis tools for this market — 48 tools across 6 categories"
+            >
+              <Sparkles className="h-3 w-3" />
+              Explore Hub
+            </Link>
             <Link
               href={`/exchange/alerts?topic=${id}`}
               className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-for-500/40 text-xs text-surface-500 hover:text-for-300 transition-colors"
