@@ -857,6 +857,14 @@ export function MarketDetailClient({ id }: { id: string }) {
               Traders
             </Link>
             <Link
+              href={`/exchange/${id}/smart-money`}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-emerald/40 text-xs text-surface-500 hover:text-emerald transition-colors"
+              title="Smart money — which high-reputation traders are positioned here and how"
+            >
+              <Brain className="h-3 w-3" />
+              Smart Money
+            </Link>
+            <Link
               href={`/exchange/${id}/ideas`}
               className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-200 border border-surface-300 hover:border-gold/40 text-xs text-surface-500 hover:text-gold transition-colors"
               title="Community prediction theses for this market"
