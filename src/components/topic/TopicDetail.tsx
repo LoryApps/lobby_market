@@ -1231,6 +1231,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                       <BarChart2 className="h-3.5 w-3.5" />
                       Integrity Audit
                     </Link>
+                    <Link
+                      href={`/topic/${topic.id}/explore`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono font-semibold text-gold hover:text-gold/80 transition-colors border border-gold/30 rounded-lg px-2 py-1 bg-gold/5 hover:bg-gold/10"
+                    >
+                      <LayoutGrid className="h-3.5 w-3.5" />
+                      All Analysis Tools
+                    </Link>
                   </div>
                 )}
                 <VoteButton
