@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Bot, Layers, Trophy, Users } from 'lucide-react'
+import { ArrowLeft, Bot, Layers, LayoutGrid, Trophy, Users } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils/cn'
 import type {
@@ -272,6 +272,14 @@ export function DebateArena({
               {debate.viewer_count.toLocaleString()}
             </span>
           </div>
+          <Link
+            href={`/debate/${debate.id}/explore`}
+            title="Explore all debate tools"
+            className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-black/50 backdrop-blur-md border border-surface-300 hover:border-for-500/50 hover:bg-for-500/10 transition-all"
+          >
+            <LayoutGrid className="h-3.5 w-3.5 text-surface-400" />
+            <span className="font-mono text-[11px] text-surface-400">Hub</span>
+          </Link>
         </div>
       </div>
 
@@ -430,6 +438,12 @@ export function DebateArena({
             </div>
           </div>
           <div className="flex items-center gap-3">
+            <Link href={`/debate/${debate.id}/explore`}>
+              <button className="px-6 py-2.5 rounded-full bg-gold/10 backdrop-blur-md border border-gold/30 text-sm font-semibold text-gold hover:bg-gold/20 hover:border-gold/50 transition-all flex items-center gap-1.5">
+                <LayoutGrid className="h-3.5 w-3.5" />
+                Explore
+              </button>
+            </Link>
             <Link href={`/debate/${debate.id}/clash`}>
               <button className="px-6 py-2.5 rounded-full bg-for-600/10 backdrop-blur-md border border-for-500/30 text-sm font-semibold text-for-400 hover:bg-for-600/20 hover:border-for-500/50 transition-all">
                 Clash
