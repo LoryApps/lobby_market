@@ -11,6 +11,7 @@ import {
   ExternalLink,
   Gavel,
   History,
+  Image,
   List,
   Menu,
   Network,
@@ -311,6 +312,18 @@ export function LawPage({
                   <Calendar className="h-3.5 w-3.5" />
                   <span>{formatDate(law.established_at)}</span>
                 </div>
+                <Link
+                  href={`/law/${law.id}/snapshot`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-gold/10 border border-gold/30 text-gold',
+                    'hover:bg-gold/20 hover:border-gold/50',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                >
+                  <Image className="h-3.5 w-3.5" />
+                  Snapshot
+                </Link>
                 <Link
                   href={`/law/${law.id}/graph`}
                   className={cn(
