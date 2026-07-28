@@ -107,6 +107,8 @@ const navItems: NavItem[] = [
   { href: '/saved', label: 'Saved', icon: Bookmark },
   { href: '/drafts', label: 'Draft Box', icon: Cloud },
   { href: '/citizens', label: 'Citizen Directory', icon: Users },
+  { href: '/civic-twins', label: 'Civic Twins', icon: Users },
+  { href: '/consensus-map', label: 'Consensus Map', icon: Scale },
   { href: '/clash', label: 'The Clash', icon: Swords },
   { href: '/rivals', label: 'Civic Rivals', icon: Swords },
   { href: '/spotlight', label: 'Spotlight', icon: Sparkles },
