@@ -11,13 +11,18 @@ import {
   CheckCheck,
   Flame,
   Gavel,
+  GitMerge,
   Hash,
   HelpCircle,
   MessageCircle,
   MessageSquare,
+  Mic,
   Newspaper,
+  Radio,
   Scale,
   Swords,
+  ThumbsUp,
+  Trophy,
   TrendingUp,
   User,
   UserPlus,
@@ -60,6 +65,15 @@ const TYPE_CONFIG: Record<
   weekly_digest:             { icon: Newspaper,       color: 'text-purple',      bg: 'bg-purple/10' },
   qa_question_answered:      { icon: HelpCircle,      color: 'text-for-400',     bg: 'bg-for-500/10' },
   qa_answer_accepted:        { icon: CheckCircle,     color: 'text-emerald',     bg: 'bg-emerald/10' },
+  ama_question_answered:     { icon: Mic,             color: 'text-gold',        bg: 'bg-gold/10' },
+  ama_session_starting:      { icon: Radio,           color: 'text-gold',        bg: 'bg-gold/10' },
+  relay_leg_added:           { icon: GitMerge,        color: 'text-for-400',     bg: 'bg-for-500/10' },
+  relay_completed:           { icon: Trophy,          color: 'text-gold',        bg: 'bg-gold/10' },
+  relay_voted:               { icon: ThumbsUp,        color: 'text-emerald',     bg: 'bg-emerald/10' },
+  relay_invitation:          { icon: UserPlus,        color: 'text-purple',      bg: 'bg-purple/10' },
+  debate_challenge:          { icon: Swords,          color: 'text-against-400', bg: 'bg-against-500/10' },
+  debate_challenge_accepted: { icon: CheckCircle,     color: 'text-emerald',     bg: 'bg-emerald/10' },
+  debate_challenge_declined: { icon: MessageSquare,   color: 'text-surface-500', bg: 'bg-surface-300/40' },
 }
 
 const FALLBACK_CONFIG = { icon: AlertCircle, color: 'text-surface-500', bg: 'bg-surface-200' }
@@ -80,8 +94,8 @@ function relativeTime(iso: string): string {
 
 function buildHref(n: Notification): string {
   if (!n.reference_id) return '/notifications'
-  // DM notifications: link to inbox since we only have sender UUID, not username
   if (n.type === 'direct_message') return '/messages'
+  if (n.type === 'debate_challenge' || n.type === 'debate_challenge_accepted' || n.type === 'debate_challenge_declined') return '/challenges'
   switch (n.reference_type) {
     case 'topic':     return `/topic/${n.reference_id}`
     case 'law':       return `/law/${n.reference_id}`
@@ -89,6 +103,9 @@ function buildHref(n: Notification): string {
     case 'profile':   return `/profile/${n.reference_id}`
     case 'coalition': return `/coalitions/${n.reference_id}`
     case 'argument':  return `/arguments/${n.reference_id}`
+    case 'relay':     return `/relays/${n.reference_id}`
+    case 'ama':       return `/ama/${n.reference_id}`
+    case 'challenge': return '/challenges'
     default:          return '/notifications'
   }
 }

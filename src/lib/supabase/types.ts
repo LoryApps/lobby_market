@@ -2326,7 +2326,10 @@ export type NotificationType =
   | "relay_leg_added"
   | "relay_completed"
   | "relay_voted"
-  | "relay_invitation";
+  | "relay_invitation"
+  | "debate_challenge"
+  | "debate_challenge_accepted"
+  | "debate_challenge_declined";
 
 export type AchievementTier = "common" | "rare" | "epic" | "legendary";
 

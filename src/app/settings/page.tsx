@@ -57,6 +57,7 @@ interface NotifPrefs {
   qa_notifications: boolean
   ama_notifications: boolean
   relay_notifications: boolean
+  debate_challenge_notifications: boolean
 }
 
 const DEFAULT_PREFS: NotifPrefs = {
@@ -74,6 +75,7 @@ const DEFAULT_PREFS: NotifPrefs = {
   qa_notifications: true,
   ama_notifications: true,
   relay_notifications: true,
+  debate_challenge_notifications: true,
 }
 
 function loadPrefs(): NotifPrefs {
@@ -580,6 +582,12 @@ export default function SettingsPage() {
                   description="When someone joins your relay chain, your relay completes, or gets voted on"
                   checked={prefs.relay_notifications ?? true}
                   onChange={(v) => updatePref('relay_notifications', v)}
+                />
+                <SettingRow
+                  label="Debate challenge notifications"
+                  description="When someone challenges you to a debate, or accepts or declines your challenge"
+                  checked={prefs.debate_challenge_notifications ?? true}
+                  onChange={(v) => updatePref('debate_challenge_notifications', v)}
                 />
               </div>
             </div>

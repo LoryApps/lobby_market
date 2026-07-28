@@ -71,10 +71,13 @@ const typeConfig: Record<
   qa_answer_accepted:     { icon: CheckCircle,  color: 'text-emerald' },
   ama_question_answered:  { icon: Mic,          color: 'text-gold'    },
   ama_session_starting:   { icon: Radio,        color: 'text-gold'    },
-  relay_leg_added:        { icon: GitMerge,     color: 'text-for-400' },
-  relay_completed:        { icon: Trophy,       color: 'text-gold'    },
-  relay_voted:            { icon: ThumbsUp,     color: 'text-emerald' },
-  relay_invitation:       { icon: UserPlus,     color: 'text-purple'  },
+  relay_leg_added:           { icon: GitMerge,     color: 'text-for-400'    },
+  relay_completed:           { icon: Trophy,       color: 'text-gold'       },
+  relay_voted:               { icon: ThumbsUp,     color: 'text-emerald'    },
+  relay_invitation:          { icon: UserPlus,     color: 'text-purple'     },
+  debate_challenge:          { icon: Swords,       color: 'text-against-400' },
+  debate_challenge_accepted: { icon: CheckCircle,  color: 'text-emerald'    },
+  debate_challenge_declined: { icon: MessageSquare, color: 'text-surface-600' },
 }
 
 // ─── Filter tabs ──────────────────────────────────────────────────────────────
@@ -101,7 +104,7 @@ const SOCIAL_TYPES: NotificationType[] = [
   'direct_message',
 ]
 
-const DEBATE_TYPES: NotificationType[] = ['debate_starting', 'new_topic_in_tag']
+const DEBATE_TYPES: NotificationType[] = ['debate_starting', 'new_topic_in_tag', 'debate_challenge', 'debate_challenge_accepted', 'debate_challenge_declined']
 
 const ACHIEVEMENT_TYPES: NotificationType[] = ['achievement_earned']
 
@@ -154,6 +157,7 @@ function buildHref(notification: Notification): string {
   if (!reference_id) return '#'
   if (type === 'direct_message') return '/messages'
   if (type === 'relay_invitation') return '/relays/invitations'
+  if (type === 'debate_challenge' || type === 'debate_challenge_accepted' || type === 'debate_challenge_declined') return '/challenges'
   switch (reference_type) {
     case 'topic':
       return `/topic/${reference_id}`
