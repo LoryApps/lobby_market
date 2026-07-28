@@ -18,6 +18,7 @@ import { motion } from 'framer-motion'
 import {
   Activity,
   ArrowLeft,
+  Award,
   BarChart2,
   Brain,
   ChevronRight,
@@ -308,6 +309,15 @@ export function DebateExploreClient({
           icon: BarChart2,
           accent: 'text-for-400',
           iconBg: 'bg-for-500/10',
+          disabled: isScheduled,
+        },
+        {
+          href: 'scorecard',
+          label: 'Scorecard',
+          description: 'Official point-by-point judging scorecard across 5 weighted criteria.',
+          icon: Award,
+          accent: 'text-gold',
+          iconBg: 'bg-gold/10',
           disabled: isScheduled,
         },
       ],
