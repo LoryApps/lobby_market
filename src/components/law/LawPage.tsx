@@ -12,6 +12,7 @@ import {
   Gavel,
   History,
   Image,
+  Layers,
   List,
   Menu,
   Network,
@@ -359,6 +360,18 @@ export function LawPage({
                 >
                   <BarChart2 className="h-3.5 w-3.5" />
                   Impact Report
+                </Link>
+                <Link
+                  href={`/law/${law.id}/frames`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-purple/10 border border-purple/30 text-purple',
+                    'hover:bg-purple/20 hover:border-purple/50',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                >
+                  <Layers className="h-3.5 w-3.5" />
+                  Frames
                 </Link>
                 <Link
                   href={`/law/${law.id}/blueprint`}
