@@ -27,6 +27,13 @@ const nextConfig = {
     formats: ['image/avif', 'image/webp'],
   },
 
+  // Disable webpack filesystem cache to avoid holding file descriptors open
+  // across the compilation → static-generation boundary (4096 fd limit in CI).
+  webpack: (config) => {
+    config.cache = false
+    return config
+  },
+
   // ── Bundle optimisations ──────────────────────────────────────────────────
   experimental: {
     // Exclude .git from file tracing to prevent EMFILE errors during static generation.
