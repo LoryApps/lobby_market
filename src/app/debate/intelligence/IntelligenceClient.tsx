@@ -68,9 +68,6 @@ function relTime(iso: string): string {
   return past ? `${d}d ago` : `in ${d}d`
 }
 
-function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
-}
 
 const TYPE_LABEL: Record<string, string> = {
   quick: 'QUICK',
@@ -377,7 +374,7 @@ export function IntelligenceClient() {
               <div>
                 <h1 className="font-mono text-2xl font-bold text-white">Debate Intelligence</h1>
                 <p className="font-mono text-sm text-surface-500 mt-0.5">
-                  Live arena analytics · What's hot, who's debating, what moved the needle
+                  Live arena analytics · What&apos;s hot, who&apos;s debating, what moved the needle
                 </p>
               </div>
             </div>
