@@ -1577,6 +1577,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'roulette',
+    label: 'Topic Roulette',
+    sublabel: 'Discover a random debate you haven\'t voted on yet — spin to engage',
+    href: '/roulette',
+    icon: Shuffle,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
     id: 'scoreboard',
     label: 'Civic Scoreboard',
     sublabel: 'Real-time leaderboard — most active citizens and hottest topics right now',
