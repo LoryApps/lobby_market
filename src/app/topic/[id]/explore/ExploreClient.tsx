@@ -60,6 +60,7 @@ import {
   Telescope,
   Crosshair,
   Glasses,
+  Archive,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -654,6 +655,14 @@ export function ExploreClient({
           icon: Crosshair,
           accent: 'text-against-400',
           iconBg: 'bg-against-600/15',
+        },
+        {
+          href: '/dossier',
+          label: 'Dossier',
+          description: 'Full civic intelligence briefing — votes, arguments, and key stats in one view',
+          icon: Archive,
+          accent: 'text-gold',
+          iconBg: 'bg-gold/10',
         },
       ],
     },
