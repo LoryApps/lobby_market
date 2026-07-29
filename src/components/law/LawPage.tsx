@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
 import {
+  Activity,
   ArrowLeft,
   Ban,
   BarChart2,
@@ -518,6 +519,19 @@ export function LawPage({
                 >
                   <GitMerge className="h-3.5 w-3.5" />
                   Synthesis
+                </Link>
+                <Link
+                  href={`/law/${law.id}/momentum`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-for-700/20 border border-for-600/30 text-for-400',
+                    'hover:bg-for-700/30 hover:border-for-600/50',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="Track community momentum since this law was established"
+                >
+                  <Activity className="h-3.5 w-3.5" />
+                  Momentum
                 </Link>
               </div>
             </div>
