@@ -103,6 +103,24 @@ const nextConfig = {
         ],
       },
       {
+        // Service worker must never be served from cache — browsers use the
+        // byte-diff of the SW file to decide whether to install a new version.
+        // A cached SW means users run stale code indefinitely.
+        source: '/sw.js',
+        headers: [
+          { key: 'Cache-Control', value: 'no-cache, no-store, must-revalidate' },
+          { key: 'Service-Worker-Allowed', value: '/' },
+        ],
+      },
+      {
+        // Offline fallback page — cache for a short time so it's available
+        // but refreshes on every navigation when online.
+        source: '/offline.html',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=3600, stale-while-revalidate=86400' },
+        ],
+      },
+      {
         // Short cache for OG images (they depend on live DB data)
         source: '/api/og/(.*)',
         headers: [

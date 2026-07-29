@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" style="background:#0a0a0f;color:#e4e4e7;font-family:'Inter',system-ui,sans-serif">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Offline · Lobby Market</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{min-height:100dvh;background:#0a0a0f;color:#e4e4e7;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;text-align:center}
+  .logo{width:48px;height:48px;background:linear-gradient(135deg,#1d4ed8,#3b82f6);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;box-shadow:0 0 32px rgba(59,130,246,.25)}
+  .logo-mark{width:28px;height:28px;fill:white}
+  h1{font-size:1.5rem;font-weight:700;letter-spacing:-.025em;color:#f4f4f5;margin-bottom:.5rem}
+  p{font-size:.9375rem;color:#71717a;line-height:1.65;max-width:340px;margin:0 auto 2rem}
+  .signal{display:flex;align-items:center;justify-content:center;gap:.5rem;margin-bottom:2rem}
+  .bar{width:4px;border-radius:2px;background:#27272a;animation:pulse 1.4s ease-in-out infinite}
+  .bar:nth-child(1){height:10px;animation-delay:0s}
+  .bar:nth-child(2){height:18px;animation-delay:.2s}
+  .bar:nth-child(3){height:26px;animation-delay:.4s}
+  .bar:nth-child(4){height:18px;animation-delay:.2s}
+  .bar:nth-child(5){height:10px;animation-delay:0s}
+  @keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
+  .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.6875rem 1.25rem;border-radius:.75rem;font-size:.875rem;font-weight:600;font-family:inherit;cursor:pointer;transition:all .15s;text-decoration:none;border:none}
+  .btn-primary{background:#1d4ed8;color:#fff}
+  .btn-primary:hover{background:#2563eb;transform:translateY(-1px)}
+  .btn-primary:active{transform:translateY(0)}
+  .btn-ghost{background:transparent;color:#71717a;border:1px solid #27272a;margin-top:.75rem}
+  .btn-ghost:hover{background:#18181b;color:#e4e4e7}
+  .actions{display:flex;flex-direction:column;align-items:center;gap:.5rem}
+  .cached-links{margin-top:2.5rem;width:100%;max-width:340px}
+  .cached-links h2{font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:#52525b;margin-bottom:.75rem}
+  .link-list{display:flex;flex-direction:column;gap:.375rem}
+  .cached-link{display:flex;align-items:center;gap:.625rem;padding:.625rem .875rem;background:#18181b;border:1px solid #27272a;border-radius:.625rem;color:#a1a1aa;font-size:.875rem;text-decoration:none;transition:all .15s}
+  .cached-link:hover{background:#1c1c24;color:#e4e4e7;border-color:#3f3f46}
+  .dot{width:6px;height:6px;border-radius:50%;background:#27272a;flex-shrink:0}
+  .dot.for{background:#3b82f6}
+  .dot.law{background:#f59e0b}
+  footer{margin-top:3rem;font-size:.75rem;color:#3f3f46}
+  footer a{color:#52525b;text-decoration:none}
+  footer a:hover{color:#71717a}
+</style>
+</head>
+<body>
+<div class="logo">
+  <svg class="logo-mark" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <rect width="28" height="28" rx="6" fill="transparent"/>
+    <path d="M14 4L4 10V18L14 24L24 18V10L14 4Z" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+    <circle cx="14" cy="14" r="3" fill="white"/>
+  </svg>
+</div>
+
+<div class="signal" aria-hidden="true">
+  <div class="bar"></div>
+  <div class="bar"></div>
+  <div class="bar"></div>
+  <div class="bar"></div>
+  <div class="bar"></div>
+</div>
+
+<h1>You're offline</h1>
+<p>The Lobby is unreachable right now. Check your connection and try again — your votes and arguments are waiting.</p>
+
+<div class="actions">
+  <button class="btn btn-primary" onclick="tryReconnect()" id="retry-btn" type="button">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 21h5v-5"/></svg>
+    Retry connection
+  </button>
+  <a href="/" class="btn btn-ghost" onclick="event.preventDefault();location.href='/'">
+    Go to home feed
+  </a>
+</div>
+
+<div class="cached-links" id="recent-section" style="display:none">
+  <h2>Recently visited</h2>
+  <div class="link-list" id="recent-links"></div>
+</div>
+
+<footer>
+  <a href="https://lobby.market">lobby.market</a> · The People's Consensus Engine
+</footer>
+
+<script>
+(function () {
+  // Retry logic
+  var retryBtn = document.getElementById('retry-btn')
+  var retrying = false
+
+  function tryReconnect() {
+    if (retrying) return
+    retrying = true
+    retryBtn.disabled = true
+    retryBtn.textContent = 'Checking…'
+
+    fetch('/', { cache: 'no-store' })
+      .then(function (r) {
+        if (r.ok || r.redirected) {
+          location.href = sessionStorage.getItem('lm_offline_from') || '/'
+        } else {
+          resetBtn()
+        }
+      })
+      .catch(resetBtn)
+  }
+
+  function resetBtn() {
+    retrying = false
+    retryBtn.disabled = false
+    retryBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 21h5v-5"/></svg> Retry connection'
+  }
+
+  window.tryReconnect = tryReconnect
+
+  // Show recently viewed topics from localStorage
+  try {
+    var raw = localStorage.getItem('lm_recently_viewed_v2')
+    var items = raw ? JSON.parse(raw) : []
+    if (Array.isArray(items) && items.length > 0) {
+      var section = document.getElementById('recent-section')
+      var list = document.getElementById('recent-links')
+      var shown = items.slice(0, 5)
+      shown.forEach(function (item) {
+        var a = document.createElement('a')
+        a.href = '/topic/' + item.id
+        a.className = 'cached-link'
+        var dot = document.createElement('span')
+        dot.className = 'dot' + (item.status === 'law' ? ' law' : item.status === 'active' ? ' for' : '')
+        var label = document.createElement('span')
+        label.textContent = item.statement ? item.statement.slice(0, 60) + (item.statement.length > 60 ? '…' : '') : 'Topic'
+        label.style.overflow = 'hidden'
+        label.style.textOverflow = 'ellipsis'
+        label.style.whiteSpace = 'nowrap'
+        a.appendChild(dot)
+        a.appendChild(label)
+        list.appendChild(a)
+      })
+      section.style.display = 'block'
+    }
+  } catch (e) {}
+
+  // Auto-retry when connectivity returns
+  window.addEventListener('online', function () {
+    tryReconnect()
+  })
+})()
+</script>
+</body>
+</html>

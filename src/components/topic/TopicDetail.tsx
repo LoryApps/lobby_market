@@ -226,7 +226,7 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
       fetch(`/api/topics/${topic.id}/view`, { method: 'POST' }).catch(() => {})
     }
     // Also persist to localStorage for cross-session history (best-effort)
-    recordTopicView(topic.id)
+    recordTopicView(topic.id, { statement: topic.statement, status: topic.status })
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [topic.id])
 
