@@ -368,6 +368,7 @@ const SUITE_SECTIONS: Array<{
       { label: 'Contrarian',        href: '/analytics/contrarian',    icon: Shuffle },
       { label: 'Timing Report',     href: '/analytics/timing',        icon: Clock },
       { label: 'Civic Blind Spots', href: '/blindspots',              icon: Eye },
+      { label: 'Echo Chamber',     href: '/echo-chamber',             icon: Users },
     ],
   },
   {

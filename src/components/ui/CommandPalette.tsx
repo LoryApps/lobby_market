@@ -2914,6 +2914,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'echo-chamber',
+    label: 'Echo Chamber Detector',
+    sublabel: 'See which topics your follows all vote the same way on — and find diverse voices to follow',
+    href: '/echo-chamber',
+    icon: Users,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-500/10',
+  },
+  {
+    type: 'link',
     id: 'fingerprint',
     label: 'Civic Fingerprint',
     sublabel: 'How unique is your civic voice? Category-by-category deviation from the platform median voter',
