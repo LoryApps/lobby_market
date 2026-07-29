@@ -1,13 +1,37 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ArrowLeft, Network } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
-import { LawGraph } from '@/components/law/LawGraph'
+import { LawGraphView } from '@/components/law/LawGraphView'
 import { cn } from '@/lib/utils/cn'
 import type { Law, LawLink } from '@/lib/supabase/types'
 
 interface LawGraphPageProps {
   params: { id: string }
+}
+
+export async function generateMetadata({ params }: LawGraphPageProps): Promise<Metadata> {
+  const supabase = await createClient()
+  const { data: law } = await supabase
+    .from('laws')
+    .select('statement, category')
+    .eq('id', params.id)
+    .maybeSingle()
+
+  if (!law) return { title: 'Knowledge Graph · Lobby Market' }
+
+  const stmt: string = law.statement ?? ''
+  return {
+    title: `Knowledge Graph — ${stmt.slice(0, 60)}${stmt.length > 60 ? '…' : ''} · Lobby Market`,
+    description: `Interactive knowledge graph showing how this law connects to related legislation in the Lobby Codex. Explore civic connections by category.`,
+    openGraph: {
+      title: `Knowledge Graph — ${stmt.slice(0, 70)} · Lobby Market`,
+      description: `Explore how this law connects to the rest of the Codex.`,
+      type: 'website',
+      siteName: 'Lobby Market',
+    },
+  }
 }
 
 export default async function LawGraphPage({ params }: LawGraphPageProps) {
@@ -90,16 +114,16 @@ export default async function LawGraphPage({ params }: LawGraphPageProps) {
   push(secondHopIn as LawLink[] | null)
 
   return (
-    <div className="min-h-screen bg-surface-50 flex flex-col">
+    <div className="h-screen bg-surface-50 flex flex-col">
       {/* Header */}
-      <div className="sticky top-0 z-40 bg-surface-100 border-b border-surface-300">
+      <div className="sticky top-0 z-40 bg-surface-100 border-b border-surface-300 flex-shrink-0">
         <div className="max-w-[1400px] mx-auto flex items-center h-14 px-4 gap-3">
           <Link
             href={`/law/${params.id}`}
             className={cn(
               'flex items-center justify-center h-9 w-9 rounded-lg',
               'bg-surface-200 text-surface-500 hover:bg-surface-300 hover:text-white',
-              'transition-colors'
+              'transition-colors',
             )}
             aria-label="Back to Law"
           >
@@ -111,19 +135,29 @@ export default async function LawGraphPage({ params }: LawGraphPageProps) {
               Knowledge Graph
             </span>
           </div>
-          <span className="ml-auto text-xs font-mono text-surface-500 hidden sm:inline line-clamp-1 max-w-[420px]">
-            {(centralLaw as Law).statement}
-          </span>
+          <div className="ml-auto flex items-center gap-3 text-xs font-mono text-surface-500">
+            <span className="hidden sm:inline line-clamp-1 max-w-[300px]">
+              {(centralLaw as Law).statement}
+            </span>
+            <span className="hidden sm:inline text-surface-600">·</span>
+            <Link
+              href="/law/graph"
+              className="flex items-center gap-1 text-emerald hover:text-emerald/80 transition-colors whitespace-nowrap"
+            >
+              <Network className="h-3 w-3" aria-hidden />
+              Full Codex
+            </Link>
+          </div>
         </div>
       </div>
 
-      {/* Graph canvas */}
-      <main className="flex-1 p-4 md:p-6">
-        <LawGraph
+      {/* Controls + graph, fills remaining height */}
+      <main className="flex-1 overflow-hidden p-4 md:p-5">
+        <LawGraphView
           laws={laws}
           links={allLinks}
           currentLawId={lawId}
-          className="w-full h-[calc(100vh-8rem)] aspect-auto"
+          graphClassName="h-full"
         />
       </main>
     </div>

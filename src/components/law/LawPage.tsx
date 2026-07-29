@@ -6,6 +6,7 @@ import {
   ArrowLeft,
   Ban,
   BarChart2,
+  BookOpen,
   Calendar,
   Clock,
   Edit3,
@@ -514,6 +515,33 @@ export function LawPage({
                 totalOriginalVoters={totalOriginalVoters}
               />
             </div>
+
+            {/* Wiki preview */}
+            {law.wiki_content && law.wiki_content.trim().length > 0 && (
+              <div className="mt-6">
+                <Link
+                  href={`/law/${law.id}/wiki`}
+                  className={cn(
+                    'block bg-surface-100 border border-surface-300 rounded-xl p-4',
+                    'hover:border-emerald/40 hover:bg-emerald/5 transition-colors group'
+                  )}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-[10px] uppercase tracking-widest text-surface-500 font-mono flex items-center gap-1.5">
+                      <BookOpen className="h-3 w-3" />
+                      Community Wiki
+                    </p>
+                    <span className="text-[10px] font-mono text-emerald opacity-0 group-hover:opacity-100 transition-opacity">
+                      Read more →
+                    </span>
+                  </div>
+                  <p className="text-sm text-surface-400 font-mono leading-relaxed line-clamp-3">
+                    {law.wiki_content.trim().slice(0, 240)}
+                    {law.wiki_content.trim().length > 240 ? '…' : ''}
+                  </p>
+                </Link>
+              </div>
+            )}
 
             {/* Source topic link */}
             {topic && (

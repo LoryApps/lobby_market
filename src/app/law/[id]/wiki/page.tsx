@@ -25,11 +25,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const short = `${stmt.slice(0, 55)}${stmt.length > 55 ? '…' : ''}`
   const title = `Wiki: ${short} · Lobby Market`
 
-  const hasContent = ((law as { wiki_content?: string | null }).wiki_content ?? '').trim().length > 0
+  const hasContent = (law.wiki_content ?? '').trim().length > 0
   const estYear = law.established_at ? new Date(law.established_at).getFullYear() : null
 
   const description = hasContent
-    ? `${((law as { wiki_content?: string | null }).wiki_content ?? '').slice(0, 200).trim()}…`
+    ? `${(law.wiki_content ?? '').slice(0, 200).trim()}…`
     : `Community wiki for "${stmt}" — an established law${estYear ? ` passed in ${estYear}` : ''}` +
       (law.total_votes ? ` with ${law.total_votes.toLocaleString()} votes.` : '.') +
       ' Contribute context, history, and impact analysis.'

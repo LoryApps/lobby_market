@@ -333,6 +333,9 @@ export type Database = {
           total_votes: number;
           created_at: string;
           updated_at: string;
+          wiki_content: string | null;
+          wiki_updated_at: string | null;
+          wiki_updated_by: string | null;
         };
         Insert: {
           id?: string;
@@ -347,6 +350,9 @@ export type Database = {
           total_votes: number;
           created_at?: string;
           updated_at?: string;
+          wiki_content?: string | null;
+          wiki_updated_at?: string | null;
+          wiki_updated_by?: string | null;
         };
         Update: {
           id?: string;
@@ -361,6 +367,37 @@ export type Database = {
           total_votes?: number;
           created_at?: string;
           updated_at?: string;
+          wiki_content?: string | null;
+          wiki_updated_at?: string | null;
+          wiki_updated_by?: string | null;
+        };
+        Relationships: [];
+      };
+      law_wiki_history: {
+        Row: {
+          id: string;
+          law_id: string;
+          editor_id: string | null;
+          previous_content: string | null;
+          new_content: string | null;
+          char_delta: number | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          law_id: string;
+          editor_id?: string | null;
+          previous_content?: string | null;
+          new_content?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          law_id?: string;
+          editor_id?: string | null;
+          previous_content?: string | null;
+          new_content?: string | null;
+          created_at?: string;
         };
         Relationships: [];
       };
@@ -2263,6 +2300,8 @@ export type LawInsert = Database["public"]["Tables"]["laws"]["Insert"];
 
 export type LawLink = Database["public"]["Tables"]["law_links"]["Row"];
 export type TopicLink = Database["public"]["Tables"]["topic_links"]["Row"];
+
+export type LawWikiHistory = Database["public"]["Tables"]["law_wiki_history"]["Row"];
 
 export type LawRevision = Database["public"]["Tables"]["law_revisions"]["Row"];
 
