@@ -14,6 +14,7 @@ export interface WikiRecentEdit {
   total_votes: number
   description: string | null
   description_updated_at: string
+  char_delta: number | null
   editor: {
     id: string
     username: string
@@ -34,7 +35,8 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
   const limit = Math.min(parseInt(searchParams.get('limit') ?? '30', 10), 100)
   const offset = parseInt(searchParams.get('offset') ?? '0', 10)
-  const category = searchParams.get('category') // optional filter
+  const category = searchParams.get('category')
+  const status = searchParams.get('status')
 
   try {
     const supabase = await createClient()
@@ -51,6 +53,10 @@ export async function GET(req: NextRequest) {
 
     if (category && category !== 'All') {
       query = query.eq('category', category)
+    }
+
+    if (status && status !== 'All') {
+      query = query.eq('status', status)
     }
 
     const { data: topics, error, count } = await query
@@ -84,6 +90,25 @@ export async function GET(req: NextRequest) {
       }
     }
 
+    // Pull char_delta from topic_wiki_history for most recent edit per topic
+    const topicIds = rawTopics.map((t) => t.id)
+    const charDeltaMap = new Map<string, number | null>()
+    if (topicIds.length > 0) {
+      const { data: historyRows } = await supabase
+        .from('topic_wiki_history')
+        .select('topic_id, char_delta, created_at')
+        .in('topic_id', topicIds)
+        .order('created_at', { ascending: false })
+
+      const seen = new Set<string>()
+      for (const row of historyRows ?? []) {
+        if (!seen.has(row.topic_id)) {
+          seen.add(row.topic_id)
+          charDeltaMap.set(row.topic_id, row.char_delta ?? null)
+        }
+      }
+    }
+
     const edits: WikiRecentEdit[] = rawTopics.map((t) => ({
       id: t.id,
       statement: t.statement,
@@ -93,6 +118,7 @@ export async function GET(req: NextRequest) {
       total_votes: t.total_votes ?? 0,
       description: t.description,
       description_updated_at: t.description_updated_at as string,
+      char_delta: charDeltaMap.get(t.id) ?? null,
       editor: t.description_updated_by
         ? (editorMap.get(t.description_updated_by as string) ?? null)
         : null,

@@ -21,9 +21,13 @@ import {
   ChevronDown,
   Clock,
   FileEdit,
+  FileText,
+  Gavel,
   Loader2,
   RefreshCw,
+  Scale,
   Tag,
+  Zap,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -62,12 +66,28 @@ const ROLE_COLORS: Record<string, string> = {
   citizen: 'text-surface-500',
 }
 
+const STATUS_OPTIONS = [
+  { id: 'All', label: 'All' },
+  { id: 'proposed', label: 'Proposed' },
+  { id: 'active', label: 'Active' },
+  { id: 'voting', label: 'Voting' },
+  { id: 'law', label: 'Law' },
+]
+
 const STATUS_BADGE: Record<string, 'proposed' | 'active' | 'law' | 'failed'> = {
   proposed: 'proposed',
   active: 'active',
   voting: 'active',
   law: 'law',
   failed: 'failed',
+}
+
+const STATUS_ICON: Record<string, React.ComponentType<{ className?: string }>> = {
+  proposed: FileText,
+  active: Zap,
+  voting: Scale,
+  law: Gavel,
+  failed: FileText,
 }
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────
@@ -87,6 +107,13 @@ function relativeTime(iso: string): string {
 
 function truncate(s: string, max: number) {
   return s.length <= max ? s : s.slice(0, max - 1) + '…'
+}
+
+function charDeltaLabel(delta: number | null): { label: string; color: string; bg: string } | null {
+  if (delta === null) return null
+  if (delta > 0) return { label: `+${delta.toLocaleString()}`, color: 'text-emerald', bg: 'bg-emerald/10 border-emerald/30' }
+  if (delta < 0) return { label: delta.toLocaleString(), color: 'text-against-400', bg: 'bg-against-500/10 border-against-500/30' }
+  return { label: '±0', color: 'text-surface-500', bg: 'bg-surface-300/40 border-surface-400/40' }
 }
 
 // ─── Skeleton ──────────────────────────────────────────────────────────────────
@@ -117,6 +144,8 @@ function EditCard({ edit, index }: { edit: WikiRecentEdit; index: number }) {
   const forPct = Math.round(edit.blue_pct)
   const againstPct = 100 - forPct
   const preview = edit.description ? truncate(edit.description.replace(/\[\[([^\]]+)\]\]/g, '$1').replace(/[*_`#>]/g, ''), 220) : null
+  const delta = charDeltaLabel(edit.char_delta ?? null)
+  const StatusIcon = STATUS_ICON[edit.status] ?? FileText
 
   return (
     <motion.div
@@ -128,7 +157,7 @@ function EditCard({ edit, index }: { edit: WikiRecentEdit; index: number }) {
         href={`/topic/wiki/${edit.id}`}
         className={cn(
           'group block rounded-2xl bg-surface-100 border border-surface-300',
-          'hover:border-surface-400 hover:bg-surface-200/60 transition-all duration-150',
+          'hover:border-for-500/30 hover:bg-surface-200/60 transition-all duration-150',
           'p-5 space-y-3'
         )}
       >
@@ -150,26 +179,42 @@ function EditCard({ edit, index }: { edit: WikiRecentEdit; index: number }) {
           ) : (
             <span className="text-xs font-mono text-surface-500">Context edited</span>
           )}
+
+          {delta && (
+            <span
+              className={cn(
+                'ml-1 inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-mono font-semibold border flex-shrink-0',
+                delta.color, delta.bg
+              )}
+              title="Characters added or removed"
+            >
+              {delta.label}
+            </span>
+          )}
+
           <span className="ml-auto flex items-center gap-1 text-[11px] font-mono text-surface-500 flex-shrink-0">
             <Clock className="h-3 w-3" aria-hidden="true" />
-            {relativeTime(edit.description_updated_at)}
+            <time dateTime={edit.description_updated_at}>{relativeTime(edit.description_updated_at)}</time>
           </span>
         </div>
 
         {/* Topic statement */}
-        <p className="font-mono text-sm font-semibold text-white leading-snug group-hover:text-for-300 transition-colors line-clamp-2">
-          {edit.statement}
-        </p>
+        <div className="flex items-start gap-2">
+          <StatusIcon className="h-4 w-4 text-for-400 mt-0.5 flex-shrink-0" aria-hidden="true" />
+          <p className="font-mono text-sm font-semibold text-white leading-snug group-hover:text-for-300 transition-colors line-clamp-2">
+            {edit.statement}
+          </p>
+        </div>
 
         {/* Description preview */}
         {preview && (
-          <p className="text-xs font-mono text-surface-500 leading-relaxed line-clamp-2">
+          <p className="text-xs font-mono text-surface-500 leading-relaxed line-clamp-2 pl-6">
             {preview}
           </p>
         )}
 
         {/* Footer: badges + vote split */}
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-2 flex-wrap pl-6">
           <Badge variant={STATUS_BADGE[edit.status] ?? 'proposed'}>
             {edit.status === 'law' ? 'LAW' : edit.status.charAt(0).toUpperCase() + edit.status.slice(1)}
           </Badge>
@@ -181,6 +226,7 @@ function EditCard({ edit, index }: { edit: WikiRecentEdit; index: number }) {
           )}
           {edit.total_votes > 0 && (
             <span className="ml-auto flex items-center gap-1.5 text-[11px] font-mono tabular-nums flex-shrink-0">
+              <Scale className="h-2.5 w-2.5 text-surface-500" aria-hidden="true" />
               <span className="text-for-400 font-semibold">{forPct}%</span>
               <span className="text-surface-500">/</span>
               <span className="text-against-400 font-semibold">{againstPct}%</span>
@@ -202,10 +248,11 @@ export default function WikiRecentPage() {
   const [loadingMore, setLoadingMore] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [category, setCategory] = useState('All')
+  const [status, setStatus] = useState('All')
   const [offset, setOffset] = useState(0)
 
   const fetchEdits = useCallback(
-    async (cat: string, off: number, append: boolean) => {
+    async (cat: string, stat: string, off: number, append: boolean) => {
       if (append) setLoadingMore(true)
       else setLoading(true)
       setError(null)
@@ -216,6 +263,7 @@ export default function WikiRecentPage() {
           offset: String(off),
         })
         if (cat !== 'All') params.set('category', cat)
+        if (stat !== 'All') params.set('status', stat)
 
         const res = await fetch(`/api/topics/wiki/recent?${params}`)
         if (!res.ok) throw new Error(`HTTP ${res.status}`)
@@ -233,21 +281,21 @@ export default function WikiRecentPage() {
     []
   )
 
-  // Initial load + category change
+  // Initial load + filter change
   useEffect(() => {
     setOffset(0)
-    fetchEdits(category, 0, false)
-  }, [category, fetchEdits])
+    fetchEdits(category, status, 0, false)
+  }, [category, status, fetchEdits])
 
   function handleLoadMore() {
     const newOffset = offset + PAGE_SIZE
     setOffset(newOffset)
-    fetchEdits(category, newOffset, true)
+    fetchEdits(category, status, newOffset, true)
   }
 
   function handleRefresh() {
     setOffset(0)
-    fetchEdits(category, 0, false)
+    fetchEdits(category, status, 0, false)
   }
 
   const hasMore = edits.length < total
@@ -312,7 +360,7 @@ export default function WikiRecentPage() {
           {/* ── Category filter pills ── */}
           <div
             className={cn(
-              'flex gap-1.5 overflow-x-auto pb-1',
+              'flex gap-1.5 overflow-x-auto pb-1 mb-2',
               '[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
             )}
             role="group"
@@ -332,6 +380,30 @@ export default function WikiRecentPage() {
                 )}
               >
                 {cat}
+              </button>
+            ))}
+          </div>
+
+          {/* ── Status filter pills ── */}
+          <div
+            className="flex gap-1.5 overflow-x-auto pb-1"
+            role="group"
+            aria-label="Filter by status"
+          >
+            {STATUS_OPTIONS.map((opt) => (
+              <button
+                key={opt.id}
+                onClick={() => setStatus(opt.id)}
+                aria-pressed={status === opt.id}
+                className={cn(
+                  'flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-mono font-medium transition-all duration-150',
+                  'border',
+                  status === opt.id
+                    ? 'bg-surface-300 text-white border-surface-400'
+                    : 'bg-surface-200/60 text-surface-500 border-surface-300 hover:text-surface-700 hover:border-surface-400'
+                )}
+              >
+                {opt.label}
               </button>
             ))}
           </div>
@@ -361,8 +433,8 @@ export default function WikiRecentPage() {
             <BookOpen className="h-10 w-10 text-surface-500 mx-auto mb-4" aria-hidden="true" />
             <h2 className="font-mono text-lg font-semibold text-white mb-2">No edits yet</h2>
             <p className="font-mono text-sm text-surface-500 mb-6 max-w-xs mx-auto">
-              {category !== 'All'
-                ? `No topics in ${category} have community context yet. Be the first to add some.`
+              {category !== 'All' || status !== 'All'
+                ? `No matching topics have community context yet. Try a different filter.`
                 : 'No topics have community context yet. Open any topic and click the Edit button to start building the wiki.'}
             </p>
             <Link
@@ -376,7 +448,7 @@ export default function WikiRecentPage() {
           <>
             <AnimatePresence mode="wait">
               <motion.div
-                key={category}
+                key={`${category}-${status}`}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
