@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import {
   ArrowLeft,
+  Award,
   BarChart2,
   BookOpen,
   Brain,
@@ -17,6 +18,7 @@ import {
   Layers,
   Lightbulb,
   Network,
+  Quote,
   Scale,
   ScrollText,
   Shield,
@@ -260,6 +262,22 @@ export function LawExploreClient({
           accent: 'text-purple',
           iconBg: 'bg-purple/10',
           badge: 'AI',
+        },
+        {
+          href: 'contributors',
+          label: 'Founding Voices',
+          description: 'The citizens whose arguments shaped this law — ranked by upvotes earned.',
+          icon: Award,
+          accent: 'text-gold',
+          iconBg: 'bg-gold/10',
+        },
+        {
+          href: 'quotes',
+          label: 'Debate Quotes',
+          description: 'The most upvoted FOR and AGAINST arguments from the founding debate.',
+          icon: Quote,
+          accent: 'text-purple',
+          iconBg: 'bg-purple/10',
         },
       ],
     },
