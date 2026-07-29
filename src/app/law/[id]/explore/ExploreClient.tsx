@@ -8,6 +8,7 @@ import {
   BookOpen,
   Brain,
   ChevronRight,
+  Clock,
   FileText,
   Gavel,
   GitBranch,
@@ -200,6 +201,14 @@ export function LawExploreClient({
           icon: History,
           accent: 'text-surface-400',
           iconBg: 'bg-surface-300/50',
+        },
+        {
+          href: 'timeline',
+          label: 'Timeline',
+          description: 'Chronological journey from initial proposal through debate, voting, and establishment.',
+          icon: Clock,
+          accent: 'text-purple',
+          iconBg: 'bg-purple/10',
         },
         {
           href: 'amendments',
