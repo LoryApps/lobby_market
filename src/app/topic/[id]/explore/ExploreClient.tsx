@@ -30,6 +30,7 @@ import {
   Fingerprint,
   Flame,
   GitBranch,
+  GitCompare,
   Globe,
   Handshake,
   Heart,
@@ -485,6 +486,15 @@ export function ExploreClient({
           icon: GitBranch,
           accent: 'text-emerald',
           iconBg: 'bg-emerald/10',
+        },
+        {
+          href: '/compare',
+          label: 'Compare',
+          description: 'Side-by-side comparison with any other topic on the platform',
+          icon: GitCompare,
+          accent: 'text-for-400',
+          iconBg: 'bg-for-600/15',
+          badge: 'NEW',
         },
         {
           href: '/depth',
