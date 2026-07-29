@@ -7,11 +7,13 @@ import {
   Ban,
   BarChart2,
   BookOpen,
+  Brain,
   Calendar,
   Clock,
   Edit3,
   ExternalLink,
   Gavel,
+  GitMerge,
   History,
   Image as ImageIcon,
   Layers,
@@ -490,6 +492,32 @@ export function LawPage({
                 >
                   <Sparkles className="h-3.5 w-3.5" />
                   Ask Counsel
+                </Link>
+                <Link
+                  href={`/law/${law.id}/steelman`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-purple/10 border border-purple/30 text-purple',
+                    'hover:bg-purple/20 hover:border-purple/50',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="The strongest case for and against this law"
+                >
+                  <Brain className="h-3.5 w-3.5" />
+                  Steelman
+                </Link>
+                <Link
+                  href={`/law/${law.id}/synthesis`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-emerald/10 border border-emerald/30 text-emerald',
+                    'hover:bg-emerald/20 hover:border-emerald/50',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="AI-generated common ground from the founding debate"
+                >
+                  <GitMerge className="h-3.5 w-3.5" />
+                  Synthesis
                 </Link>
               </div>
             </div>
