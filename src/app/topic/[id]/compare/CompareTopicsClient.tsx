@@ -28,7 +28,6 @@ import {
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
-import { Skeleton } from '@/components/ui/Skeleton'
 import { cn } from '@/lib/utils/cn'
 import type { TopicCompareResponse, CompareTopic } from '@/app/api/topics/[id]/compare/route'
 
@@ -299,32 +298,6 @@ function StatRow({
         {secondaryValue}
       </div>
     </div>
-  )
-}
-
-// ─── Winner badge ─────────────────────────────────────────────────────────────
-
-function WinnerTag({ side }: { side: 'primary' | 'secondary' | 'tie' }) {
-  if (side === 'tie') {
-    return (
-      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-300/60 text-surface-500 text-[10px] font-mono">
-        <Scale className="h-2.5 w-2.5" />
-        Tie
-      </span>
-    )
-  }
-  return (
-    <span
-      className={cn(
-        'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono',
-        side === 'primary'
-          ? 'bg-for-500/20 text-for-300'
-          : 'bg-for-500/20 text-for-300',
-      )}
-    >
-      <Check className="h-2.5 w-2.5" />
-      Stronger
-    </span>
   )
 }
 
