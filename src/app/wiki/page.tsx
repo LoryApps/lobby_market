@@ -25,7 +25,6 @@ import {
   BookOpen,
   ChevronRight,
   Clock,
-  Edit3,
   ExternalLink,
   FileEdit,
   Gavel,
