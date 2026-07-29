@@ -177,6 +177,7 @@ export function QuickArgueSheet({
                 onChange={(e) => {
                   if (e.target.value.length <= MAX_CHARS) setContent(e.target.value)
                 }}
+                aria-label="Your argument"
                 placeholder={
                   side === 'blue'
                     ? 'Make the case FOR this proposal…'
@@ -221,6 +222,7 @@ export function QuickArgueSheet({
                     type="url"
                     value={sourceUrl}
                     onChange={(e) => setSourceUrl(e.target.value)}
+                    aria-label="Source URL"
                     placeholder="https://example.com/source"
                     className="flex-1 h-9 rounded-lg bg-surface-200 border border-surface-300 px-3 font-mono text-xs text-white placeholder:text-surface-500 focus:outline-none focus:border-surface-400"
                   />

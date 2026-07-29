@@ -4359,6 +4359,7 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
                   setActiveIndex(0)
                 }}
                 onKeyDown={handleKeyDown}
+                aria-label="Search topics, laws, people"
                 placeholder="Search topics, laws, people…"
                 className={cn(
                   'flex-1 bg-transparent text-sm text-white placeholder:text-surface-500',

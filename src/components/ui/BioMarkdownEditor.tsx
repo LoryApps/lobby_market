@@ -182,17 +182,17 @@ export function BioMarkdownEditor({
         {/* Formatting toolbar — only visible in write mode */}
         {tab === 'write' && (
           <div className="flex items-center gap-0.5" role="toolbar" aria-label="Bio formatting">
-            <button type="button" onClick={bold} className={toolbarBtnClass} title="Bold (**text**)">
-              <Bold className="h-3.5 w-3.5" />
+            <button type="button" onClick={bold} className={toolbarBtnClass} aria-label="Bold (**text**)">
+              <Bold className="h-3.5 w-3.5" aria-hidden="true" />
             </button>
-            <button type="button" onClick={italic} className={toolbarBtnClass} title="Italic (*text*)">
-              <Italic className="h-3.5 w-3.5" />
+            <button type="button" onClick={italic} className={toolbarBtnClass} aria-label="Italic (*text*)">
+              <Italic className="h-3.5 w-3.5" aria-hidden="true" />
             </button>
-            <button type="button" onClick={code} className={toolbarBtnClass} title="Inline code (`code`)">
-              <Code className="h-3.5 w-3.5" />
+            <button type="button" onClick={code} className={toolbarBtnClass} aria-label="Inline code (`code`)">
+              <Code className="h-3.5 w-3.5" aria-hidden="true" />
             </button>
-            <button type="button" onClick={link} className={toolbarBtnClass} title="Link ([text](url))">
-              <Link2 className="h-3.5 w-3.5" />
+            <button type="button" onClick={link} className={toolbarBtnClass} aria-label="Link ([text](url))">
+              <Link2 className="h-3.5 w-3.5" aria-hidden="true" />
             </button>
           </div>
         )}

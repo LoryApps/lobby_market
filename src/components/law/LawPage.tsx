@@ -13,7 +13,7 @@ import {
   ExternalLink,
   Gavel,
   History,
-  Image,
+  Image as ImageIcon,
   Layers,
   List,
   Menu,
@@ -324,7 +324,7 @@ export function LawPage({
                     'text-xs font-mono font-medium transition-colors'
                   )}
                 >
-                  <Image className="h-3.5 w-3.5" />
+                  <ImageIcon className="h-3.5 w-3.5" aria-hidden="true" />
                   Snapshot
                 </Link>
                 <Link

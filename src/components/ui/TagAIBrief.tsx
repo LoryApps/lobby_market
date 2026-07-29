@@ -146,36 +146,42 @@ export function TagAIBrief({ tag, className }: TagAIBriefProps) {
         className
       )}
     >
-      {/* Header */}
-      <button
-        onClick={() => hasContent && setExpanded((e) => !e)}
-        disabled={!hasContent}
-        className={cn(
-          'w-full flex items-center justify-between gap-3 px-4 py-3',
-          'text-left transition-colors',
-          hasContent ? 'hover:bg-surface-200/60 cursor-pointer' : 'cursor-default'
-        )}
-        aria-expanded={expanded}
-      >
-        <div className="flex items-center gap-2.5 min-w-0">
-          <div className="flex items-center justify-center h-7 w-7 rounded-lg bg-purple/15 flex-shrink-0">
-            <WandSparkles className="h-3.5 w-3.5 text-purple" />
+      {/* Header — two variants to avoid nested interactive elements */}
+      {hasContent ? (
+        <button
+          onClick={() => setExpanded((e) => !e)}
+          className="w-full flex items-center justify-between gap-3 px-4 py-3 text-left transition-colors hover:bg-surface-200/60"
+          aria-expanded={expanded}
+          aria-label={expanded ? 'Collapse Civic Brief' : 'Expand Civic Brief'}
+        >
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="flex items-center justify-center h-7 w-7 rounded-lg bg-purple/15 flex-shrink-0">
+              <WandSparkles className="h-3.5 w-3.5 text-purple" aria-hidden="true" />
+            </div>
+            <div className="min-w-0">
+              <span className="text-xs font-mono font-bold text-purple tracking-wide">Civic Brief</span>
+              {data?.generated_at && (
+                <span className="ml-2 text-[10px] text-surface-500 font-mono">
+                  · {relativeTime(data.generated_at)}
+                </span>
+              )}
+            </div>
           </div>
-          <div className="min-w-0">
-            <span className="text-xs font-mono font-bold text-purple tracking-wide">
-              Civic Brief
-            </span>
-            {data?.generated_at && (
-              <span className="ml-2 text-[10px] text-surface-500 font-mono">
-                · {relativeTime(data.generated_at)}
-              </span>
-            )}
+          {expanded
+            ? <ChevronUp className="h-4 w-4 text-surface-500 flex-shrink-0" aria-hidden="true" />
+            : <ChevronDown className="h-4 w-4 text-surface-500 flex-shrink-0" aria-hidden="true" />}
+        </button>
+      ) : (
+        <div className="flex items-center justify-between gap-3 px-4 py-3">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="flex items-center justify-center h-7 w-7 rounded-lg bg-purple/15 flex-shrink-0">
+              <WandSparkles className="h-3.5 w-3.5 text-purple" aria-hidden="true" />
+            </div>
+            <span className="text-xs font-mono font-bold text-purple tracking-wide">Civic Brief</span>
           </div>
-        </div>
-        <div className="flex items-center gap-2 flex-shrink-0">
-          {!hasContent && !data?.insufficient_data && (
+          {!data?.insufficient_data && (
             <button
-              onClick={(e) => { e.stopPropagation(); generate() }}
+              onClick={generate}
               disabled={generating}
               className={cn(
                 'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-semibold',
@@ -184,17 +190,12 @@ export function TagAIBrief({ tag, className }: TagAIBriefProps) {
               )}
             >
               {generating
-                ? <><Loader2 className="h-3 w-3 animate-spin" />Generating…</>
-                : <><WandSparkles className="h-3 w-3" />Generate</>}
+                ? <><Loader2 className="h-3 w-3 animate-spin" aria-hidden="true" />Generating…</>
+                : <><WandSparkles className="h-3 w-3" aria-hidden="true" />Generate</>}
             </button>
           )}
-          {hasContent && (
-            expanded
-              ? <ChevronUp className="h-4 w-4 text-surface-500" />
-              : <ChevronDown className="h-4 w-4 text-surface-500" />
-          )}
         </div>
-      </button>
+      )}
 
       {/* Content */}
       <AnimatePresence initial={false}>
