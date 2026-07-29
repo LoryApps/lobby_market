@@ -669,12 +669,12 @@ export default function WikiPortalPage() {
               </h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {[
-                  { href: '/topic/wiki/recent', label: 'Recent Edits',     sublabel: 'Latest wiki changes',           icon: History,     color: 'text-for-400' },
+                  { href: '/topic/wiki/recent', label: 'Topic Edits',      sublabel: 'Latest topic wiki changes',     icon: History,     color: 'text-for-400' },
+                  { href: '/law/wiki/recent',   label: 'Law Edits',        sublabel: 'Latest law wiki changes',       icon: FileEdit,    color: 'text-gold' },
                   { href: '/leaderboard/wiki',  label: 'Wiki Leaderboard', sublabel: 'Most prolific editors',         icon: TrendingUp,  color: 'text-gold' },
                   { href: '/topic/graph',       label: 'Topic Network',    sublabel: 'Knowledge graph visualization', icon: Globe,       color: 'text-purple' },
                   { href: '/sources',           label: 'Source Library',   sublabel: 'Most cited external sources',   icon: BookOpen,    color: 'text-emerald' },
                   { href: '/law',               label: 'Established Laws', sublabel: 'Debates that became law',       icon: Gavel,       color: 'text-gold' },
-                  { href: '/topic/create',      label: 'Propose a Topic',  sublabel: 'Start a new civic debate',      icon: Edit3,       color: 'text-for-400' },
                 ].map(({ href, label, sublabel, icon: Icon, color }) => (
                   <Link
                     key={href}

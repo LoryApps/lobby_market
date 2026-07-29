@@ -666,6 +666,25 @@ export function LawWikiHistoryClient({ lawId }: LawWikiHistoryClientProps) {
             </div>
           )}
         </div>
+        {/* ── All Law Wiki Recent Changes link ───────────────────────── */}
+        <div className="mt-8 pt-6 border-t border-surface-300">
+          <Link
+            href="/law/wiki/recent"
+            className="flex items-center gap-3 px-4 py-3 rounded-xl bg-surface-100 border border-surface-300 hover:border-gold/40 hover:bg-surface-200/50 transition-colors group"
+          >
+            <History className="h-4 w-4 text-gold flex-shrink-0" aria-hidden="true" />
+            <div className="min-w-0">
+              <p className="text-xs font-mono font-semibold text-white group-hover:text-white/90">
+                See all recent law wiki changes
+              </p>
+              <p className="text-[11px] font-mono text-surface-500 truncate">
+                Platform-wide law encyclopedia edit feed
+              </p>
+            </div>
+            <ChevronRight className="h-4 w-4 text-surface-600 group-hover:text-gold ml-auto flex-shrink-0 transition-colors" aria-hidden="true" />
+          </Link>
+        </div>
+
       </main>
 
       <BottomNav />
