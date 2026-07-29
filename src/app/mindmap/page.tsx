@@ -98,6 +98,42 @@ const TYPE_CONFIG: Record<MindMapNodeType, TypeConfig> = {
 
 const ALL_TYPES: MindMapNodeType[] = ['topic', 'law', 'argument', 'journal']
 
+// ─── Loading skeleton ──────────────────────────────────────────────────────────
+
+const MINDMAP_PLACEHOLDER_NODES = [
+  { left: '50%', top: '44%', size: 48, color: 'rgba(96,165,250,0.12)', stroke: 'rgba(96,165,250,0.4)' },
+  { left: '30%', top: '30%', size: 36, color: 'rgba(96,165,250,0.12)', stroke: 'rgba(96,165,250,0.35)' },
+  { left: '70%', top: '34%', size: 32, color: 'rgba(248,113,113,0.12)', stroke: 'rgba(248,113,113,0.35)' },
+  { left: '25%', top: '60%', size: 26, color: 'rgba(167,139,250,0.12)', stroke: 'rgba(167,139,250,0.35)' },
+  { left: '72%', top: '62%', size: 22, color: 'rgba(201,168,76,0.12)', stroke: 'rgba(201,168,76,0.35)' },
+  { left: '55%', top: '72%', size: 30, color: 'rgba(96,165,250,0.12)', stroke: 'rgba(96,165,250,0.35)' },
+  { left: '14%', top: '46%', size: 20, color: 'rgba(167,139,250,0.12)', stroke: 'rgba(167,139,250,0.35)' },
+  { left: '83%', top: '48%', size: 24, color: 'rgba(248,113,113,0.12)', stroke: 'rgba(248,113,113,0.35)' },
+  { left: '42%', top: '20%', size: 18, color: 'rgba(201,168,76,0.12)', stroke: 'rgba(201,168,76,0.35)' },
+] as const
+
+function MindMapSkeleton() {
+  return (
+    <div className="absolute inset-0 animate-pulse" aria-hidden="true">
+      {MINDMAP_PLACEHOLDER_NODES.map(({ left, top, size, color, stroke }, i) => (
+        <div
+          key={i}
+          className="absolute rounded-full"
+          style={{
+            left,
+            top,
+            width: size,
+            height: size,
+            transform: 'translate(-50%, -50%)',
+            background: color,
+            border: `1.5px solid ${stroke}`,
+          }}
+        />
+      ))}
+    </div>
+  )
+}
+
 // ─── Component ─────────────────────────────────────────────────────────────────
 
 export default function MindMapPage() {
@@ -312,12 +348,7 @@ export default function MindMapPage() {
         {/* ── Canvas area ────────────────────────────────────────────────── */}
         <div className="flex-1 relative min-h-0">
           {loading ? (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="flex flex-col items-center gap-3">
-                <Loader2 className="h-6 w-6 text-purple animate-spin" />
-                <p className="text-sm font-mono text-surface-500">Building your mind map…</p>
-              </div>
-            </div>
+            <MindMapSkeleton />
           ) : error ? (
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="flex flex-col items-center gap-3 text-center px-4">

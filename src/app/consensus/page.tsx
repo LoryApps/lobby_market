@@ -4,7 +4,6 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   Activity,
-  Loader2,
   RefreshCw,
   Scale,
   Tag,
@@ -107,6 +106,41 @@ function relativeTime(iso: string): string {
 
 function truncate(s: string, maxLen: number): string {
   return s.length > maxLen ? s.slice(0, maxLen - 1) + '…' : s
+}
+
+// ─── Loading skeleton ──────────────────────────────────────────────────────
+
+const PLACEHOLDER_BUBBLES = [
+  { left: '29%', top: '40%', size: 90, color: 'rgba(96,165,250,0.12)', stroke: 'rgba(96,165,250,0.35)' },
+  { left: '60%', top: '30%', size: 120, color: 'rgba(248,113,113,0.12)', stroke: 'rgba(248,113,113,0.35)' },
+  { left: '48%', top: '64%', size: 68, color: 'rgba(201,168,76,0.12)', stroke: 'rgba(201,168,76,0.35)' },
+  { left: '19%', top: '60%', size: 54, color: 'rgba(96,165,250,0.12)', stroke: 'rgba(96,165,250,0.35)' },
+  { left: '74%', top: '55%', size: 98, color: 'rgba(248,113,113,0.12)', stroke: 'rgba(248,113,113,0.35)' },
+  { left: '80%', top: '24%', size: 42, color: 'rgba(96,165,250,0.12)', stroke: 'rgba(96,165,250,0.35)' },
+  { left: '39%', top: '80%', size: 74, color: 'rgba(201,168,76,0.12)', stroke: 'rgba(201,168,76,0.35)' },
+  { left: '11%', top: '28%', size: 36, color: 'rgba(248,113,113,0.12)', stroke: 'rgba(248,113,113,0.35)' },
+] as const
+
+function ConsensusBubbleSkeleton() {
+  return (
+    <div className="absolute inset-0 animate-pulse" aria-hidden="true">
+      {PLACEHOLDER_BUBBLES.map(({ left, top, size, color, stroke }, i) => (
+        <div
+          key={i}
+          className="absolute rounded-full"
+          style={{
+            left,
+            top,
+            width: size,
+            height: size,
+            transform: 'translate(-50%, -50%)',
+            background: color,
+            border: `1px solid ${stroke}`,
+          }}
+        />
+      ))}
+    </div>
+  )
 }
 
 // ─── Tooltip ───────────────────────────────────────────────────────────────
@@ -535,16 +569,7 @@ export default function ConsensusPage() {
           ref={containerRef}
           className="flex-1 relative overflow-hidden"
         >
-          {loading && (
-            <div className="absolute inset-0 flex items-center justify-center z-20">
-              <div className="flex flex-col items-center gap-3">
-                <Loader2 className="h-8 w-8 animate-spin text-for-400" />
-                <p className="text-xs font-mono text-surface-500">
-                  Mapping consensus…
-                </p>
-              </div>
-            </div>
-          )}
+          {loading && <ConsensusBubbleSkeleton />}
 
           {error && !loading && (
             <div className="absolute inset-0 flex items-center justify-center z-20">

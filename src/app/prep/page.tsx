@@ -46,8 +46,36 @@ import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { Avatar } from '@/components/ui/Avatar'
 import { Badge } from '@/components/ui/Badge'
+import { Skeleton } from '@/components/ui/Skeleton'
 import { cn } from '@/lib/utils/cn'
 import type { PrepResponse, PrepArgument, TalkingPoints } from '@/app/api/prep/route'
+
+// ─── Suspense fallback skeleton ────────────────────────────────────────────────
+
+function PrepSkeleton() {
+  return (
+    <div className="min-h-screen bg-surface-50">
+      <TopBar />
+      <main className="max-w-3xl mx-auto px-4 pt-6 pb-28 md:pb-14">
+        {/* Header placeholder */}
+        <div className="flex items-center gap-3 mb-8">
+          <Skeleton className="h-11 w-11 rounded-xl flex-shrink-0" />
+          <div className="space-y-2">
+            <Skeleton className="h-7 w-40" />
+            <Skeleton className="h-4 w-64" />
+          </div>
+        </div>
+        {/* Topic search box placeholder */}
+        <div className="rounded-2xl border border-surface-300 bg-surface-100 p-5 space-y-3 animate-pulse">
+          <Skeleton className="h-3 w-32" />
+          <Skeleton className="h-10 w-full rounded-lg" />
+          <Skeleton className="h-4 w-1/2" />
+        </div>
+      </main>
+      <BottomNav />
+    </div>
+  )
+}
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -891,11 +919,7 @@ function PrepInner() {
 
 export default function PrepPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-surface-50 flex items-center justify-center">
-        <Loader2 className="h-6 w-6 text-surface-500 animate-spin" />
-      </div>
-    }>
+    <Suspense fallback={<PrepSkeleton />}>
       <PrepInner />
     </Suspense>
   )

@@ -34,7 +34,6 @@ import {
   CheckCircle2,
   ChevronRight,
   Gavel,
-  Loader2,
   MessageSquare,
   Quote,
   RefreshCw,
@@ -51,6 +50,73 @@ import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { cn } from '@/lib/utils/cn'
 import type { SwipeTopic } from '@/app/api/swipe/route'
+
+// ─── Loading skeleton ─────────────────────────────────────────────────────────
+
+function SwipeCardSkeleton() {
+  return (
+    <div className="relative h-full">
+      {[2, 1, 0].map((stackIndex) => {
+        const scale = 1 - stackIndex * 0.04
+        const yOffset = stackIndex * 10
+        const isTop = stackIndex === 0
+        return (
+          <div
+            key={stackIndex}
+            className={cn(
+              'absolute inset-x-4 top-0 bottom-0 flex flex-col',
+              stackIndex === 0 ? 'z-30' : stackIndex === 1 ? 'z-20' : 'z-10',
+            )}
+            style={{ transform: `scale(${scale}) translateY(${yOffset}px)` }}
+          >
+            <div className="flex-1 flex flex-col bg-surface-200 border border-surface-300 rounded-[1.25rem] overflow-hidden animate-pulse">
+              {/* Category chip + status badge */}
+              <div className="flex items-center justify-between px-5 pt-5 pb-3 flex-shrink-0">
+                <div className="h-6 w-20 rounded-full bg-surface-300/70" />
+                <div className="h-5 w-16 rounded-full bg-surface-300/70" />
+              </div>
+
+              {/* Statement placeholder lines */}
+              <div className="flex-1 flex flex-col justify-center px-5 py-2 gap-3">
+                <div className="h-6 w-full rounded bg-surface-300/70" />
+                <div className="h-6 w-full rounded bg-surface-300/70" />
+                <div className="h-6 w-3/4 rounded bg-surface-300/70" />
+              </div>
+
+              {/* Argument preview boxes — top card only */}
+              {isTop && (
+                <div className="grid grid-cols-2 gap-2 px-5 py-2 flex-shrink-0">
+                  <div className="h-24 rounded-xl bg-for-500/10 border border-for-500/15" />
+                  <div className="h-24 rounded-xl bg-against-500/10 border border-against-500/15" />
+                </div>
+              )}
+
+              {/* Vote split bar */}
+              <div className="px-5 pt-2 pb-4 flex-shrink-0 space-y-1.5">
+                <div className="flex justify-between">
+                  <div className="h-3 w-12 rounded bg-for-500/25" />
+                  <div className="h-3 w-16 rounded bg-against-500/25" />
+                </div>
+                <div className="h-1.5 w-full rounded-full overflow-hidden bg-surface-300/70">
+                  <div className="h-full w-3/5 bg-for-500/30 rounded-l-full" />
+                </div>
+              </div>
+
+              {/* Action buttons — top card only */}
+              {isTop && (
+                <div className="flex items-center gap-3 px-5 pb-5 flex-shrink-0">
+                  <div className="h-12 flex-1 rounded-xl bg-against-500/15 border border-against-500/20" />
+                  <div className="h-12 w-12 rounded-xl bg-surface-300/70 flex-shrink-0" />
+                  <div className="h-12 flex-1 rounded-xl bg-for-500/15 border border-for-500/20" />
+                </div>
+              )}
+            </div>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -715,10 +781,7 @@ export function SwipeClient() {
       {/* Card stack area */}
       <div className="flex-1 min-h-0 relative px-4 pb-2">
         {loading ? (
-          <div className="flex flex-col items-center justify-center h-full gap-3">
-            <Loader2 className="h-8 w-8 text-for-400 animate-spin" aria-hidden />
-            <p className="text-sm font-mono text-surface-500">Loading topics…</p>
-          </div>
+          <SwipeCardSkeleton />
         ) : done ? (
           <SessionSummary stats={stats} onReset={handleReset} />
         ) : deck.length === 0 ? (
