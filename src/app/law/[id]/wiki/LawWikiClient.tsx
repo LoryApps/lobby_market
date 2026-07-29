@@ -458,10 +458,13 @@ export function LawWikiClient({ lawId }: LawWikiClientProps) {
             )}
 
             {!isEditing && totalEdits > 0 && (
-              <span className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-surface-200 border border-surface-300 text-surface-500 text-xs font-mono">
+              <Link
+                href={`/law/${lawId}/wiki-history`}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-surface-200 border border-surface-300 text-surface-500 hover:text-white hover:border-surface-400 transition-colors text-xs font-mono"
+              >
                 <History className="h-3.5 w-3.5" aria-hidden="true" />
                 {totalEdits} {totalEdits === 1 ? 'edit' : 'edits'}
-              </span>
+              </Link>
             )}
 
             {!isEditing && currentUser && (
