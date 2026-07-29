@@ -1,9 +1,5 @@
-import { Loader2 } from 'lucide-react'
+import { TrendsPageSkeleton } from '@/components/exchange/ExchangePageSkeleton'
 
-export default function Loading() {
-  return (
-    <div className="min-h-screen bg-surface-50 flex items-center justify-center">
-      <Loader2 className="w-6 h-6 text-for-400 animate-spin" />
-    </div>
-  )
+export default function TrendsLoading() {
+  return <TrendsPageSkeleton />
 }
