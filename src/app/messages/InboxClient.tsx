@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
-import { MessageSquare, RefreshCw } from 'lucide-react'
+import { MessageSquare, RefreshCw, Search, X } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { Skeleton } from '@/components/ui/Skeleton'
@@ -48,6 +48,7 @@ export function InboxClient() {
   const [data, setData] = useState<InboxResponse | null>(null)
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
+  const [query, setQuery] = useState('')
 
   const load = useCallback(async (refresh = false) => {
     if (refresh) setRefreshing(true)
@@ -67,6 +68,14 @@ export function InboxClient() {
   if (loading) return <ConversationSkeleton />
 
   const conversations = data?.conversations ?? []
+  const q = query.trim().toLowerCase()
+  const filtered = q
+    ? conversations.filter(c =>
+        (c.partner.display_name ?? '').toLowerCase().includes(q) ||
+        c.partner.username.toLowerCase().includes(q) ||
+        (c.last_message ?? '').toLowerCase().includes(q)
+      )
+    : conversations
 
   return (
     <div className="space-y-3">
@@ -90,15 +99,44 @@ export function InboxClient() {
         </button>
       </div>
 
+      {/* Search */}
+      {conversations.length > 0 && (
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-surface-500 pointer-events-none" />
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search conversations…"
+            className="w-full pl-9 pr-8 py-2 text-sm rounded-xl bg-surface-200 border border-surface-300 text-white placeholder:text-surface-500 focus:outline-none focus:border-for-500/50 transition-colors"
+          />
+          {query && (
+            <button
+              onClick={() => setQuery('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-surface-500 hover:text-white transition-colors"
+              aria-label="Clear search"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          )}
+        </div>
+      )}
+
       {conversations.length === 0 ? (
         <EmptyState
           icon={MessageSquare}
           title="No messages yet"
           description="Start a conversation from any user's profile page."
         />
+      ) : filtered.length === 0 ? (
+        <EmptyState
+          icon={Search}
+          title="No results"
+          description={`No conversations matching "${query}".`}
+        />
       ) : (
         <AnimatePresence initial={false}>
-          {conversations.map((conv, idx) => (
+          {filtered.map((conv, idx) => (
             <motion.div
               key={conv.partner.id}
               initial={{ opacity: 0, y: 8 }}

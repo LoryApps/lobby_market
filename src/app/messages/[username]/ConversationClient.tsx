@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   ArrowLeft,
   Loader2,
@@ -68,9 +68,12 @@ export function ConversationClient({ partner, currentUserId, currentProfile }: P
   const [sending, setSending] = useState(false)
   const [draft, setDraft] = useState('')
   const [error, setError] = useState<string | null>(null)
+  const [partnerTyping, setPartnerTyping] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const channelRef = useRef<RealtimeChannel | null>(null)
+  const presenceChannelRef = useRef<RealtimeChannel | null>(null)
+  const typingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Scroll to bottom whenever messages update
   const scrollToBottom = useCallback(() => {
@@ -130,6 +133,46 @@ export function ConversationClient({ partner, currentUserId, currentProfile }: P
     channelRef.current = channel
     return () => { supabase.removeChannel(channel) }
   }, [currentUserId, partner.id, partner.username])
+
+  // Presence channel for typing indicator
+  useEffect(() => {
+    const supabase = createClient()
+    const presenceKey = `typing-${[currentUserId, partner.id].sort().join('-')}`
+
+    const ch = supabase
+      .channel(presenceKey, { config: { presence: { key: currentUserId } } })
+      .on('presence', { event: 'sync' }, () => {
+        const state = ch.presenceState<{ typing?: boolean }>()
+        const presences = state[partner.id] ?? []
+        setPartnerTyping(presences.some(p => p.typing === true))
+      })
+      .subscribe(async (status) => {
+        if (status === 'SUBSCRIBED') {
+          await ch.track({ typing: false })
+        }
+      })
+
+    presenceChannelRef.current = ch
+    return () => {
+      if (typingTimerRef.current) clearTimeout(typingTimerRef.current)
+      supabase.removeChannel(ch)
+    }
+  }, [currentUserId, partner.id])
+
+  // Broadcast typing state when draft changes
+  useEffect(() => {
+    const ch = presenceChannelRef.current
+    if (!ch) return
+    if (!draft) {
+      ch.track({ typing: false })
+      return
+    }
+    ch.track({ typing: true })
+    if (typingTimerRef.current) clearTimeout(typingTimerRef.current)
+    typingTimerRef.current = setTimeout(() => {
+      ch.track({ typing: false })
+    }, 2500)
+  }, [draft])
 
   async function handleSend() {
     const content = draft.trim()
@@ -292,6 +335,37 @@ export function ConversationClient({ partner, currentUserId, currentProfile }: P
             ))}
           </>
         )}
+        <AnimatePresence>
+          {partnerTyping && (
+            <motion.div
+              key="typing-indicator"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 8 }}
+              transition={{ duration: 0.2 }}
+              className="flex gap-2 justify-start"
+            >
+              <Avatar
+                src={partner.avatar_url}
+                fallback={partnerName}
+                size="sm"
+                className="flex-shrink-0 mt-auto"
+              />
+              <div className="px-4 py-3 rounded-2xl bg-surface-200 rounded-bl-sm flex items-center">
+                <span className="flex items-center gap-1">
+                  {[0, 1, 2].map((i) => (
+                    <motion.span
+                      key={i}
+                      className="block h-1.5 w-1.5 rounded-full bg-surface-400"
+                      animate={{ opacity: [0.3, 1, 0.3] }}
+                      transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2 }}
+                    />
+                  ))}
+                </span>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
         <div ref={bottomRef} />
       </main>
 
