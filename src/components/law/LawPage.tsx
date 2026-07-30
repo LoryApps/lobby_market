@@ -600,6 +600,19 @@ export function LawPage({
                   <Scale className="h-3.5 w-3.5" />
                   Verdict
                 </Link>
+                <Link
+                  href={`/law/${law.id}/challenge`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-against-600/10 border border-against-600/30 text-against-400',
+                    'hover:bg-against-600/20 hover:border-against-500/50 hover:text-against-300',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="File a formal constitutional, procedural, factual, ethical, or practical challenge to this law"
+                >
+                  <Gavel className="h-3.5 w-3.5" />
+                  Challenge
+                </Link>
               </div>
             </div>
 
