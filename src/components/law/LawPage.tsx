@@ -24,6 +24,7 @@ import {
   PanelRight,
   Scale,
   Sparkles,
+  MessageSquare,
   Star,
   Tag,
   Users,
@@ -545,6 +546,19 @@ export function LawPage({
                 >
                   <Users2 className="h-3.5 w-3.5" />
                   Founders
+                </Link>
+                <Link
+                  href={`/law/${law.id}/discuss`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-for-700/20 border border-for-600/30 text-for-300',
+                    'hover:bg-for-700/30 hover:border-for-600/50',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="Open discussion about this law's implications"
+                >
+                  <MessageSquare className="h-3.5 w-3.5" />
+                  Discuss
                 </Link>
               </div>
             </div>
