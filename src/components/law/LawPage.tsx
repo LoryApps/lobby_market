@@ -17,6 +17,7 @@ import {
   GitMerge,
   History,
   Image as ImageIcon,
+  Landmark,
   Layers,
   List,
   Menu,
@@ -665,6 +666,19 @@ export function LawPage({
                 >
                   <Network className="h-3.5 w-3.5" />
                   Connections
+                </Link>
+                <Link
+                  href={`/law/${law.id}/legacy`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-surface-200 border border-surface-300 text-surface-600',
+                    'hover:bg-surface-300 hover:border-surface-400 hover:text-white',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="Law Legacy — verdicts, challenges, continuation debates, and long-term standing"
+                >
+                  <Landmark className="h-3.5 w-3.5" />
+                  Legacy
                 </Link>
               </div>
             </div>
