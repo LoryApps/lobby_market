@@ -533,6 +533,19 @@ export function LawPage({
                   <Activity className="h-3.5 w-3.5" />
                   Momentum
                 </Link>
+                <Link
+                  href={`/law/${law.id}/voters`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-surface-200 border border-surface-300 text-surface-600',
+                    'hover:bg-surface-300 hover:border-surface-400 hover:text-white',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="The citizens who built this consensus"
+                >
+                  <Users2 className="h-3.5 w-3.5" />
+                  Founders
+                </Link>
               </div>
             </div>
 
