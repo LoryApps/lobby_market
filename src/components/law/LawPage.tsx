@@ -575,6 +575,19 @@ export function LawPage({
                   Global Parallels
                 </Link>
                 <Link
+                  href={`/law/${law.id}/similar`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-surface-200 border border-surface-300 text-surface-600',
+                    'hover:bg-surface-300 hover:border-surface-400 hover:text-white',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="Discover related laws in the Codex"
+                >
+                  <Layers className="h-3.5 w-3.5" />
+                  Similar Laws
+                </Link>
+                <Link
                   href={`/law/${law.id}/dissent`}
                   className={cn(
                     'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
