@@ -5,6 +5,7 @@ import { useMemo, useState } from 'react'
 import {
   Activity,
   ArrowLeft,
+  Award,
   Ban,
   BarChart2,
   BookOpen,
@@ -679,6 +680,19 @@ export function LawPage({
                 >
                   <Landmark className="h-3.5 w-3.5" />
                   Legacy
+                </Link>
+                <Link
+                  href={`/law/${law.id}/scorecard`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-gold/10 border border-gold/30 text-gold',
+                    'hover:bg-gold/20 hover:border-gold/50',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="Law Scorecard — performance grades across legitimacy, verdict, resilience, stability, and engagement"
+                >
+                  <Award className="h-3.5 w-3.5" />
+                  Scorecard
                 </Link>
               </div>
             </div>
