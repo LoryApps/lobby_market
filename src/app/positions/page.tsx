@@ -8,6 +8,7 @@ import {
   Flame,
   Gavel,
   Loader2,
+  Map,
   RefreshCw,
   Scale,
   Swords,
@@ -358,14 +359,24 @@ export default function PositionsPage() {
             </div>
           </div>
 
-          <button
-            onClick={() => fetchPositions(activeTab, 0, false)}
-            disabled={isLoading}
-            className="flex items-center justify-center h-9 w-9 rounded-lg bg-surface-200 text-surface-500 hover:bg-surface-300 hover:text-white transition-colors disabled:opacity-50"
-            aria-label="Refresh positions"
-          >
-            <RefreshCw className={cn('h-4 w-4', isLoading && 'animate-spin')} />
-          </button>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/positions/map"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-surface-200 border border-surface-300 text-[12px] font-mono text-surface-400 hover:text-white hover:bg-surface-300 transition-colors"
+              aria-label="View map"
+            >
+              <Map className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Map</span>
+            </Link>
+            <button
+              onClick={() => fetchPositions(activeTab, 0, false)}
+              disabled={isLoading}
+              className="flex items-center justify-center h-9 w-9 rounded-lg bg-surface-200 text-surface-500 hover:bg-surface-300 hover:text-white transition-colors disabled:opacity-50"
+              aria-label="Refresh positions"
+            >
+              <RefreshCw className={cn('h-4 w-4', isLoading && 'animate-spin')} />
+            </button>
+          </div>
         </div>
 
         {/* Stats */}
