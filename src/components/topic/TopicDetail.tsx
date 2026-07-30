@@ -706,6 +706,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                       Correlations
                     </Link>
                     <Link
+                      href={`/topic/${topic.id}/similar`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-for-400 hover:text-for-300 transition-colors"
+                    >
+                      <Layers className="h-3.5 w-3.5" />
+                      Similar
+                    </Link>
+                    <Link
                       href={`/topic/${topic.id}/stats`}
                       className="inline-flex items-center gap-1.5 text-xs font-mono text-gold hover:text-gold/80 transition-colors"
                     >
@@ -1561,8 +1568,8 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
               <TopicCorrelationsPanel topicId={topic.id} className="mt-8" />
             </ErrorBoundary>
 
-            {/* Correlations + Connections hub links */}
-            <div className="mt-4 flex items-center justify-between gap-3">
+            {/* Correlations + Connections + Similar hub links */}
+            <div className="mt-4 flex items-center flex-wrap gap-x-4 gap-y-1.5">
               <Link
                 href={`/topic/${topic.id}/correlations`}
                 className="inline-flex items-center gap-1.5 text-[11px] font-mono text-purple hover:text-purple/80 transition-colors"
@@ -1576,6 +1583,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
               >
                 <Network className="h-3 w-3" />
                 Open full connections &rarr;
+              </Link>
+              <Link
+                href={`/topic/${topic.id}/similar`}
+                className="inline-flex items-center gap-1.5 text-[11px] font-mono text-for-400 hover:text-for-300 transition-colors"
+              >
+                <Layers className="h-3 w-3" />
+                Similar topics &rarr;
               </Link>
             </div>
 
