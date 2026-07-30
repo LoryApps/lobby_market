@@ -626,6 +626,19 @@ export function LawPage({
                   <Gavel className="h-3.5 w-3.5" />
                   Challenge
                 </Link>
+                <Link
+                  href={`/law/${law.id}/pulse`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-for-500/10 border border-for-500/30 text-for-300',
+                    'hover:bg-for-500/20 hover:border-for-400/50',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="Live pulse — reviews, discussions, wiki edits, challenges, and amendments in real time"
+                >
+                  <Activity className="h-3.5 w-3.5" />
+                  Pulse
+                </Link>
               </div>
             </div>
 
