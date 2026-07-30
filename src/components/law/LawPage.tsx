@@ -27,6 +27,7 @@ import {
   MessageSquare,
   Star,
   Tag,
+  ThumbsDown,
   Users,
   Users2,
   X,
@@ -572,6 +573,19 @@ export function LawPage({
                 >
                   <Scale className="h-3.5 w-3.5" />
                   Global Parallels
+                </Link>
+                <Link
+                  href={`/law/${law.id}/dissent`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-against-500/10 border border-against-500/30 text-against-400',
+                    'hover:bg-against-500/20 hover:border-against-500/50 hover:text-against-300',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="See the loyal opposition — dissenting voices, civic vetoes, and amendment proposals"
+                >
+                  <ThumbsDown className="h-3.5 w-3.5" />
+                  Loyal Opposition
                 </Link>
               </div>
             </div>
