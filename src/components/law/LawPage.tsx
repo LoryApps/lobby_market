@@ -560,6 +560,19 @@ export function LawPage({
                   <MessageSquare className="h-3.5 w-3.5" />
                   Discuss
                 </Link>
+                <Link
+                  href={`/law/${law.id}/parallels`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-surface-200 border border-surface-300 text-surface-600',
+                    'hover:bg-surface-300 hover:border-surface-400 hover:text-white',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="Compare to similar laws from other jurisdictions"
+                >
+                  <Scale className="h-3.5 w-3.5" />
+                  Global Parallels
+                </Link>
               </div>
             </div>
 

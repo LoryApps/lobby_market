@@ -320,6 +320,14 @@ export function LawExploreClient({
           accent: 'text-emerald',
           iconBg: 'bg-emerald/10',
         },
+        {
+          href: 'parallels',
+          label: 'Global Precedents',
+          description: 'How similar laws from other jurisdictions have fared — outcomes, amendments, and lessons.',
+          icon: Scale,
+          accent: 'text-for-400',
+          iconBg: 'bg-for-500/10',
+        },
       ],
     },
     ...(topicId
