@@ -424,6 +424,50 @@ function MyTagsEmptyState() {
 
 // ─── Keyboard shortcuts help overlay ─────────────────────────────────────────────
 
+// ─── Unvoted empty state ──────────────────────────────────────────────────────
+
+function UnvotedEmptyState() {
+  const setFeedMode = useFeedStore((s) => s.setFeedMode)
+  const preferredCategories = useFeedStore((s) => s.preferredCategories)
+
+  return (
+    <div className="feed-card">
+      <div className="text-center mb-6">
+        <div className="flex items-center justify-center h-14 w-14 rounded-2xl bg-emerald/10 border border-emerald/30 mx-auto mb-4">
+          <Vote className="h-7 w-7 text-emerald" />
+        </div>
+        <h2 className="text-xl font-bold text-white font-mono mb-2">
+          {preferredCategories.length > 0
+            ? 'All caught up in your categories!'
+            : 'Nothing to show yet'}
+        </h2>
+        <p className="text-sm text-surface-500 leading-relaxed">
+          {preferredCategories.length > 0
+            ? `You've voted on every ${preferredCategories.join(', ')} topic. New debates arrive daily — check back soon, or broaden your view.`
+            : 'Take the onboarding quiz to calibrate your categories and see unvoted topics here.'}
+        </p>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <button
+          onClick={() => setFeedMode('discover')}
+          className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl bg-for-600 hover:bg-for-500 text-white text-sm font-mono font-medium transition-colors"
+        >
+          <Search className="h-4 w-4" />
+          Browse all topics
+        </button>
+
+        <Link
+          href="/onboarding"
+          className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl bg-surface-200 hover:bg-surface-300 text-surface-400 hover:text-white text-sm font-mono font-medium transition-colors border border-surface-300"
+        >
+          <Sparkles className="h-4 w-4" />
+          Recalibrate preferences
+        </Link>
+      </div>
+    </div>
+  )
+}
 
 // ─── End-of-feed rich state ─────────────────────────────────────────────
 
@@ -581,8 +625,8 @@ export function FeedContainer() {
         if (!mounted) return
         const { statusFilter, categoryFilter, scopeFilter, tagFilter, feedMode: mode, preferredCategories } = useFeedStore.getState()
         if (mode === 'following' || mode === 'mytags') return
-        // For You mode: only queue topics that match the user's preferred categories
-        if (mode === 'foryou') {
+        // For You / Unvoted mode: only queue topics that match preferred categories
+        if (mode === 'foryou' || mode === 'unvoted') {
           if (!newTopic.category || !preferredCategories.includes(newTopic.category)) return
         }
         if (!['proposed', 'active', 'voting', 'law'].includes(newTopic.status)) return
@@ -955,6 +999,11 @@ export function FeedContainer() {
         {/* Empty state: my tags feed */}
         {!isLoading && topics.length === 0 && feedMode === 'mytags' && (
           <MyTagsEmptyState />
+        )}
+
+        {/* Empty state: unvoted feed */}
+        {!isLoading && topics.length === 0 && feedMode === 'unvoted' && (
+          <UnvotedEmptyState />
         )}
 
         {/* Sentinel for infinite scroll */}

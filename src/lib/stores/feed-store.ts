@@ -7,7 +7,7 @@ export type FeedStatus = "proposed" | "active" | "voting" | "law" | null;
 export type FeedCategory = string | null;
 export type FeedScope = "Global" | "National" | "Regional" | "Local" | null;
 export type FeedTag = string | null;
-export type FeedMode = "discover" | "following" | "foryou" | "mytags";
+export type FeedMode = "discover" | "following" | "foryou" | "mytags" | "unvoted";
 
 interface FeedState {
   topics: TopicWithAuthor[];
@@ -216,6 +216,54 @@ export const useFeedStore = create<FeedState>()(
               offset: state.offset + json.topics.length,
               hasMore: json.topics.length === 20,
             }));
+          } else if (feedMode === "unvoted") {
+            // Unvoted feed — topics in preferred categories not yet voted on
+            const params = new URLSearchParams({
+              limit: "20",
+              offset: String(offset),
+              sort,
+            });
+
+            const res = await fetch(`/api/feed/unvoted?${params.toString()}`);
+
+            if (get()._generation !== capturedGen) return;
+
+            if (res.status === 401) {
+              set({ hasMore: false });
+              return;
+            }
+
+            if (!res.ok) {
+              console.error("Failed to fetch unvoted feed:", res.statusText);
+              return;
+            }
+
+            const json: {
+              topics: TopicWithAuthor[];
+              preferredCategories: string[];
+              preferenceSource: 'quiz' | 'history' | 'none';
+              votedCount: number;
+              remainingUnvoted: number;
+            } = await res.json();
+
+            if (get()._generation !== capturedGen) return;
+
+            set({
+              preferredCategories: json.preferredCategories,
+              hasPreferences: json.preferredCategories.length > 0,
+              preferenceSource: json.preferenceSource,
+            });
+
+            if (json.topics.length === 0) {
+              set({ hasMore: false });
+              return;
+            }
+
+            set((state) => ({
+              topics: [...state.topics, ...json.topics],
+              offset: state.offset + json.topics.length,
+              hasMore: json.topics.length === 20,
+            }));
           } else {
             // Discover feed
             const params = new URLSearchParams({
@@ -327,7 +375,9 @@ export const useFeedStore = create<FeedState>()(
       setFeedMode: (feedMode) => {
         const gen = get()._generation + 1;
         // Reset sort to "new" for following/mytags, "top" for everything else
-        const sort = (feedMode === "following" || feedMode === "mytags") ? "new" : "top";
+        const sort = (feedMode === "following" || feedMode === "mytags") ? "new"
+          : feedMode === "unvoted" ? "hot"
+          : "top";
         set({
           feedMode,
           sort,
