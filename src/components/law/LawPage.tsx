@@ -18,6 +18,7 @@ import {
   Edit3,
   ExternalLink,
   FileText,
+  Flame,
   Gavel,
   GitBranch,
   GitCompare,
@@ -780,6 +781,19 @@ export function LawPage({
                 >
                   <Quote className="h-3.5 w-3.5" />
                   Vote Reasons
+                </Link>
+                <Link
+                  href={`/law/${law.id}/hot-takes`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-against-600/10 border border-against-600/25 text-against-300',
+                    'hover:bg-against-600/20 hover:border-against-600/45',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="Founding Voices — named voter hot takes from the establishing debate"
+                >
+                  <Flame className="h-3.5 w-3.5" />
+                  Founding Voices
                 </Link>
                 <Link
                   href={`/law/${law.id}/quotes`}
