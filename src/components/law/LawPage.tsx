@@ -533,6 +533,32 @@ export function LawPage({
                   Synthesis
                 </Link>
                 <Link
+                  href={`/law/${law.id}/themes`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-purple/10 border border-purple/30 text-purple',
+                    'hover:bg-purple/20 hover:border-purple/50',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="Civic themes that shaped the founding debate"
+                >
+                  <Layers className="h-3.5 w-3.5" />
+                  Themes
+                </Link>
+                <Link
+                  href={`/law/${law.id}/context`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-surface-200 border border-surface-300 text-surface-500',
+                    'hover:bg-surface-300 hover:border-surface-400 hover:text-white',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="Background context: wiki, sources, and founding arguments"
+                >
+                  <BookOpen className="h-3.5 w-3.5" />
+                  Context
+                </Link>
+                <Link
                   href={`/law/${law.id}/momentum`}
                   className={cn(
                     'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
