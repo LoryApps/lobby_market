@@ -891,6 +891,19 @@ export function LawPage({
                   Velocity Engine
                 </Link>
                 <Link
+                  href={`/law/${law.id}/conviction`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-purple/10 border border-purple/30 text-purple',
+                    'hover:bg-purple/20 hover:border-purple/50',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="How deeply did citizens believe in this law? Conviction atlas — mandate strength, argument conviction, and founding debate deliberateness"
+                >
+                  <Brain className="h-3.5 w-3.5" />
+                  Conviction Atlas
+                </Link>
+                <Link
                   href={`/law/${law.id}/contributors`}
                   className={cn(
                     'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
