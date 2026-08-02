@@ -740,6 +740,19 @@ export function LawPage({
                   Founding Quotes
                 </Link>
                 <Link
+                  href={`/law/${law.id}/highlights`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-gold/10 border border-gold/30 text-gold',
+                    'hover:bg-gold/20 hover:border-gold/50',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="Founding Moments — highlights from the debate that shaped this law"
+                >
+                  <Star className="h-3.5 w-3.5" />
+                  Highlights
+                </Link>
+                <Link
                   href={`/law/${law.id}/blocs`}
                   className={cn(
                     'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
