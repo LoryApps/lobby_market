@@ -36,6 +36,7 @@ import {
   MessageSquare,
   Star,
   Tag,
+  Shield,
   ThumbsDown,
   TrendingUp,
   Users,
@@ -752,6 +753,19 @@ export function LawPage({
                 >
                   <Award className="h-3.5 w-3.5" />
                   Scorecard
+                </Link>
+                <Link
+                  href={`/law/${law.id}/audit`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-purple/10 border border-purple/30 text-purple',
+                    'hover:bg-purple/20 hover:border-purple/50',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="Democratic Audit — how open, deep, and balanced was the debate that produced this law?"
+                >
+                  <Shield className="h-3.5 w-3.5" />
+                  Audit
                 </Link>
                 <Link
                   href={`/law/${law.id}/reasons`}
