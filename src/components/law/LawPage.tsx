@@ -12,6 +12,7 @@ import {
   BookOpen,
   Brain,
   Calendar,
+  CheckCircle2,
   Clock,
   Compass,
   Edit3,
@@ -751,6 +752,19 @@ export function LawPage({
                 >
                   <Star className="h-3.5 w-3.5" />
                   Highlights
+                </Link>
+                <Link
+                  href={`/law/${law.id}/mandate`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-emerald/10 border border-emerald/30 text-emerald',
+                    'hover:bg-emerald/20 hover:border-emerald/50',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="Civic Mandate — how decisively this law passed and how it ranks among all laws"
+                >
+                  <CheckCircle2 className="h-3.5 w-3.5" />
+                  Mandate
                 </Link>
                 <Link
                   href={`/law/${law.id}/blocs`}
