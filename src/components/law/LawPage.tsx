@@ -45,6 +45,7 @@ import {
   TrendingUp,
   Users,
   Users2,
+  Waypoints,
   X,
 } from 'lucide-react'
 import { SharePanel } from '@/components/ui/SharePanel'
@@ -861,6 +862,19 @@ export function LawPage({
                 >
                   <Users2 className="h-3.5 w-3.5" />
                   Voting Blocs
+                </Link>
+                <Link
+                  href={`/law/${law.id}/echo-chamber`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-purple/10 border border-purple/30 text-purple',
+                    'hover:bg-purple/20 hover:border-purple/50',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="Was this law forged through genuine debate or partisan echo chamber?"
+                >
+                  <Waypoints className="h-3.5 w-3.5" />
+                  Echo Chamber Audit
                 </Link>
                 <Link
                   href={`/law/${law.id}/contributors`}
