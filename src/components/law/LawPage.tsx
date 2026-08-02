@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useMemo, useState } from 'react'
 import {
   Activity,
+  AlertTriangle,
   ArrowLeft,
   Award,
   Ban,
@@ -633,6 +634,19 @@ export function LawPage({
                 >
                   <Gavel className="h-3.5 w-3.5" />
                   Challenge
+                </Link>
+                <Link
+                  href="/law/challenges"
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-against-600/10 border border-against-600/30 text-against-400',
+                    'hover:bg-against-600/20 hover:border-against-500/50 hover:text-against-300',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="Browse all formal challenges to laws across the Codex"
+                >
+                  <AlertTriangle className="h-3.5 w-3.5" />
+                  All Challenges
                 </Link>
                 <Link
                   href={`/law/${law.id}/pulse`}
