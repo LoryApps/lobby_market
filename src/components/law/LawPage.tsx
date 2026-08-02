@@ -12,10 +12,14 @@ import {
   Brain,
   Calendar,
   Clock,
+  Compass,
   Edit3,
   ExternalLink,
+  FileText,
   Gavel,
+  GitCompare,
   GitMerge,
+  HelpCircle,
   History,
   Image as ImageIcon,
   Landmark,
@@ -24,6 +28,7 @@ import {
   Menu,
   Network,
   PanelRight,
+  Quote,
   Scale,
   Sparkles,
   MessageSquare,
@@ -693,6 +698,123 @@ export function LawPage({
                 >
                   <Award className="h-3.5 w-3.5" />
                   Scorecard
+                </Link>
+                <Link
+                  href={`/law/${law.id}/reasons`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-against-500/10 border border-against-500/20 text-against-300',
+                    'hover:bg-against-500/20 hover:border-against-500/40',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="Anonymous hot takes — why citizens voted FOR and AGAINST"
+                >
+                  <Quote className="h-3.5 w-3.5" />
+                  Vote Reasons
+                </Link>
+                <Link
+                  href={`/law/${law.id}/quotes`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-surface-200 border border-surface-300 text-surface-500',
+                    'hover:bg-surface-300 hover:border-surface-400 hover:text-white',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="Best FOR and AGAINST arguments from the founding debate"
+                >
+                  <MessageSquare className="h-3.5 w-3.5" />
+                  Founding Quotes
+                </Link>
+                <Link
+                  href={`/law/${law.id}/blocs`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-for-700/20 border border-for-600/30 text-for-300',
+                    'hover:bg-for-700/30 hover:border-for-600/50',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="How different civic roles and clout tiers voted"
+                >
+                  <Users2 className="h-3.5 w-3.5" />
+                  Voting Blocs
+                </Link>
+                <Link
+                  href={`/law/${law.id}/contributors`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-surface-200 border border-surface-300 text-surface-500',
+                    'hover:bg-surface-300 hover:border-surface-400 hover:text-white',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="Top contributors to this law's debate"
+                >
+                  <Users className="h-3.5 w-3.5" />
+                  Contributors
+                </Link>
+                <Link
+                  href={`/law/${law.id}/quiz`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-emerald/10 border border-emerald/30 text-emerald',
+                    'hover:bg-emerald/20 hover:border-emerald/50',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="Test your knowledge of this law"
+                >
+                  <HelpCircle className="h-3.5 w-3.5" />
+                  Law Quiz
+                </Link>
+                <Link
+                  href={`/law/${law.id}/dossier`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-purple/10 border border-purple/30 text-purple',
+                    'hover:bg-purple/20 hover:border-purple/50',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="Full intelligence dossier on this law"
+                >
+                  <FileText className="h-3.5 w-3.5" />
+                  Dossier
+                </Link>
+                <Link
+                  href={`/law/${law.id}/explore`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-gold/10 border border-gold/30 text-gold',
+                    'hover:bg-gold/20 hover:border-gold/50',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="Explore all data and context for this law"
+                >
+                  <Compass className="h-3.5 w-3.5" />
+                  Explore
+                </Link>
+                <Link
+                  href={`/law/${law.id}/wiki-history`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-surface-200 border border-surface-300 text-surface-500',
+                    'hover:bg-surface-300 hover:border-surface-400 hover:text-white',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="Full edit history of the law wiki"
+                >
+                  <History className="h-3.5 w-3.5" />
+                  Wiki History
+                </Link>
+                <Link
+                  href={`/law/${law.id}/compare`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-surface-200 border border-surface-300 text-surface-500',
+                    'hover:bg-surface-300 hover:border-surface-400 hover:text-white',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="Compare this law side-by-side with another"
+                >
+                  <GitCompare className="h-3.5 w-3.5" />
+                  Compare
                 </Link>
               </div>
             </div>
