@@ -47,6 +47,7 @@ import {
   Users2,
   Waypoints,
   X,
+  Gauge,
 } from 'lucide-react'
 import { SharePanel } from '@/components/ui/SharePanel'
 import type {
@@ -875,6 +876,19 @@ export function LawPage({
                 >
                   <Waypoints className="h-3.5 w-3.5" />
                   Echo Chamber Audit
+                </Link>
+                <Link
+                  href={`/law/${law.id}/velocity`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-for-500/10 border border-for-500/30 text-for-400',
+                    'hover:bg-for-500/20 hover:border-for-500/50',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="How fast did this law build consensus? Journey pattern and velocity timeline"
+                >
+                  <Gauge className="h-3.5 w-3.5" />
+                  Velocity Engine
                 </Link>
                 <Link
                   href={`/law/${law.id}/contributors`}
