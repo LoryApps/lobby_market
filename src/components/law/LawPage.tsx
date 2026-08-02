@@ -39,6 +39,8 @@ import {
   Star,
   Tag,
   Shield,
+  Globe,
+  RotateCcw,
   ThumbsDown,
   TrendingUp,
   Users,
@@ -937,6 +939,32 @@ export function LawPage({
                 >
                   <GitCompare className="h-3.5 w-3.5" />
                   Compare
+                </Link>
+                <Link
+                  href={`/law/${law.id}/what-if`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-against-500/10 border border-against-500/20 text-against-400',
+                    'hover:bg-against-500/20 hover:border-against-500/40',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="Repeal scenario: what would happen if this law were overturned?"
+                >
+                  <RotateCcw className="h-3.5 w-3.5" />
+                  What If Repealed?
+                </Link>
+                <Link
+                  href={`/law/${law.id}/global`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-purple/10 border border-purple/30 text-purple',
+                    'hover:bg-purple/20 hover:border-purple/50',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="International context: how does this consensus compare globally?"
+                >
+                  <Globe className="h-3.5 w-3.5" />
+                  Global Context
                 </Link>
               </div>
             </div>
