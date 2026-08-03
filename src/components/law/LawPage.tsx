@@ -869,6 +869,19 @@ export function LawPage({
                   Benchmark
                 </Link>
                 <Link
+                  href={`/law/${law.id}/health`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-emerald/10 border border-emerald/30 text-emerald',
+                    'hover:bg-emerald/20 hover:border-emerald/50',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="Law Health Report — verdict coverage, wiki quality, formal challenges, and discussion"
+                >
+                  <Activity className="h-3.5 w-3.5" />
+                  Health
+                </Link>
+                <Link
                   href={`/law/${law.id}/scorecard`}
                   className={cn(
                     'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',

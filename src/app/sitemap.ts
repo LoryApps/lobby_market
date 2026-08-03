@@ -477,6 +477,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         changeFrequency: 'weekly' as const,
         priority: 0.65,
       },
+      {
+        url: `${BASE_URL}/law/${law.id}/health`,
+        lastModified: new Date(law.established_at),
+        changeFrequency: 'daily' as const,
+        priority: 0.60,
+      },
     ]))
 
     const { data: profiles } = await supabase

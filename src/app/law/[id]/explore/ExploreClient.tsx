@@ -455,6 +455,14 @@ export function LawExploreClient({
           iconBg: 'bg-emerald/10',
         },
         {
+          href: 'health',
+          label: 'Health Report',
+          description: 'Civic health grade: verdict coverage, wiki quality, formal challenges, and discussion activity.',
+          icon: Activity,
+          accent: 'text-emerald',
+          iconBg: 'bg-emerald/10',
+        },
+        {
           href: 'scorecard',
           label: 'Scorecard',
           description: 'Graded performance across legitimacy, verdict, resilience, stability, and engagement.',
