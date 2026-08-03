@@ -727,6 +727,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                       Similar
                     </Link>
                     <Link
+                      href={`/topic/${topic.id}/laws`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-emerald hover:text-emerald/80 transition-colors"
+                    >
+                      <BookOpen className="h-3.5 w-3.5" />
+                      Laws
+                    </Link>
+                    <Link
                       href={`/topic/${topic.id}/stats`}
                       className="inline-flex items-center gap-1.5 text-xs font-mono text-gold hover:text-gold/80 transition-colors"
                     >
@@ -1604,6 +1611,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
               >
                 <Layers className="h-3 w-3" />
                 Similar topics &rarr;
+              </Link>
+              <Link
+                href={`/topic/${topic.id}/laws`}
+                className="inline-flex items-center gap-1.5 text-[11px] font-mono text-emerald hover:text-emerald/80 transition-colors"
+              >
+                <BookOpen className="h-3 w-3" />
+                Related laws &rarr;
               </Link>
             </div>
 

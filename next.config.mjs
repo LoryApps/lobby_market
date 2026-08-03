@@ -7,6 +7,13 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
 
+  // 470+ route files cause ESLint to OOM at the heap limit during `next build`.
+  // Linting runs as a separate CI step; skipping it here keeps the production
+  // build from crashing on memory.
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+
   // ── Image optimization ────────────────────────────────────────────────────
   images: {
     // Allow Next.js Image component to optimize avatars & media from Supabase storage
