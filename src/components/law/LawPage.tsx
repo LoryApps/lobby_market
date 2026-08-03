@@ -878,6 +878,19 @@ export function LawPage({
                   Voting Blocs
                 </Link>
                 <Link
+                  href={`/law/${law.id}/archetypes`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-for-700/20 border border-for-600/30 text-for-300',
+                    'hover:bg-for-700/30 hover:border-for-600/50',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="Which civic archetypes championed and opposed this law"
+                >
+                  <Brain className="h-3.5 w-3.5" />
+                  Archetypes
+                </Link>
+                <Link
                   href={`/law/${law.id}/echo-chamber`}
                   className={cn(
                     'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
@@ -980,6 +993,19 @@ export function LawPage({
                 >
                   <History className="h-3.5 w-3.5" />
                   Wiki History
+                </Link>
+                <Link
+                  href={`/law/${law.id}/wordcloud`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-surface-200 border border-surface-300 text-surface-500',
+                    'hover:bg-surface-300 hover:border-surface-400 hover:text-white',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="Word cloud of the most common argument vocabulary for and against this law"
+                >
+                  <Quote className="h-3.5 w-3.5" />
+                  Word Cloud
                 </Link>
                 <Link
                   href={`/law/${law.id}/compare`}
