@@ -23,8 +23,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const short = `${topic.statement.slice(0, 55)}${topic.statement.length > 55 ? '…' : ''}`
   const title = `Explore: ${short} · Lobby Market`
   const description =
-    `Browse every analysis tool for this topic — voting breakdown, argument graph, ` +
-    `AI brief, forecasts, community insights, and more.`
+    `Browse all 90+ analysis tools for this topic — voting breakdown, argument graph, ` +
+    `AI brief, forecasts, community insights, advanced analytics, and more.`
 
   return {
     title,
