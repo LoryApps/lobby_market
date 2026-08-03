@@ -309,6 +309,14 @@ export function LawExploreClient({
           iconBg: 'bg-gold/10',
         },
         {
+          href: 'report',
+          label: 'Law Report',
+          description: 'Printable civic report — vote split, founding arguments, community wiki, and reviews in one document.',
+          icon: FileText,
+          accent: 'text-surface-400',
+          iconBg: 'bg-surface-300/20',
+        },
+        {
           href: 'hot-takes',
           label: 'Hot Takes',
           description: 'The most provocative and polarising opinions submitted during debate.',

@@ -350,6 +350,19 @@ export function LawPage({
                   Snapshot
                 </Link>
                 <Link
+                  href={`/law/${law.id}/report`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-surface-200 border border-surface-300 text-surface-500',
+                    'hover:bg-surface-300 hover:border-surface-400 hover:text-white',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="Printable civic report — vote split, founding arguments, wiki, and reviews"
+                >
+                  <FileText className="h-3.5 w-3.5" />
+                  Report
+                </Link>
+                <Link
                   href={`/law/${law.id}/wiki`}
                   className={cn(
                     'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
