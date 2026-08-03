@@ -49,6 +49,7 @@ import {
   X,
   Gauge,
   Fingerprint,
+  Handshake,
 } from 'lucide-react'
 import { SharePanel } from '@/components/ui/SharePanel'
 import type {
@@ -565,6 +566,19 @@ export function LawPage({
                 >
                   <GitMerge className="h-3.5 w-3.5" />
                   Synthesis
+                </Link>
+                <Link
+                  href={`/law/${law.id}/common-ground`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-emerald/10 border border-emerald/30 text-emerald',
+                    'hover:bg-emerald/20 hover:border-emerald/50',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="Where FOR and AGAINST voters found agreement — shared values, vocabulary, and bridge arguments"
+                >
+                  <Handshake className="h-3.5 w-3.5" />
+                  Common Ground
                 </Link>
                 <Link
                   href={`/law/${law.id}/themes`}
