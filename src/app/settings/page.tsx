@@ -496,7 +496,7 @@ export default function SettingsPage() {
               <SectionHeader icon={Bell} title="Notifications" />
               <p className="text-xs text-surface-500 mb-4">
                 Control which notification types appear in your bell and feed.
-                Preferences are saved to this device.
+                Preferences sync across all your devices.
               </p>
               <div>
                 <SettingRow
