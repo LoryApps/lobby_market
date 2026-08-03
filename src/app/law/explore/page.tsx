@@ -39,6 +39,7 @@ import {
   FlaskConical,
   Cpu,
   ArrowRight,
+  PenLine,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
@@ -104,7 +105,9 @@ const SECTIONS: ToolSection[] = [
       { href: '/law/timeline', label: 'Timeline', description: 'Chronological history of every law established on the platform.', icon: Clock },
       { href: '/law/today', label: 'Today\'s Law Activity', description: 'What\'s happening in the Codex right now — new laws, active discussions.', icon: Flame },
       { href: '/law/monthly', label: 'Monthly Digest', description: 'Each month in the Codex — laws established, debates that led here.', icon: Calendar },
+      { href: '/law/wiki', label: 'Law Wiki Hub', description: 'Coverage stats, top contributors, and wiki editing for the Law Codex.', icon: BookOpen },
       { href: '/law/wiki/recent', label: 'Recent Wiki Edits', description: 'Latest community contributions to law wiki pages.', icon: FileEdit },
+      { href: '/law/wiki/missing', label: 'Undocumented Laws', description: 'Laws without wiki articles yet — help fill the gaps.', icon: PenLine },
     ],
   },
   {
