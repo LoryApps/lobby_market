@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "NODE_OPTIONS='--max-old-space-size=4096 --require ./graceful-fs-patch.cjs' next build",
+    "build": "mkdir -p .next/server && echo '{}' > .next/server/pages-manifest.json && NODE_OPTIONS='--max-old-space-size=4096 --require ./graceful-fs-patch.cjs' next build",
     "start": "next start",
     "lint": "next lint"
   },

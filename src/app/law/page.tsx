@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { AlertTriangle, Award, BookOpen, Calendar, Clock, FileWarning, Gavel, Globe, Network, Rss, Scale, ShieldAlert, Star, Tag, ThumbsUp, Trophy } from 'lucide-react'
+import { AlertTriangle, Award, BookOpen, Calendar, Clock, Compass, FileWarning, Gavel, Globe, Network, Rss, Scale, ShieldAlert, Star, Tag, ThumbsUp, Trophy } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -59,6 +59,18 @@ export default async function LawIndexPage() {
             </div>
 
             <div className="flex items-center gap-2 flex-shrink-0">
+              <Link
+                href="/law/explore"
+                className={cn(
+                  'inline-flex items-center gap-2 px-3 py-2 rounded-lg',
+                  'bg-emerald/15 border border-emerald/40 text-emerald text-xs font-mono font-semibold',
+                  'hover:bg-emerald/25 hover:border-emerald/60 transition-colors'
+                )}
+              >
+                <Compass className="h-4 w-4" />
+                <span>Explore All Tools</span>
+              </Link>
+
               <Link
                 href="/api/rss"
                 aria-label="RSS feed of laws and active topics"
