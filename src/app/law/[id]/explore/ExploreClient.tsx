@@ -244,6 +244,14 @@ export function LawExploreClient({
       borderColor: 'border-emerald/20',
       tools: [
         {
+          href: 'breakdown',
+          label: 'Voter Breakdown',
+          description: 'How different cohorts voted — by role tier, Clout level, engagement type, and timing.',
+          icon: BarChart2,
+          accent: 'text-for-300',
+          iconBg: 'bg-for-500/10',
+        },
+        {
           href: 'reviews',
           label: 'Reviews',
           description: 'Community evaluations of the law — is it fair, effective, and well-drafted?',
