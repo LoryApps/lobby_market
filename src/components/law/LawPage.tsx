@@ -856,6 +856,19 @@ export function LawPage({
                   Legacy
                 </Link>
                 <Link
+                  href={`/law/${law.id}/benchmark`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-purple/10 border border-purple/30 text-purple',
+                    'hover:bg-purple/20 hover:border-purple/50',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="Category Benchmark — how this law ranks against all other laws in its category by mandate strength, participation, and consensus"
+                >
+                  <BarChart2 className="h-3.5 w-3.5" />
+                  Benchmark
+                </Link>
+                <Link
                   href={`/law/${law.id}/scorecard`}
                   className={cn(
                     'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
