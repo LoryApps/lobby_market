@@ -1112,6 +1112,19 @@ export function LawPage({
                   <Activity className="h-3.5 w-3.5" />
                   Adoption
                 </Link>
+                <Link
+                  href={`/law/${law.id}/pressure`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-gold/10 border border-gold/25 text-gold',
+                    'hover:bg-gold/20 hover:border-gold/40',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="Social pressure — stability index, elite vs grassroots split, and active challenge signals"
+                >
+                  <Gauge className="h-3.5 w-3.5" />
+                  Pressure
+                </Link>
               </div>
             </div>
 
