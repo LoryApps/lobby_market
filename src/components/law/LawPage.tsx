@@ -685,6 +685,19 @@ export function LawPage({
                   Similar Laws
                 </Link>
                 <Link
+                  href={`/law/${law.id}/topics`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-for-500/10 border border-for-500/30 text-for-400',
+                    'hover:bg-for-500/20 hover:border-for-500/50 hover:text-for-300',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="See active debates happening around this law"
+                >
+                  <MessageSquare className="h-3.5 w-3.5" />
+                  Active Debates
+                </Link>
+                <Link
                   href={`/law/${law.id}/dissent`}
                   className={cn(
                     'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
