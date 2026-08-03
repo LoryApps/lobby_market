@@ -608,6 +608,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                       Voter breakdown
                     </Link>
                     <Link
+                      href={`/topic/${topic.id}/blocs`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-for-400 hover:text-for-300 transition-colors"
+                    >
+                      <Users className="h-3.5 w-3.5" />
+                      Voting blocs
+                    </Link>
+                    <Link
                       href={`/topic/${topic.id}/reasons`}
                       className="inline-flex items-center gap-1.5 text-xs font-mono text-for-400 hover:text-for-300 transition-colors"
                     >
@@ -648,6 +655,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                     >
                       <Quote className="h-3.5 w-3.5" />
                       Best quotes
+                    </Link>
+                    <Link
+                      href={`/topic/${topic.id}/highlights`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-gold hover:text-gold/80 transition-colors"
+                    >
+                      <Sparkles className="h-3.5 w-3.5" />
+                      Highlights
                     </Link>
                     <Link
                       href={`/topic/${topic.id}/argument-graph`}
