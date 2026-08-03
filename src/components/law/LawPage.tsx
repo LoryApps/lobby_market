@@ -48,6 +48,7 @@ import {
   Waypoints,
   X,
   Gauge,
+  Fingerprint,
 } from 'lucide-react'
 import { SharePanel } from '@/components/ui/SharePanel'
 import type {
@@ -876,6 +877,19 @@ export function LawPage({
                 >
                   <GitBranch className="h-3.5 w-3.5" />
                   Origins
+                </Link>
+                <Link
+                  href={`/law/${law.id}/dna`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-emerald/10 border border-emerald/30 text-emerald',
+                    'hover:bg-emerald/20 hover:border-emerald/50',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="Law DNA — decode the founding argument fingerprint: reasoning strands, core tension, and genetic relatives"
+                >
+                  <Fingerprint className="h-3.5 w-3.5" />
+                  DNA
                 </Link>
                 <Link
                   href={`/law/${law.id}/mandate`}
