@@ -958,6 +958,19 @@ export function LawPage({
                   Archetypes
                 </Link>
                 <Link
+                  href={`/law/${law.id}/swing`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-gold/10 border border-gold/30 text-gold',
+                    'hover:bg-gold/20 hover:border-gold/50',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="How this law was won — founding debate momentum, archetype contestedness, decisive arguments"
+                >
+                  <Scale className="h-3.5 w-3.5" />
+                  Swing Analysis
+                </Link>
+                <Link
                   href={`/law/${law.id}/echo-chamber`}
                   className={cn(
                     'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
