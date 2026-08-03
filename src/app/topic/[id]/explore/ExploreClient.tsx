@@ -12,7 +12,7 @@
  *   3. AI Insights         — brief, intelligence, signal, bias-check, scorecard, radar
  *   4. Market & Forecast   — forecast, momentum, conviction, parallels, correlations
  *   5. Community           — coalitions, contributors, connections, chat
- *   6. History & Context   — context, legacy, recap, hindsight, transcript, wiki
+ *   6. History & Context   — context, legacy, recap, hindsight, transcript, wiki, narrative, laws
  */
 
 import Link from 'next/link'
@@ -62,6 +62,8 @@ import {
   Crosshair,
   Glasses,
   Archive,
+  Gavel,
+  Scroll,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -570,7 +572,7 @@ export function ExploreClient({
           iconBg: 'bg-purple/15',
         },
         {
-          href: '/changemakers',
+          href: '/changemaker',
           label: 'Changemakers',
           description: 'Arguments that shifted the consensus most significantly',
           icon: Sparkles,
@@ -689,6 +691,22 @@ export function ExploreClient({
           icon: Archive,
           accent: 'text-gold',
           iconBg: 'bg-gold/10',
+        },
+        {
+          href: '/narrative',
+          label: 'Narrative Arc',
+          description: 'AI-generated journalistic story of how this debate unfolded',
+          icon: Scroll,
+          accent: 'text-purple',
+          iconBg: 'bg-purple/15',
+        },
+        {
+          href: '/laws',
+          label: 'Related Laws',
+          description: 'Established Codex laws that originated from this debate',
+          icon: Gavel,
+          accent: 'text-emerald',
+          iconBg: 'bg-emerald/10',
         },
       ],
     },
