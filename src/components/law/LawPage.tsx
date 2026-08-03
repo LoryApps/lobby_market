@@ -50,6 +50,7 @@ import {
   Gauge,
   Fingerprint,
   Handshake,
+  Swords,
 } from 'lucide-react'
 import { SharePanel } from '@/components/ui/SharePanel'
 import type {
@@ -376,6 +377,32 @@ export function LawPage({
                 >
                   <BarChart2 className="h-3.5 w-3.5" />
                   Breakdown
+                </Link>
+                <Link
+                  href={`/law/${law.id}/primer`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-for-500/10 border border-for-500/30 text-for-300',
+                    'hover:bg-for-500/20 hover:border-for-500/50',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="Plain-language primer — what this law means, key facts, and strongest arguments"
+                >
+                  <BookOpen className="h-3.5 w-3.5" />
+                  Primer
+                </Link>
+                <Link
+                  href={`/law/${law.id}/fault-lines`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-against-500/10 border border-against-500/30 text-against-300',
+                    'hover:bg-against-500/20 hover:border-against-500/50',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="Debate fault lines — flashpoints, contested ground, dead certainties, first movers"
+                >
+                  <Swords className="h-3.5 w-3.5" />
+                  Fault Lines
                 </Link>
                 <Link
                   href={`/law/${law.id}/wiki`}
