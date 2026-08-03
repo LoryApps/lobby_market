@@ -1020,6 +1020,32 @@ export function LawPage({
                   <Globe className="h-3.5 w-3.5" />
                   Global Context
                 </Link>
+                <Link
+                  href={`/law/${law.id}/sentiment`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-surface-200 border border-surface-300 text-surface-500',
+                    'hover:bg-surface-300 hover:border-surface-400 hover:text-white',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="Community sentiment — ratings, tone, and opinion trajectory"
+                >
+                  <Sparkles className="h-3.5 w-3.5" />
+                  Sentiment
+                </Link>
+                <Link
+                  href={`/law/${law.id}/adoption`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-emerald/10 border border-emerald/25 text-emerald',
+                    'hover:bg-emerald/20 hover:border-emerald/40',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="Adoption health — stewardship, challenge pressure, and implementation signals"
+                >
+                  <Activity className="h-3.5 w-3.5" />
+                  Adoption
+                </Link>
               </div>
             </div>
 

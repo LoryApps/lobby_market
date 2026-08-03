@@ -85,7 +85,6 @@ const TIER_CONFIG: Record<LawInfluenceData['tier'], {
 // ─── Law card ─────────────────────────────────────────────────────────────────
 
 function LawCard({ law, label }: { law: InfluenceLaw; label?: string }) {
-  const forPct = Math.round(law.blue_pct ?? 50)
   return (
     <Link
       href={`/law/${law.id}`}
@@ -419,7 +418,7 @@ export function InfluenceClient({ lawId }: { lawId: string }) {
               </span>
             </div>
             <p className="text-[11px] font-mono text-surface-500 mb-4">
-              Established laws referenced in this law's wiki — its intellectual foundations.
+              Established laws referenced in this law&apos;s wiki — its intellectual foundations.
             </p>
             <div>
               {outgoing.map((law) => (
