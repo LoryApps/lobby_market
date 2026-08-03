@@ -15,6 +15,7 @@ import {
   Shield,
   Star,
   Tag,
+  ThumbsUp,
   Trophy,
   Users,
 } from 'lucide-react'
@@ -176,6 +177,16 @@ const LAW_TOOLS = [
     bg: 'bg-against-500/10',
     border: 'border-against-500/30',
     hoverBorder: 'hover:border-against-500/60',
+  },
+  {
+    href: '/law/verdicts',
+    label: 'Verdict Board',
+    description: 'Community retrospective: did each law succeed or fail?',
+    icon: ThumbsUp,
+    accent: 'text-gold',
+    bg: 'bg-gold/10',
+    border: 'border-gold/30',
+    hoverBorder: 'hover:border-gold/60',
   },
 ] as const
 
