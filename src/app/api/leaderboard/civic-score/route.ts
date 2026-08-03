@@ -28,6 +28,10 @@ export interface CivicScoreEntry {
   rank: number
 }
 
+export interface CivicScoreMyPosition extends CivicScoreEntry {
+  percentile: number
+}
+
 export interface CivicScoreLeaderboardResponse {
   entries: CivicScoreEntry[]
   platformStats: {
@@ -37,6 +41,7 @@ export interface CivicScoreLeaderboardResponse {
     top_quality: number
     top_influence: number
   }
+  myPosition: CivicScoreMyPosition | null
 }
 
 // ─── Score helpers ────────────────────────────────────────────────────────────
@@ -150,6 +155,68 @@ export async function GET(): Promise<NextResponse> {
   const topQual = Math.max(0, ...scored.slice(0, 10).map((p) => p.quality_score))
   const topInf  = Math.max(0, ...scored.slice(0, 10).map((p) => p.influence_score))
 
+  // ─── My position (auth users not already in top 100) ──────────────────────
+  let myPosition: CivicScoreMyPosition | null = null
+
+  const { data: { user } } = await supabase.auth.getUser()
+  if (user) {
+    const inTop100 = entries.some((e) => e.user_id === user.id)
+
+    if (!inTop100) {
+      let scoredWithMe = scored
+      let myEntry = scored.find((p) => p.user_id === user.id)
+
+      if (!myEntry) {
+        const { data: myProfile } = await supabase
+          .from('profiles')
+          .select(
+            'id, username, display_name, avatar_url, role, clout, reputation_score, total_votes, total_arguments, vote_streak, followers_count'
+          )
+          .eq('id', user.id)
+          .single()
+
+        if (myProfile) {
+          const eng  = engagementScore(myProfile.total_votes ?? 0, myProfile.vote_streak ?? 0)
+          const qual = qualityScore(myProfile.total_arguments ?? 0, myProfile.reputation_score ?? 0)
+          const inf  = influenceScore(myProfile.clout ?? 0, myProfile.followers_count ?? 0)
+          const cons = consistencyScore(myProfile.vote_streak ?? 0, myProfile.total_votes ?? 0)
+          myEntry = {
+            user_id: myProfile.id,
+            username: myProfile.username,
+            display_name: myProfile.display_name ?? null,
+            avatar_url: myProfile.avatar_url ?? null,
+            role: myProfile.role,
+            civic_index: civicIndex(eng, qual, inf, cons),
+            engagement_score: Math.round(eng),
+            quality_score: Math.round(qual),
+            influence_score: Math.round(inf),
+            consistency_score: Math.round(cons),
+            total_votes: myProfile.total_votes ?? 0,
+            total_arguments: myProfile.total_arguments ?? 0,
+            vote_streak: myProfile.vote_streak ?? 0,
+            clout: myProfile.clout ?? 0,
+            reputation_score: myProfile.reputation_score ?? 0,
+            followers_count: myProfile.followers_count ?? 0,
+          }
+          scoredWithMe = [...scored, myEntry].sort((a, b) =>
+            b.civic_index !== a.civic_index
+              ? b.civic_index - a.civic_index
+              : b.clout - a.clout
+          )
+        }
+      }
+
+      if (myEntry) {
+        const rank = scoredWithMe.findIndex((p) => p.user_id === user.id) + 1
+        const pool = scoredWithMe.length
+        const percentile = pool > 0
+          ? Math.max(1, Math.round((1 - (rank - 1) / pool) * 100))
+          : 0
+        myPosition = { ...myEntry, rank, percentile }
+      }
+    }
+  }
+
   return NextResponse.json({
     entries,
     platformStats: {
@@ -159,5 +226,6 @@ export async function GET(): Promise<NextResponse> {
       top_quality: topQual,
       top_influence: topInf,
     },
+    myPosition,
   } satisfies CivicScoreLeaderboardResponse)
 }

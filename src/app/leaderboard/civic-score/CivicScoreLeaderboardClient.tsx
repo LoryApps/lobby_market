@@ -46,7 +46,7 @@ import { Avatar } from '@/components/ui/Avatar'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { cn } from '@/lib/utils/cn'
-import type { CivicScoreEntry, CivicScoreLeaderboardResponse } from '@/app/api/leaderboard/civic-score/route'
+import type { CivicScoreEntry, CivicScoreLeaderboardResponse, CivicScoreMyPosition } from '@/app/api/leaderboard/civic-score/route'
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -308,6 +308,75 @@ function ExpandedStats({ entry }: { entry: CivicScoreEntry }) {
   )
 }
 
+function MyPositionCard({ pos }: { pos: CivicScoreMyPosition }) {
+  const { grade, color } = civicGrade(pos.civic_index)
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="mb-5 rounded-2xl border border-purple/30 bg-purple/5 p-4"
+    >
+      <div className="flex items-center gap-2 mb-3">
+        <Star className="h-3.5 w-3.5 text-purple flex-shrink-0" aria-hidden />
+        <span className="text-[11px] font-mono font-semibold text-purple uppercase tracking-wide">
+          Your Position
+        </span>
+        <span className="ml-auto text-[10px] font-mono text-surface-600">
+          Top {pos.percentile}%
+        </span>
+      </div>
+
+      <div className="flex items-center gap-3">
+        <div className="flex-shrink-0 w-10 text-center">
+          <span className="text-2xl font-mono font-bold text-surface-400">#{pos.rank}</span>
+        </div>
+        <Link href={`/profile/${pos.username}`} className="flex-shrink-0">
+          <Avatar src={pos.avatar_url} fallback={pos.display_name ?? pos.username} size="sm" />
+        </Link>
+        <div className="flex-1 min-w-0">
+          <p className="text-xs font-semibold text-white truncate">
+            {pos.display_name ?? pos.username}
+          </p>
+          <p className={cn('text-[10px] font-mono truncate', ROLE_COLOR[pos.role] ?? 'text-surface-500')}>
+            {ROLE_LABEL[pos.role] ?? pos.role}
+          </p>
+        </div>
+        <div className="flex flex-col items-end flex-shrink-0">
+          <span className={cn('text-xl font-mono font-bold', color)}>{pos.civic_index}</span>
+          <span className={cn('text-[10px] font-mono', color)}>Grade {grade}</span>
+        </div>
+      </div>
+
+      <div className="mt-3 space-y-1.5">
+        {DIM_CONFIG.map((dim) => {
+          const score = pos[dim.key]
+          return (
+            <div key={dim.key} className="flex items-center gap-2">
+              <dim.icon className={cn('h-3 w-3 flex-shrink-0', dim.color)} aria-hidden />
+              <span className="text-[10px] font-mono text-surface-500 w-14 flex-shrink-0">{dim.label}</span>
+              <div className="flex-1 h-1.5 rounded-full bg-surface-300/50 overflow-hidden">
+                <div className={cn('h-full rounded-full', dim.bar)} style={{ width: `${score}%` }} />
+              </div>
+              <span className={cn('text-[10px] font-mono font-semibold w-6 text-right', dim.color)}>
+                {score}
+              </span>
+            </div>
+          )
+        })}
+      </div>
+
+      <Link
+        href="/civic-score"
+        className="mt-3 flex items-center justify-center gap-1.5 rounded-lg bg-purple/15 border border-purple/25 text-purple px-3 py-1.5 text-[11px] font-mono font-semibold hover:bg-purple/25 transition-colors w-full"
+      >
+        <BarChart2 className="h-3 w-3" aria-hidden />
+        See full breakdown
+        <ArrowRight className="h-3 w-3 ml-auto" aria-hidden />
+      </Link>
+    </motion.div>
+  )
+}
+
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export function CivicScoreLeaderboardClient() {
@@ -453,6 +522,11 @@ export function CivicScoreLeaderboardClient() {
             </button>
           ))}
         </div>
+
+        {/* My position (auth user outside top 100) */}
+        {!loading && !error && data?.myPosition && (
+          <MyPositionCard pos={data.myPosition} />
+        )}
 
         {loading && (
           <div className="space-y-2">
