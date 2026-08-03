@@ -3749,6 +3749,16 @@ const QUICK_LINKS: QuickLink[] = [
     iconColor: 'text-gold',
     iconBg: 'bg-gold/10',
   },
+  {
+    type: 'link',
+    id: 'law-monthly',
+    label: 'Monthly Law Digest',
+    sublabel: 'Curated retrospective of recently established laws — verdict scores, challenges, wiki engagement, and discussion activity',
+    href: '/law/monthly',
+    icon: Calendar,
+    iconColor: 'text-for-300',
+    iconBg: 'bg-for-600/10',
+  },
 
   // ─── Tags sub-pages ───────────────────────────────────────────────────────
   {

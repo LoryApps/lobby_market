@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { AlertTriangle, Award, BookOpen, Clock, FileWarning, Gavel, Globe, Network, Rss, Scale, ShieldAlert, Star, Tag, ThumbsUp, Trophy } from 'lucide-react'
+import { AlertTriangle, Award, BookOpen, Calendar, Clock, FileWarning, Gavel, Globe, Network, Rss, Scale, ShieldAlert, Star, Tag, ThumbsUp, Trophy } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -213,6 +213,18 @@ export default async function LawIndexPage() {
               >
                 <ThumbsUp className="h-4 w-4" />
                 <span className="hidden sm:inline">Verdicts</span>
+              </Link>
+
+              <Link
+                href="/law/monthly"
+                className={cn(
+                  'inline-flex items-center gap-2 px-3 py-2 rounded-lg',
+                  'bg-for-600/10 border border-for-500/30 text-for-300 text-xs font-mono font-medium',
+                  'hover:bg-for-600/20 hover:border-for-500/50 transition-colors'
+                )}
+              >
+                <Calendar className="h-4 w-4" />
+                <span className="hidden sm:inline">Monthly</span>
               </Link>
 
               <Link
