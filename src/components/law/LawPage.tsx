@@ -34,6 +34,7 @@ import {
   PanelRight,
   Quote,
   Scale,
+  Scroll,
   Sparkles,
   MessageSquare,
   Star,
@@ -403,6 +404,19 @@ export function LawPage({
                 >
                   <Swords className="h-3.5 w-3.5" />
                   Fault Lines
+                </Link>
+                <Link
+                  href={`/law/${law.id}/narrative`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-emerald/10 border border-emerald/30 text-emerald',
+                    'hover:bg-emerald/20 hover:border-emerald/50',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="Narrative arc — the story of how this debate became law"
+                >
+                  <Scroll className="h-3.5 w-3.5" />
+                  Narrative
                 </Link>
                 <Link
                   href={`/law/${law.id}/wiki`}
