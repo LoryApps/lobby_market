@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { TrendingUp, Clock, Flame, Scale, FileText, Zap, Gavel, Tag, LayoutGrid, Globe, Users, MapPin, Sparkles, History, X, Hash, Vote, Swords, Rocket, Target, Landmark, TrendingDown, MessageSquare } from 'lucide-react'
+import { TrendingUp, Clock, Flame, Scale, FileText, Zap, Gavel, Tag, LayoutGrid, Globe, Users, MapPin, Sparkles, History, X, Hash, Vote, Swords, Rocket, Target, Landmark, TrendingDown, MessageSquare, Activity } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { useFeedStore } from '@/lib/stores/feed-store'
 import type { FeedSort, FeedStatus, FeedMode, FeedScope } from '@/lib/stores/feed-store'
@@ -113,6 +113,7 @@ const FEED_MODES: { id: FeedMode; label: string; icon: typeof Globe; activeClass
   { id: 'newlaws', label: 'New Laws', icon: Landmark, activeClass: 'bg-gold/80 text-surface-900 shadow-sm' },
   { id: 'collapse', label: 'Collapsing', icon: TrendingDown, activeClass: 'bg-against-500/20 text-against-300 border border-against-500/30 shadow-sm' },
   { id: 'argued', label: 'Most Argued', icon: MessageSquare, activeClass: 'bg-purple/20 text-purple border border-purple/40 shadow-sm' },
+  { id: 'flux', label: 'In Flux', icon: Activity, activeClass: 'bg-against-400/20 text-against-300 border border-against-400/40 shadow-sm' },
 ]
 
 // Module-level cache so all FeedFilters instances share the same fetch
@@ -185,6 +186,7 @@ export function FeedFilters() {
       + (sort !== 'top' && feedMode === 'newlaws' ? 1 : 0)
       + (sort !== 'top' && feedMode === 'collapse' ? 1 : 0)
       + (sort !== 'top' && feedMode === 'argued' ? 1 : 0)
+      + (sort !== 'top' && feedMode === 'flux' ? 1 : 0)
 
   return (
     <div className="flex flex-col gap-1.5">
@@ -918,6 +920,38 @@ export function FeedFilters() {
             >
               <MessageSquare className="h-3 w-3" />
               Full list
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {/* ── In Flux mode ──────────────────────────────────────────────────── */}
+      {feedMode === 'flux' && (
+        <div className="flex flex-col gap-1 pb-1">
+          <div className="flex items-center gap-2 px-3 py-1">
+            <Activity className="h-3 w-3 text-against-300 flex-shrink-0" />
+            <p className="text-[11px] font-mono text-against-300/80">
+              Topics where consensus is rapidly shifting — the biggest vote-percentage swings in the last 24 hours
+            </p>
+          </div>
+
+          <div
+            className={cn(
+              'flex items-center gap-2 px-3 py-1.5',
+              'overflow-x-auto',
+              '[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
+            )}
+          >
+            <Link
+              href="/flux"
+              className={cn(
+                'flex-shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-mono font-medium',
+                'border border-against-400/30 text-against-300/70',
+                'hover:text-against-300 hover:border-against-400/50 transition-all duration-150'
+              )}
+            >
+              <Activity className="h-3 w-3" />
+              Full Flux report
             </Link>
           </div>
         </div>
