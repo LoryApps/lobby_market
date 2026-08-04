@@ -43,6 +43,7 @@ interface TopicCardProps {
   topic: Topic
   authorName?: string
   authorAvatar?: string | null
+  establishedAt?: string | null
 }
 
 const statusLabel: Record<string, string> = {
@@ -121,7 +122,7 @@ function TagPills({ tags }: { tags: string[] }) {
   )
 }
 
-export function TopicCard({ topic, authorName, authorAvatar }: TopicCardProps) {
+export function TopicCard({ topic, authorName, authorAvatar, establishedAt }: TopicCardProps) {
   const { castVote, hasVoted, getVoteSide } = useVoteStore()
   const updateTopic = useFeedStore((s) => s.updateTopic)
   const authUser = useAuthStore((s) => s.user)
@@ -389,9 +390,17 @@ export function TopicCard({ topic, authorName, authorAvatar }: TopicCardProps) {
                   )
                 })()}
               </div>
-              <Badge variant={statusBadgeVariant[topic.status] ?? 'proposed'}>
-                {statusLabel[topic.status] ?? topic.status}
-              </Badge>
+              <div className="flex flex-col items-end gap-1">
+                <Badge variant={statusBadgeVariant[topic.status] ?? 'proposed'}>
+                  {statusLabel[topic.status] ?? topic.status}
+                </Badge>
+                {isLaw && establishedAt && (
+                  <span className="inline-flex items-center gap-1 text-[9px] font-mono text-gold/70">
+                    <Gavel className="h-2 w-2" aria-hidden="true" />
+                    {relativeTime(establishedAt)}
+                  </span>
+                )}
+              </div>
             </div>
 
             {/* Center: statement + optional context snippet */}

@@ -2288,7 +2288,11 @@ export type TopicAuthor = Pick<
   Profile,
   "id" | "username" | "display_name" | "avatar_url" | "role"
 >;
-export type TopicWithAuthor = Topic & { author: TopicAuthor | null };
+export type TopicWithAuthor = Topic & {
+  author: TopicAuthor | null;
+  // Optional field injected by /api/feed/newlaws to show passage timestamp
+  established_at?: string | null;
+};
 
 export type Vote = Database["public"]["Tables"]["votes"]["Row"];
 export type VoteInsert = Database["public"]["Tables"]["votes"]["Insert"];

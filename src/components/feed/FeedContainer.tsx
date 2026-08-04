@@ -943,6 +943,7 @@ export function FeedContainer() {
                 topic={topic}
                 authorName={topic.author?.display_name ?? topic.author?.username ?? undefined}
                 authorAvatar={topic.author?.avatar_url ?? undefined}
+                establishedAt={topic.established_at}
               />
             </ErrorBoundary>
             {/* Inject a live-stats strip after every 8th topic */}

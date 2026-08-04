@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { TrendingUp, Clock, Flame, Scale, FileText, Zap, Gavel, Tag, LayoutGrid, Globe, Users, MapPin, Sparkles, History, X, Hash, Vote, Swords, Rocket, Target } from 'lucide-react'
+import { TrendingUp, Clock, Flame, Scale, FileText, Zap, Gavel, Tag, LayoutGrid, Globe, Users, MapPin, Sparkles, History, X, Hash, Vote, Swords, Rocket, Target, Landmark } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { useFeedStore } from '@/lib/stores/feed-store'
 import type { FeedSort, FeedStatus, FeedMode, FeedScope } from '@/lib/stores/feed-store'
@@ -110,6 +110,7 @@ const FEED_MODES: { id: FeedMode; label: string; icon: typeof Globe; activeClass
   { id: 'battleground', label: 'Battleground', icon: Swords, activeClass: 'bg-gradient-to-r from-for-600/70 to-against-600/70 text-white shadow-sm' },
   { id: 'rising', label: 'Rising', icon: Rocket, activeClass: 'bg-amber-500/20 text-amber-300 border border-amber-500/30 shadow-sm' },
   { id: 'closingin', label: 'Near Law', icon: Target, activeClass: 'bg-gold/20 text-gold border border-gold/40 shadow-sm' },
+  { id: 'newlaws', label: 'New Laws', icon: Landmark, activeClass: 'bg-gold/80 text-surface-900 shadow-sm' },
 ]
 
 // Module-level cache so all FeedFilters instances share the same fetch
@@ -179,6 +180,7 @@ export function FeedFilters() {
       + (sort !== 'hot' && feedMode === 'battleground' ? 1 : 0)
       + (sort !== 'top' && feedMode === 'rising' ? 1 : 0)
       + (sort !== 'top' && feedMode === 'closingin' ? 1 : 0)
+      + (sort !== 'top' && feedMode === 'newlaws' ? 1 : 0)
 
   return (
     <div className="flex flex-col gap-1.5">
