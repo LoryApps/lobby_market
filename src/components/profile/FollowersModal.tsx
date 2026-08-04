@@ -14,6 +14,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import {
+  ArrowRight,
   Loader2,
   TrendingUp,
   UserCheck,
@@ -412,6 +413,18 @@ export function FollowersModal({
               )}
             </>
           )}
+        </div>
+
+        {/* Footer: link to full page */}
+        <div className="flex-shrink-0 border-t border-surface-300 px-4 py-2.5">
+          <Link
+            href={`/profile/${username}/${tab}`}
+            onClick={onClose}
+            className="flex items-center justify-center gap-1.5 text-xs font-mono text-surface-500 hover:text-for-400 transition-colors py-0.5"
+          >
+            View full {tab} page
+            <ArrowRight className="h-3 w-3" aria-hidden />
+          </Link>
         </div>
       </motion.div>
     </div>
