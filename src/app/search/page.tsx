@@ -28,6 +28,8 @@ import {
   GitMerge,
   Swords,
   Hash,
+  Building2,
+  Trophy,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -48,7 +50,7 @@ const SEARCH_SIGNAL_ICONS: Record<string, typeof TrendingUp> = {
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type Tab = 'topics' | 'laws' | 'people' | 'arguments' | 'questions' | 'relays' | 'debates' | 'tags'
+type Tab = 'topics' | 'laws' | 'people' | 'arguments' | 'questions' | 'relays' | 'debates' | 'tags' | 'coalitions'
 
 interface TopicResult {
   id: string
@@ -185,6 +187,26 @@ interface TagResult {
   tags: string[]
 }
 
+interface CoalitionSearchResult {
+  id: string
+  name: string
+  description: string | null
+  member_count: number
+  coalition_influence: number
+  wins: number
+  losses: number
+  is_public: boolean
+  max_members: number
+  created_at: string
+  creator: {
+    id: string
+    username: string
+    display_name: string | null
+    avatar_url: string | null
+    role: string
+  } | null
+}
+
 interface SuggestedUser {
   id: string
   username: string
@@ -203,7 +225,7 @@ interface TrendingData {
   recentLaws: { id: string; statement: string; category: string | null; established_at: string }[]
 }
 
-type SearchResult = TopicResult | LawResult | PersonResult | ArgumentResult | QuestionResult | RelayResult | DebateResult | TagResult
+type SearchResult = TopicResult | LawResult | PersonResult | ArgumentResult | QuestionResult | RelayResult | DebateResult | TagResult | CoalitionSearchResult
 
 // ─── Config ───────────────────────────────────────────────────────────────────
 
@@ -211,14 +233,15 @@ const RECENT_KEY = 'lm_recent_searches'
 const MAX_RECENT = 8
 
 const tabs: { id: Tab; label: string; icon: typeof FileText }[] = [
-  { id: 'topics',    label: 'Topics',    icon: FileText },
-  { id: 'laws',      label: 'Laws',      icon: Scale },
-  { id: 'debates',   label: 'Debates',   icon: Swords },
-  { id: 'people',    label: 'People',    icon: Users },
-  { id: 'arguments', label: 'Arguments', icon: MessageSquare },
-  { id: 'questions', label: 'Q&A',       icon: HelpCircle },
-  { id: 'relays',    label: 'Relays',    icon: GitMerge },
-  { id: 'tags',      label: 'Tags',      icon: Hash },
+  { id: 'topics',     label: 'Topics',     icon: FileText },
+  { id: 'laws',       label: 'Laws',       icon: Scale },
+  { id: 'debates',    label: 'Debates',    icon: Swords },
+  { id: 'people',     label: 'People',     icon: Users },
+  { id: 'coalitions', label: 'Coalitions', icon: Building2 },
+  { id: 'arguments',  label: 'Arguments',  icon: MessageSquare },
+  { id: 'questions',  label: 'Q&A',        icon: HelpCircle },
+  { id: 'relays',     label: 'Relays',     icon: GitMerge },
+  { id: 'tags',       label: 'Tags',       icon: Hash },
 ]
 
 const statusBadge: Record<string, 'proposed' | 'active' | 'law' | 'failed'> = {
@@ -308,7 +331,7 @@ function SearchFilters({
   const [categoryOpen, setCategoryOpen] = useState(false)
   const hasFilters = categoryFilter !== null || statusFilter !== null || sideFilter !== null
 
-  if (tab === 'people' || tab === 'questions' || tab === 'debates' || tab === 'tags') return null
+  if (tab === 'people' || tab === 'questions' || tab === 'debates' || tab === 'tags' || tab === 'coalitions') return null
 
   return (
     <div className="flex items-center gap-2 flex-wrap mb-4">
@@ -1060,6 +1083,67 @@ function TagRow({ item, query }: { item: TagResult; query: string }) {
   )
 }
 
+// ─── Coalition row ────────────────────────────────────────────────────────────
+
+function CoalitionRow({ item }: { item: CoalitionSearchResult }) {
+  const totalMatches = item.wins + item.losses
+  const winRate = totalMatches > 0 ? Math.round((item.wins / totalMatches) * 100) : null
+
+  return (
+    <Link
+      href={`/coalitions/${item.id}`}
+      className={cn(
+        'flex items-start gap-3 p-4 rounded-xl',
+        'bg-surface-100 border border-surface-300',
+        'hover:border-purple/40 hover:bg-purple/[0.03] transition-colors group'
+      )}
+    >
+      {/* Icon */}
+      <div className="flex-shrink-0 mt-0.5 h-8 w-8 rounded-lg bg-purple/10 border border-purple/30 flex items-center justify-center">
+        <Building2 className="h-4 w-4 text-purple" aria-hidden="true" />
+      </div>
+
+      {/* Body */}
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-semibold text-white group-hover:text-purple transition-colors truncate">
+          {item.name}
+        </p>
+        {item.description && (
+          <p className="text-xs text-surface-500 mt-0.5 line-clamp-2 leading-relaxed">
+            {item.description}
+          </p>
+        )}
+        <div className="flex items-center gap-3 mt-2 flex-wrap">
+          <span className="flex items-center gap-1 text-xs text-surface-500">
+            <Users className="h-3 w-3" aria-hidden="true" />
+            {item.member_count.toLocaleString()} members
+          </span>
+          {winRate !== null && (
+            <span className={cn(
+              'flex items-center gap-1 text-xs',
+              winRate >= 50 ? 'text-emerald' : 'text-against-400'
+            )}>
+              <Trophy className="h-3 w-3" aria-hidden="true" />
+              {item.wins}W – {item.losses}L
+            </span>
+          )}
+          {item.coalition_influence > 0 && (
+            <span className="flex items-center gap-1 text-xs text-gold">
+              <Zap className="h-3 w-3" aria-hidden="true" />
+              {Math.round(item.coalition_influence).toLocaleString()} influence
+            </span>
+          )}
+          {item.creator && (
+            <span className="text-xs text-surface-600 truncate">
+              by @{item.creator.username}
+            </span>
+          )}
+        </div>
+      </div>
+    </Link>
+  )
+}
+
 // ─── Suggested person card (with inline follow button) ───────────────────────
 
 function SuggestPersonCard({ user }: { user: SuggestedUser }) {
@@ -1423,8 +1507,9 @@ function EmptyState({ query, tab }: { query: string; tab: Tab }) {
     arguments: 'No arguments match your search.',
     questions: 'No questions match your search.',
     relays:    'No relay chains match your search.',
-    debates:   'No debates match your search.',
-    tags:      'No topics found for that tag.',
+    debates:    'No debates match your search.',
+    tags:       'No topics found for that tag.',
+    coalitions: 'No coalitions match your search.',
   }
   return (
     <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
@@ -1681,6 +1766,9 @@ function SearchContent() {
                 }
                 if (activeTab === 'tags') {
                   return <TagRow key={item.id} item={item as TagResult} query={query} />
+                }
+                if (activeTab === 'coalitions') {
+                  return <CoalitionRow key={item.id} item={item as CoalitionSearchResult} />
                 }
                 return <PersonRow key={item.id} item={item as PersonResult} />
               })

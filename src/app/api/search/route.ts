@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
 /**
- * GET /api/search?q=<query>&tab=topics|laws|people|arguments&category=<cat>&status=<status>&side=for|against
+ * GET /api/search?q=<query>&tab=topics|laws|people|arguments|coalitions&category=<cat>&status=<status>&side=for|against
  *
  * Uses PostgreSQL full-text search (websearch_to_tsquery) via the `fts`
  * generated tsvector columns added in migrations 00014 and 00035.
@@ -375,6 +375,27 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Search failed' }, { status: 500 })
     }
     return NextResponse.json({ results: data ?? [], engine: 'ilike' })
+  }
+
+  // ── Coalitions ───────────────────────────────────────────────────────────────
+  // Searches by coalition name and description, returns top matches by influence.
+
+  if (tab === 'coalitions') {
+    const COALITION_SELECT = `
+      id, name, description, member_count, coalition_influence, wins, losses,
+      is_public, max_members, created_at,
+      creator:profiles!creator_id(id, username, display_name, avatar_url, role)
+    `
+
+    const { data: coalitionData } = await supabase
+      .from('coalitions')
+      .select(COALITION_SELECT)
+      .or(`name.ilike.${pattern},description.ilike.${pattern}`)
+      .eq('is_public', true)
+      .order('coalition_influence', { ascending: false })
+      .limit(20)
+
+    return NextResponse.json({ results: coalitionData ?? [], engine: 'ilike' })
   }
 
   return NextResponse.json({ results: [] })
