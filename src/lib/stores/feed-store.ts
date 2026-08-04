@@ -7,7 +7,7 @@ export type FeedStatus = "proposed" | "active" | "voting" | "law" | null;
 export type FeedCategory = string | null;
 export type FeedScope = "Global" | "National" | "Regional" | "Local" | null;
 export type FeedTag = string | null;
-export type FeedMode = "discover" | "following" | "foryou" | "mytags" | "unvoted" | "battleground" | "rising";
+export type FeedMode = "discover" | "following" | "foryou" | "mytags" | "unvoted" | "battleground" | "rising" | "closingin";
 
 interface FeedState {
   topics: TopicWithAuthor[];
@@ -326,6 +326,37 @@ export const useFeedStore = create<FeedState>()(
               offset: state.offset + json.topics.length,
               hasMore: json.topics.length === 20,
             }));
+          } else if (feedMode === "closingin") {
+            // Near Law feed — voting-phase topics sorted by proximity to law threshold
+            const params = new URLSearchParams({
+              limit: "20",
+              offset: String(offset),
+              sort,
+            });
+
+            const res = await fetch(`/api/feed/closingin?${params.toString()}`);
+
+            if (get()._generation !== capturedGen) return;
+
+            if (!res.ok) {
+              console.error("Failed to fetch near-law feed:", res.statusText);
+              return;
+            }
+
+            const json: { topics: TopicWithAuthor[] } = await res.json();
+
+            if (get()._generation !== capturedGen) return;
+
+            if (json.topics.length === 0) {
+              set({ hasMore: false });
+              return;
+            }
+
+            set((state) => ({
+              topics: [...state.topics, ...json.topics],
+              offset: state.offset + json.topics.length,
+              hasMore: json.topics.length === 20,
+            }));
           } else {
             // Discover feed
             const params = new URLSearchParams({
@@ -439,7 +470,7 @@ export const useFeedStore = create<FeedState>()(
         // Reset sort to "new" for following/mytags, "top" for everything else
         const sort = (feedMode === "following" || feedMode === "mytags") ? "new"
           : (feedMode === "unvoted" || feedMode === "battleground") ? "hot"
-          : feedMode === "rising" ? "top"
+          : (feedMode === "rising" || feedMode === "closingin") ? "top"
           : "top";
         set({
           feedMode,

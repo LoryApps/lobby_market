@@ -624,7 +624,7 @@ export function FeedContainer() {
       (newTopic) => {
         if (!mounted) return
         const { statusFilter, categoryFilter, scopeFilter, tagFilter, feedMode: mode, preferredCategories } = useFeedStore.getState()
-        if (mode === 'following' || mode === 'mytags') return
+        if (mode === 'following' || mode === 'mytags' || mode === 'closingin') return
         // For You / Unvoted mode: only queue topics that match preferred categories
         if (mode === 'foryou' || mode === 'unvoted') {
           if (!newTopic.category || !preferredCategories.includes(newTopic.category)) return
@@ -1025,6 +1025,18 @@ export function FeedContainer() {
               <p className="text-2xl font-bold text-white mb-2">Nothing rising yet today</p>
               <p className="text-surface-500">
                 No new topics have picked up momentum in the last 7 days. Propose one to get things moving.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Empty state: near law feed */}
+        {!isLoading && topics.length === 0 && feedMode === 'closingin' && (
+          <div className="feed-card flex items-center justify-center">
+            <div className="text-center px-6">
+              <p className="text-2xl font-bold text-white mb-2">No topics near law right now</p>
+              <p className="text-surface-500">
+                No topics are currently in the Voting phase. Check back soon — active debates move to voting when they reach the support threshold.
               </p>
             </div>
           </div>

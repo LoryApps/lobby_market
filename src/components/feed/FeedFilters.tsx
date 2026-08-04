@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { TrendingUp, Clock, Flame, Scale, FileText, Zap, Gavel, Tag, LayoutGrid, Globe, Users, MapPin, Sparkles, History, X, Hash, Vote, Swords, Rocket } from 'lucide-react'
+import { TrendingUp, Clock, Flame, Scale, FileText, Zap, Gavel, Tag, LayoutGrid, Globe, Users, MapPin, Sparkles, History, X, Hash, Vote, Swords, Rocket, Target } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { useFeedStore } from '@/lib/stores/feed-store'
 import type { FeedSort, FeedStatus, FeedMode, FeedScope } from '@/lib/stores/feed-store'
@@ -109,6 +109,7 @@ const FEED_MODES: { id: FeedMode; label: string; icon: typeof Globe; activeClass
   { id: 'unvoted', label: 'Unvoted', icon: Vote, activeClass: 'bg-emerald/20 text-emerald border border-emerald/40 shadow-sm' },
   { id: 'battleground', label: 'Battleground', icon: Swords, activeClass: 'bg-gradient-to-r from-for-600/70 to-against-600/70 text-white shadow-sm' },
   { id: 'rising', label: 'Rising', icon: Rocket, activeClass: 'bg-amber-500/20 text-amber-300 border border-amber-500/30 shadow-sm' },
+  { id: 'closingin', label: 'Near Law', icon: Target, activeClass: 'bg-gold/20 text-gold border border-gold/40 shadow-sm' },
 ]
 
 // Module-level cache so all FeedFilters instances share the same fetch
@@ -177,6 +178,7 @@ export function FeedFilters() {
       + (sort !== 'hot' && feedMode === 'unvoted' ? 1 : 0)
       + (sort !== 'hot' && feedMode === 'battleground' ? 1 : 0)
       + (sort !== 'top' && feedMode === 'rising' ? 1 : 0)
+      + (sort !== 'top' && feedMode === 'closingin' ? 1 : 0)
 
   return (
     <div className="flex flex-col gap-1.5">
@@ -648,6 +650,60 @@ export function FeedFilters() {
                 </button>
               ))}
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Near Law (Closing In) mode ────────────────────────────────────── */}
+      {feedMode === 'closingin' && (
+        <div className="flex flex-col gap-1 pb-1">
+          {/* Contextual label */}
+          <div className="flex items-center gap-2 px-3 py-1">
+            <Target className="h-3 w-3 text-gold flex-shrink-0" />
+            <p className="text-[11px] font-mono text-surface-400">
+              Topics in the Voting phase approaching law status — your vote could tip the balance
+            </p>
+          </div>
+
+          {/* Sort controls */}
+          <div
+            className={cn(
+              'flex items-center gap-2 px-3 py-1.5',
+              'overflow-x-auto',
+              '[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
+            )}
+          >
+            <div className="flex items-center gap-0.5 flex-shrink-0 bg-surface-200/80 border border-surface-300 rounded-lg p-0.5 backdrop-blur-sm">
+              {SORT_OPTIONS.map(({ id, label, icon: Icon }) => (
+                <button
+                  key={id}
+                  onClick={() => setSort(id)}
+                  aria-pressed={sort === id}
+                  className={cn(
+                    'flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-mono font-medium transition-all duration-150',
+                    sort === id
+                      ? 'bg-gold/20 text-gold shadow-sm border border-gold/30'
+                      : 'text-surface-500 hover:text-surface-700'
+                  )}
+                >
+                  <Icon className="h-3 w-3 flex-shrink-0" />
+                  <span>{label}</span>
+                </button>
+              ))}
+            </div>
+
+            {/* Link to laws page for context */}
+            <Link
+              href="/laws"
+              className={cn(
+                'flex-shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-mono font-medium',
+                'border border-gold/30 text-gold/70',
+                'hover:text-gold hover:border-gold/50 transition-all duration-150'
+              )}
+            >
+              <Gavel className="h-3 w-3" />
+              View Laws
+            </Link>
           </div>
         </div>
       )}
