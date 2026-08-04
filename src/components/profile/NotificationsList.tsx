@@ -12,6 +12,7 @@ import {
   Flame,
   Gavel,
   GitMerge,
+  Handshake,
   Hash,
   Link2,
   MessageCircle,
@@ -80,6 +81,7 @@ const typeConfig: Record<
   debate_challenge_declined: { icon: MessageSquare, color: 'text-surface-600' },
   law_challenge_support:     { icon: ThumbsUp,     color: 'text-for-400'    },
   law_challenge_milestone:   { icon: TrendingUp,   color: 'text-emerald'    },
+  law_endorsed:              { icon: Handshake,    color: 'text-emerald'    },
 }
 
 // ─── Filter tabs ──────────────────────────────────────────────────────────────
@@ -106,7 +108,7 @@ const SOCIAL_TYPES: NotificationType[] = [
   'direct_message',
 ]
 
-const DEBATE_TYPES: NotificationType[] = ['debate_starting', 'new_topic_in_tag', 'debate_challenge', 'debate_challenge_accepted', 'debate_challenge_declined', 'law_challenge_support', 'law_challenge_milestone']
+const DEBATE_TYPES: NotificationType[] = ['debate_starting', 'new_topic_in_tag', 'debate_challenge', 'debate_challenge_accepted', 'debate_challenge_declined', 'law_challenge_support', 'law_challenge_milestone', 'law_endorsed']
 
 const ACHIEVEMENT_TYPES: NotificationType[] = ['achievement_earned']
 

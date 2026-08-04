@@ -69,6 +69,7 @@ import { LawBacklinks } from './LawBacklinks'
 import { ReopenPetition } from './ReopenPetition'
 import { ProposeRevisionForm } from './ProposeRevisionForm'
 import { LawAmendmentsPanel } from './LawAmendmentsPanel'
+import { LawEndorsementsPanel } from './LawEndorsementsPanel'
 
 interface LawPageProps {
   law: Law
@@ -752,6 +753,19 @@ export function LawPage({
                   Loyal Opposition
                 </Link>
                 <Link
+                  href={`/law/${law.id}/endorse`}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                    'bg-emerald/10 border border-emerald/30 text-emerald',
+                    'hover:bg-emerald/20 hover:border-emerald/50',
+                    'text-xs font-mono font-medium transition-colors'
+                  )}
+                  title="Formally endorse this law — stand behind it as a community endorser"
+                >
+                  <Handshake className="h-3.5 w-3.5" />
+                  Endorse
+                </Link>
+                <Link
                   href={`/law/${law.id}/verdict`}
                   className={cn(
                     'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
@@ -1246,6 +1260,11 @@ export function LawPage({
             {/* Amendment proposals */}
             <div className="mt-6">
               <LawAmendmentsPanel lawId={law.id} />
+            </div>
+
+            {/* Community endorsements */}
+            <div className="mt-6">
+              <LawEndorsementsPanel lawId={law.id} />
             </div>
 
             {/* Reopen petition */}

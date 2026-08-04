@@ -2370,7 +2370,8 @@ export type NotificationType =
   | "debate_challenge_accepted"
   | "debate_challenge_declined"
   | "law_challenge_support"
-  | "law_challenge_milestone";
+  | "law_challenge_milestone"
+  | "law_endorsed";
 
 export type AchievementTier = "common" | "rare" | "epic" | "legendary";
 
