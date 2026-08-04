@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { TrendingUp, Clock, Flame, Scale, FileText, Zap, Gavel, Tag, LayoutGrid, Globe, Users, MapPin, Sparkles, History, X, Hash, Vote, Swords, Rocket, Target, Landmark } from 'lucide-react'
+import { TrendingUp, Clock, Flame, Scale, FileText, Zap, Gavel, Tag, LayoutGrid, Globe, Users, MapPin, Sparkles, History, X, Hash, Vote, Swords, Rocket, Target, Landmark, TrendingDown } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { useFeedStore } from '@/lib/stores/feed-store'
 import type { FeedSort, FeedStatus, FeedMode, FeedScope } from '@/lib/stores/feed-store'
@@ -111,6 +111,7 @@ const FEED_MODES: { id: FeedMode; label: string; icon: typeof Globe; activeClass
   { id: 'rising', label: 'Rising', icon: Rocket, activeClass: 'bg-amber-500/20 text-amber-300 border border-amber-500/30 shadow-sm' },
   { id: 'closingin', label: 'Near Law', icon: Target, activeClass: 'bg-gold/20 text-gold border border-gold/40 shadow-sm' },
   { id: 'newlaws', label: 'New Laws', icon: Landmark, activeClass: 'bg-gold/80 text-surface-900 shadow-sm' },
+  { id: 'collapse', label: 'Collapsing', icon: TrendingDown, activeClass: 'bg-against-500/20 text-against-300 border border-against-500/30 shadow-sm' },
 ]
 
 // Module-level cache so all FeedFilters instances share the same fetch
@@ -181,6 +182,7 @@ export function FeedFilters() {
       + (sort !== 'top' && feedMode === 'rising' ? 1 : 0)
       + (sort !== 'top' && feedMode === 'closingin' ? 1 : 0)
       + (sort !== 'top' && feedMode === 'newlaws' ? 1 : 0)
+      + (sort !== 'top' && feedMode === 'collapse' ? 1 : 0)
 
   return (
     <div className="flex flex-col gap-1.5">
@@ -759,6 +761,59 @@ export function FeedFilters() {
             >
               <Sparkles className="h-3 w-3" />
               Recalibrate
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {/* ── Collapse mode ─────────────────────────────────────────────────── */}
+      {feedMode === 'collapse' && (
+        <div className="flex flex-col gap-1 pb-1">
+          {/* Contextual label */}
+          <div className="flex items-center gap-2 px-3 py-1">
+            <TrendingDown className="h-3 w-3 text-against-400 flex-shrink-0" />
+            <p className="text-[11px] font-mono text-against-400/80">
+              Debates where FOR consensus has dropped most in the last 7 days — opinion turning
+            </p>
+          </div>
+
+          {/* Sort controls */}
+          <div
+            className={cn(
+              'flex items-center gap-2 px-3 py-1.5',
+              'overflow-x-auto',
+              '[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
+            )}
+          >
+            <div className="flex items-center gap-0.5 flex-shrink-0 bg-surface-200/80 border border-surface-300 rounded-lg p-0.5 backdrop-blur-sm">
+              {SORT_OPTIONS.map(({ id, label, icon: Icon }) => (
+                <button
+                  key={id}
+                  onClick={() => setSort(id)}
+                  aria-pressed={sort === id}
+                  className={cn(
+                    'flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-mono font-medium transition-all duration-150',
+                    sort === id
+                      ? 'bg-against-500/20 text-against-300 shadow-sm border border-against-500/30'
+                      : 'text-surface-500 hover:text-surface-700'
+                  )}
+                >
+                  <Icon className="h-3 w-3 flex-shrink-0" />
+                  <span>{label}</span>
+                </button>
+              ))}
+            </div>
+
+            <Link
+              href="/trending"
+              className={cn(
+                'flex-shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-mono font-medium',
+                'border border-against-500/30 text-against-400/70',
+                'hover:text-against-300 hover:border-against-500/50 transition-all duration-150'
+              )}
+            >
+              <TrendingDown className="h-3 w-3" />
+              Trending
             </Link>
           </div>
         </div>
