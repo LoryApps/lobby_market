@@ -20,6 +20,7 @@ export interface NotifPrefs {
   relay_notifications: boolean
   debate_challenge_notifications: boolean
   law_challenge_notifications: boolean
+  law_endorsed_notifications: boolean
 }
 
 const DEFAULT_PREFS: NotifPrefs = {
@@ -39,6 +40,7 @@ const DEFAULT_PREFS: NotifPrefs = {
   relay_notifications: true,
   debate_challenge_notifications: true,
   law_challenge_notifications: true,
+  law_endorsed_notifications: true,
 }
 
 // ─── GET ───────────────────────────────────────────────────────────────────────
@@ -57,7 +59,7 @@ export async function GET() {
   const { data, error } = await supabase
     .from('user_notification_prefs')
     .select(
-      'achievement_earned, debate_starting, law_established, topic_activated, vote_threshold, reply_received, role_promoted, lobby_update, new_topic_in_tag, streak_reminder, weekly_digest, qa_notifications, ama_notifications, relay_notifications, debate_challenge_notifications, law_challenge_notifications'
+      'achievement_earned, debate_starting, law_established, topic_activated, vote_threshold, reply_received, role_promoted, lobby_update, new_topic_in_tag, streak_reminder, weekly_digest, qa_notifications, ama_notifications, relay_notifications, debate_challenge_notifications, law_challenge_notifications, law_endorsed_notifications'
     )
     .eq('user_id', user.id)
     .maybeSingle()

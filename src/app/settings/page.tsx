@@ -59,6 +59,7 @@ interface NotifPrefs {
   relay_notifications: boolean
   debate_challenge_notifications: boolean
   law_challenge_notifications: boolean
+  law_endorsed_notifications: boolean
 }
 
 const DEFAULT_PREFS: NotifPrefs = {
@@ -78,6 +79,7 @@ const DEFAULT_PREFS: NotifPrefs = {
   relay_notifications: true,
   debate_challenge_notifications: true,
   law_challenge_notifications: true,
+  law_endorsed_notifications: true,
 }
 
 function loadPrefs(): NotifPrefs {
@@ -596,6 +598,12 @@ export default function SettingsPage() {
                   description="When citizens vote to support your formal challenge to an established law"
                   checked={prefs.law_challenge_notifications ?? true}
                   onChange={(v) => updatePref('law_challenge_notifications', v)}
+                />
+                <SettingRow
+                  label="Law endorsement alerts"
+                  description="When citizens endorse a law that originated from your topic — at 1, 5, 10, 25, and 50 endorsements"
+                  checked={prefs.law_endorsed_notifications ?? true}
+                  onChange={(v) => updatePref('law_endorsed_notifications', v)}
                 />
               </div>
             </div>
