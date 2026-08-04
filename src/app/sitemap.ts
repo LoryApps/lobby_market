@@ -41,6 +41,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/law/explore`, changeFrequency: 'hourly', priority: 0.72 },
   { url: `${BASE_URL}/law/monthly`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/law/verdicts`, changeFrequency: 'hourly', priority: 0.70 },
+  { url: `${BASE_URL}/law/endorsements`, changeFrequency: 'hourly', priority: 0.70 },
   { url: `${BASE_URL}/law/reviews`, changeFrequency: 'daily', priority: 0.68 },
   { url: `${BASE_URL}/law/compare`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/law/challenges`, changeFrequency: 'daily', priority: 0.70 },
