@@ -1006,6 +1006,30 @@ export function FeedContainer() {
           <UnvotedEmptyState />
         )}
 
+        {/* Empty state: battleground feed */}
+        {!isLoading && topics.length === 0 && feedMode === 'battleground' && (
+          <div className="feed-card flex items-center justify-center">
+            <div className="text-center px-6">
+              <p className="text-2xl font-bold text-white mb-2">No battleground topics right now</p>
+              <p className="text-surface-500">
+                There are no contested debates in the 35–65% range at the moment. Check back soon.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Empty state: rising feed */}
+        {!isLoading && topics.length === 0 && feedMode === 'rising' && (
+          <div className="feed-card flex items-center justify-center">
+            <div className="text-center px-6">
+              <p className="text-2xl font-bold text-white mb-2">Nothing rising yet today</p>
+              <p className="text-surface-500">
+                No new topics have picked up momentum in the last 7 days. Propose one to get things moving.
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Sentinel for infinite scroll */}
         {hasMore && <div ref={sentinelRef} className="h-1" />}
 
