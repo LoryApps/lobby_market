@@ -73,5 +73,49 @@ export async function PATCH(request: NextRequest, { params }: RouteContext) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
+  // ── Notify the challenger when their challenge is accepted or declined ─────
+  if (action === 'accept' || action === 'decline') {
+    void (async () => {
+      try {
+        const { data: prefs } = await supabase
+          .from('user_notification_prefs')
+          .select('debate_challenge_notifications')
+          .eq('user_id', challenge.challenger_id)
+          .maybeSingle()
+
+        if (prefs?.debate_challenge_notifications === false) return
+
+        const { data: responder } = await supabase
+          .from('profiles')
+          .select('display_name, username')
+          .eq('id', user.id)
+          .single()
+
+        const responderName =
+          responder?.display_name || responder?.username || 'Someone'
+
+        await supabase.from('notifications').insert({
+          user_id: challenge.challenger_id,
+          type: (action === 'accept'
+            ? 'debate_challenge_accepted'
+            : 'debate_challenge_declined') as const,
+          title:
+            action === 'accept'
+              ? `${responderName} accepted your debate challenge`
+              : `${responderName} declined your debate challenge`,
+          body:
+            action === 'accept'
+              ? 'Your challenge was accepted — head to your debates to begin.'
+              : 'Your challenge was declined.',
+          reference_id: params.id,
+          reference_type: 'debate_challenge',
+          is_read: false,
+        })
+      } catch {
+        // non-critical — challenge status was updated successfully
+      }
+    })()
+  }
+
   return NextResponse.json(updated)
 }

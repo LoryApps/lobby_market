@@ -63,6 +63,9 @@ const TYPE_EMOJI: Record<string, string> = {
   weekly_digest:             '📰',
   qa_question_answered:      '❓',
   qa_answer_accepted:        '✅',
+  debate_challenge:          '⚔️',
+  debate_challenge_accepted: '✅',
+  debate_challenge_declined: '❌',
 }
 
 // Map notification reference_type → app URL

@@ -167,5 +167,53 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
+  // ── Notify the challenged user ────────────────────────────────────────────
+  void (async () => {
+    try {
+      const { data: prefs } = await supabase
+        .from('user_notification_prefs')
+        .select('debate_challenge_notifications')
+        .eq('user_id', challenged_id)
+        .maybeSingle()
+
+      if (prefs?.debate_challenge_notifications === false) return
+
+      const [{ data: challenger }, { data: topic }] = await Promise.all([
+        supabase
+          .from('profiles')
+          .select('display_name, username')
+          .eq('id', user.id)
+          .single(),
+        supabase
+          .from('topics')
+          .select('statement')
+          .eq('id', topic_id)
+          .single(),
+      ])
+
+      const challengerName =
+        challenger?.display_name || challenger?.username || 'Someone'
+      const topicSnippet = topic?.statement
+        ? `"${topic.statement.slice(0, 70)}${topic.statement.length > 70 ? '…' : ''}"`
+        : 'a topic'
+
+      const bodyText = message?.trim()
+        ? `On ${topicSnippet} — "${message.slice(0, 80)}"`
+        : `On ${topicSnippet}`
+
+      await supabase.from('notifications').insert({
+        user_id: challenged_id,
+        type: 'debate_challenge' as const,
+        title: `${challengerName} challenged you to a debate`,
+        body: bodyText,
+        reference_id: challenge.id,
+        reference_type: 'debate_challenge',
+        is_read: false,
+      })
+    } catch {
+      // non-critical — challenge was created successfully
+    }
+  })()
+
   return NextResponse.json(challenge, { status: 201 })
 }
