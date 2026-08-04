@@ -7,7 +7,7 @@ export type FeedStatus = "proposed" | "active" | "voting" | "law" | null;
 export type FeedCategory = string | null;
 export type FeedScope = "Global" | "National" | "Regional" | "Local" | null;
 export type FeedTag = string | null;
-export type FeedMode = "discover" | "following" | "foryou" | "mytags" | "unvoted" | "battleground" | "rising" | "closingin" | "newlaws" | "collapse" | "argued" | "flux" | "lastcall";
+export type FeedMode = "discover" | "following" | "foryou" | "mytags" | "unvoted" | "battleground" | "rising" | "closingin" | "newlaws" | "collapse" | "argued" | "flux" | "lastcall" | "momentum";
 
 interface FeedState {
   topics: TopicWithAuthor[];
@@ -493,6 +493,36 @@ export const useFeedStore = create<FeedState>()(
 
             if (!res.ok) {
               console.error("Failed to fetch lastcall feed:", res.statusText);
+              return;
+            }
+
+            const json: { topics: TopicWithAuthor[]; hasMore: boolean } = await res.json();
+
+            if (get()._generation !== capturedGen) return;
+
+            if (json.topics.length === 0) {
+              set({ hasMore: false });
+              return;
+            }
+
+            set((state) => ({
+              topics: [...state.topics, ...json.topics],
+              offset: state.offset + json.topics.length,
+              hasMore: json.hasMore ?? json.topics.length === 20,
+            }));
+          } else if (feedMode === "momentum") {
+            // Momentum feed — topics ranked by raw vote velocity in the last 2 hours
+            const params = new URLSearchParams({
+              limit: "20",
+              offset: String(offset),
+            });
+
+            const res = await fetch(`/api/feed/momentum?${params.toString()}`);
+
+            if (get()._generation !== capturedGen) return;
+
+            if (!res.ok) {
+              console.error("Failed to fetch momentum feed:", res.statusText);
               return;
             }
 

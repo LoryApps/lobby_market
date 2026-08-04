@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { TrendingUp, Clock, Flame, Scale, FileText, Zap, Gavel, Tag, LayoutGrid, Globe, Users, MapPin, Sparkles, History, X, Hash, Vote, Swords, Rocket, Target, Landmark, TrendingDown, MessageSquare, Activity, Timer } from 'lucide-react'
+import { TrendingUp, Clock, Flame, Scale, FileText, Zap, Gavel, Tag, LayoutGrid, Globe, Users, MapPin, Sparkles, History, X, Hash, Vote, Swords, Rocket, Target, Landmark, TrendingDown, MessageSquare, Activity, Timer, Gauge } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { useFeedStore } from '@/lib/stores/feed-store'
 import type { FeedSort, FeedStatus, FeedMode, FeedScope } from '@/lib/stores/feed-store'
@@ -115,6 +115,7 @@ const FEED_MODES: { id: FeedMode; label: string; icon: typeof Globe; activeClass
   { id: 'argued', label: 'Most Argued', icon: MessageSquare, activeClass: 'bg-purple/20 text-purple border border-purple/40 shadow-sm' },
   { id: 'flux', label: 'In Flux', icon: Activity, activeClass: 'bg-against-400/20 text-against-300 border border-against-400/40 shadow-sm' },
   { id: 'lastcall', label: 'Last Call', icon: Timer, activeClass: 'bg-against-600/30 text-against-200 border border-against-500/60 shadow-sm animate-pulse' },
+  { id: 'momentum', label: 'Momentum', icon: Gauge, activeClass: 'bg-amber-500/20 text-amber-300 border border-amber-400/40 shadow-sm' },
 ]
 
 // Module-level cache so all FeedFilters instances share the same fetch
@@ -986,6 +987,38 @@ export function FeedFilters() {
             >
               <Timer className="h-3 w-3" />
               Full Last Call board
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {/* ── Momentum mode ─────────────────────────────────────────────────── */}
+      {feedMode === 'momentum' && (
+        <div className="flex flex-col gap-1 pb-1">
+          <div className="flex items-center gap-2 px-3 py-1">
+            <Gauge className="h-3 w-3 text-amber-400 flex-shrink-0" />
+            <p className="text-[11px] font-mono text-amber-300/80">
+              Topics ranked by raw vote velocity — highest civic energy in the last 2 hours
+            </p>
+          </div>
+
+          <div
+            className={cn(
+              'flex items-center gap-2 px-3 py-1.5',
+              'overflow-x-auto',
+              '[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
+            )}
+          >
+            <Link
+              href="/momentum"
+              className={cn(
+                'flex-shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-mono font-medium',
+                'border border-amber-500/30 text-amber-400/70',
+                'hover:text-amber-300 hover:border-amber-500/50 transition-all duration-150'
+              )}
+            >
+              <Gauge className="h-3 w-3" />
+              Full Momentum board
             </Link>
           </div>
         </div>

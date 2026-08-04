@@ -1067,6 +1067,18 @@ export function FeedContainer() {
           </div>
         )}
 
+        {/* Empty state: momentum feed */}
+        {!isLoading && topics.length === 0 && feedMode === 'momentum' && (
+          <div className="feed-card flex items-center justify-center">
+            <div className="text-center px-6">
+              <p className="text-2xl font-bold text-white mb-2">No momentum yet</p>
+              <p className="text-surface-500">
+                No votes have been cast in the last 2 hours. Check back soon — momentum picks up fast.
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Sentinel for infinite scroll */}
         {hasMore && <div ref={sentinelRef} className="h-1" />}
 
