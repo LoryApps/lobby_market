@@ -15,6 +15,7 @@ import {
   Link2,
   MessageSquare,
   Scale,
+  Shield,
   Sparkles,
   Star,
   Swords,
@@ -430,6 +431,27 @@ export function ProfilePage({
                 </div>
                 <p className="text-xs font-mono text-surface-500 mt-2">
                   Every arena {profile.display_name ?? profile.username} has stepped into — sides argued, outcomes, and top messages.
+                </p>
+              </Link>
+
+              {/* Challenge Record teaser */}
+              <Link
+                href={`/profile/${profile.username}/challenges`}
+                className="block rounded-2xl border border-against-500/20 bg-against-500/5 hover:bg-against-500/10 hover:border-against-500/30 transition-colors p-5"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Shield className="h-4 w-4 text-against-400" aria-hidden="true" />
+                    <h3 className="text-[11px] font-mono text-against-400 uppercase tracking-wider">
+                      Challenge Record
+                    </h3>
+                  </div>
+                  <span className="text-[10px] font-mono text-against-400/70 hover:text-against-400 transition-colors">
+                    View all →
+                  </span>
+                </div>
+                <p className="text-xs font-mono text-surface-500 mt-2">
+                  Debate duels sent and received, plus formal law challenges filed — every civic confrontation and its outcome.
                 </p>
               </Link>
 
