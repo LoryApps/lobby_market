@@ -78,6 +78,8 @@ const typeConfig: Record<
   debate_challenge:          { icon: Swords,       color: 'text-against-400' },
   debate_challenge_accepted: { icon: CheckCircle,  color: 'text-emerald'    },
   debate_challenge_declined: { icon: MessageSquare, color: 'text-surface-600' },
+  law_challenge_support:     { icon: ThumbsUp,     color: 'text-for-400'    },
+  law_challenge_milestone:   { icon: TrendingUp,   color: 'text-emerald'    },
 }
 
 // ─── Filter tabs ──────────────────────────────────────────────────────────────
@@ -104,7 +106,7 @@ const SOCIAL_TYPES: NotificationType[] = [
   'direct_message',
 ]
 
-const DEBATE_TYPES: NotificationType[] = ['debate_starting', 'new_topic_in_tag', 'debate_challenge', 'debate_challenge_accepted', 'debate_challenge_declined']
+const DEBATE_TYPES: NotificationType[] = ['debate_starting', 'new_topic_in_tag', 'debate_challenge', 'debate_challenge_accepted', 'debate_challenge_declined', 'law_challenge_support', 'law_challenge_milestone']
 
 const ACHIEVEMENT_TYPES: NotificationType[] = ['achievement_earned']
 
@@ -158,6 +160,9 @@ function buildHref(notification: Notification): string {
   if (type === 'direct_message') return '/messages'
   if (type === 'relay_invitation') return '/relays/invitations'
   if (type === 'debate_challenge' || type === 'debate_challenge_accepted' || type === 'debate_challenge_declined') return '/challenges'
+  if (type === 'law_challenge_support' || type === 'law_challenge_milestone') {
+    return reference_id ? `/law/challenges` : '/law/challenges'
+  }
   switch (reference_type) {
     case 'topic':
       return `/topic/${reference_id}`

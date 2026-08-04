@@ -58,6 +58,7 @@ interface NotifPrefs {
   ama_notifications: boolean
   relay_notifications: boolean
   debate_challenge_notifications: boolean
+  law_challenge_notifications: boolean
 }
 
 const DEFAULT_PREFS: NotifPrefs = {
@@ -76,6 +77,7 @@ const DEFAULT_PREFS: NotifPrefs = {
   ama_notifications: true,
   relay_notifications: true,
   debate_challenge_notifications: true,
+  law_challenge_notifications: true,
 }
 
 function loadPrefs(): NotifPrefs {
@@ -588,6 +590,12 @@ export default function SettingsPage() {
                   description="When someone challenges you to a debate, or accepts or declines your challenge"
                   checked={prefs.debate_challenge_notifications ?? true}
                   onChange={(v) => updatePref('debate_challenge_notifications', v)}
+                />
+                <SettingRow
+                  label="Law challenge notifications"
+                  description="When citizens vote to support your formal challenge to an established law"
+                  checked={prefs.law_challenge_notifications ?? true}
+                  onChange={(v) => updatePref('law_challenge_notifications', v)}
                 />
               </div>
             </div>

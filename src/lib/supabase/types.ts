@@ -2368,7 +2368,9 @@ export type NotificationType =
   | "relay_invitation"
   | "debate_challenge"
   | "debate_challenge_accepted"
-  | "debate_challenge_declined";
+  | "debate_challenge_declined"
+  | "law_challenge_support"
+  | "law_challenge_milestone";
 
 export type AchievementTier = "common" | "rare" | "epic" | "legendary";
 
