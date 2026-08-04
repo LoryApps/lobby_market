@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { TrendingUp, Clock, Flame, Scale, FileText, Zap, Gavel, Tag, LayoutGrid, Globe, Users, MapPin, Sparkles, History, X, Hash, Vote, Swords, Rocket, Target, Landmark, TrendingDown, MessageSquare, Activity } from 'lucide-react'
+import { TrendingUp, Clock, Flame, Scale, FileText, Zap, Gavel, Tag, LayoutGrid, Globe, Users, MapPin, Sparkles, History, X, Hash, Vote, Swords, Rocket, Target, Landmark, TrendingDown, MessageSquare, Activity, Timer } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { useFeedStore } from '@/lib/stores/feed-store'
 import type { FeedSort, FeedStatus, FeedMode, FeedScope } from '@/lib/stores/feed-store'
@@ -114,6 +114,7 @@ const FEED_MODES: { id: FeedMode; label: string; icon: typeof Globe; activeClass
   { id: 'collapse', label: 'Collapsing', icon: TrendingDown, activeClass: 'bg-against-500/20 text-against-300 border border-against-500/30 shadow-sm' },
   { id: 'argued', label: 'Most Argued', icon: MessageSquare, activeClass: 'bg-purple/20 text-purple border border-purple/40 shadow-sm' },
   { id: 'flux', label: 'In Flux', icon: Activity, activeClass: 'bg-against-400/20 text-against-300 border border-against-400/40 shadow-sm' },
+  { id: 'lastcall', label: 'Last Call', icon: Timer, activeClass: 'bg-against-600/30 text-against-200 border border-against-500/60 shadow-sm animate-pulse' },
 ]
 
 // Module-level cache so all FeedFilters instances share the same fetch
@@ -187,6 +188,7 @@ export function FeedFilters() {
       + (sort !== 'top' && feedMode === 'collapse' ? 1 : 0)
       + (sort !== 'top' && feedMode === 'argued' ? 1 : 0)
       + (sort !== 'top' && feedMode === 'flux' ? 1 : 0)
+      + (sort !== 'top' && feedMode === 'lastcall' ? 1 : 0)
 
   return (
     <div className="flex flex-col gap-1.5">
@@ -952,6 +954,38 @@ export function FeedFilters() {
             >
               <Activity className="h-3 w-3" />
               Full Flux report
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {/* ── Last Call mode ────────────────────────────────────────────────── */}
+      {feedMode === 'lastcall' && (
+        <div className="flex flex-col gap-1 pb-1">
+          <div className="flex items-center gap-2 px-3 py-1">
+            <Timer className="h-3 w-3 text-against-300 flex-shrink-0 animate-pulse" />
+            <p className="text-[11px] font-mono text-against-300/80">
+              Voting topics ordered by urgency — cast your vote before the window closes
+            </p>
+          </div>
+
+          <div
+            className={cn(
+              'flex items-center gap-2 px-3 py-1.5',
+              'overflow-x-auto',
+              '[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
+            )}
+          >
+            <Link
+              href="/last-call"
+              className={cn(
+                'flex-shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-mono font-medium',
+                'border border-against-500/40 text-against-300/70',
+                'hover:text-against-300 hover:border-against-500/60 transition-all duration-150'
+              )}
+            >
+              <Timer className="h-3 w-3" />
+              Full Last Call board
             </Link>
           </div>
         </div>

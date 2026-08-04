@@ -624,7 +624,7 @@ export function FeedContainer() {
       (newTopic) => {
         if (!mounted) return
         const { statusFilter, categoryFilter, scopeFilter, tagFilter, feedMode: mode, preferredCategories } = useFeedStore.getState()
-        if (mode === 'following' || mode === 'mytags' || mode === 'closingin') return
+        if (mode === 'following' || mode === 'mytags' || mode === 'closingin' || mode === 'lastcall') return
         // For You / Unvoted mode: only queue topics that match preferred categories
         if (mode === 'foryou' || mode === 'unvoted') {
           if (!newTopic.category || !preferredCategories.includes(newTopic.category)) return
@@ -1050,6 +1050,18 @@ export function FeedContainer() {
               <p className="text-2xl font-bold text-white mb-2">No volatile topics right now</p>
               <p className="text-surface-500">
                 Consensus is stable across the Lobby. Come back later to see which topics are shifting opinion.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Empty state: last call feed */}
+        {!isLoading && topics.length === 0 && feedMode === 'lastcall' && (
+          <div className="feed-card flex items-center justify-center">
+            <div className="text-center px-6">
+              <p className="text-2xl font-bold text-white mb-2">No votes closing soon</p>
+              <p className="text-surface-500">
+                No topics are in their final voting window right now. Check back as debates approach their deadlines.
               </p>
             </div>
           </div>
