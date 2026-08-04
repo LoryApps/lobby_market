@@ -26,6 +26,8 @@ import {
   HelpCircle,
   CheckCircle2,
   GitMerge,
+  Swords,
+  Hash,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -46,7 +48,7 @@ const SEARCH_SIGNAL_ICONS: Record<string, typeof TrendingUp> = {
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type Tab = 'topics' | 'laws' | 'people' | 'arguments' | 'questions' | 'relays'
+type Tab = 'topics' | 'laws' | 'people' | 'arguments' | 'questions' | 'relays' | 'debates' | 'tags'
 
 interface TopicResult {
   id: string
@@ -146,6 +148,43 @@ interface RelayResult {
   } | null
 }
 
+interface DebateResult {
+  id: string
+  title: string
+  description: string | null
+  type: 'quick' | 'grand' | 'tribunal'
+  status: 'scheduled' | 'live' | 'ended' | 'cancelled'
+  scheduled_at: string
+  started_at: string | null
+  ended_at: string | null
+  viewer_count: number
+  topic: {
+    id: string
+    statement: string
+    category: string | null
+    status: string
+  } | null
+  creator: {
+    id: string
+    username: string
+    display_name: string | null
+    avatar_url: string | null
+    role: string
+  } | null
+}
+
+interface TagResult {
+  id: string
+  statement: string
+  category: string | null
+  status: string
+  blue_pct: number
+  total_votes: number
+  view_count: number
+  created_at: string
+  tags: string[]
+}
+
 interface SuggestedUser {
   id: string
   username: string
@@ -164,7 +203,7 @@ interface TrendingData {
   recentLaws: { id: string; statement: string; category: string | null; established_at: string }[]
 }
 
-type SearchResult = TopicResult | LawResult | PersonResult | ArgumentResult | QuestionResult | RelayResult
+type SearchResult = TopicResult | LawResult | PersonResult | ArgumentResult | QuestionResult | RelayResult | DebateResult | TagResult
 
 // ─── Config ───────────────────────────────────────────────────────────────────
 
@@ -174,10 +213,12 @@ const MAX_RECENT = 8
 const tabs: { id: Tab; label: string; icon: typeof FileText }[] = [
   { id: 'topics',    label: 'Topics',    icon: FileText },
   { id: 'laws',      label: 'Laws',      icon: Scale },
+  { id: 'debates',   label: 'Debates',   icon: Swords },
   { id: 'people',    label: 'People',    icon: Users },
   { id: 'arguments', label: 'Arguments', icon: MessageSquare },
   { id: 'questions', label: 'Q&A',       icon: HelpCircle },
   { id: 'relays',    label: 'Relays',    icon: GitMerge },
+  { id: 'tags',      label: 'Tags',      icon: Hash },
 ]
 
 const statusBadge: Record<string, 'proposed' | 'active' | 'law' | 'failed'> = {
@@ -267,7 +308,7 @@ function SearchFilters({
   const [categoryOpen, setCategoryOpen] = useState(false)
   const hasFilters = categoryFilter !== null || statusFilter !== null || sideFilter !== null
 
-  if (tab === 'people' || tab === 'questions') return null
+  if (tab === 'people' || tab === 'questions' || tab === 'debates' || tab === 'tags') return null
 
   return (
     <div className="flex items-center gap-2 flex-wrap mb-4">
@@ -845,6 +886,180 @@ function RelayRow({ item }: { item: RelayResult }) {
   )
 }
 
+// ─── Debate result row ────────────────────────────────────────────────────────
+
+const DEBATE_TYPE_LABELS: Record<string, string> = {
+  quick: 'Quick',
+  grand: 'Grand',
+  tribunal: 'Tribunal',
+}
+
+const DEBATE_STATUS_STYLES: Record<string, { pill: string; dot: string }> = {
+  live:      { pill: 'bg-against-500/10 border-against-500/30 text-against-300', dot: 'bg-against-400' },
+  scheduled: { pill: 'bg-purple/10 border-purple/30 text-purple',               dot: 'bg-purple' },
+  ended:     { pill: 'bg-surface-300/40 border-surface-400/40 text-surface-500', dot: 'bg-surface-500' },
+}
+
+function DebateRow({ item }: { item: DebateResult }) {
+  const statusStyle = DEBATE_STATUS_STYLES[item.status] ?? DEBATE_STATUS_STYLES.ended
+  const displayDate = item.status === 'ended' && item.ended_at
+    ? item.ended_at
+    : item.scheduled_at
+
+  return (
+    <Link
+      href={`/debates/${item.id}`}
+      className={cn(
+        'block p-4 rounded-xl',
+        'bg-surface-100 border transition-colors group',
+        item.status === 'live'
+          ? 'border-against-500/30 hover:border-against-500/50'
+          : 'border-surface-300 hover:border-surface-400'
+      )}
+    >
+      {/* Status + type + creator + time */}
+      <div className="flex items-center gap-2 mb-2.5 flex-wrap">
+        <span
+          className={cn(
+            'inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-mono font-bold border flex-shrink-0',
+            statusStyle.pill
+          )}
+        >
+          <span className={cn('h-1.5 w-1.5 rounded-full', statusStyle.dot, item.status === 'live' && 'animate-pulse')} aria-hidden="true" />
+          {item.status === 'live' ? 'LIVE' : item.status.toUpperCase()}
+        </span>
+        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-mono border bg-surface-200 border-surface-300 text-surface-500 flex-shrink-0">
+          <Swords className="h-2.5 w-2.5" aria-hidden="true" />
+          {DEBATE_TYPE_LABELS[item.type] ?? item.type}
+        </span>
+        {item.creator && (
+          <div className="flex items-center gap-1.5 min-w-0">
+            <Avatar
+              src={item.creator.avatar_url}
+              fallback={item.creator.display_name || item.creator.username}
+              size="xs"
+            />
+            <span className="text-xs text-surface-500 truncate">
+              {item.creator.display_name || item.creator.username}
+            </span>
+          </div>
+        )}
+        <div className="ml-auto flex items-center gap-2 flex-shrink-0">
+          {item.status === 'live' && item.viewer_count > 0 && (
+            <span className="text-xs font-mono text-against-400">{item.viewer_count} watching</span>
+          )}
+          <span className="text-[10px] font-mono text-surface-600">
+            {relativeTime(displayDate)}
+          </span>
+        </div>
+      </div>
+
+      {/* Debate title */}
+      <p className="text-sm font-semibold text-white line-clamp-2 leading-snug mb-2 group-hover:text-against-300 transition-colors">
+        {item.title}
+      </p>
+
+      {/* Description */}
+      {item.description && (
+        <p className="text-xs text-surface-500 line-clamp-2 mb-2">
+          {item.description}
+        </p>
+      )}
+
+      {/* Topic context */}
+      {item.topic && (
+        <div className="flex items-start gap-1.5 rounded-lg px-2.5 py-1.5 border bg-surface-200/50 border-surface-300">
+          <FileText className="h-3 w-3 text-surface-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
+          <span className="text-[11px] text-surface-500 line-clamp-1 leading-tight">
+            {item.topic.statement}
+          </span>
+          {item.topic.category && (
+            <span className="flex-shrink-0 text-[10px] font-mono text-surface-600 ml-auto pl-2">
+              {item.topic.category}
+            </span>
+          )}
+        </div>
+      )}
+    </Link>
+  )
+}
+
+// ─── Tag result row ───────────────────────────────────────────────────────────
+
+function TagRow({ item, query }: { item: TagResult; query: string }) {
+  const signal = getTopicSignal(item)
+  const lq = query.toLowerCase().trim()
+  const matchedTags = item.tags.filter((t) => t.includes(lq))
+  const displayTags = matchedTags.length > 0 ? matchedTags : item.tags.slice(0, 5)
+
+  return (
+    <Link
+      href={`/topic/${item.id}`}
+      className={cn(
+        'flex items-start gap-3 p-4 rounded-xl',
+        'bg-surface-100 border border-surface-300',
+        'hover:border-for-500/40 hover:bg-surface-100/80 transition-colors group'
+      )}
+    >
+      <div className="flex-shrink-0 mt-0.5 h-8 w-8 rounded-lg bg-for-500/10 flex items-center justify-center">
+        <Hash className="h-4 w-4 text-for-500" />
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-medium text-white leading-snug line-clamp-2 group-hover:text-for-400 transition-colors mb-1.5">
+          {item.statement}
+        </p>
+        {/* Matched tags */}
+        {displayTags.length > 0 && (
+          <div className="flex flex-wrap gap-1 mb-1.5">
+            {displayTags.slice(0, 6).map((tag) => (
+              <span
+                key={tag}
+                className={cn(
+                  'inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-mono border',
+                  matchedTags.includes(tag)
+                    ? 'bg-for-500/10 border-for-500/30 text-for-400'
+                    : 'bg-surface-200 border-surface-300 text-surface-500'
+                )}
+              >
+                <Hash className="h-2 w-2" aria-hidden="true" />
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+        <div className="flex items-center gap-2 flex-wrap">
+          {item.category && (
+            <span className="text-xs text-surface-500">{item.category}</span>
+          )}
+          <Badge variant={statusBadge[item.status] ?? 'proposed'}>
+            {statusLabel[item.status] ?? item.status}
+          </Badge>
+          {signal && (() => {
+            const classes = SIGNAL_PILL_CLASSES[signal.color]
+            const Icon = SEARCH_SIGNAL_ICONS[signal.id] ?? TrendingUp
+            return (
+              <span
+                className={cn(
+                  'inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-mono font-semibold border',
+                  classes.pill,
+                )}
+                title={signal.description}
+              >
+                <span className={cn('h-1.5 w-1.5 rounded-full', classes.dot)} aria-hidden="true" />
+                <Icon className="h-2.5 w-2.5" aria-hidden="true" />
+                {signal.label}
+              </span>
+            )
+          })()}
+          <span className="text-xs text-surface-500">
+            {item.total_votes.toLocaleString()} votes
+          </span>
+        </div>
+      </div>
+    </Link>
+  )
+}
+
 // ─── Suggested person card (with inline follow button) ───────────────────────
 
 function SuggestPersonCard({ user }: { user: SuggestedUser }) {
@@ -1208,6 +1423,8 @@ function EmptyState({ query, tab }: { query: string; tab: Tab }) {
     arguments: 'No arguments match your search.',
     questions: 'No questions match your search.',
     relays:    'No relay chains match your search.',
+    debates:   'No debates match your search.',
+    tags:      'No topics found for that tag.',
   }
   return (
     <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
@@ -1392,7 +1609,7 @@ function SearchContent() {
 
         {/* Tabs — only show when a query is active */}
         {!showDiscovery && (
-          <div className="flex gap-1 p-1 bg-surface-200 rounded-xl mb-6" role="tablist" aria-label="Search categories">
+          <div className="flex gap-1 p-1 bg-surface-200 rounded-xl mb-6 overflow-x-auto scrollbar-hide" role="tablist" aria-label="Search categories">
             {tabs.map((tab) => {
               const Icon = tab.icon
               return (
@@ -1402,7 +1619,7 @@ function SearchContent() {
                   aria-selected={activeTab === tab.id}
                   onClick={() => handleTabChange(tab.id)}
                   className={cn(
-                    'flex-1 flex items-center justify-center gap-1.5 h-9 rounded-lg text-sm font-medium transition-colors',
+                    'flex-shrink-0 flex items-center justify-center gap-1.5 h-9 px-3 rounded-lg text-sm font-medium transition-colors whitespace-nowrap',
                     activeTab === tab.id
                       ? 'bg-surface-100 text-white shadow-sm'
                       : 'text-surface-500 hover:text-surface-700'
@@ -1458,6 +1675,12 @@ function SearchContent() {
                 }
                 if (activeTab === 'relays') {
                   return <RelayRow key={item.id} item={item as RelayResult} />
+                }
+                if (activeTab === 'debates') {
+                  return <DebateRow key={item.id} item={item as DebateResult} />
+                }
+                if (activeTab === 'tags') {
+                  return <TagRow key={item.id} item={item as TagResult} query={query} />
                 }
                 return <PersonRow key={item.id} item={item as PersonResult} />
               })

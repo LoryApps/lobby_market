@@ -297,5 +297,85 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ results: data ?? [], engine: 'ilike' })
   }
 
+  // ── Debates ──────────────────────────────────────────────────────────────────
+  // Searches by debate title/description OR by matching topic statement.
+
+  if (tab === 'debates') {
+    const DEBATE_SELECT = `
+      id, title, description, type, status, scheduled_at, started_at, ended_at, viewer_count,
+      topic:topics!topic_id(id, statement, category, status),
+      creator:profiles!creator_id(id, username, display_name, avatar_url, role)
+    `
+
+    // Direct match: title or description ilike
+    const { data: directData } = await supabase
+      .from('debates')
+      .select(DEBATE_SELECT)
+      .or(`title.ilike.${pattern},description.ilike.${pattern}`)
+      .in('status', ['scheduled', 'live', 'ended'])
+      .order('scheduled_at', { ascending: false })
+      .limit(20)
+
+    const direct = directData ?? []
+
+    // Also find debates whose topic statement matches
+    const { data: topicMatchData } = await supabase
+      .from('topics')
+      .select('id')
+      .ilike('statement', pattern)
+      .limit(30)
+    const topicIds = (topicMatchData ?? []).map((t) => t.id as string)
+
+    let byTopic: typeof direct = []
+    if (topicIds.length > 0) {
+      const seen = new Set(direct.map((d) => d.id as string))
+      const { data: td } = await supabase
+        .from('debates')
+        .select(DEBATE_SELECT)
+        .in('topic_id', topicIds)
+        .in('status', ['scheduled', 'live', 'ended'])
+        .order('scheduled_at', { ascending: false })
+        .limit(20)
+      byTopic = (td ?? []).filter((d) => !seen.has(d.id as string))
+    }
+
+    const merged = [...direct, ...byTopic].slice(0, 20)
+    return NextResponse.json({ results: merged, engine: 'ilike' })
+  }
+
+  // ── Tags ─────────────────────────────────────────────────────────────────────
+  // Searches topics by their auto-generated keyword tags (topics.tags text[]).
+
+  if (tab === 'tags') {
+    const TAG_SELECT = 'id, statement, category, status, blue_pct, total_votes, view_count, created_at, tags'
+
+    // Exact tag match via array contains
+    const { data: tagData, error: tagError } = await supabase
+      .from('topics')
+      .select(TAG_SELECT)
+      .contains('tags', [q.toLowerCase().trim()])
+      .in('status', ['proposed', 'active', 'voting', 'law', 'failed'])
+      .order('feed_score', { ascending: false })
+      .limit(20)
+
+    if (!tagError && tagData && tagData.length > 0) {
+      return NextResponse.json({ results: tagData, engine: 'tag' })
+    }
+
+    // Fallback: ilike on statement (tags are derived from it)
+    const { data, error } = await supabase
+      .from('topics')
+      .select(TAG_SELECT)
+      .ilike('statement', pattern)
+      .in('status', ['proposed', 'active', 'voting', 'law', 'failed'])
+      .order('feed_score', { ascending: false })
+      .limit(20)
+
+    if (error) {
+      return NextResponse.json({ error: 'Search failed' }, { status: 500 })
+    }
+    return NextResponse.json({ results: data ?? [], engine: 'ilike' })
+  }
+
   return NextResponse.json({ results: [] })
 }
