@@ -412,6 +412,21 @@ export default function LawEndorsementsPage() {
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
+
+            {/* Top Endorsers link */}
+            <Link
+              href="/leaderboard/endorsements"
+              className="flex items-center justify-between rounded-xl border border-gold/30 bg-gold/5 px-4 py-3 hover:bg-gold/10 transition-colors group"
+            >
+              <div className="flex items-center gap-3">
+                <Users className="h-4 w-4 text-gold" />
+                <div>
+                  <p className="text-sm font-mono font-semibold text-white">Top Law Endorsers</p>
+                  <p className="text-xs font-mono text-surface-500">Who stands behind the most laws?</p>
+                </div>
+              </div>
+              <ArrowRight className="h-4 w-4 text-surface-500 group-hover:text-surface-300 transition-colors" />
+            </Link>
           </div>
         )}
       </main>
