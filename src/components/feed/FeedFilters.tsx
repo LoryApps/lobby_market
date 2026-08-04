@@ -821,6 +821,57 @@ export function FeedFilters() {
         </div>
       )}
 
+      {/* ── New Laws mode ─────────────────────────────────────────────────── */}
+      {feedMode === 'newlaws' && (
+        <div className="flex flex-col gap-1 pb-1">
+          <div className="flex items-center gap-2 px-3 py-1">
+            <Landmark className="h-3 w-3 text-gold flex-shrink-0" />
+            <p className="text-[11px] font-mono text-gold/80">
+              Recently established laws — debates the Lobby democratically resolved into consensus
+            </p>
+          </div>
+
+          <div
+            className={cn(
+              'flex items-center gap-2 px-3 py-1.5',
+              'overflow-x-auto',
+              '[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
+            )}
+          >
+            <div className="flex items-center gap-0.5 flex-shrink-0 bg-surface-200/80 border border-surface-300 rounded-lg p-0.5 backdrop-blur-sm">
+              {SORT_OPTIONS.map(({ id, label, icon: Icon }) => (
+                <button
+                  key={id}
+                  onClick={() => setSort(id)}
+                  aria-pressed={sort === id}
+                  className={cn(
+                    'flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-mono font-medium transition-all duration-150',
+                    sort === id
+                      ? 'bg-gold/20 text-gold shadow-sm border border-gold/30'
+                      : 'text-surface-500 hover:text-surface-700'
+                  )}
+                >
+                  <Icon className="h-3 w-3 flex-shrink-0" />
+                  <span>{label}</span>
+                </button>
+              ))}
+            </div>
+
+            <Link
+              href="/new-laws"
+              className={cn(
+                'flex-shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-mono font-medium',
+                'border border-gold/30 text-gold/70',
+                'hover:text-gold hover:border-gold/50 transition-all duration-150'
+              )}
+            >
+              <Landmark className="h-3 w-3" />
+              Full list
+            </Link>
+          </div>
+        </div>
+      )}
+
       {/* ── Argued mode ───────────────────────────────────────────────────── */}
       {feedMode === 'argued' && (
         <div className="flex flex-col gap-1 pb-1">
