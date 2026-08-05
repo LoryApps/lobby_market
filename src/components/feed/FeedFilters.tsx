@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { TrendingUp, Clock, Flame, Scale, FileText, Zap, Gavel, Tag, LayoutGrid, Globe, Users, MapPin, Sparkles, History, X, Hash, Vote, Swords, Rocket, Target, Landmark, TrendingDown, MessageSquare, Activity, Timer, Gauge, Award } from 'lucide-react'
+import { TrendingUp, Clock, Flame, Scale, FileText, Zap, Gavel, Tag, LayoutGrid, Globe, Users, MapPin, Sparkles, History, X, Hash, Vote, Swords, Rocket, Target, Landmark, TrendingDown, MessageSquare, Activity, Timer, Gauge, Award, Hourglass, Waves } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { useFeedStore } from '@/lib/stores/feed-store'
 import type { FeedSort, FeedStatus, FeedMode, FeedScope } from '@/lib/stores/feed-store'
@@ -117,6 +117,8 @@ const FEED_MODES: { id: FeedMode; label: string; icon: typeof Globe; activeClass
   { id: 'lastcall', label: 'Last Call', icon: Timer, activeClass: 'bg-against-600/30 text-against-200 border border-against-500/60 shadow-sm animate-pulse' },
   { id: 'momentum', label: 'Momentum', icon: Gauge, activeClass: 'bg-amber-500/20 text-amber-300 border border-amber-400/40 shadow-sm' },
   { id: 'mandate', label: 'Mandate', icon: Award, activeClass: 'bg-emerald/20 text-emerald border border-emerald/40 shadow-sm' },
+  { id: 'elders', label: 'Elders', icon: Hourglass, activeClass: 'bg-amber-900/30 text-amber-300 border border-amber-700/40 shadow-sm' },
+  { id: 'groundswell', label: 'Groundswell', icon: Waves, activeClass: 'bg-for-600/20 text-for-300 border border-for-500/40 shadow-sm' },
 ]
 
 // Module-level cache so all FeedFilters instances share the same fetch
@@ -1052,6 +1054,99 @@ export function FeedFilters() {
             >
               <Award className="h-3 w-3" />
               Full Mandate board
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {/* ── Elders mode ───────────────────────────────────────────────────── */}
+      {feedMode === 'elders' && (
+        <div className="flex flex-col gap-1 pb-1">
+          <div className="flex items-center gap-2 px-3 py-1">
+            <Hourglass className="h-3 w-3 text-amber-400 flex-shrink-0" />
+            <p className="text-[11px] font-mono text-amber-400/80">
+              Debates open 30+ days with no resolution — the community still hasn&rsquo;t decided
+            </p>
+          </div>
+
+          <div
+            className={cn(
+              'flex items-center gap-2 px-3 py-1.5',
+              'overflow-x-auto',
+              '[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
+            )}
+          >
+            <div className="flex items-center gap-0.5 flex-shrink-0 bg-surface-200/80 border border-surface-300 rounded-lg p-0.5 backdrop-blur-sm">
+              {[
+                { id: 'age' as const, label: 'Oldest', icon: Hourglass },
+                { id: 'votes' as const, label: 'Most Voted', icon: Users },
+                { id: 'contested' as const, label: 'Contested', icon: Scale },
+              ].map(({ id, label, icon: Icon }) => (
+                <button
+                  key={id}
+                  onClick={() => setSort(id === 'age' ? 'top' : id === 'votes' ? 'top' : 'hot')}
+                  aria-pressed={
+                    (id === 'age' && sort === 'top') ||
+                    (id === 'votes' && sort === 'new') ||
+                    (id === 'contested' && sort === 'hot')
+                  }
+                  className={cn(
+                    'flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-mono font-medium transition-all duration-150',
+                    ((id === 'age' && sort === 'top') ||
+                     (id === 'votes' && sort === 'new') ||
+                     (id === 'contested' && sort === 'hot'))
+                      ? 'bg-amber-900/40 text-amber-300 shadow-sm border border-amber-700/50'
+                      : 'text-surface-500 hover:text-surface-700'
+                  )}
+                >
+                  <Icon className="h-3 w-3 flex-shrink-0" />
+                  <span>{label}</span>
+                </button>
+              ))}
+            </div>
+
+            <Link
+              href="/elders"
+              className={cn(
+                'flex-shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-mono font-medium',
+                'border border-amber-700/40 text-amber-400/70',
+                'hover:text-amber-300 hover:border-amber-700/60 transition-all duration-150'
+              )}
+            >
+              <Hourglass className="h-3 w-3" />
+              Full Elders board
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {/* ── Groundswell mode ──────────────────────────────────────────────── */}
+      {feedMode === 'groundswell' && (
+        <div className="flex flex-col gap-1 pb-1">
+          <div className="flex items-center gap-2 px-3 py-1">
+            <Waves className="h-3 w-3 text-for-400 flex-shrink-0" />
+            <p className="text-[11px] font-mono text-for-300/80">
+              Debates that were quiet — now suddenly surging. Catch the wave before it peaks
+            </p>
+          </div>
+
+          <div
+            className={cn(
+              'flex items-center gap-2 px-3 py-1.5',
+              'overflow-x-auto',
+              '[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
+            )}
+          >
+            <Link
+              href="/groundswell"
+              className={cn(
+                'flex-shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-mono font-medium',
+                'border border-for-500/30 text-for-400/70',
+                'hover:text-for-300 hover:border-for-500/50 transition-all duration-150'
+              )}
+            >
+              <Waves className="h-3 w-3" />
+              Full Groundswell board
             </Link>
           </div>
         </div>

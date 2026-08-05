@@ -1127,6 +1127,30 @@ export function FeedContainer() {
           </div>
         )}
 
+        {/* Empty state: elders feed */}
+        {!isLoading && topics.length === 0 && feedMode === 'elders' && (
+          <div className="feed-card flex items-center justify-center">
+            <div className="text-center px-6">
+              <p className="text-2xl font-bold text-white mb-2">No elders yet</p>
+              <p className="text-surface-500">
+                No unresolved debates are 30+ days old yet. Keep voting — the oldest debates will surface here over time.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Empty state: groundswell feed */}
+        {!isLoading && topics.length === 0 && feedMode === 'groundswell' && (
+          <div className="feed-card flex items-center justify-center">
+            <div className="text-center px-6">
+              <p className="text-2xl font-bold text-white mb-2">No groundswell right now</p>
+              <p className="text-surface-500">
+                No previously-quiet debates are spiking in the last 24 hours. Check back later — groundswells appear fast.
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Sentinel for infinite scroll */}
         {hasMore && <div ref={sentinelRef} className="h-1" />}
 
