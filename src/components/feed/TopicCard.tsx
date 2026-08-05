@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { MessageSquare, Share2, Eye, ThumbsUp, ThumbsDown, MapPin, Flame, Clock, Gavel, Swords, TrendingUp, Zap, X } from 'lucide-react'
+import { MessageSquare, Share2, Eye, ThumbsUp, ThumbsDown, MapPin, Flame, Clock, Gavel, Swords, TrendingUp, Zap, X, Radio } from 'lucide-react'
 import { motion, AnimatePresence, useMotionValue, useTransform, animate } from 'framer-motion'
 import { useRef, useState } from 'react'
 import { cn } from '@/lib/utils/cn'
@@ -132,6 +132,9 @@ export function TopicCard({ topic, authorName, authorAvatar, establishedAt }: To
   const isProposed = topic.status === 'proposed'
   const isLaw = topic.status === 'law'
   const signal = getTopicSignal(topic)
+
+  // Live debate metadata injected by /api/feed/livedebates
+  const liveDebate = (topic as Topic & { _live_debate?: { id: string; status: string; scheduled_at: string; debate_type: string; title: string | null } })._live_debate
 
   // Hot-take (vote reason) inline prompt state
   const [pendingVoteSide, setPendingVoteSide] = useState<VoteSide | null>(null)
@@ -391,6 +394,22 @@ export function TopicCard({ topic, authorName, authorAvatar, establishedAt }: To
                 })()}
               </div>
               <div className="flex flex-col items-end gap-1">
+                {liveDebate && (
+                  <Link
+                    href={`/debate/${liveDebate.id}`}
+                    onClick={(e) => e.stopPropagation()}
+                    aria-label={liveDebate.status === 'live' ? 'Join live debate' : 'Debate starting soon'}
+                    className={cn(
+                      'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold border',
+                      liveDebate.status === 'live'
+                        ? 'bg-against-600/30 border-against-500/60 text-against-200 animate-pulse'
+                        : 'bg-surface-300/60 border-surface-400/60 text-surface-300'
+                    )}
+                  >
+                    <Radio className="h-2.5 w-2.5" aria-hidden="true" />
+                    {liveDebate.status === 'live' ? 'LIVE' : 'SOON'}
+                  </Link>
+                )}
                 <Badge variant={statusBadgeVariant[topic.status] ?? 'proposed'}>
                   {statusLabel[topic.status] ?? topic.status}
                 </Badge>

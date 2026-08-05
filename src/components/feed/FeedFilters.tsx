@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { TrendingUp, Clock, Flame, Scale, FileText, Zap, Gavel, Tag, LayoutGrid, Globe, Users, MapPin, Sparkles, History, X, Hash, Vote, Swords, Rocket, Target, Landmark, TrendingDown, MessageSquare, Activity, Timer, Gauge, Award, Hourglass, Waves } from 'lucide-react'
+import { TrendingUp, Clock, Flame, Scale, FileText, Zap, Gavel, Tag, LayoutGrid, Globe, Users, MapPin, Sparkles, History, X, Hash, Vote, Swords, Rocket, Target, Landmark, TrendingDown, MessageSquare, Activity, Timer, Gauge, Award, Hourglass, Waves, Radio } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { useFeedStore } from '@/lib/stores/feed-store'
 import type { FeedSort, FeedStatus, FeedMode, FeedScope } from '@/lib/stores/feed-store'
@@ -119,6 +119,7 @@ const FEED_MODES: { id: FeedMode; label: string; icon: typeof Globe; activeClass
   { id: 'mandate', label: 'Mandate', icon: Award, activeClass: 'bg-emerald/20 text-emerald border border-emerald/40 shadow-sm' },
   { id: 'elders', label: 'Elders', icon: Hourglass, activeClass: 'bg-amber-900/30 text-amber-300 border border-amber-700/40 shadow-sm' },
   { id: 'groundswell', label: 'Groundswell', icon: Waves, activeClass: 'bg-for-600/20 text-for-300 border border-for-500/40 shadow-sm' },
+  { id: 'livedebates', label: 'Live Debates', icon: Radio, activeClass: 'bg-against-600/30 text-against-200 border border-against-500/60 shadow-sm' },
 ]
 
 // Module-level cache so all FeedFilters instances share the same fetch
@@ -1147,6 +1148,49 @@ export function FeedFilters() {
             >
               <Waves className="h-3 w-3" />
               Full Groundswell board
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {/* ── Live Debates mode ─────────────────────────────────────────────── */}
+      {feedMode === 'livedebates' && (
+        <div className="flex flex-col gap-1 pb-1">
+          <div className="flex items-center gap-2 px-3 py-1">
+            <Radio className="h-3 w-3 text-against-300 flex-shrink-0 animate-pulse" />
+            <p className="text-[11px] font-mono text-against-200/80">
+              Topics with debates happening right now or starting within 30 minutes
+            </p>
+          </div>
+
+          <div
+            className={cn(
+              'flex items-center gap-2 px-3 py-1.5',
+              'overflow-x-auto',
+              '[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
+            )}
+          >
+            <Link
+              href="/debate"
+              className={cn(
+                'flex-shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-mono font-medium',
+                'border border-against-500/30 text-against-400/70',
+                'hover:text-against-300 hover:border-against-500/50 transition-all duration-150'
+              )}
+            >
+              <Radio className="h-3 w-3" />
+              All Debates
+            </Link>
+            <Link
+              href="/debate/calendar"
+              className={cn(
+                'flex-shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-mono font-medium',
+                'border border-surface-400/40 text-surface-400',
+                'hover:text-surface-300 hover:border-surface-400/60 transition-all duration-150'
+              )}
+            >
+              <Clock className="h-3 w-3" />
+              Calendar
             </Link>
           </div>
         </div>

@@ -727,6 +727,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'live-debates',
+    label: 'Live Debates',
+    sublabel: 'Debates happening right now and starting within 30 minutes',
+    href: '/live-debates',
+    icon: Radio,
+    iconColor: 'text-against-300',
+    iconBg: 'bg-against-800/50',
+  },
+  {
+    type: 'link',
     id: 'hot-takes',
     label: 'Hot Takes',
     sublabel: "Citizens' unfiltered vote reasons — what people actually think",
