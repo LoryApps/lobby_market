@@ -1151,6 +1151,17 @@ export function FeedContainer() {
           </div>
         )}
 
+        {!isLoading && topics.length === 0 && feedMode === 'swing' && (
+          <div className="feed-card flex items-center justify-center">
+            <div className="text-center px-6">
+              <p className="text-2xl font-bold text-white mb-2">No swings detected</p>
+              <p className="text-surface-500">
+                No topics are showing vote reversals in the last 6 hours. Check back as civic sentiment shifts — swings can appear quickly.
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Sentinel for infinite scroll */}
         {hasMore && <div ref={sentinelRef} className="h-1" />}
 

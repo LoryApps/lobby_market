@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { TrendingUp, Clock, Flame, Scale, FileText, Zap, Gavel, Tag, LayoutGrid, Globe, Users, MapPin, Sparkles, History, X, Hash, Vote, Swords, Rocket, Target, Landmark, TrendingDown, MessageSquare, Activity, Timer, Gauge, Award, Hourglass, Waves, Radio } from 'lucide-react'
+import { TrendingUp, Clock, Flame, Scale, FileText, Zap, Gavel, Tag, LayoutGrid, Globe, Users, MapPin, Sparkles, History, X, Hash, Vote, Swords, Rocket, Target, Landmark, TrendingDown, MessageSquare, Activity, Timer, Gauge, Award, Hourglass, Waves, Radio, RefreshCcw } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { useFeedStore } from '@/lib/stores/feed-store'
 import type { FeedSort, FeedStatus, FeedMode, FeedScope } from '@/lib/stores/feed-store'
@@ -120,6 +120,7 @@ const FEED_MODES: { id: FeedMode; label: string; icon: typeof Globe; activeClass
   { id: 'elders', label: 'Elders', icon: Hourglass, activeClass: 'bg-amber-900/30 text-amber-300 border border-amber-700/40 shadow-sm' },
   { id: 'groundswell', label: 'Groundswell', icon: Waves, activeClass: 'bg-for-600/20 text-for-300 border border-for-500/40 shadow-sm' },
   { id: 'livedebates', label: 'Live Debates', icon: Radio, activeClass: 'bg-against-600/30 text-against-200 border border-against-500/60 shadow-sm' },
+  { id: 'swing', label: 'Swing', icon: RefreshCcw, activeClass: 'bg-purple/20 text-purple border border-purple/50 shadow-sm' },
 ]
 
 // Module-level cache so all FeedFilters instances share the same fetch
