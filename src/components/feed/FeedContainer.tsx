@@ -1067,6 +1067,42 @@ export function FeedContainer() {
           </div>
         )}
 
+        {/* Empty state: argued feed */}
+        {!isLoading && topics.length === 0 && feedMode === 'argued' && (
+          <div className="feed-card flex items-center justify-center">
+            <div className="text-center px-6">
+              <p className="text-2xl font-bold text-white mb-2">Nothing heavily argued yet</p>
+              <p className="text-surface-500">
+                No debates have had significant argument activity in the last 24 hours. Be the first to make an argument.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Empty state: collapse feed */}
+        {!isLoading && topics.length === 0 && feedMode === 'collapse' && (
+          <div className="feed-card flex items-center justify-center">
+            <div className="text-center px-6">
+              <p className="text-2xl font-bold text-white mb-2">No collapses detected</p>
+              <p className="text-surface-500">
+                No FOR consensus has dropped significantly in the last 7 days. Consensus is holding steady across the Lobby.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Empty state: newlaws feed */}
+        {!isLoading && topics.length === 0 && feedMode === 'newlaws' && (
+          <div className="feed-card flex items-center justify-center">
+            <div className="text-center px-6">
+              <p className="text-2xl font-bold text-white mb-2">No new laws yet</p>
+              <p className="text-surface-500">
+                No topics have been established as law recently. Vote on active debates to help pass the first law.
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Empty state: momentum feed */}
         {!isLoading && topics.length === 0 && feedMode === 'momentum' && (
           <div className="feed-card flex items-center justify-center">
@@ -1074,6 +1110,18 @@ export function FeedContainer() {
               <p className="text-2xl font-bold text-white mb-2">No momentum yet</p>
               <p className="text-surface-500">
                 No votes have been cast in the last 2 hours. Check back soon — momentum picks up fast.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Empty state: mandate feed */}
+        {!isLoading && topics.length === 0 && feedMode === 'mandate' && (
+          <div className="feed-card flex items-center justify-center">
+            <div className="text-center px-6">
+              <p className="text-2xl font-bold text-white mb-2">No mandates yet</p>
+              <p className="text-surface-500">
+                No debates have reached 80%+ consensus yet. Cast your votes — help the community reach a mandate.
               </p>
             </div>
           </div>
