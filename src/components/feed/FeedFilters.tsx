@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { TrendingUp, Clock, Flame, Scale, FileText, Zap, Gavel, Tag, LayoutGrid, Globe, Users, MapPin, Sparkles, History, X, Hash, Vote, Swords, Rocket, Target, Landmark, TrendingDown, MessageSquare, Activity, Timer, Gauge, Award, Hourglass, Waves, Radio, RefreshCcw } from 'lucide-react'
+import { TrendingUp, Clock, Flame, Scale, FileText, Zap, Gavel, Tag, LayoutGrid, Globe, Users, MapPin, Sparkles, History, X, Hash, Vote, Swords, Rocket, Target, Landmark, TrendingDown, MessageSquare, Activity, Timer, Gauge, Award, Hourglass, Waves, Radio, RefreshCcw, Archive } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { useFeedStore } from '@/lib/stores/feed-store'
 import type { FeedSort, FeedStatus, FeedMode, FeedScope } from '@/lib/stores/feed-store'
@@ -121,6 +121,7 @@ const FEED_MODES: { id: FeedMode; label: string; icon: typeof Globe; activeClass
   { id: 'groundswell', label: 'Groundswell', icon: Waves, activeClass: 'bg-for-600/20 text-for-300 border border-for-500/40 shadow-sm' },
   { id: 'livedebates', label: 'Live Debates', icon: Radio, activeClass: 'bg-against-600/30 text-against-200 border border-against-500/60 shadow-sm' },
   { id: 'swing', label: 'Swing', icon: RefreshCcw, activeClass: 'bg-purple/20 text-purple border border-purple/50 shadow-sm' },
+  { id: 'stalled', label: 'Stalled', icon: Archive, activeClass: 'bg-surface-400/30 text-surface-300 border border-surface-400/50 shadow-sm' },
 ]
 
 // Module-level cache so all FeedFilters instances share the same fetch
@@ -1149,6 +1150,70 @@ export function FeedFilters() {
             >
               <Waves className="h-3 w-3" />
               Full Groundswell board
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {/* ── Swing mode ────────────────────────────────────────────────────── */}
+      {feedMode === 'swing' && (
+        <div className="flex flex-col gap-1 pb-1">
+          <div className="flex items-center gap-2 px-3 py-1">
+            <RefreshCcw className="h-3 w-3 text-purple flex-shrink-0" />
+            <p className="text-[11px] font-mono text-purple/80">
+              Recent votes are reversing the established consensus — debates mid-flip right now
+            </p>
+          </div>
+
+          <div
+            className={cn(
+              'flex items-center gap-2 px-3 py-1.5',
+              'overflow-x-auto',
+              '[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
+            )}
+          >
+            <Link
+              href="/swing"
+              className={cn(
+                'flex-shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-mono font-medium',
+                'border border-purple/30 text-purple/70',
+                'hover:text-purple hover:border-purple/50 transition-all duration-150'
+              )}
+            >
+              <RefreshCcw className="h-3 w-3" />
+              Full Swing board
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {/* ── Stalled mode ──────────────────────────────────────────────────── */}
+      {feedMode === 'stalled' && (
+        <div className="flex flex-col gap-1 pb-1">
+          <div className="flex items-center gap-2 px-3 py-1">
+            <Archive className="h-3 w-3 text-surface-400 flex-shrink-0" />
+            <p className="text-[11px] font-mono text-surface-400/80">
+              Debates that had real momentum but went silent 5-30 days ago — the forgotten civic questions
+            </p>
+          </div>
+
+          <div
+            className={cn(
+              'flex items-center gap-2 px-3 py-1.5',
+              'overflow-x-auto',
+              '[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
+            )}
+          >
+            <Link
+              href="/stalled"
+              className={cn(
+                'flex-shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-mono font-medium',
+                'border border-surface-400/40 text-surface-400/70',
+                'hover:text-surface-300 hover:border-surface-400/60 transition-all duration-150'
+              )}
+            >
+              <Archive className="h-3 w-3" />
+              Full Stalled board
             </Link>
           </div>
         </div>

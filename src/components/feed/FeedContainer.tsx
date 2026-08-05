@@ -1162,6 +1162,17 @@ export function FeedContainer() {
           </div>
         )}
 
+        {!isLoading && topics.length === 0 && feedMode === 'stalled' && (
+          <div className="feed-card flex items-center justify-center">
+            <div className="text-center px-6">
+              <p className="text-2xl font-bold text-white mb-2">No stalled debates</p>
+              <p className="text-surface-500">
+                Every active debate is still receiving votes. The civic conversation is healthy — nothing has been left behind.
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Sentinel for infinite scroll */}
         {hasMore && <div ref={sentinelRef} className="h-1" />}
 
