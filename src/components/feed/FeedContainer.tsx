@@ -1173,6 +1173,17 @@ export function FeedContainer() {
           </div>
         )}
 
+        {!isLoading && topics.length === 0 && feedMode === 'comeback' && (
+          <div className="feed-card flex items-center justify-center">
+            <div className="text-center px-6">
+              <p className="text-2xl font-bold text-white mb-2">No comebacks right now</p>
+              <p className="text-surface-500">
+                No dormant debates have been revived in the last 24 hours. Check back soon — civic conversations have a way of surprising you.
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Sentinel for infinite scroll */}
         {hasMore && <div ref={sentinelRef} className="h-1" />}
 
