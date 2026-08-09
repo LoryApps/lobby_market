@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { TrendingUp, Clock, Flame, Scale, FileText, Zap, Gavel, Tag, LayoutGrid, Globe, Users, MapPin, Sparkles, History, X, Hash, Vote, Swords, Rocket, Target, Landmark, TrendingDown, MessageSquare, Activity, Timer, Gauge, Award, Hourglass, Waves, Radio, RefreshCcw, Archive, RotateCcw, BrainCircuit } from 'lucide-react'
+import { TrendingUp, Clock, Flame, Scale, FileText, Zap, Gavel, Tag, LayoutGrid, Globe, Users, MapPin, Sparkles, History, X, Hash, Vote, Swords, Rocket, Target, Landmark, TrendingDown, MessageSquare, Activity, Timer, Gauge, Award, Hourglass, Waves, Radio, RefreshCcw, Archive, RotateCcw, BrainCircuit, Lock } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { useFeedStore } from '@/lib/stores/feed-store'
 import type { FeedSort, FeedStatus, FeedMode, FeedScope } from '@/lib/stores/feed-store'
@@ -124,6 +124,7 @@ const FEED_MODES: { id: FeedMode; label: string; icon: typeof Globe; activeClass
   { id: 'stalled', label: 'Stalled', icon: Archive, activeClass: 'bg-surface-400/30 text-surface-300 border border-surface-400/50 shadow-sm' },
   { id: 'comeback', label: 'Comeback', icon: RotateCcw, activeClass: 'bg-emerald/20 text-emerald border border-emerald/50 shadow-sm' },
   { id: 'overdrive', label: 'Overdrive', icon: BrainCircuit, activeClass: 'bg-purple/30 text-purple border border-purple/60 shadow-sm' },
+  { id: 'deadlock', label: 'Deadlock', icon: Lock, activeClass: 'bg-against-500/20 text-against-300 border border-against-500/50 shadow-sm' },
 ]
 
 // Module-level cache so all FeedFilters instances share the same fetch
