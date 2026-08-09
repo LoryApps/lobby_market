@@ -1413,6 +1413,17 @@ export function FeedFilters() {
               <Gavel className="h-3 w-3" />
               Near Law
             </Link>
+            <Link
+              href="/converging"
+              className={cn(
+                'flex-shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-mono font-medium',
+                'border border-emerald/40 text-emerald/80',
+                'hover:text-emerald hover:border-emerald/60 transition-all duration-150'
+              )}
+            >
+              <GitMerge className="h-3 w-3" />
+              Full View
+            </Link>
           </div>
         </div>
       )}

@@ -93,8 +93,9 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
       priority: 0.65,
     }))
   ),
-  { url: `${BASE_URL}/consensus`, changeFrequency: 'always', priority: 0.8 },
-  { url: `${BASE_URL}/mandate`,   changeFrequency: 'hourly', priority: 0.82 },
+  { url: `${BASE_URL}/consensus`,   changeFrequency: 'always', priority: 0.8 },
+  { url: `${BASE_URL}/converging`,  changeFrequency: 'hourly', priority: 0.82 },
+  { url: `${BASE_URL}/mandate`,     changeFrequency: 'hourly', priority: 0.82 },
   { url: `${BASE_URL}/analytics/sentiment`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/analytics/arguments`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/analytics/topics`, changeFrequency: 'daily', priority: 0.65 },
