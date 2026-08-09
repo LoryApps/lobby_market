@@ -126,6 +126,7 @@ const FEED_MODES: { id: FeedMode; label: string; icon: typeof Globe; activeClass
   { id: 'overdrive', label: 'Overdrive', icon: BrainCircuit, activeClass: 'bg-purple/30 text-purple border border-purple/60 shadow-sm' },
   { id: 'deadlock', label: 'Deadlock', icon: Lock, activeClass: 'bg-against-500/20 text-against-300 border border-against-500/50 shadow-sm' },
   { id: 'converging', label: 'Converging', icon: GitMerge, activeClass: 'bg-emerald/20 text-emerald border border-emerald/50 shadow-sm' },
+  { id: 'flashpoint', label: 'Flashpoint', icon: Zap, activeClass: 'bg-against-500/30 text-against-200 border border-against-400/60 shadow-sm animate-pulse' },
 ]
 
 // Module-level cache so all FeedFilters instances share the same fetch
@@ -201,6 +202,7 @@ export function FeedFilters() {
       + (sort !== 'top' && feedMode === 'flux' ? 1 : 0)
       + (sort !== 'top' && feedMode === 'lastcall' ? 1 : 0)
       + (sort !== 'top' && feedMode === 'comeback' ? 1 : 0)
+      + (sort !== 'top' && feedMode === 'flashpoint' ? 1 : 0)
 
   return (
     <div className="flex flex-col gap-1.5">

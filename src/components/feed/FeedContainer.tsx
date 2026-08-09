@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useCallback, useState } from 'react'
 import Link from 'next/link'
-import { Users, Search, Keyboard, RefreshCw, ChevronUp, Sparkles, UserPlus, Check, Loader2, History, Vote, Hash, Plus, Lock, GitMerge } from 'lucide-react'
+import { Users, Search, Keyboard, RefreshCw, ChevronUp, Sparkles, UserPlus, Check, Loader2, History, Vote, Hash, Plus, Lock, GitMerge, Zap } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useFeedStore } from '@/lib/stores/feed-store'
 import { useVoteStore } from '@/lib/stores/vote-store'
@@ -1214,6 +1214,18 @@ export function FeedContainer() {
               <p className="text-2xl font-bold text-white mb-2">No converging debates right now</p>
               <p className="text-surface-500">
                 No debates are actively building consensus. Check back as the community votes — consensus forms quickly.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {!isLoading && topics.length === 0 && feedMode === 'flashpoint' && (
+          <div className="feed-card flex items-center justify-center">
+            <div className="text-center px-6">
+              <Zap className="h-8 w-8 text-against-400/50 mx-auto mb-3" />
+              <p className="text-2xl font-bold text-white mb-2">No flashpoints right now</p>
+              <p className="text-surface-500">
+                No debates are simultaneously high-velocity and contested. Vote activity picks up soon — check back.
               </p>
             </div>
           </div>
