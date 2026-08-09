@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { TrendingUp, Clock, Flame, Scale, FileText, Zap, Gavel, Tag, LayoutGrid, Globe, Users, MapPin, Sparkles, History, X, Hash, Vote, Swords, Rocket, Target, Landmark, TrendingDown, MessageSquare, Activity, Timer, Gauge, Award, Hourglass, Waves, Radio, RefreshCcw, Archive, RotateCcw, BrainCircuit, Lock } from 'lucide-react'
+import { TrendingUp, Clock, Flame, Scale, FileText, Zap, Gavel, Tag, LayoutGrid, Globe, Users, MapPin, Sparkles, History, X, Hash, Vote, Swords, Rocket, Target, Landmark, TrendingDown, MessageSquare, Activity, Timer, Gauge, Award, Hourglass, Waves, Radio, RefreshCcw, Archive, RotateCcw, BrainCircuit, Lock, GitMerge } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { useFeedStore } from '@/lib/stores/feed-store'
 import type { FeedSort, FeedStatus, FeedMode, FeedScope } from '@/lib/stores/feed-store'
@@ -125,6 +125,7 @@ const FEED_MODES: { id: FeedMode; label: string; icon: typeof Globe; activeClass
   { id: 'comeback', label: 'Comeback', icon: RotateCcw, activeClass: 'bg-emerald/20 text-emerald border border-emerald/50 shadow-sm' },
   { id: 'overdrive', label: 'Overdrive', icon: BrainCircuit, activeClass: 'bg-purple/30 text-purple border border-purple/60 shadow-sm' },
   { id: 'deadlock', label: 'Deadlock', icon: Lock, activeClass: 'bg-against-500/20 text-against-300 border border-against-500/50 shadow-sm' },
+  { id: 'converging', label: 'Converging', icon: GitMerge, activeClass: 'bg-emerald/20 text-emerald border border-emerald/50 shadow-sm' },
 ]
 
 // Module-level cache so all FeedFilters instances share the same fetch
@@ -1325,6 +1326,92 @@ export function FeedFilters() {
             >
               <Clock className="h-3 w-3" />
               Calendar
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {/* ── Deadlock mode ─────────────────────────────────────────────────── */}
+      {feedMode === 'deadlock' && (
+        <div className="flex flex-col gap-1 pb-1">
+          <div className="flex items-center gap-2 px-3 py-1">
+            <Lock className="h-3 w-3 text-against-300 flex-shrink-0" />
+            <p className="text-[11px] font-mono text-against-200/80">
+              Debates locked in near-perfect 50/50 disagreement for 7+ days — the civic questions democracy can&#39;t resolve
+            </p>
+          </div>
+
+          <div
+            className={cn(
+              'flex items-center gap-2 px-3 py-1.5',
+              'overflow-x-auto',
+              '[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
+            )}
+          >
+            <Link
+              href="/deadlock"
+              className={cn(
+                'flex-shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-mono font-medium',
+                'border border-against-500/30 text-against-400/70',
+                'hover:text-against-300 hover:border-against-500/50 transition-all duration-150'
+              )}
+            >
+              <Lock className="h-3 w-3" />
+              Full Deadlock board
+            </Link>
+            <Link
+              href="/battleground"
+              className={cn(
+                'flex-shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-mono font-medium',
+                'border border-surface-400/40 text-surface-400',
+                'hover:text-surface-300 hover:border-surface-400/60 transition-all duration-150'
+              )}
+            >
+              <Swords className="h-3 w-3" />
+              Battleground
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {/* ── Converging mode ───────────────────────────────────────────────── */}
+      {feedMode === 'converging' && (
+        <div className="flex flex-col gap-1 pb-1">
+          <div className="flex items-center gap-2 px-3 py-1">
+            <GitMerge className="h-3 w-3 text-emerald flex-shrink-0" />
+            <p className="text-[11px] font-mono text-emerald/80">
+              Debates where the community is building consensus — recent votes reinforce the majority, pushing toward resolution
+            </p>
+          </div>
+
+          <div
+            className={cn(
+              'flex items-center gap-2 px-3 py-1.5',
+              'overflow-x-auto',
+              '[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
+            )}
+          >
+            <Link
+              href="/mandate"
+              className={cn(
+                'flex-shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-mono font-medium',
+                'border border-emerald/30 text-emerald/70',
+                'hover:text-emerald hover:border-emerald/50 transition-all duration-150'
+              )}
+            >
+              <Award className="h-3 w-3" />
+              Mandate
+            </Link>
+            <Link
+              href="/near-law"
+              className={cn(
+                'flex-shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-mono font-medium',
+                'border border-surface-400/40 text-surface-400',
+                'hover:text-surface-300 hover:border-surface-400/60 transition-all duration-150'
+              )}
+            >
+              <Gavel className="h-3 w-3" />
+              Near Law
             </Link>
           </div>
         </div>

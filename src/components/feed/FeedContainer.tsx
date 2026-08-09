@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useCallback, useState } from 'react'
 import Link from 'next/link'
-import { Users, Search, Keyboard, RefreshCw, ChevronUp, Sparkles, UserPlus, Check, Loader2, History, Vote, Hash, Plus } from 'lucide-react'
+import { Users, Search, Keyboard, RefreshCw, ChevronUp, Sparkles, UserPlus, Check, Loader2, History, Vote, Hash, Plus, Lock, GitMerge } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useFeedStore } from '@/lib/stores/feed-store'
 import { useVoteStore } from '@/lib/stores/vote-store'
@@ -1190,6 +1190,30 @@ export function FeedContainer() {
               <p className="text-2xl font-bold text-white mb-2">No overdrive debates yet</p>
               <p className="text-surface-500">
                 No debates have enough arguments relative to their votes yet. Start arguing — the intellectual black holes will surface as the community digs in.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {!isLoading && topics.length === 0 && feedMode === 'deadlock' && (
+          <div className="feed-card flex items-center justify-center">
+            <div className="text-center px-6">
+              <Lock className="h-8 w-8 text-against-400/50 mx-auto mb-3" />
+              <p className="text-2xl font-bold text-white mb-2">No deadlocks right now</p>
+              <p className="text-surface-500">
+                No debates are perfectly stuck at 50/50 for 7+ days. Check back when the community can&apos;t make up its mind.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {!isLoading && topics.length === 0 && feedMode === 'converging' && (
+          <div className="feed-card flex items-center justify-center">
+            <div className="text-center px-6">
+              <GitMerge className="h-8 w-8 text-emerald/50 mx-auto mb-3" />
+              <p className="text-2xl font-bold text-white mb-2">No converging debates right now</p>
+              <p className="text-surface-500">
+                No debates are actively building consensus. Check back as the community votes — consensus forms quickly.
               </p>
             </div>
           </div>
