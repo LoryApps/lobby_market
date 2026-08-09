@@ -1184,6 +1184,17 @@ export function FeedContainer() {
           </div>
         )}
 
+        {!isLoading && topics.length === 0 && feedMode === 'overdrive' && (
+          <div className="feed-card flex items-center justify-center">
+            <div className="text-center px-6">
+              <p className="text-2xl font-bold text-white mb-2">No overdrive debates yet</p>
+              <p className="text-surface-500">
+                No debates have enough arguments relative to their votes yet. Start arguing — the intellectual black holes will surface as the community digs in.
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Sentinel for infinite scroll */}
         {hasMore && <div ref={sentinelRef} className="h-1" />}
 

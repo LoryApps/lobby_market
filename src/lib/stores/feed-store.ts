@@ -7,7 +7,7 @@ export type FeedStatus = "proposed" | "active" | "voting" | "law" | null;
 export type FeedCategory = string | null;
 export type FeedScope = "Global" | "National" | "Regional" | "Local" | null;
 export type FeedTag = string | null;
-export type FeedMode = "discover" | "following" | "foryou" | "mytags" | "unvoted" | "battleground" | "rising" | "closingin" | "newlaws" | "collapse" | "argued" | "flux" | "lastcall" | "momentum" | "mandate" | "elders" | "groundswell" | "livedebates" | "swing" | "stalled" | "comeback";
+export type FeedMode = "discover" | "following" | "foryou" | "mytags" | "unvoted" | "battleground" | "rising" | "closingin" | "newlaws" | "collapse" | "argued" | "flux" | "lastcall" | "momentum" | "mandate" | "elders" | "groundswell" | "livedebates" | "swing" | "stalled" | "comeback" | "overdrive";
 
 interface FeedState {
   topics: TopicWithAuthor[];
@@ -754,6 +754,37 @@ export const useFeedStore = create<FeedState>()(
               offset: state.offset + json.topics.length,
               hasMore: json.hasMore ?? json.topics.length === 20,
             }));
+          } else if (feedMode === "overdrive") {
+            // Overdrive feed — topics with highest argument-to-voter ratio
+            const params = new URLSearchParams({
+              limit: "20",
+              offset: String(offset),
+              sort,
+            });
+
+            const res = await fetch(`/api/feed/overdrive?${params.toString()}`);
+
+            if (get()._generation !== capturedGen) return;
+
+            if (!res.ok) {
+              console.error("Failed to fetch overdrive feed:", res.statusText);
+              return;
+            }
+
+            const json: { topics: TopicWithAuthor[]; hasMore: boolean } = await res.json();
+
+            if (get()._generation !== capturedGen) return;
+
+            if (json.topics.length === 0) {
+              set({ hasMore: false });
+              return;
+            }
+
+            set((state) => ({
+              topics: [...state.topics, ...json.topics],
+              offset: state.offset + json.topics.length,
+              hasMore: json.hasMore ?? json.topics.length === 20,
+            }));
           } else {
             // Discover feed
             const params = new URLSearchParams({
@@ -867,7 +898,7 @@ export const useFeedStore = create<FeedState>()(
         // Reset sort to "new" for following/mytags, "top" for everything else
         const sort = (feedMode === "following" || feedMode === "mytags") ? "new"
           : (feedMode === "unvoted" || feedMode === "battleground") ? "hot"
-          : (feedMode === "rising" || feedMode === "closingin" || feedMode === "newlaws" || feedMode === "collapse" || feedMode === "argued" || feedMode === "flux" || feedMode === "lastcall" || feedMode === "mandate" || feedMode === "elders" || feedMode === "groundswell" || feedMode === "livedebates" || feedMode === "swing" || feedMode === "stalled" || feedMode === "comeback") ? "top"
+          : (feedMode === "rising" || feedMode === "closingin" || feedMode === "newlaws" || feedMode === "collapse" || feedMode === "argued" || feedMode === "flux" || feedMode === "lastcall" || feedMode === "mandate" || feedMode === "elders" || feedMode === "groundswell" || feedMode === "livedebates" || feedMode === "swing" || feedMode === "stalled" || feedMode === "comeback" || feedMode === "overdrive") ? "top"
           : "top";
         set({
           feedMode,
