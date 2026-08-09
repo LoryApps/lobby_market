@@ -1567,6 +1567,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'signal',
+    label: 'Civic Signal',
+    sublabel: 'The debate where your vote matters most right now — closest to a decisive threshold',
+    href: '/signal',
+    icon: Activity,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'flashpoint',
     label: 'Flashpoint',
     sublabel: 'The single most contested debate raging right now — peak velocity, maximum drama',
