@@ -58,6 +58,8 @@ const SECTIONS: ShortcutSection[] = [
       { keys: ['G', 'T'], description: 'Go to Trending' },
       { keys: ['G', 'W'], description: 'Go to Activity feed' },
       { keys: ['G', 'M'], description: 'Go to My Week' },
+      { keys: ['G', 'R'], description: 'Go to Recently Viewed' },
+      { keys: ['G', 'B'], description: 'Go to Feature Hub' },
     ],
   },
   {
@@ -321,6 +323,8 @@ export function KeyboardShortcutsProvider() {
           t: '/trending',
           w: '/activity',
           m: '/my-week',
+          r: '/history',
+          b: '/hub',
         }
         const dest = navMap[key.toLowerCase()]
         if (dest) {

@@ -1,5 +1,6 @@
 'use client'
 
+import { useRef } from 'react'
 import Link from 'next/link'
 import { TrendingUp, Clock, Flame, Scale, FileText, Zap, Gavel, Tag, LayoutGrid, Globe, Users, MapPin, Sparkles, History, X, Hash } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
@@ -126,6 +127,23 @@ export function FeedFilters() {
     clearFilters,
   } = useFeedStore()
 
+  const modeListRef = useRef<HTMLDivElement>(null)
+
+  function handleModeKeyDown(e: React.KeyboardEvent, currentIndex: number) {
+    if (!['ArrowRight', 'ArrowLeft', 'Home', 'End'].includes(e.key)) return
+    e.preventDefault()
+    const tabs = modeListRef.current?.querySelectorAll<HTMLButtonElement>('[role="tab"]')
+    if (!tabs || tabs.length === 0) return
+    let nextIndex = currentIndex
+    if (e.key === 'ArrowRight') nextIndex = (currentIndex + 1) % tabs.length
+    else if (e.key === 'ArrowLeft') nextIndex = (currentIndex - 1 + tabs.length) % tabs.length
+    else if (e.key === 'Home') nextIndex = 0
+    else if (e.key === 'End') nextIndex = tabs.length - 1
+    tabs[nextIndex].focus()
+    const nextMode = FEED_MODES[nextIndex]?.id
+    if (nextMode) setFeedMode(nextMode)
+  }
+
   // Count non-default active filters in discover mode
   const activeFilterCount = feedMode === 'discover'
     ? [
@@ -143,18 +161,26 @@ export function FeedFilters() {
     <div className="flex flex-col gap-1.5">
       {/* Row 0: Discover / Following mode toggle + clear-filters */}
       <div className="flex items-center gap-2 px-3 pt-2">
-        <div className="flex items-center gap-0.5 bg-surface-200/80 border border-surface-300 rounded-xl p-0.5 backdrop-blur-sm">
-          {FEED_MODES.map(({ id, label, icon: Icon, activeClass }) => (
+        <div
+          ref={modeListRef}
+          role="tablist"
+          aria-label="Feed mode"
+          className="flex items-center gap-0.5 bg-surface-200/80 border border-surface-300 rounded-xl p-0.5 backdrop-blur-sm"
+        >
+          {FEED_MODES.map(({ id, label, icon: Icon, activeClass }, index) => (
             <button
               key={id}
+              role="tab"
+              aria-selected={feedMode === id}
+              tabIndex={feedMode === id ? 0 : -1}
               onClick={() => setFeedMode(id)}
-              aria-pressed={feedMode === id}
+              onKeyDown={(e) => handleModeKeyDown(e, index)}
               className={cn(
                 'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-semibold transition-all duration-150',
                 feedMode === id ? activeClass : 'text-surface-500 hover:text-surface-300'
               )}
             >
-              <Icon className="h-3 w-3 flex-shrink-0" />
+              <Icon className="h-3 w-3 flex-shrink-0" aria-hidden="true" />
               {label}
             </button>
           ))}
