@@ -14,6 +14,7 @@ import {
   Layers,
   Link2,
   MessageSquare,
+  PenLine,
   Scale,
   Shield,
   Sparkles,
@@ -724,6 +725,27 @@ export function ProfilePage({
                 </div>
                 <p className="text-xs font-mono text-surface-500 mt-2">
                   Category breakdown, voting accuracy, argument quality, and how {profile.display_name ?? profile.username}&apos;s civic engagement compares to the platform.
+                </p>
+              </Link>
+
+              {/* Argument Style teaser */}
+              <Link
+                href={`/profile/${profile.username}/style`}
+                className="block rounded-2xl border border-surface-300 bg-surface-100 hover:bg-surface-200 hover:border-surface-400 transition-colors p-5"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <PenLine className="h-4 w-4 text-purple" aria-hidden="true" />
+                    <h3 className="text-[11px] font-mono text-surface-400 uppercase tracking-wider">
+                      Argument Style
+                    </h3>
+                  </div>
+                  <span className="text-[10px] font-mono text-surface-500 hover:text-white transition-colors">
+                    View style →
+                  </span>
+                </div>
+                <p className="text-xs font-mono text-surface-500 mt-2">
+                  Writing archetype, grade distribution, topic focus, peak activity times, and signature arguments — how {profile.display_name ?? profile.username} argues.
                 </p>
               </Link>
 
