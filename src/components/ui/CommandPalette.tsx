@@ -2901,6 +2901,16 @@ const QUICK_LINKS: QuickLink[] = [
     iconColor: 'text-against-300',
     iconBg: 'bg-against-500/10',
   },
+  {
+    type: 'link',
+    id: 'breakthrough',
+    label: 'Civic Breakthrough',
+    sublabel: 'Topics where democratic ambiguity resolved into clarity — ranked by consensus strength across Forming, Clear, Landmark, and Unanimous tiers',
+    href: '/breakthrough',
+    icon: Trophy,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
   // ── Analytics & Personal ───────────────────────────────────────────────────────────────────
   {
     type: 'link',
