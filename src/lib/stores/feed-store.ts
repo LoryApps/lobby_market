@@ -9,6 +9,18 @@ export type FeedScope = "Global" | "National" | "Regional" | "Local" | null;
 export type FeedTag = string | null;
 export type FeedMode = "discover" | "following" | "foryou" | "mytags" | "unvoted" | "battleground" | "rising" | "closingin" | "newlaws" | "collapse" | "argued" | "flux" | "lastcall" | "momentum" | "mandate" | "elders" | "groundswell" | "livedebates" | "swing" | "stalled" | "comeback" | "overdrive" | "deadlock" | "converging" | "flashpoint";
 
+export interface FeedPreset {
+  id: string;
+  name: string;
+  sort: FeedSort;
+  statusFilter: FeedStatus;
+  categoryFilter: FeedCategory;
+  scopeFilter: FeedScope;
+  tagFilter: FeedTag;
+  feedMode: FeedMode;
+  createdAt: number;
+}
+
 interface FeedState {
   topics: TopicWithAuthor[];
   isLoading: boolean;
@@ -31,6 +43,7 @@ interface FeedState {
   /** Number of votes analyzed when inferring from history */
   inferredFromVotes: number;
   _generation: number;
+  savedPresets: FeedPreset[];
 
   fetchNextPage: () => Promise<void>;
   setSort: (sort: FeedSort) => void;
@@ -45,6 +58,9 @@ interface FeedState {
   /** Realtime-injected topics don't have router data — treated as TopicWithAuthor with null author */
   prependTopic: (topic: Topic | TopicWithAuthor) => void;
   updateTopic: (id: string, updates: Partial<Topic>) => void;
+  saveCurrentAsPreset: (name: string) => void;
+  loadPreset: (preset: FeedPreset) => void;
+  deletePreset: (id: string) => void;
 }
 
 export const useFeedStore = create<FeedState>()(
@@ -66,6 +82,7 @@ export const useFeedStore = create<FeedState>()(
       preferenceSource: 'quiz',
       inferredFromVotes: 0,
       _generation: 0,
+      savedPresets: [],
 
       fetchNextPage: async () => {
         const {
@@ -1039,6 +1056,48 @@ export const useFeedStore = create<FeedState>()(
             t.id === id ? { ...t, ...updates } : t
           ),
         })),
+
+      saveCurrentAsPreset: (name) => {
+        const { sort, statusFilter, categoryFilter, scopeFilter, tagFilter, feedMode } = get();
+        const preset: FeedPreset = {
+          id: `preset_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+          name: name.trim() || 'My Feed',
+          sort,
+          statusFilter,
+          categoryFilter,
+          scopeFilter,
+          tagFilter,
+          feedMode,
+          createdAt: Date.now(),
+        };
+        set((state) => ({
+          savedPresets: [...state.savedPresets, preset].slice(-12),
+        }));
+      },
+
+      loadPreset: (preset) => {
+        const gen = get()._generation + 1;
+        set({
+          sort: preset.sort,
+          statusFilter: preset.statusFilter,
+          categoryFilter: preset.categoryFilter,
+          scopeFilter: preset.scopeFilter,
+          tagFilter: preset.tagFilter,
+          feedMode: preset.feedMode,
+          topics: [],
+          offset: 0,
+          hasMore: true,
+          isLoading: false,
+          _generation: gen,
+        });
+        get().fetchNextPage();
+      },
+
+      deletePreset: (id) => {
+        set((state) => ({
+          savedPresets: state.savedPresets.filter((p) => p.id !== id),
+        }));
+      },
     }),
     {
       name: "lm-feed-prefs",
@@ -1050,6 +1109,7 @@ export const useFeedStore = create<FeedState>()(
         categoryFilter: state.categoryFilter,
         scopeFilter: state.scopeFilter,
         tagFilter: state.tagFilter,
+        savedPresets: state.savedPresets,
       }),
     }
   )

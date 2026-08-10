@@ -17,6 +17,7 @@ import { SetupChecklist } from '@/components/feed/SetupChecklist'
 import { FeedInsightStrip } from '@/components/feed/FeedInsightStrip'
 import { QuestionFeedCard } from '@/components/feed/QuestionFeedCard'
 import { FeedFilters } from '@/components/feed/FeedFilters'
+import { FeedPresetBar } from '@/components/feed/FeedPresetBar'
 import { RelaySpotlightCard } from '@/components/feed/RelaySpotlightCard'
 import { LivePlatformBanner } from '@/components/feed/LivePlatformBanner'
 import { PersonalDailyBar } from '@/components/feed/PersonalDailyBar'
@@ -849,6 +850,7 @@ export function FeedContainer() {
             )}
           </AnimatePresence>
           <FeedFilters />
+          <FeedPresetBar />
           <LivePlatformBanner />
           <DebateCountdownBanner />
         </div>
