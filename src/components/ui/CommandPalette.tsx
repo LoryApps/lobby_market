@@ -457,6 +457,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'civic-goals',
+    label: 'Civic Goals',
+    sublabel: 'Weekly personal targets — votes, arguments, debates, streak, and influence',
+    href: '/goals',
+    icon: Target,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+  },
+  {
+    type: 'link',
     id: 'flashcards',
     label: 'Civic Flashcards',
     sublabel: 'Study established laws — self-paced spaced repetition',
