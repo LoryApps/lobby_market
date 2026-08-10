@@ -12,6 +12,7 @@ export interface DebateHubEntry {
   viewer_count: number
   blue_sway: number
   red_sway: number
+  rsvp_count: number
   creator_id: string
   creator_username: string | null
   creator_display_name: string | null
@@ -93,7 +94,7 @@ export async function GET(
   const creatorIds = Array.from(new Set(sorted.map((d) => d.creator_id as string)))
   const debateIds = sorted.map((d) => d.id as string)
 
-  const [creatorsRes, participantsRes] = await Promise.all([
+  const [creatorsRes, participantsRes, rsvpRes] = await Promise.all([
     supabase
       .from('profiles')
       .select('id, username, display_name, avatar_url')
@@ -102,10 +103,21 @@ export async function GET(
       .from('debate_participants')
       .select('debate_id, user_id, side, is_speaker')
       .in('debate_id', debateIds),
+    supabase
+      .from('debate_rsvps')
+      .select('debate_id')
+      .in('debate_id', debateIds),
   ])
 
   const creators = creatorsRes.data ?? []
   const participantRows = participantsRes.data ?? []
+
+  // Build rsvp count map: debateId -> count
+  const rsvpCountMap: Record<string, number> = {}
+  for (const r of rsvpRes.data ?? []) {
+    const did = r.debate_id as string
+    rsvpCountMap[did] = (rsvpCountMap[did] ?? 0) + 1
+  }
 
   const participantUserIds = Array.from(
     new Set(participantRows.map((p) => p.user_id as string))
@@ -154,6 +166,7 @@ export async function GET(
       viewer_count: (d.viewer_count as number | null) ?? 0,
       blue_sway: (d.blue_sway as number | null) ?? 50,
       red_sway: (d.red_sway as number | null) ?? 50,
+      rsvp_count: rsvpCountMap[d.id as string] ?? 0,
       creator_id: d.creator_id as string,
       creator_username: creator?.username ?? null,
       creator_display_name: creator?.display_name ?? null,

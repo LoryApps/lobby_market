@@ -13,11 +13,13 @@ import {
   Mic,
   Plus,
   RefreshCw,
+  Users,
   Zap,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { EmptyState } from '@/components/ui/EmptyState'
+import { DebateRSVPButton } from '@/components/debate/DebateRSVPButton'
 import { cn } from '@/lib/utils/cn'
 import type { DebateHubEntry, DebateHubResponse } from '@/app/api/topics/[id]/debate-hub/route'
 
@@ -138,6 +140,13 @@ function DebateCard({ debate }: { debate: DebateHubEntry }) {
             </span>
           )}
 
+          {isScheduled && debate.rsvp_count > 0 && (
+            <span className="flex items-center gap-1 text-[11px] font-mono text-surface-500">
+              <Users className="h-3 w-3" />
+              {debate.rsvp_count} attending
+            </span>
+          )}
+
           {isEnded && debate.scheduled_at && (
             <span className="text-[11px] font-mono text-surface-600">
               {formatEnded(debate.scheduled_at)}
@@ -145,9 +154,10 @@ function DebateCard({ debate }: { debate: DebateHubEntry }) {
           )}
         </div>
 
-        {/* Participants + sway */}
-        {debate.participants.length > 0 && (
+        {/* Participants + sway + RSVP */}
+        {(debate.participants.length > 0 || isScheduled || (isLive && debate.viewer_count > 0)) && (
           <div className="flex items-center justify-between mt-2.5 flex-wrap gap-2">
+            {/* Participant avatars */}
             <div className="flex items-center gap-3">
               {forParticipants.length > 0 && (
                 <div className="flex items-center gap-1.5">
@@ -184,32 +194,41 @@ function DebateCard({ debate }: { debate: DebateHubEntry }) {
                   <span className="text-[10px] font-mono text-against-400">AGAINST</span>
                 </div>
               )}
+
+              {/* Sway result for ended debates */}
+              {isEnded && (debate.blue_sway !== 50 || debate.red_sway !== 50) && (
+                <div className="flex items-center gap-1">
+                  <Crown className="h-3 w-3 text-gold" />
+                  <span className="text-[10px] font-mono text-gold">
+                    {debate.blue_sway > debate.red_sway
+                      ? `FOR won ${debate.blue_sway}%`
+                      : `AGAINST won ${debate.red_sway}%`}
+                  </span>
+                </div>
+              )}
+
+              {/* Audience sway bar for live debates */}
+              {isLive && debate.viewer_count > 0 && (
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[10px] font-mono text-for-400">{Math.round(debate.blue_sway)}%</span>
+                  <div className="w-16 h-1.5 rounded-full bg-surface-300 overflow-hidden">
+                    <div
+                      className="h-full bg-for-500 rounded-full"
+                      style={{ width: `${debate.blue_sway}%` }}
+                    />
+                  </div>
+                  <span className="text-[10px] font-mono text-against-400">{Math.round(debate.red_sway)}%</span>
+                </div>
+              )}
             </div>
 
-            {/* Sway result for ended debates */}
-            {isEnded && (debate.blue_sway !== 50 || debate.red_sway !== 50) && (
-              <div className="flex items-center gap-1">
-                <Crown className="h-3 w-3 text-gold" />
-                <span className="text-[10px] font-mono text-gold">
-                  {debate.blue_sway > debate.red_sway
-                    ? `FOR won ${debate.blue_sway}%`
-                    : `AGAINST won ${debate.red_sway}%`}
-                </span>
-              </div>
-            )}
-
-            {/* Audience sway bar for live debates */}
-            {isLive && debate.viewer_count > 0 && (
-              <div className="flex items-center gap-1.5">
-                <span className="text-[10px] font-mono text-for-400">{Math.round(debate.blue_sway)}%</span>
-                <div className="w-16 h-1.5 rounded-full bg-surface-300 overflow-hidden">
-                  <div
-                    className="h-full bg-for-500 rounded-full"
-                    style={{ width: `${debate.blue_sway}%` }}
-                  />
-                </div>
-                <span className="text-[10px] font-mono text-against-400">{Math.round(debate.red_sway)}%</span>
-              </div>
+            {/* RSVP button for scheduled debates — always visible */}
+            {isScheduled && (
+              <DebateRSVPButton
+                debateId={debate.id}
+                initialCount={debate.rsvp_count}
+                size="sm"
+              />
             )}
           </div>
         )}
