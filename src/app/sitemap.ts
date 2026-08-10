@@ -228,6 +228,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/spectrum`, changeFrequency: 'daily', priority: 0.72 },
   { url: `${BASE_URL}/twins`, changeFrequency: 'daily', priority: 0.65 },
   { url: `${BASE_URL}/rivals`, changeFrequency: 'daily', priority: 0.65 },
+  { url: `${BASE_URL}/outliers`, changeFrequency: 'hourly', priority: 0.72 },
   { url: `${BASE_URL}/compass`, changeFrequency: 'daily', priority: 0.7 },
   { url: `${BASE_URL}/lens`, changeFrequency: 'always', priority: 0.75 },
   { url: `${BASE_URL}/drift`, changeFrequency: 'daily', priority: 0.7 },

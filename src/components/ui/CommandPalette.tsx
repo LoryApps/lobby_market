@@ -227,6 +227,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'outliers',
+    label: 'Civic Paradoxes',
+    sublabel: 'Topics where the vote winner has weaker arguments than the losing side — quality vs. consensus inversions',
+    href: '/outliers',
+    icon: Scale,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
     id: 'moments',
     label: 'Civic Moments',
     sublabel: 'Swipeable highlights — new laws, vote surges, and debates resolved',
