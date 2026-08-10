@@ -1747,6 +1747,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'most-reacted',
+    label: 'Community Reactions',
+    sublabel: 'Topics the community found most insightful, controversial, complex, or surprising',
+    href: '/most-reacted',
+    icon: Sparkles,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'magnitude',
     label: 'The Civic Magnitude',
     sublabel: 'Biggest vote swings — topics with the largest FOR% shifts over the past week',
