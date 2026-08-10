@@ -180,6 +180,17 @@ export function FollowingVotesPanel({ topicId, className }: FollowingVotesPanelP
                   </div>
                 </div>
               )}
+
+              {/* Full-page link */}
+              <div className="pt-2 border-t border-surface-300">
+                <Link
+                  href={`/topic/${topicId}/following-votes`}
+                  className="flex items-center gap-1 text-xs font-mono text-surface-500 hover:text-white transition-colors"
+                >
+                  <Users className="h-3 w-3" />
+                  View full breakdown →
+                </Link>
+              </div>
             </div>
           </motion.div>
         )}

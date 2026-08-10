@@ -241,6 +241,16 @@ export function TopicBacklinks({ topicId, className }: TopicBacklinksProps) {
             direction="out"
             emptyText="This topic doesn't link to others yet."
           />
+
+          <div className="pt-2 border-t border-surface-300 mt-2">
+            <Link
+              href={`/topic/${topicId}/backlinks`}
+              className="flex items-center gap-1 text-xs font-mono text-surface-500 hover:text-white transition-colors"
+            >
+              <Network className="h-3 w-3" />
+              View full link map →
+            </Link>
+          </div>
         </>
       ) : null}
     </div>
