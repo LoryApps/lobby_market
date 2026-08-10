@@ -1357,6 +1357,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'emergence',
+    label: 'Civic Emergence',
+    sublabel: 'Brand-new debates finding their first real civic momentum — ranked by vote velocity and acceleration relative to age',
+    href: '/emergence',
+    icon: Sparkles,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'velocity',
     label: 'Civic Velocity',
     sublabel: 'Live vote flow by category — sparkline charts showing which issues the community is most active on right now',

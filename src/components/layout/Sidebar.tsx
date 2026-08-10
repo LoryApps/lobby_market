@@ -71,6 +71,7 @@ const navItems: NavItem[] = [
   { href: '/futures', label: 'Civic Futures', icon: CalendarClock },
   { href: '/surge', label: 'Surge', icon: Flame },
   { href: '/groundswell', label: 'Groundswell', icon: Activity },
+  { href: '/emergence', label: 'Emergence', icon: Sparkles },
   { href: '/drought',     label: 'Drought',     icon: GlassWater },
   { href: '/flash',       label: 'Civic Flash', icon: Zap },
   { href: '/velocity', label: 'Velocity', icon: Zap },
