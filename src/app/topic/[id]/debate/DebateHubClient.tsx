@@ -69,8 +69,8 @@ function DebateCard({ debate }: { debate: DebateHubEntry }) {
   const isScheduled = debate.status === 'scheduled'
   const isEnded = debate.status === 'ended'
 
-  const forParticipants = debate.participants.filter((p) => p.side === 'for')
-  const againstParticipants = debate.participants.filter((p) => p.side === 'against')
+  const forParticipants = debate.participants.filter((p) => p.side === 'blue' && p.is_speaker)
+  const againstParticipants = debate.participants.filter((p) => p.side === 'red' && p.is_speaker)
 
   return (
     <Link
@@ -157,9 +157,9 @@ function DebateCard({ debate }: { debate: DebateHubEntry }) {
         {/* Participants + sway + RSVP */}
         {(debate.participants.length > 0 || isScheduled || (isLive && debate.viewer_count > 0)) && (
           <div className="flex items-center justify-between mt-2.5 flex-wrap gap-2">
-            {/* Participant avatars */}
+            {/* Participant avatars + open seat indicators */}
             <div className="flex items-center gap-3">
-              {forParticipants.length > 0 && (
+              {forParticipants.length > 0 ? (
                 <div className="flex items-center gap-1.5">
                   <div className="flex -space-x-1.5">
                     {forParticipants.slice(0, 3).map((p) => (
@@ -174,11 +174,16 @@ function DebateCard({ debate }: { debate: DebateHubEntry }) {
                   </div>
                   <span className="text-[10px] font-mono text-for-400">FOR</span>
                 </div>
-              )}
-              {forParticipants.length > 0 && againstParticipants.length > 0 && (
+              ) : isScheduled ? (
+                <span className="flex items-center gap-1 px-1.5 py-0.5 rounded border border-dashed border-for-500/40 text-[10px] font-mono text-for-500/60">
+                  <Mic className="h-2.5 w-2.5" />
+                  FOR open
+                </span>
+              ) : null}
+              {(forParticipants.length > 0 || isScheduled) && (againstParticipants.length > 0 || isScheduled) && (
                 <span className="text-[10px] text-surface-600">vs</span>
               )}
-              {againstParticipants.length > 0 && (
+              {againstParticipants.length > 0 ? (
                 <div className="flex items-center gap-1.5">
                   <div className="flex -space-x-1.5">
                     {againstParticipants.slice(0, 3).map((p) => (
@@ -193,7 +198,12 @@ function DebateCard({ debate }: { debate: DebateHubEntry }) {
                   </div>
                   <span className="text-[10px] font-mono text-against-400">AGAINST</span>
                 </div>
-              )}
+              ) : isScheduled ? (
+                <span className="flex items-center gap-1 px-1.5 py-0.5 rounded border border-dashed border-against-500/40 text-[10px] font-mono text-against-500/60">
+                  <Mic className="h-2.5 w-2.5" />
+                  AGAINST open
+                </span>
+              ) : null}
 
               {/* Sway result for ended debates */}
               {isEnded && (debate.blue_sway !== 50 || debate.red_sway !== 50) && (
