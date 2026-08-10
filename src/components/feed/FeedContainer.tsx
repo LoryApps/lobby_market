@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useCallback, useState } from 'react'
 import Link from 'next/link'
-import { Users, Search, Keyboard, RefreshCw, ChevronUp, Sparkles, UserPlus, Check, Loader2, History, Vote, Hash, Plus, Lock, GitMerge, Zap } from 'lucide-react'
+import { Users, Search, Keyboard, RefreshCw, ChevronUp, Sparkles, UserPlus, Check, Loader2, History, Vote, Hash, Plus, Lock, GitMerge, Zap, Tornado } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useFeedStore } from '@/lib/stores/feed-store'
 import { useVoteStore } from '@/lib/stores/vote-store'
@@ -1228,6 +1228,18 @@ export function FeedContainer() {
               <p className="text-2xl font-bold text-white mb-2">No flashpoints right now</p>
               <p className="text-surface-500">
                 No debates are simultaneously high-velocity and contested. Vote activity picks up soon — check back.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {!isLoading && topics.length === 0 && feedMode === 'vortex' && (
+          <div className="feed-card flex items-center justify-center">
+            <div className="text-center px-6">
+              <Tornado className="h-8 w-8 text-purple/50 mx-auto mb-3" />
+              <p className="text-2xl font-bold text-white mb-2">No vortex topics right now</p>
+              <p className="text-surface-500">
+                No debates have enough argument intensity yet. Start arguing — the vortex forms when debate outpaces votes.
               </p>
             </div>
           </div>
