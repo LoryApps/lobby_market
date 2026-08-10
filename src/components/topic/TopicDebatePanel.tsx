@@ -377,9 +377,9 @@ export function TopicDebatePanel({
 
             {debates.length > 0 && (
               <Link
-                href={`/debate?topic=${topicId}`}
+                href={`/topic/${topicId}/debate`}
                 className="flex items-center justify-center gap-1.5 pt-1 text-xs font-mono text-surface-600 hover:text-surface-500 transition-colors"
-                aria-label="View all debates"
+                aria-label="View all debates for this topic"
               >
                 View all debates
                 <ChevronRight className="h-3 w-3" aria-hidden="true" />
