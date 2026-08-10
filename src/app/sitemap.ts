@@ -79,6 +79,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/newspaper`, changeFrequency: 'daily', priority: 0.85 },
   { url: `${BASE_URL}/digest`, changeFrequency: 'weekly', priority: 0.65 },
   { url: `${BASE_URL}/topics`, changeFrequency: 'daily', priority: 0.82 },
+  { url: `${BASE_URL}/topics/underrated`, changeFrequency: 'daily', priority: 0.78 },
   { url: `${BASE_URL}/topic/categories`, changeFrequency: 'weekly', priority: 0.7 },
   { url: `${BASE_URL}/issues`, changeFrequency: 'hourly', priority: 0.82 },
   { url: `${BASE_URL}/topic/graph`, changeFrequency: 'daily', priority: 0.65 },

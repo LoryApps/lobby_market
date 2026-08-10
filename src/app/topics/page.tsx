@@ -26,6 +26,7 @@ import {
   Clock,
   Flame,
   Gavel,
+  Gem,
   Globe,
   Layers,
   Loader2,
@@ -692,10 +693,11 @@ function TopicsBrowser() {
         )}
 
         {/* Sidebar links at bottom on mobile / right on desktop */}
-        <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="mt-8 grid grid-cols-1 sm:grid-cols-4 gap-3">
           {[
             { href: '/categories', label: 'Browse by Category', icon: BarChart2 },
             { href: '/trending', label: 'Trending Now', icon: Flame },
+            { href: '/topics/underrated', label: 'Hidden Gems', icon: Gem },
             { href: '/topic/create', label: 'Propose a Topic', icon: Sparkles },
           ].map(({ href, label, icon: Icon }) => (
             <Link
