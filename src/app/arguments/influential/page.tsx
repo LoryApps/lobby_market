@@ -1,28 +1,36 @@
 'use client'
 
 /**
- * /arguments/underrated — Hidden Gem Arguments
+ * /arguments/influential — Cross-Partisan Powerhouses
  *
- * Surfaces high-quality arguments (AI score ≥ 6, grade B or above) that
- * haven't yet found their audience (≤ 15 upvotes). These are the arguments
- * worth reading that most people missed.
+ * Surfaces arguments that reached across the aisle — FOR arguments that
+ * convinced AGAINST voters, AGAINST arguments that resonated with FOR voters.
+ * Combined with "insightful", "balanced", and "compelling" community reactions,
+ * these are the arguments that genuinely moved minds.
+ *
+ * Influence score = (cross-partisan upvotes × 4) + (balanced reactions × 3)
+ *                  + (insightful reactions × 2) + (compelling reactions × 1)
+ *                  + (upvotes × 0.5) + (AI score × 0.3)
  *
  * Distinct from:
- *   /arguments/top-scored  — ranked by absolute quality; high-upvote dominant
- *   /arguments/trending    — short-term velocity; already gaining traction
- *   /arguments/hall-of-fame — all-time best on established laws
+ *   /arguments/top-scored  — ranked by AI quality alone
+ *   /arguments/champions   — all-time top upvoted (partisan crowd favourite)
+ *   /arguments/trending    — short-term velocity
+ *   /arguments/underrated  — quality with few upvotes (just buried)
  */
 
 import { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
+  ArrowRight,
+  Award,
   Brain,
   ChevronDown,
   Crown,
   ExternalLink,
+  Flame,
   Gavel,
-  Gem,
   GitMerge,
   Loader2,
   RefreshCw,
@@ -32,6 +40,7 @@ import {
   ThumbsDown,
   ThumbsUp,
   Trophy,
+  Users,
   Zap,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
@@ -40,30 +49,15 @@ import { Avatar } from '@/components/ui/Avatar'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { cn } from '@/lib/utils/cn'
-import type { GradeFilter, Period, SideFilter, UnderratedArgument, UnderratedResponse } from '@/app/api/arguments/underrated/route'
+import type {
+  InfluentialArgument,
+  InfluentialResponse,
+  Period,
+  SideFilter,
+  SortMode,
+} from '@/app/api/arguments/influential/route'
 
-// ─── Grade badge ──────────────────────────────────────────────────────────────
-
-const GRADE_CONFIG: Record<string, { label: string; className: string; icon: typeof Star }> = {
-  A: { label: 'Grade A', className: 'bg-gold/15 text-gold border-gold/30', icon: Crown },
-  B: { label: 'Grade B', className: 'bg-emerald/15 text-emerald border-emerald/30', icon: Star },
-  C: { label: 'Grade C', className: 'bg-for-500/15 text-for-400 border-for-500/30', icon: Brain },
-}
-
-function GradeBadge({ grade }: { grade: string | null }) {
-  if (!grade) return null
-  const cfg = GRADE_CONFIG[grade]
-  if (!cfg) return null
-  const Icon = cfg.icon
-  return (
-    <span className={cn('inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full border', cfg.className)}>
-      <Icon className="h-3 w-3" />
-      {cfg.label}
-    </span>
-  )
-}
-
-// ─── Category colors ──────────────────────────────────────────────────────────
+// ── Category colors ────────────────────────────────────────────────────────────
 
 const CATEGORY_COLORS: Record<string, string> = {
   Economics:   'bg-gold/10 text-gold border-gold/30',
@@ -74,8 +68,8 @@ const CATEGORY_COLORS: Record<string, string> = {
   Philosophy:  'bg-purple/10 text-purple border-purple/30',
   Environment: 'bg-emerald/10 text-emerald border-emerald/30',
   Health:      'bg-for-500/10 text-for-400 border-for-500/30',
-  Society:     'bg-gold/10 text-gold border-gold/30',
-  Law:         'bg-gold/10 text-gold border-gold/30',
+  Culture:     'bg-gold/10 text-gold border-gold/30',
+  Education:   'bg-for-500/10 text-for-400 border-for-500/30',
 }
 
 function catClass(cat: string | null) {
@@ -83,7 +77,31 @@ function catClass(cat: string | null) {
   return CATEGORY_COLORS[cat] ?? 'bg-surface-300/40 text-surface-500 border-surface-400/30'
 }
 
-// ─── Relative time ────────────────────────────────────────────────────────────
+// ── Grade badge ────────────────────────────────────────────────────────────────
+
+const GRADE_CONFIG: Record<string, { label: string; className: string }> = {
+  A: { label: 'A', className: 'bg-gold/15 text-gold border-gold/30' },
+  B: { label: 'B', className: 'bg-emerald/15 text-emerald border-emerald/30' },
+  C: { label: 'C', className: 'bg-for-500/15 text-for-400 border-for-500/30' },
+}
+
+function GradeBadge({ grade }: { grade: string | null }) {
+  if (!grade) return null
+  const cfg = GRADE_CONFIG[grade]
+  if (!cfg) return null
+  return (
+    <span
+      className={cn(
+        'inline-flex items-center gap-1 text-xs font-bold px-1.5 py-0.5 rounded border font-mono',
+        cfg.className,
+      )}
+    >
+      {cfg.label}
+    </span>
+  )
+}
+
+// ── Relative time ──────────────────────────────────────────────────────────────
 
 function relativeTime(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime()
@@ -93,32 +111,37 @@ function relativeTime(iso: string): string {
   if (y >= 1) return `${y}y ago`
   if (mo >= 1) return `${mo}mo ago`
   if (d >= 1) return `${d}d ago`
-  return 'today'
+  const h = Math.floor(diff / 3_600_000)
+  if (h >= 1) return `${h}h ago`
+  return 'just now'
 }
 
-// ─── Gem score label ──────────────────────────────────────────────────────────
+// ── Influence tier ─────────────────────────────────────────────────────────────
 
-function gemLabel(upvotes: number): { label: string; className: string } {
-  if (upvotes === 0) return { label: 'Undiscovered', className: 'text-purple' }
-  if (upvotes <= 3) return { label: 'Rare gem', className: 'text-gold' }
-  if (upvotes <= 8) return { label: 'Hidden gem', className: 'text-emerald' }
-  return { label: 'Overlooked', className: 'text-for-400' }
+function influenceTier(score: number): { label: string; color: string; icon: typeof Award } {
+  if (score >= 20) return { label: 'Landmark', color: 'text-gold', icon: Crown }
+  if (score >= 10) return { label: 'Persuasive', color: 'text-emerald', icon: Award }
+  if (score >= 5) return { label: 'Notable', color: 'text-for-400', icon: Star }
+  return { label: 'Rising', color: 'text-purple', icon: Zap }
 }
 
-// ─── Argument Card ────────────────────────────────────────────────────────────
+// ── Argument Card ──────────────────────────────────────────────────────────────
 
-function ArgumentCard({ arg, index }: { arg: UnderratedArgument; index: number }) {
+function ArgumentCard({ arg, index }: { arg: InfluentialArgument; index: number }) {
   const isFor = arg.side === 'blue'
-  const gem = gemLabel(arg.upvotes)
+  const tier = influenceTier(arg.influence_score)
+  const TierIcon = tier.icon
+  const topic = arg.topic
+  const forPct = Math.round(topic?.blue_pct ?? 50)
+  const againstPct = 100 - forPct
 
   const rankColor =
     index === 0 ? 'text-gold' :
-    index === 1 ? 'text-surface-600' :
+    index === 1 ? 'text-surface-400' :
     index === 2 ? 'text-amber-600' :
     'text-surface-500'
 
-  const forPct = Math.round(arg.topic?.blue_pct ?? 50)
-  const againstPct = 100 - forPct
+  const totalReactions = arg.reaction_insightful + arg.reaction_compelling + arg.reaction_balanced
 
   return (
     <motion.div
@@ -126,13 +149,13 @@ function ArgumentCard({ arg, index }: { arg: UnderratedArgument; index: number }
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: Math.min(index * 0.04, 0.5), duration: 0.35 }}
       className={cn(
-        'relative rounded-2xl border p-5 space-y-4 transition-colors hover:border-surface-400/60',
-        'bg-surface-100/60 border-surface-300/50',
+        'relative rounded-2xl border p-5 space-y-4 transition-colors',
+        'bg-surface-100/60 border-surface-300/50 hover:border-surface-400/60',
         index < 3 && isFor && 'border-for-500/15 bg-for-950/10',
         index < 3 && !isFor && 'border-against-500/15 bg-against-950/10',
       )}
     >
-      {/* Side accent bar */}
+      {/* Side accent */}
       <div
         className={cn(
           'absolute left-0 top-4 bottom-4 w-0.5 rounded-r-full',
@@ -140,34 +163,36 @@ function ArgumentCard({ arg, index }: { arg: UnderratedArgument; index: number }
         )}
       />
 
-      {/* Rank + author row */}
+      {/* Rank + author */}
       <div className="flex items-start justify-between gap-2 pl-3">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 min-w-0">
           <span className={cn('text-sm font-mono font-bold w-6 text-right flex-shrink-0', rankColor)}>
             #{index + 1}
           </span>
-          <Link
-            href={`/profile/${arg.author?.username ?? ''}`}
-            className="flex items-center gap-2 hover:opacity-80 transition-opacity min-w-0"
-          >
-            <Avatar
-              src={arg.author?.avatar_url ?? null}
-              username={arg.author?.username ?? '?'}
-              size="sm"
-              className="flex-shrink-0"
-            />
-            <div className="min-w-0">
-              <p className="text-sm font-semibold text-white truncate">
-                {arg.author?.display_name ?? arg.author?.username ?? 'Unknown'}
-              </p>
-              {arg.author?.username && (
+          {arg.author ? (
+            <Link
+              href={`/profile/${arg.author.username}`}
+              className="flex items-center gap-2 hover:opacity-80 transition-opacity min-w-0"
+            >
+              <Avatar
+                src={arg.author.avatar_url}
+                username={arg.author.username}
+                size="sm"
+                className="flex-shrink-0"
+              />
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-white truncate">
+                  {arg.author.display_name ?? arg.author.username}
+                </p>
                 <p className="text-xs text-surface-500">@{arg.author.username}</p>
-              )}
-            </div>
-          </Link>
+              </div>
+            </Link>
+          ) : (
+            <span className="text-sm text-surface-500">Anonymous</span>
+          )}
         </div>
 
-        <div className="flex items-center gap-2 flex-shrink-0">
+        <div className="flex items-center gap-1.5 flex-shrink-0">
           <GradeBadge grade={arg.ai_grade} />
           <span
             className={cn(
@@ -183,11 +208,11 @@ function ArgumentCard({ arg, index }: { arg: UnderratedArgument; index: number }
         </div>
       </div>
 
-      {/* Gem label */}
+      {/* Influence tier */}
       <div className="pl-3">
-        <span className={cn('inline-flex items-center gap-1 text-[11px] font-mono font-semibold', gem.className)}>
-          <Gem className="h-3 w-3" />
-          {gem.label}
+        <span className={cn('inline-flex items-center gap-1.5 text-xs font-mono font-semibold', tier.color)}>
+          <TierIcon className="h-3 w-3" />
+          {tier.label} influence
         </span>
       </div>
 
@@ -198,8 +223,52 @@ function ArgumentCard({ arg, index }: { arg: UnderratedArgument; index: number }
         </blockquote>
       </div>
 
+      {/* Cross-partisan signal */}
+      {arg.cross_partisan_count > 0 && (
+        <div className="pl-3">
+          <div
+            className={cn(
+              'inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-medium',
+              isFor
+                ? 'bg-against-950/30 border-against-500/20 text-against-400'
+                : 'bg-for-950/30 border-for-500/20 text-for-400',
+            )}
+          >
+            <GitMerge className="h-3 w-3 flex-shrink-0" />
+            <span>
+              <strong>{arg.cross_partisan_count}</strong>{' '}
+              {isFor ? 'AGAINST voter' : 'FOR voter'}{arg.cross_partisan_count !== 1 ? 's' : ''} found this compelling
+            </span>
+          </div>
+        </div>
+      )}
+
+      {/* Reactions row */}
+      {totalReactions > 0 && (
+        <div className="pl-3 flex items-center gap-2 flex-wrap">
+          {arg.reaction_insightful > 0 && (
+            <span className="inline-flex items-center gap-1 text-xs bg-purple/10 text-purple border border-purple/20 px-2 py-0.5 rounded-full">
+              <Sparkles className="h-3 w-3" />
+              {arg.reaction_insightful} insightful
+            </span>
+          )}
+          {arg.reaction_balanced > 0 && (
+            <span className="inline-flex items-center gap-1 text-xs bg-emerald/10 text-emerald border border-emerald/20 px-2 py-0.5 rounded-full">
+              <Scale className="h-3 w-3" />
+              {arg.reaction_balanced} balanced
+            </span>
+          )}
+          {arg.reaction_compelling > 0 && (
+            <span className="inline-flex items-center gap-1 text-xs bg-gold/10 text-gold border border-gold/20 px-2 py-0.5 rounded-full">
+              <Flame className="h-3 w-3" />
+              {arg.reaction_compelling} compelling
+            </span>
+          )}
+        </div>
+      )}
+
       {/* Topic context */}
-      {arg.topic && (
+      {topic && (
         <div className="pl-3">
           <Link
             href={`/topic/${arg.topic_id}`}
@@ -212,26 +281,18 @@ function ArgumentCard({ arg, index }: { arg: UnderratedArgument; index: number }
                   Topic
                 </p>
                 <p className="text-sm text-white font-medium line-clamp-2 group-hover:text-for-400 transition-colors">
-                  {arg.topic.statement}
+                  {topic.statement}
                 </p>
-                <div className="flex items-center gap-3 mt-2">
-                  {arg.topic.category && (
-                    <span
-                      className={cn(
-                        'text-xs px-1.5 py-0.5 rounded-md border font-medium',
-                        catClass(arg.topic.category),
-                      )}
-                    >
-                      {arg.topic.category}
+                <div className="flex items-center gap-3 mt-2 flex-wrap">
+                  {topic.category && (
+                    <span className={cn('text-xs px-1.5 py-0.5 rounded-md border font-medium', catClass(topic.category))}>
+                      {topic.category}
                     </span>
                   )}
-                  <span className="text-xs text-surface-500">
-                    {forPct}% For · {againstPct}% Against
-                  </span>
-                  {arg.topic.total_votes > 0 && (
-                    <span className="text-xs text-surface-500">
-                      {arg.topic.total_votes.toLocaleString()} votes
-                    </span>
+                  <span className="text-xs text-for-400 font-mono">{forPct}% For</span>
+                  <span className="text-xs text-against-400 font-mono">{againstPct}% Against</span>
+                  {topic.total_votes > 0 && (
+                    <span className="text-xs text-surface-500">{topic.total_votes.toLocaleString()} votes</span>
                   )}
                 </div>
               </div>
@@ -246,7 +307,7 @@ function ArgumentCard({ arg, index }: { arg: UnderratedArgument; index: number }
         <div className="flex items-center gap-3 text-xs text-surface-500">
           <span className="flex items-center gap-1">
             <ThumbsUp className="h-3 w-3" />
-            {arg.upvotes} upvote{arg.upvotes !== 1 ? 's' : ''}
+            {arg.upvotes}
           </span>
           {arg.ai_score != null && (
             <span className="flex items-center gap-1">
@@ -254,6 +315,9 @@ function ArgumentCard({ arg, index }: { arg: UnderratedArgument; index: number }
               {arg.ai_score}/10
             </span>
           )}
+          <span className="font-mono text-[11px] text-purple font-semibold">
+            {arg.influence_score.toFixed(1)} pts
+          </span>
           <span>{relativeTime(arg.created_at)}</span>
         </div>
         {arg.source_url && (
@@ -272,38 +336,37 @@ function ArgumentCard({ arg, index }: { arg: UnderratedArgument; index: number }
   )
 }
 
-// ─── Skeleton ─────────────────────────────────────────────────────────────────
+// ── Skeleton ───────────────────────────────────────────────────────────────────
 
 function CardSkeleton() {
   return (
     <div className="rounded-2xl border border-surface-300/50 bg-surface-100/60 p-5 space-y-4 animate-pulse">
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 pl-3">
         <Skeleton className="h-8 w-8 rounded-full flex-shrink-0" />
         <div className="flex-1 space-y-1.5">
           <Skeleton className="h-3.5 w-28" />
           <Skeleton className="h-3 w-20" />
         </div>
-        <Skeleton className="h-5 w-20 rounded-full" />
+        <Skeleton className="h-5 w-16 rounded-full" />
       </div>
-      <div className="space-y-2">
+      <div className="pl-3 space-y-2">
         <Skeleton className="h-3.5 w-full" />
         <Skeleton className="h-3.5 w-5/6" />
-        <Skeleton className="h-3.5 w-3/4" />
+        <Skeleton className="h-3.5 w-4/5" />
       </div>
-      <div className="rounded-xl border border-surface-300/30 p-3 space-y-1.5">
-        <Skeleton className="h-3 w-20" />
-        <Skeleton className="h-4 w-full" />
-        <Skeleton className="h-3 w-36" />
+      <div className="pl-3">
+        <Skeleton className="h-16 w-full rounded-xl" />
       </div>
-      <div className="flex gap-4">
-        <Skeleton className="h-3 w-20" />
+      <div className="pl-3 flex gap-2">
         <Skeleton className="h-3 w-16" />
+        <Skeleton className="h-3 w-14" />
+        <Skeleton className="h-3 w-12" />
       </div>
     </div>
   )
 }
 
-// ─── Filter button ────────────────────────────────────────────────────────────
+// ── Filter button ──────────────────────────────────────────────────────────────
 
 function FilterBtn({
   active,
@@ -331,16 +394,16 @@ function FilterBtn({
   )
 }
 
-// ─── Main ─────────────────────────────────────────────────────────────────────
+// ── Main ───────────────────────────────────────────────────────────────────────
 
-const PAGE_SIZE = 24
+const PAGE_SIZE = 30
 
-export default function UnderratedArgumentsPage() {
-  const [grade, setGrade] = useState<GradeFilter>('all')
+export default function InfluentialArgumentsPage() {
   const [side, setSide] = useState<SideFilter>('all')
   const [period, setPeriod] = useState<Period>('all')
+  const [sort, setSort] = useState<SortMode>('influence')
   const [category, setCategory] = useState('all')
-  const [args, setArgs] = useState<UnderratedArgument[]>([])
+  const [args, setArgs] = useState<InfluentialArgument[]>([])
   const [total, setTotal] = useState(0)
   const [categories, setCategories] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
@@ -348,31 +411,24 @@ export default function UnderratedArgumentsPage() {
   const [offset, setOffset] = useState(0)
   const [error, setError] = useState<string | null>(null)
 
-  const fetchArgs = useCallback(
-    async (
-      g: GradeFilter,
-      s: SideFilter,
-      p: Period,
-      cat: string,
-      off: number,
-      append: boolean,
-    ) => {
+  const fetch_ = useCallback(
+    async (s: SideFilter, p: Period, srt: SortMode, cat: string, off: number, append: boolean) => {
       if (append) setLoadingMore(true)
       else setLoading(true)
       setError(null)
 
       try {
         const params = new URLSearchParams({
-          grade: g,
           side: s,
           period: p,
+          sort: srt,
           category: cat,
           limit: String(PAGE_SIZE),
           offset: String(off),
         })
-        const res = await fetch(`/api/arguments/underrated?${params}`)
+        const res = await fetch(`/api/arguments/influential?${params}`)
         if (!res.ok) throw new Error('Failed to load')
-        const data: UnderratedResponse = await res.json()
+        const data: InfluentialResponse = await res.json()
 
         if (append) {
           setArgs((prev) => [...prev, ...data.arguments])
@@ -383,7 +439,7 @@ export default function UnderratedArgumentsPage() {
         setTotal(data.total)
         setOffset(off + data.arguments.length)
       } catch {
-        setError('Failed to load underrated arguments. Please try again.')
+        setError('Failed to load. Please try again.')
       } finally {
         setLoading(false)
         setLoadingMore(false)
@@ -394,12 +450,12 @@ export default function UnderratedArgumentsPage() {
 
   useEffect(() => {
     setOffset(0)
-    fetchArgs(grade, side, period, category, 0, false)
-  }, [grade, side, period, category, fetchArgs])
+    fetch_(side, period, sort, category, 0, false)
+  }, [side, period, sort, category, fetch_])
 
   const loadMore = () => {
     if (!loadingMore && args.length < total) {
-      fetchArgs(grade, side, period, category, offset, true)
+      fetch_(side, period, sort, category, offset, true)
     }
   }
 
@@ -417,62 +473,77 @@ export default function UnderratedArgumentsPage() {
             className="text-center space-y-4 py-6"
           >
             <div className="flex items-center justify-center gap-3">
-              <div className="h-12 w-12 rounded-2xl bg-purple/10 border border-purple/20 flex items-center justify-center">
-                <Gem className="h-6 w-6 text-purple" />
+              <div className="h-12 w-12 rounded-2xl bg-emerald/10 border border-emerald/20 flex items-center justify-center">
+                <GitMerge className="h-6 w-6 text-emerald" />
               </div>
             </div>
             <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">
-              Hidden Gems
+              Cross-Partisan Powerhouses
             </h1>
             <p className="text-surface-500 max-w-xl mx-auto text-sm leading-relaxed">
-              High-quality arguments that haven&apos;t found their audience yet. These are the
-              well-reasoned, AI-graded takes that slipped through the cracks — worth reading,
-              worth upvoting.
+              Arguments that reached across the aisle — FOR cases that convinced AGAINST voters,
+              AGAINST cases that resonated with FOR supporters. These are the arguments that
+              genuinely changed minds.
             </p>
             <div className="flex items-center justify-center gap-4 text-xs text-surface-500 flex-wrap">
               <span className="flex items-center gap-1.5">
-                <Brain className="h-3.5 w-3.5 text-purple" />
-                AI quality score ≥ 6/10
+                <GitMerge className="h-3.5 w-3.5 text-emerald" />
+                Cross-partisan upvotes
               </span>
               <span className="text-surface-600">·</span>
               <span className="flex items-center gap-1.5">
-                <ThumbsUp className="h-3.5 w-3.5 text-purple" />
-                15 or fewer upvotes
+                <Scale className="h-3.5 w-3.5 text-emerald" />
+                Community reactions
               </span>
               <span className="text-surface-600">·</span>
               <span className="flex items-center gap-1.5">
-                <Sparkles className="h-3.5 w-3.5 text-purple" />
-                Ranked by quality
+                <Brain className="h-3.5 w-3.5 text-emerald" />
+                AI quality score
               </span>
             </div>
           </motion.div>
 
           {/* Filters */}
           <div className="space-y-3">
-            {/* Grade filter */}
+            {/* Sort */}
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs text-surface-500 font-mono shrink-0">Grade:</span>
-              <FilterBtn active={grade === 'all'} onClick={() => setGrade('all')}>All</FilterBtn>
+              <span className="text-xs text-surface-500 font-mono shrink-0">Sort:</span>
               <FilterBtn
-                active={grade === 'A'}
-                onClick={() => setGrade('A')}
-                activeClass="bg-gold/15 text-gold border-gold/30"
-              >
-                A only
-              </FilterBtn>
-              <FilterBtn
-                active={grade === 'B'}
-                onClick={() => setGrade('B')}
+                active={sort === 'influence'}
+                onClick={() => setSort('influence')}
                 activeClass="bg-emerald/15 text-emerald border-emerald/30"
               >
-                A &amp; B
+                <span className="flex items-center gap-1">
+                  <Award className="h-3 w-3" />
+                  Influence score
+                </span>
+              </FilterBtn>
+              <FilterBtn
+                active={sort === 'cross_partisan'}
+                onClick={() => setSort('cross_partisan')}
+                activeClass="bg-purple/15 text-purple border-purple/30"
+              >
+                <span className="flex items-center gap-1">
+                  <GitMerge className="h-3 w-3" />
+                  Cross-partisan
+                </span>
+              </FilterBtn>
+              <FilterBtn
+                active={sort === 'reactions'}
+                onClick={() => setSort('reactions')}
+                activeClass="bg-gold/15 text-gold border-gold/30"
+              >
+                <span className="flex items-center gap-1">
+                  <Sparkles className="h-3 w-3" />
+                  Reactions
+                </span>
               </FilterBtn>
             </div>
 
-            {/* Side filter */}
+            {/* Side */}
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-xs text-surface-500 font-mono shrink-0">Side:</span>
-              <FilterBtn active={side === 'all'} onClick={() => setSide('all')}>Both sides</FilterBtn>
+              <FilterBtn active={side === 'all'} onClick={() => setSide('all')}>All</FilterBtn>
               <FilterBtn
                 active={side === 'for'}
                 onClick={() => setSide('for')}
@@ -480,7 +551,7 @@ export default function UnderratedArgumentsPage() {
               >
                 <span className="flex items-center gap-1">
                   <ThumbsUp className="h-3 w-3" />
-                  FOR only
+                  FOR
                 </span>
               </FilterBtn>
               <FilterBtn
@@ -490,12 +561,12 @@ export default function UnderratedArgumentsPage() {
               >
                 <span className="flex items-center gap-1">
                   <ThumbsDown className="h-3 w-3" />
-                  AGAINST only
+                  AGAINST
                 </span>
               </FilterBtn>
             </div>
 
-            {/* Period filter */}
+            {/* Period */}
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-xs text-surface-500 font-mono shrink-0">Period:</span>
               <FilterBtn active={period === 'all'} onClick={() => setPeriod('all')}>All time</FilterBtn>
@@ -503,7 +574,7 @@ export default function UnderratedArgumentsPage() {
               <FilterBtn active={period === 'week'} onClick={() => setPeriod('week')}>This week</FilterBtn>
             </div>
 
-            {/* Category filter */}
+            {/* Category */}
             {categories.length > 0 && (
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="text-xs text-surface-500 font-mono shrink-0">Category:</span>
@@ -522,50 +593,48 @@ export default function UnderratedArgumentsPage() {
             )}
           </div>
 
-          {/* Stats bar */}
+          {/* Stats */}
           {!loading && args.length > 0 && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               className="flex items-center gap-2 text-sm text-surface-500"
             >
-              <Scale className="h-4 w-4 text-purple" />
+              <Users className="h-4 w-4 text-emerald" />
               <span>
                 <span className="text-white font-semibold">{total.toLocaleString()}</span>{' '}
-                hidden gem{total !== 1 ? 's' : ''} found
+                influential argument{total !== 1 ? 's' : ''}
                 {category !== 'all' && ` in ${category}`}
               </span>
             </motion.div>
           )}
 
-          {/* Gem tier legend */}
-          <div className="flex items-center gap-4 flex-wrap text-xs font-mono text-surface-500">
-            <span className="flex items-center gap-1.5 text-purple">
-              <Gem className="h-3 w-3" /> Undiscovered (0 upvotes)
-            </span>
+          {/* Influence tier legend */}
+          <div className="flex items-center gap-4 flex-wrap text-xs font-mono">
             <span className="flex items-center gap-1.5 text-gold">
-              <Gem className="h-3 w-3" /> Rare gem (1–3)
+              <Crown className="h-3 w-3" /> Landmark (≥20 pts)
             </span>
             <span className="flex items-center gap-1.5 text-emerald">
-              <Gem className="h-3 w-3" /> Hidden gem (4–8)
+              <Award className="h-3 w-3" /> Persuasive (≥10 pts)
             </span>
             <span className="flex items-center gap-1.5 text-for-400">
-              <Gem className="h-3 w-3" /> Overlooked (9–15)
+              <Star className="h-3 w-3" /> Notable (≥5 pts)
+            </span>
+            <span className="flex items-center gap-1.5 text-purple">
+              <Zap className="h-3 w-3" /> Rising (&lt;5 pts)
             </span>
           </div>
 
-          {/* Argument list */}
+          {/* List */}
           {loading ? (
             <div className="space-y-4">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <CardSkeleton key={i} />
-              ))}
+              {Array.from({ length: 6 }).map((_, i) => <CardSkeleton key={i} />)}
             </div>
           ) : error ? (
             <div className="rounded-2xl border border-against-500/20 bg-against-950/10 p-6 text-center space-y-3">
               <p className="text-against-400 font-medium">{error}</p>
               <button
-                onClick={() => fetchArgs(grade, side, period, category, 0, false)}
+                onClick={() => fetch_(side, period, sort, category, 0, false)}
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-surface-200 text-white text-sm font-medium hover:bg-surface-300 transition-colors"
               >
                 <RefreshCw className="h-4 w-4" />
@@ -574,21 +643,21 @@ export default function UnderratedArgumentsPage() {
             </div>
           ) : args.length === 0 ? (
             <EmptyState
-              icon={Gem}
-              iconColor="text-purple"
-              iconBg="bg-purple/10"
-              iconBorder="border-purple/20"
-              title="No hidden gems found"
-              description="No high-quality arguments with low upvotes match your filters. Try changing the period or grade filter."
+              icon={GitMerge}
+              iconColor="text-emerald"
+              iconBg="bg-emerald/10"
+              iconBorder="border-emerald/20"
+              title="No influential arguments yet"
+              description="Cross-partisan arguments emerge as the community grows. Check back as more users vote and react to arguments across the aisle."
               actions={[
-                { label: 'View all arguments', href: '/arguments', variant: 'primary' },
-                { label: 'Top scored', href: '/arguments/top-scored', variant: 'secondary' },
+                { label: 'Top scored arguments', href: '/arguments/top-scored', variant: 'primary' },
+                { label: 'All arguments', href: '/arguments', variant: 'secondary' },
               ]}
             />
           ) : (
             <AnimatePresence mode="wait">
               <motion.div
-                key={`${grade}-${side}-${period}-${category}`}
+                key={`${side}-${period}-${sort}-${category}`}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -624,16 +693,15 @@ export default function UnderratedArgumentsPage() {
             </div>
           )}
 
-          {/* Navigation links */}
+          {/* Navigation */}
           <div className="pt-4 border-t border-surface-300/40 grid grid-cols-2 sm:grid-cols-3 gap-3">
             {[
               { href: '/arguments', label: 'All Arguments', icon: Scale },
               { href: '/arguments/top-scored', label: 'Top Scored', icon: Brain },
-              { href: '/arguments/influential', label: 'Influential', icon: GitMerge },
-              { href: '/arguments/hall-of-fame', label: 'Hall of Fame', icon: Trophy },
-              { href: '/arguments/trending', label: 'Trending', icon: Zap },
-              { href: '/arguments/daily', label: 'Daily Argument', icon: Sparkles },
-              { href: '/arguments/champions', label: 'Champions', icon: Crown },
+              { href: '/arguments/champions', label: 'Champions', icon: Trophy },
+              { href: '/arguments/trending', label: 'Trending', icon: Flame },
+              { href: '/arguments/underrated', label: 'Hidden Gems', icon: Sparkles },
+              { href: '/arguments/hall-of-fame', label: 'Hall of Fame', icon: Crown },
             ].map((link) => {
               const Icon = link.icon
               return (

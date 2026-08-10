@@ -12,6 +12,7 @@ import {
   FileEdit,
   Flame,
   GitBranch,
+  GitMerge,
   LayoutGrid,
   Loader2,
   MessageSquare,
@@ -448,6 +449,13 @@ export default function ArgumentsPage() {
               >
                 <Award className="h-3 w-3" aria-hidden />
                 Hall of Fame
+              </Link>
+              <Link
+                href="/arguments/influential"
+                className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald/10 border border-emerald/30 text-[11px] font-mono font-semibold text-emerald hover:bg-emerald/20 transition-colors flex-shrink-0"
+              >
+                <GitMerge className="h-3 w-3" aria-hidden />
+                Influential
               </Link>
               <Link
                 href="/arguments/drafts"
