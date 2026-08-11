@@ -3226,6 +3226,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'notes',
+    label: 'Civic Notes',
+    sublabel: 'Freeform research workspace — write notes, link to debates, pin key insights, search everything',
+    href: '/notes',
+    icon: FileText,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'myth',
     label: 'Law or Myth',
     sublabel: "Daily fact-check game — did the Lobby pass this into law or reject it? 5 rounds, 100 points max",
