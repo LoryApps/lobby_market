@@ -298,6 +298,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'intel',
+    label: 'Lobby Intel',
+    sublabel: 'Live signals: deadlocks, brink-of-law topics, velocity spikes, upcoming debates',
+    href: '/intel',
+    icon: Target,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-900/50',
+  },
+  {
+    type: 'link',
     id: 'breaking',
     label: 'Breaking Civic News',
     sublabel: 'Recent laws established, fast-moving votes, live debates, and newly proposed topics',
