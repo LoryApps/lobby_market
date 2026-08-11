@@ -687,6 +687,9 @@ export function WriteClient() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const prefillTopicId = searchParams.get('topic')
+  const prefillSideParam = searchParams.get('side')
+  const prefillSide: Side | null =
+    prefillSideParam === 'blue' || prefillSideParam === 'red' ? prefillSideParam : null
 
   const [step, setStep] = useState<Step>('topic')
   const [topic, setTopic] = useState<SearchTopic | null>(null)
@@ -702,7 +705,12 @@ export function WriteClient() {
 
   function selectTopic(t: SearchTopic) {
     setTopic(t)
-    setStep('side')
+    if (prefillSide) {
+      setSide(prefillSide)
+      setStep('write')
+    } else {
+      setStep('side')
+    }
   }
 
   function pickSide(s: Side) {
