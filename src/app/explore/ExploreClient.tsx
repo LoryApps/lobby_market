@@ -343,6 +343,7 @@ const SECTIONS: FeatureSection[] = [
       { href: '/topic/graph', label: 'Topic Network', description: 'Interactive graph of all debate topics and how they connect.', icon: Network },
       { href: '/heatmap', label: 'Category Heatmap', description: 'Vote intensity and consensus across all 10 civic categories.', icon: PieChart },
       { href: '/momentum', label: 'Momentum Tracker', description: 'Topics with the fastest vote velocity right now.', icon: TrendingUp },
+      { href: '/temperature', label: 'Civic Temperature', description: 'Heat score combining controversy, vote velocity, and engagement depth.', icon: Flame, isNew: true },
       { href: '/tipping-point', label: 'Tipping Points', description: 'Topics at critical transition moments — approaching law or failure.', icon: Flame },
       { href: '/exchange', label: 'Civic Exchange', description: 'Prediction market view of every debate — price, volume, momentum, and settlement.', icon: BarChart, isNew: true },
       { href: '/exchange/heatmap', label: 'Market Heat Map', description: 'Finviz-style treemap of all civic markets — sized by volume, colored by consensus direction.', icon: Map, isNew: true },

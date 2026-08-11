@@ -116,6 +116,7 @@ import {
   ShieldAlert,
   Star,
   UserCheck,
+  Thermometer,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -1622,6 +1623,16 @@ const QUICK_LINKS: QuickLink[] = [
     sublabel: 'Live vote velocity — which topics are accelerating?',
     href: '/momentum',
     icon: ArrowUpRight,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-500/10',
+  },
+  {
+    type: 'link',
+    id: 'temperature',
+    label: 'Civic Temperature',
+    sublabel: 'Which debates are running hot? Controversy × velocity × engagement heat score.',
+    href: '/temperature',
+    icon: Thermometer,
     iconColor: 'text-against-400',
     iconBg: 'bg-against-500/10',
   },
