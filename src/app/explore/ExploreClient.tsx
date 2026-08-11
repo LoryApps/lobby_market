@@ -335,6 +335,7 @@ const SECTIONS: FeatureSection[] = [
     description: 'Real-time dashboards and data visualizations of the Lobby.',
     features: [
       { href: '/clips', label: 'Civic Clips', description: 'Swipe through the sharpest arguments on the platform — top-voted, AI-scored takes one card at a time.', icon: Sparkles, isNew: true },
+      { href: '/broadcast', label: 'Civic Broadcast', description: "Live split-screen view of the Lobby's hottest topic — FOR vs AGAINST arguments, a live vote bar, and real-time platform stats.", icon: Radio, isNew: true },
       { href: '/terminal', label: 'Consensus Terminal', description: 'Bloomberg-style live view of all active debates as market data.', icon: Activity },
       { href: '/live', label: 'Live Stream', description: 'Real-time stream of arguments being posted across the Lobby.', icon: Radio },
       { href: '/vote-stream', label: 'Vote Stream', description: 'Watch every vote land in real-time, second by second.', icon: Zap },
