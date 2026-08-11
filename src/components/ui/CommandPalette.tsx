@@ -1148,6 +1148,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'hourglass',
+    label: 'Civic Hourglass',
+    sublabel: 'The full topic pipeline: Proposed → Active → Voting → Law — conversion rates and stage stats',
+    href: '/hourglass',
+    icon: Hourglass,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'checker',
     label: 'Civic Claim Checker',
     sublabel: 'Check any claim against the Codex — see if established laws support or contradict it',

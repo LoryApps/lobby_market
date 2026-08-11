@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "mkdir -p .next/server && printf '{\"/_error\":\"pages/_error.js\",\"/_app\":\"pages/_app.js\",\"/_document\":\"pages/_document.js\"}' > .next/server/pages-manifest.json && NODE_OPTIONS='--max-old-space-size=4096 --require ./graceful-fs-patch.cjs' next build",
+    "build": "mkdir -p .next/server && printf '{\"/_error\":\"pages/_error.js\",\"/_app\":\"pages/_app.js\",\"/_document\":\"pages/_document.js\"}' > .next/server/pages-manifest.json && NODE_OPTIONS='--max-old-space-size=8192 --require ./graceful-fs-patch.cjs' next build",
     "start": "next start",
     "lint": "next lint"
   },
