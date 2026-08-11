@@ -226,7 +226,7 @@ export function ReportDetailClient({ report, currentUserId }: Props) {
             <div className="min-w-0">
               <p className="text-xs font-mono text-for-400 mb-1">Filed under topic</p>
               <Link
-                href={`/topics/${report.topic_id}`}
+                href={`/topic/${report.topic_id}`}
                 className="text-sm font-mono text-surface-200 hover:text-white transition-colors line-clamp-2"
               >
                 {report.topic_statement}

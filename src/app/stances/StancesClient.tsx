@@ -144,7 +144,7 @@ function TopicRow({ topic, index, variant }: { topic: StancesTopic; index: numbe
       transition={{ delay: index * 0.05 }}
     >
       <Link
-        href={`/topics/${topic.id}`}
+        href={`/topic/${topic.id}`}
         className="flex items-start gap-3 py-3 border-b border-surface-200/10 last:border-0 hover:bg-surface-100/30 rounded-lg px-2 -mx-2 transition-colors"
       >
         <div

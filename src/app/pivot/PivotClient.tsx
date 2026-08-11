@@ -400,7 +400,7 @@ function PivotCard({
       {/* Actions */}
       <div className="flex gap-2">
         <Link
-          href={`/topics/${topic.id}`}
+          href={`/topic/${topic.id}`}
           className={cn(
             'flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg',
             'text-xs font-mono font-medium transition-colors',
@@ -417,7 +417,7 @@ function PivotCard({
           View debate
         </Link>
         <Link
-          href={`/topics/${topic.id}`}
+          href={`/topic/${topic.id}`}
           className={cn(
             'flex items-center justify-center gap-1 px-3 py-2 rounded-lg',
             'text-xs font-mono text-surface-400',
