@@ -113,6 +113,7 @@ import { TopicResolutionBanner } from '@/components/topic/TopicResolutionBanner'
 import { TopicChangemakersPanel } from '@/components/topic/TopicChangemakersPanel'
 import { TopicQAPanel } from '@/components/topic/TopicQAPanel'
 import { ExchangeMarketPanel } from '@/components/topic/ExchangeMarketPanel'
+import { TopicNotesButton } from '@/components/topic/TopicNotesButton'
 
 const SIGNAL_ICONS_DETAIL: Record<string, typeof Flame> = {
   ending_soon:     Clock,
@@ -298,6 +299,7 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
           <div className="ml-auto flex items-center gap-2">
             <TopicSubscribeButton topicId={topic.id} />
             <BookmarkButton topicId={topic.id} />
+            <TopicNotesButton topicId={topic.id} />
             <AddToCollectionButton topicId={topic.id} />
             <Link
               href={`/share/debate/${topic.id}`}
