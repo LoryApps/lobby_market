@@ -608,6 +608,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'quests',
+    label: 'Civic Quests',
+    sublabel: 'Structured progression tracks — Voter, Debater, Scholar, Builder — earn Clout as you level up',
+    href: '/quests',
+    icon: Award,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'queue',
     label: 'Action Queue',
     sublabel: 'Personalised civic to-do list — urgent votes, arguments, RSVPs',
