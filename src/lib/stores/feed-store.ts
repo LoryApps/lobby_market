@@ -7,7 +7,19 @@ export type FeedStatus = "proposed" | "active" | "voting" | "law" | null;
 export type FeedCategory = string | null;
 export type FeedScope = "Global" | "National" | "Regional" | "Local" | null;
 export type FeedTag = string | null;
-export type FeedMode = "discover" | "following" | "foryou" | "mytags" | "unvoted" | "battleground" | "rising" | "closingin" | "newlaws" | "collapse" | "argued" | "flux" | "lastcall" | "momentum" | "mandate" | "elders" | "groundswell" | "livedebates" | "swing" | "stalled" | "comeback";
+export type FeedMode = "discover" | "following" | "foryou" | "mytags" | "unvoted" | "battleground" | "rising" | "closingin" | "newlaws" | "collapse" | "argued" | "flux" | "lastcall" | "momentum" | "mandate" | "elders" | "groundswell" | "livedebates" | "swing" | "stalled" | "comeback" | "overdrive" | "deadlock" | "converging" | "flashpoint" | "vortex";
+
+export interface FeedPreset {
+  id: string;
+  name: string;
+  sort: FeedSort;
+  statusFilter: FeedStatus;
+  categoryFilter: FeedCategory;
+  scopeFilter: FeedScope;
+  tagFilter: FeedTag;
+  feedMode: FeedMode;
+  createdAt: number;
+}
 
 interface FeedState {
   topics: TopicWithAuthor[];
@@ -31,6 +43,7 @@ interface FeedState {
   /** Number of votes analyzed when inferring from history */
   inferredFromVotes: number;
   _generation: number;
+  savedPresets: FeedPreset[];
 
   fetchNextPage: () => Promise<void>;
   setSort: (sort: FeedSort) => void;
@@ -45,6 +58,9 @@ interface FeedState {
   /** Realtime-injected topics don't have router data — treated as TopicWithAuthor with null author */
   prependTopic: (topic: Topic | TopicWithAuthor) => void;
   updateTopic: (id: string, updates: Partial<Topic>) => void;
+  saveCurrentAsPreset: (name: string) => void;
+  loadPreset: (preset: FeedPreset) => void;
+  deletePreset: (id: string) => void;
 }
 
 export const useFeedStore = create<FeedState>()(
@@ -66,6 +82,7 @@ export const useFeedStore = create<FeedState>()(
       preferenceSource: 'quiz',
       inferredFromVotes: 0,
       _generation: 0,
+      savedPresets: [],
 
       fetchNextPage: async () => {
         const {
@@ -754,6 +771,158 @@ export const useFeedStore = create<FeedState>()(
               offset: state.offset + json.topics.length,
               hasMore: json.hasMore ?? json.topics.length === 20,
             }));
+          } else if (feedMode === "overdrive") {
+            // Overdrive feed — topics with highest argument-to-voter ratio
+            const params = new URLSearchParams({
+              limit: "20",
+              offset: String(offset),
+              sort,
+            });
+
+            const res = await fetch(`/api/feed/overdrive?${params.toString()}`);
+
+            if (get()._generation !== capturedGen) return;
+
+            if (!res.ok) {
+              console.error("Failed to fetch overdrive feed:", res.statusText);
+              return;
+            }
+
+            const json: { topics: TopicWithAuthor[]; hasMore: boolean } = await res.json();
+
+            if (get()._generation !== capturedGen) return;
+
+            if (json.topics.length === 0) {
+              set({ hasMore: false });
+              return;
+            }
+
+            set((state) => ({
+              topics: [...state.topics, ...json.topics],
+              offset: state.offset + json.topics.length,
+              hasMore: json.hasMore ?? json.topics.length === 20,
+            }));
+          } else if (feedMode === "deadlock") {
+            // Deadlock feed — topics locked in near-perfect 50/50 for 7+ days
+            const params = new URLSearchParams({
+              limit: "20",
+              offset: String(offset),
+              sort,
+            });
+
+            const res = await fetch(`/api/feed/deadlock?${params.toString()}`);
+
+            if (get()._generation !== capturedGen) return;
+
+            if (!res.ok) {
+              console.error("Failed to fetch deadlock feed:", res.statusText);
+              return;
+            }
+
+            const json: { topics: TopicWithAuthor[]; hasMore: boolean } = await res.json();
+
+            if (get()._generation !== capturedGen) return;
+
+            if (json.topics.length === 0) {
+              set({ hasMore: false });
+              return;
+            }
+
+            set((state) => ({
+              topics: [...state.topics, ...json.topics],
+              offset: state.offset + json.topics.length,
+              hasMore: json.hasMore ?? json.topics.length === 20,
+            }));
+          } else if (feedMode === "converging") {
+            // Converging feed — topics where recent votes reinforce the majority
+            const params = new URLSearchParams({
+              limit: "20",
+              offset: String(offset),
+            });
+
+            const res = await fetch(`/api/feed/converging?${params.toString()}`);
+
+            if (get()._generation !== capturedGen) return;
+
+            if (!res.ok) {
+              console.error("Failed to fetch converging feed:", res.statusText);
+              return;
+            }
+
+            const json: { topics: TopicWithAuthor[]; hasMore: boolean } = await res.json();
+
+            if (get()._generation !== capturedGen) return;
+
+            if (json.topics.length === 0) {
+              set({ hasMore: false });
+              return;
+            }
+
+            set((state) => ({
+              topics: [...state.topics, ...json.topics],
+              offset: state.offset + json.topics.length,
+              hasMore: json.hasMore ?? json.topics.length === 20,
+            }));
+          } else if (feedMode === "flashpoint") {
+            // Flashpoint feed — high velocity AND high contestedness (most contested active fights)
+            const params = new URLSearchParams({
+              limit: "20",
+              offset: String(offset),
+            });
+
+            const res = await fetch(`/api/feed/flashpoint?${params.toString()}`);
+
+            if (get()._generation !== capturedGen) return;
+
+            if (!res.ok) {
+              console.error("Failed to fetch flashpoint feed:", res.statusText);
+              return;
+            }
+
+            const json: { topics: TopicWithAuthor[]; hasMore: boolean } = await res.json();
+
+            if (get()._generation !== capturedGen) return;
+
+            if (json.topics.length === 0) {
+              set({ hasMore: false });
+              return;
+            }
+
+            set((state) => ({
+              topics: [...state.topics, ...json.topics],
+              offset: state.offset + json.topics.length,
+              hasMore: json.hasMore ?? json.topics.length === 20,
+            }));
+          } else if (feedMode === "vortex") {
+            // Vortex feed — argument black holes ranked by intensity per voter
+            const params = new URLSearchParams({
+              limit: "20",
+              offset: String(offset),
+            });
+
+            const res = await fetch(`/api/feed/vortex?${params.toString()}`);
+
+            if (get()._generation !== capturedGen) return;
+
+            if (!res.ok) {
+              console.error("Failed to fetch vortex feed:", res.statusText);
+              return;
+            }
+
+            const json: { topics: TopicWithAuthor[]; hasMore: boolean } = await res.json();
+
+            if (get()._generation !== capturedGen) return;
+
+            if (json.topics.length === 0) {
+              set({ hasMore: false });
+              return;
+            }
+
+            set((state) => ({
+              topics: [...state.topics, ...json.topics],
+              offset: state.offset + json.topics.length,
+              hasMore: json.hasMore ?? json.topics.length === 20,
+            }));
           } else {
             // Discover feed
             const params = new URLSearchParams({
@@ -867,7 +1036,7 @@ export const useFeedStore = create<FeedState>()(
         // Reset sort to "new" for following/mytags, "top" for everything else
         const sort = (feedMode === "following" || feedMode === "mytags") ? "new"
           : (feedMode === "unvoted" || feedMode === "battleground") ? "hot"
-          : (feedMode === "rising" || feedMode === "closingin" || feedMode === "newlaws" || feedMode === "collapse" || feedMode === "argued" || feedMode === "flux" || feedMode === "lastcall" || feedMode === "mandate" || feedMode === "elders" || feedMode === "groundswell" || feedMode === "livedebates" || feedMode === "swing" || feedMode === "stalled" || feedMode === "comeback") ? "top"
+          : (feedMode === "rising" || feedMode === "closingin" || feedMode === "newlaws" || feedMode === "collapse" || feedMode === "argued" || feedMode === "flux" || feedMode === "lastcall" || feedMode === "mandate" || feedMode === "elders" || feedMode === "groundswell" || feedMode === "livedebates" || feedMode === "swing" || feedMode === "stalled" || feedMode === "comeback" || feedMode === "overdrive" || feedMode === "deadlock" || feedMode === "converging" || feedMode === "flashpoint") ? "top"
           : "top";
         set({
           feedMode,
@@ -917,6 +1086,48 @@ export const useFeedStore = create<FeedState>()(
             t.id === id ? { ...t, ...updates } : t
           ),
         })),
+
+      saveCurrentAsPreset: (name) => {
+        const { sort, statusFilter, categoryFilter, scopeFilter, tagFilter, feedMode } = get();
+        const preset: FeedPreset = {
+          id: `preset_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+          name: name.trim() || 'My Feed',
+          sort,
+          statusFilter,
+          categoryFilter,
+          scopeFilter,
+          tagFilter,
+          feedMode,
+          createdAt: Date.now(),
+        };
+        set((state) => ({
+          savedPresets: [...state.savedPresets, preset].slice(-12),
+        }));
+      },
+
+      loadPreset: (preset) => {
+        const gen = get()._generation + 1;
+        set({
+          sort: preset.sort,
+          statusFilter: preset.statusFilter,
+          categoryFilter: preset.categoryFilter,
+          scopeFilter: preset.scopeFilter,
+          tagFilter: preset.tagFilter,
+          feedMode: preset.feedMode,
+          topics: [],
+          offset: 0,
+          hasMore: true,
+          isLoading: false,
+          _generation: gen,
+        });
+        get().fetchNextPage();
+      },
+
+      deletePreset: (id) => {
+        set((state) => ({
+          savedPresets: state.savedPresets.filter((p) => p.id !== id),
+        }));
+      },
     }),
     {
       name: "lm-feed-prefs",
@@ -928,6 +1139,7 @@ export const useFeedStore = create<FeedState>()(
         categoryFilter: state.categoryFilter,
         scopeFilter: state.scopeFilter,
         tagFilter: state.tagFilter,
+        savedPresets: state.savedPresets,
       }),
     }
   )

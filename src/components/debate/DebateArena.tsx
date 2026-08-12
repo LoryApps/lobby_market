@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Bot, Layers, LayoutGrid, Trophy, Users } from 'lucide-react'
+import { ArrowLeft, Bot, Layers, LayoutGrid, Loader2, Mic, Trophy, Users } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils/cn'
 import type {
@@ -62,6 +62,7 @@ export function DebateArena({
   const [reactions, setReactions] = useState<FloatingReaction[]>([])
   const [chatOpen, setChatOpen] = useState(true)
   const [series, setSeries] = useState<DebateSeries | null>(null)
+  const [joiningAsSpeaker, setJoiningAsSpeaker] = useState<VoteSide | null>(null)
 
   const reactionIdRef = useRef(0)
 
@@ -216,6 +217,27 @@ export function DebateArena({
   const handleArenaTap = (side: VoteSide | null) => {
     handleSendReaction(pickEmoji(side), side)
   }
+
+  const handleJoinAsSpeaker = useCallback(async (side: VoteSide) => {
+    if (!currentUserId || joiningAsSpeaker) return
+    setJoiningAsSpeaker(side)
+    try {
+      const res = await fetch(`/api/debates/${debate.id}/join`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ side, is_speaker: true }),
+      })
+      if (res.status === 401) {
+        window.location.href = '/login'
+        return
+      }
+      if (!res.ok) return
+      // Realtime INSERT listener will update participants; also refresh server state
+      router.refresh()
+    } finally {
+      setJoiningAsSpeaker(null)
+    }
+  }, [currentUserId, joiningAsSpeaker, debate.id, router])
 
   const isLive = debate.status === 'live'
 
@@ -406,6 +428,39 @@ export function DebateArena({
                 size="md"
                 className="backdrop-blur-md bg-surface-100/80"
               />
+              {/* Volunteer to speak — shown when a seat is open and user isn't already a speaker */}
+              {currentUserId && !participants.some((p) => p.user_id === currentUserId && p.is_speaker) && (
+                <>
+                  {!blueSpeaker && (
+                    <button
+                      onClick={() => handleJoinAsSpeaker('blue')}
+                      disabled={joiningAsSpeaker !== null}
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-for-600/20 backdrop-blur-md border border-for-500/40 text-sm font-semibold text-for-300 hover:bg-for-600/30 hover:border-for-500/60 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                      {joiningAsSpeaker === 'blue' ? (
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      ) : (
+                        <Mic className="h-3.5 w-3.5" />
+                      )}
+                      Speak FOR
+                    </button>
+                  )}
+                  {!redSpeaker && (
+                    <button
+                      onClick={() => handleJoinAsSpeaker('red')}
+                      disabled={joiningAsSpeaker !== null}
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-against-600/20 backdrop-blur-md border border-against-500/40 text-sm font-semibold text-against-300 hover:bg-against-600/30 hover:border-against-500/60 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                      {joiningAsSpeaker === 'red' ? (
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      ) : (
+                        <Mic className="h-3.5 w-3.5" />
+                      )}
+                      Speak AGAINST
+                    </button>
+                  )}
+                </>
+              )}
               {currentUserId && participants.some((p) => p.user_id === currentUserId && p.is_speaker) && (
                 <Link href={`/debate/${debate.id}/coach`}>
                   <button className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-purple/10 backdrop-blur-md border border-purple/30 text-sm font-semibold text-purple hover:bg-purple/20 hover:border-purple/50 transition-all">

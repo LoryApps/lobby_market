@@ -138,6 +138,7 @@ const SECTIONS: FeatureSection[] = [
       { href: '/advisor', label: 'Civic Advisor', description: 'Personalized AI recommendations for your civic journey.', icon: Sparkles, isAI: true },
       { href: '/checker', label: 'Fact Checker', description: 'AI-assisted fact checking and claim verification tool.', icon: CheckCircle2, isAI: true },
       { href: '/brief', label: 'Topic Brief', description: 'AI-generated background briefing on any civic debate.', icon: FileText, isAI: true },
+      { href: '/stress-test', label: 'Argument Stress Test', description: 'Attack your argument from 5 angles before opponents do — empirical, logical, practical, systemic, and alternatives. Get a vulnerability score and defense tips.', icon: ShieldAlert, isAI: true, isNew: true },
     ],
   },
   {
@@ -335,6 +336,7 @@ const SECTIONS: FeatureSection[] = [
     description: 'Real-time dashboards and data visualizations of the Lobby.',
     features: [
       { href: '/clips', label: 'Civic Clips', description: 'Swipe through the sharpest arguments on the platform — top-voted, AI-scored takes one card at a time.', icon: Sparkles, isNew: true },
+      { href: '/broadcast', label: 'Civic Broadcast', description: "Live split-screen view of the Lobby's hottest topic — FOR vs AGAINST arguments, a live vote bar, and real-time platform stats.", icon: Radio, isNew: true },
       { href: '/terminal', label: 'Consensus Terminal', description: 'Bloomberg-style live view of all active debates as market data.', icon: Activity },
       { href: '/live', label: 'Live Stream', description: 'Real-time stream of arguments being posted across the Lobby.', icon: Radio },
       { href: '/vote-stream', label: 'Vote Stream', description: 'Watch every vote land in real-time, second by second.', icon: Zap },
@@ -342,9 +344,11 @@ const SECTIONS: FeatureSection[] = [
       { href: '/topic/graph', label: 'Topic Network', description: 'Interactive graph of all debate topics and how they connect.', icon: Network },
       { href: '/heatmap', label: 'Category Heatmap', description: 'Vote intensity and consensus across all 10 civic categories.', icon: PieChart },
       { href: '/momentum', label: 'Momentum Tracker', description: 'Topics with the fastest vote velocity right now.', icon: TrendingUp },
+      { href: '/temperature', label: 'Civic Temperature', description: 'Heat score combining controversy, vote velocity, and engagement depth.', icon: Flame, isNew: true },
       { href: '/tipping-point', label: 'Tipping Points', description: 'Topics at critical transition moments — approaching law or failure.', icon: Flame },
       { href: '/exchange', label: 'Civic Exchange', description: 'Prediction market view of every debate — price, volume, momentum, and settlement.', icon: BarChart, isNew: true },
       { href: '/exchange/heatmap', label: 'Market Heat Map', description: 'Finviz-style treemap of all civic markets — sized by volume, colored by consensus direction.', icon: Map, isNew: true },
+      { href: '/orrery', label: 'Civic Orrery', description: 'A solar system of civic debate — every active topic orbits the Consensus Core as a planet. Size = votes, distance = polarization.', icon: Globe, isNew: true },
     ],
   },
   {

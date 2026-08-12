@@ -307,6 +307,9 @@ const SECTIONS: FeatureSection[] = [
     features: [
       { href: '/profile/me', label: 'My Profile', sublabel: 'Full civic identity page', icon: Users },
       { href: '/achievements', label: 'Achievements', sublabel: 'Your earned badges', icon: Trophy },
+      { href: '/quests', label: 'Civic Quests', sublabel: 'Gamified progression tracks', icon: Target, badge: 'New' },
+      { href: '/missions', label: 'Daily Missions', sublabel: 'Three fresh challenges each day', icon: Zap },
+      { href: '/skill-tree', label: 'Skill Tree', sublabel: 'RPG-style civic progression map', icon: GitBranch },
       { href: '/streaks', label: 'Vote Streak', sublabel: 'Keep your daily streak alive', icon: Flame },
       { href: '/clout', label: 'Clout', sublabel: 'Your civic reputation score', icon: Coins },
       { href: '/analytics/legacy', label: 'My Legacy', sublabel: 'Long-term impact view', icon: History },

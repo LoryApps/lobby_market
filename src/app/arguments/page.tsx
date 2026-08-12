@@ -9,9 +9,11 @@ import {
   Brain,
   ChevronDown,
   ChevronUp,
+  Clapperboard,
   FileEdit,
   Flame,
   GitBranch,
+  GitMerge,
   LayoutGrid,
   Loader2,
   MessageSquare,
@@ -450,6 +452,13 @@ export default function ArgumentsPage() {
                 Hall of Fame
               </Link>
               <Link
+                href="/arguments/influential"
+                className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald/10 border border-emerald/30 text-[11px] font-mono font-semibold text-emerald hover:bg-emerald/20 transition-colors flex-shrink-0"
+              >
+                <GitMerge className="h-3 w-3" aria-hidden />
+                Influential
+              </Link>
+              <Link
                 href="/arguments/drafts"
                 className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-gold/10 border border-gold/30 text-[11px] font-mono font-semibold text-gold hover:bg-gold/20 transition-colors flex-shrink-0"
               >
@@ -490,6 +499,13 @@ export default function ArgumentsPage() {
               >
                 <Type className="h-3 w-3" aria-hidden />
                 Lexicon
+              </Link>
+              <Link
+                href="/arguments/clips"
+                className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-purple/10 border border-purple/30 text-[11px] font-mono font-semibold text-purple hover:bg-purple/20 transition-colors flex-shrink-0"
+              >
+                <Clapperboard className="h-3 w-3" aria-hidden />
+                Clips
               </Link>
             </div>
           </div>

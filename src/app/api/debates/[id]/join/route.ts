@@ -59,9 +59,12 @@ export async function POST(
     .maybeSingle()
 
   if (existing) {
+    const updateFields: Record<string, unknown> = { side, left_at: null }
+    // Only promote to speaker; never demote (a speaker stays a speaker)
+    if (is_speaker === true) updateFields.is_speaker = true
     const { error: updateError } = await supabase
       .from('debate_participants')
-      .update({ side, left_at: null })
+      .update(updateFields)
       .eq('id', existing.id)
 
     if (updateError) {

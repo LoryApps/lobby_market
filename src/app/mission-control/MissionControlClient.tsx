@@ -352,7 +352,7 @@ export function MissionControlClient() {
                     {data.pending_votes.map((topic) => (
                       <Link
                         key={topic.id}
-                        href={`/topics/${topic.id}`}
+                        href={`/topic/${topic.id}`}
                         className="group flex items-start gap-3 p-3 rounded-xl bg-surface-200 hover:bg-surface-300 transition-colors"
                       >
                         <div className="flex-1 min-w-0">

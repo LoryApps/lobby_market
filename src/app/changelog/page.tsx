@@ -2108,6 +2108,20 @@ const CHAPTERS: Chapter[] = [
     ],
   },
   {
+    number: 'Ch. 224',
+    title: 'Civic Breakthrough',
+    subtitle: 'Where democratic ambiguity becomes clarity — topics ranked by consensus strength across four tiers: Forming, Clear, Landmark, and Unanimous',
+    accent: 'text-gold',
+    borderColor: 'border-gold/30',
+    bgColor: 'bg-gold/5',
+    textColor: 'text-gold',
+    items: [
+      { icon: Trophy, label: '/breakthrough: Civic Breakthrough Index. Consensus Score = abs(blue_pct − 50) × 2, mapping a 50/50 split to 0 and unanimous agreement to 100. Topics ≥ 10 score (5%+ lead) qualify. Four tiers: Forming (10–19), Clear (20–39), Landmark (40–69), Unanimous (≥70). Zero new DB migrations.', href: '/breakthrough', color: 'text-gold' },
+      { icon: BarChart2, label: 'Stat strip (breakthrough count, unanimous count, avg consensus score, strongest category). Clickable tier pills to filter by tier. Category vs. direction filters. Four sort modes: consensus score, most voted, most recent, most argued. Paginated results (20 per page).', href: '/breakthrough', color: 'text-surface-400' },
+      { icon: Activity, label: 'Category breakdown panel (avg consensus score per domain with animated bars, collapsible). Info panel explaining methodology. Related links: /entropy, /tipping-point, /inertia, /equilibrium, /converging, /schism. Added to ⌘K CommandPalette and sitemap.', href: '/breakthrough', color: 'text-surface-400' },
+    ],
+  },
+  {
     number: 'Ch. 223',
     title: 'Civic Entropy Index',
     subtitle: 'Shannon information entropy applied to vote splits — surfaces the debates where democratic disagreement is sharpest and most consequential',
@@ -2124,10 +2138,10 @@ const CHAPTERS: Chapter[] = [
 ]
 
 const STATS = [
-  { value: '358', label: 'chapters shipped' },
-  { value: '1020+', label: 'features built' },
+  { value: '359', label: 'chapters shipped' },
+  { value: '1023+', label: 'features built' },
   { value: '118', label: 'DB migrations' },
-  { value: '625+', label: 'API routes' },
+  { value: '626+', label: 'API routes' },
 ]
 
 interface RecentBuild {

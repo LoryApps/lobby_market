@@ -4,20 +4,43 @@ import { createClient } from '@/lib/supabase/server'
 
 export const dynamic = 'force-dynamic'
 
-const STATUS_LABEL: Record<string, string> = {
+const STATUS_LABELS: Record<string, string> = {
   proposed: 'PROPOSED',
   active: 'ACTIVE',
   voting: 'VOTING',
-  law: 'ESTABLISHED LAW',
+  law: 'NOW LAW',
   failed: 'FAILED',
 }
 
-const STATUS_COLOR: Record<string, string> = {
-  proposed: '#6b7280',
-  active: '#10b981',
+const STATUS_COLORS: Record<string, string> = {
+  proposed: '#71717a',
+  active: '#3b82f6',
   voting: '#f59e0b',
-  law: '#c9a84c',
-  failed: '#6b7280',
+  law: '#10b981',
+  failed: '#ef4444',
+}
+
+function fallback() {
+  return new ImageResponse(
+    (
+      <div
+        style={{
+          width: '1200px',
+          height: '630px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: '#0a0a0f',
+          fontFamily: 'system-ui, -apple-system, sans-serif',
+        }}
+      >
+        <span style={{ color: '#fafafa', fontSize: '48px', fontWeight: 800, letterSpacing: '0.18em' }}>
+          LOBBY MARKET
+        </span>
+      </div>
+    ),
+    { width: 1200, height: 630 }
+  )
 }
 
 export async function GET(
@@ -32,272 +55,141 @@ export async function GET(
       .eq('id', params.id)
       .single()
 
-    const statement = topic?.statement ?? 'Untitled Topic'
-    const forPct = Math.round(topic?.blue_pct ?? 50)
+    if (!topic) return fallback()
+
+    const forPct = Math.round(topic.blue_pct ?? 50)
     const againstPct = 100 - forPct
-    const totalVotes = topic?.total_votes ?? 0
-    const status = topic?.status ?? 'proposed'
-    const category = topic?.category ?? null
-
-    const statusLabel = STATUS_LABEL[status] ?? status.toUpperCase()
-    const statusColor = STATUS_COLOR[status] ?? '#6b7280'
-
-    // Dynamic font size based on statement length
-    const fontSize =
-      statement.length > 120 ? 32 : statement.length > 80 ? 38 : 44
+    const votes = topic.total_votes ?? 0
+    const status = topic.status ?? 'active'
+    const statusColor = STATUS_COLORS[status] ?? '#71717a'
+    const statusLabel = STATUS_LABELS[status] ?? status.toUpperCase()
+    const statement = topic.statement ?? ''
+    const fontSize = statement.length > 120 ? 30 : statement.length > 80 ? 38 : 46
 
     return new ImageResponse(
       (
         <div
           style={{
-            display: 'flex',
-            flexDirection: 'column',
             width: '1200px',
             height: '630px',
-            backgroundColor: '#0d0f14',
-            padding: '60px',
+            display: 'flex',
+            flexDirection: 'column',
+            background: '#0a0a0f',
+            padding: '64px 72px 60px',
+            fontFamily: 'system-ui, -apple-system, sans-serif',
             position: 'relative',
-            overflow: 'hidden',
           }}
         >
-          {/* Ambient blue glow top-right */}
+          {/* Background glow */}
           <div
             style={{
               position: 'absolute',
-              top: '-120px',
-              right: '-120px',
-              width: '480px',
-              height: '480px',
+              top: '-80px',
+              right: '-80px',
+              width: '400px',
+              height: '400px',
               borderRadius: '50%',
-              background:
-                'radial-gradient(circle, rgba(59,130,246,0.12) 0%, transparent 70%)',
-            }}
-          />
-          {/* Ambient red glow bottom-left */}
-          <div
-            style={{
-              position: 'absolute',
-              bottom: '-120px',
-              left: '-120px',
-              width: '480px',
-              height: '480px',
-              borderRadius: '50%',
-              background:
-                'radial-gradient(circle, rgba(239,68,68,0.10) 0%, transparent 70%)',
+              background: 'radial-gradient(circle, rgba(59,130,246,0.12) 0%, transparent 70%)',
             }}
           />
 
-          {/* Header row */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              marginBottom: '40px',
-            }}
-          >
-            {/* Wordmark */}
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-              }}
-            >
+          {/* Header */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '52px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <div
                 style={{
-                  width: '8px',
-                  height: '8px',
-                  borderRadius: '50%',
-                  backgroundColor: '#c9a84c',
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '9px',
+                  background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
+                  display: 'flex',
                 }}
               />
-              <span
-                style={{
-                  fontSize: '15px',
-                  fontWeight: 700,
-                  color: '#c9a84c',
-                  letterSpacing: '0.18em',
-                }}
-              >
+              <span style={{ color: '#fafafa', fontSize: '17px', fontWeight: 700, letterSpacing: '0.18em' }}>
                 LOBBY MARKET
               </span>
             </div>
-
-            {/* Status badge */}
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                padding: '5px 14px',
-                borderRadius: '6px',
-                backgroundColor: `${statusColor}18`,
-                border: `1px solid ${statusColor}45`,
-                fontSize: '11px',
-                fontWeight: 700,
-                color: statusColor,
-                letterSpacing: '0.12em',
-              }}
-            >
-              {statusLabel}
+            <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+              {topic.category && (
+                <div
+                  style={{
+                    background: '#1a1a22',
+                    color: '#a1a1aa',
+                    fontSize: '13px',
+                    fontWeight: 600,
+                    padding: '6px 14px',
+                    borderRadius: '20px',
+                    border: '1px solid #24242e',
+                  }}
+                >
+                  {topic.category}
+                </div>
+              )}
+              <div
+                style={{
+                  background: statusColor + '22',
+                  color: statusColor,
+                  fontSize: '13px',
+                  fontWeight: 700,
+                  padding: '6px 14px',
+                  borderRadius: '20px',
+                  border: `1px solid ${statusColor}44`,
+                  letterSpacing: '0.08em',
+                }}
+              >
+                {statusLabel}
+              </div>
             </div>
           </div>
 
-          {/* Statement — grows to fill available space */}
-          <div
-            style={{
-              flex: 1,
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            <div
+          {/* Statement */}
+          <div style={{ flex: 1, display: 'flex', alignItems: 'center' }}>
+            <p
               style={{
+                color: '#fafafa',
                 fontSize: `${fontSize}px`,
                 fontWeight: 700,
-                color: '#f1f5f9',
-                lineHeight: 1.3,
-                maxWidth: '1060px',
+                lineHeight: 1.35,
+                margin: 0,
+                maxWidth: '980px',
               }}
             >
               {statement}
-            </div>
+            </p>
           </div>
 
-          {/* Vote bar section */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '28px' }}>
-            {/* Percentage labels */}
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'baseline',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
-                <span
-                  style={{
-                    fontSize: '26px',
-                    fontWeight: 800,
-                    color: '#3b82f6',
-                  }}
-                >
-                  {forPct}%
-                </span>
-                <span
-                  style={{
-                    fontSize: '11px',
-                    fontWeight: 600,
-                    color: '#3b82f6',
-                    opacity: 0.7,
-                    letterSpacing: '0.12em',
-                  }}
-                >
-                  FOR
-                </span>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
-                <span
-                  style={{
-                    fontSize: '11px',
-                    fontWeight: 600,
-                    color: '#ef4444',
-                    opacity: 0.7,
-                    letterSpacing: '0.12em',
-                  }}
-                >
-                  AGAINST
-                </span>
-                <span
-                  style={{
-                    fontSize: '26px',
-                    fontWeight: 800,
-                    color: '#ef4444',
-                  }}
-                >
-                  {againstPct}%
-                </span>
-              </div>
-            </div>
+          {/* Divider */}
+          <div style={{ height: '1px', background: '#24242e', marginBottom: '28px', marginTop: '32px' }} />
 
-            {/* Progress bar */}
+          {/* Vote bar + labels */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
             <div
               style={{
                 display: 'flex',
-                height: '12px',
-                borderRadius: '6px',
+                height: '10px',
+                borderRadius: '5px',
                 overflow: 'hidden',
-                backgroundColor: '#1e2030',
+                background: '#1a1a22',
               }}
             >
-              <div
-                style={{
-                  width: `${forPct}%`,
-                  height: '100%',
-                  background:
-                    'linear-gradient(90deg, #2563eb 0%, #3b82f6 100%)',
-                  borderRadius: '6px 0 0 6px',
-                }}
-              />
-              <div
-                style={{
-                  width: `${againstPct}%`,
-                  height: '100%',
-                  background:
-                    'linear-gradient(90deg, #ef4444 0%, #dc2626 100%)',
-                  borderRadius: '0 6px 6px 0',
-                }}
-              />
+              <div style={{ width: `${forPct}%`, background: 'linear-gradient(90deg, #1d4ed8, #3b82f6)', height: '100%' }} />
+              <div style={{ width: `${againstPct}%`, background: 'linear-gradient(90deg, #ef4444, #b91c1c)', height: '100%' }} />
             </div>
-          </div>
-
-          {/* Footer stats */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              marginTop: '18px',
-              fontSize: '13px',
-              color: '#4b5563',
-            }}
-          >
-            <span>{totalVotes.toLocaleString()} votes cast</span>
-            {category && (
-              <span style={{ marginLeft: '14px', color: '#374151' }}>
-                · {category}
-              </span>
-            )}
-            <div style={{ flex: 1 }} />
-            <span style={{ color: '#374151', fontSize: '12px' }}>
-              lobby.market
-            </span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ display: 'flex', gap: '28px' }}>
+                <span style={{ color: '#60a5fa', fontSize: '24px', fontWeight: 800 }}>{forPct}% For</span>
+                <span style={{ color: '#f87171', fontSize: '24px', fontWeight: 800 }}>{againstPct}% Against</span>
+              </div>
+              {votes > 0 && (
+                <span style={{ color: '#52525b', fontSize: '16px' }}>{votes.toLocaleString()} votes cast</span>
+              )}
+            </div>
           </div>
         </div>
       ),
       { width: 1200, height: 630 }
     )
   } catch {
-    // Fallback image
-    return new ImageResponse(
-      (
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '1200px',
-            height: '630px',
-            backgroundColor: '#0d0f14',
-            color: '#c9a84c',
-            fontSize: '28px',
-            fontWeight: 700,
-            letterSpacing: '0.18em',
-          }}
-        >
-          LOBBY MARKET
-        </div>
-      ),
-      { width: 1200, height: 630 }
-    )
+    return fallback()
   }
 }

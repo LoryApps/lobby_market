@@ -1867,6 +1867,39 @@ export default async function LeaderboardPage() {
             </svg>
           </Link>
         </section>
+
+        {/* Quest Champions link */}
+        <section className="mt-6">
+          <Link
+            href="/leaderboard/quests"
+            className="flex items-center justify-between rounded-2xl border border-purple/30 bg-purple/5 px-6 py-5 hover:bg-purple/10 transition-colors group"
+          >
+            <div className="flex items-center gap-4">
+              <div className="flex items-center justify-center h-11 w-11 rounded-xl bg-purple/10 border border-purple/30 flex-shrink-0">
+                <Trophy className="h-5 w-5 text-purple" />
+              </div>
+              <div>
+                <p className="font-mono text-base font-semibold text-white flex items-center gap-2">
+                  Quest Champions
+                  <span className="text-[10px] font-mono text-purple bg-purple/15 border border-purple/30 px-1.5 py-0.5 rounded-md uppercase tracking-wide">New</span>
+                </p>
+                <p className="text-sm font-mono text-surface-500 mt-0.5">
+                  Top civic achievers per quest track — Voter, Debater, Scholar, and Builder.
+                </p>
+              </div>
+            </div>
+            <svg
+              className="h-5 w-5 text-surface-500 group-hover:text-surface-300 transition-colors flex-shrink-0"
+              viewBox="0 0 20 20"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.5}
+              aria-hidden
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 4l5 6-5 6" />
+            </svg>
+          </Link>
+        </section>
       </main>
       <BottomNav />
     </div>

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { TrendingUp, Clock, Flame, Scale, FileText, Zap, Gavel, Tag, LayoutGrid, Globe, Users, MapPin, Sparkles, History, X, Hash, Vote, Swords, Rocket, Target, Landmark, TrendingDown, MessageSquare, Activity, Timer, Gauge, Award, Hourglass, Waves, Radio, RefreshCcw, Archive, RotateCcw } from 'lucide-react'
+import { TrendingUp, Clock, Flame, Scale, FileText, Zap, Gavel, Tag, LayoutGrid, Globe, Users, MapPin, Sparkles, History, X, Hash, Vote, Swords, Rocket, Target, Landmark, TrendingDown, MessageSquare, Activity, Timer, Gauge, Award, Hourglass, Waves, Radio, RefreshCcw, Archive, RotateCcw, BrainCircuit, Lock, GitMerge, Tornado } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { useFeedStore } from '@/lib/stores/feed-store'
 import type { FeedSort, FeedStatus, FeedMode, FeedScope } from '@/lib/stores/feed-store'
@@ -123,6 +123,11 @@ const FEED_MODES: { id: FeedMode; label: string; icon: typeof Globe; activeClass
   { id: 'swing', label: 'Swing', icon: RefreshCcw, activeClass: 'bg-purple/20 text-purple border border-purple/50 shadow-sm' },
   { id: 'stalled', label: 'Stalled', icon: Archive, activeClass: 'bg-surface-400/30 text-surface-300 border border-surface-400/50 shadow-sm' },
   { id: 'comeback', label: 'Comeback', icon: RotateCcw, activeClass: 'bg-emerald/20 text-emerald border border-emerald/50 shadow-sm' },
+  { id: 'overdrive', label: 'Overdrive', icon: BrainCircuit, activeClass: 'bg-purple/30 text-purple border border-purple/60 shadow-sm' },
+  { id: 'deadlock', label: 'Deadlock', icon: Lock, activeClass: 'bg-against-500/20 text-against-300 border border-against-500/50 shadow-sm' },
+  { id: 'converging', label: 'Converging', icon: GitMerge, activeClass: 'bg-emerald/20 text-emerald border border-emerald/50 shadow-sm' },
+  { id: 'flashpoint', label: 'Flashpoint', icon: Zap, activeClass: 'bg-against-500/30 text-against-200 border border-against-400/60 shadow-sm animate-pulse' },
+  { id: 'vortex', label: 'Vortex', icon: Tornado, activeClass: 'bg-purple/30 text-purple border border-purple/60 shadow-sm' },
 ]
 
 // Module-level cache so all FeedFilters instances share the same fetch
@@ -198,6 +203,8 @@ export function FeedFilters() {
       + (sort !== 'top' && feedMode === 'flux' ? 1 : 0)
       + (sort !== 'top' && feedMode === 'lastcall' ? 1 : 0)
       + (sort !== 'top' && feedMode === 'comeback' ? 1 : 0)
+      + (sort !== 'top' && feedMode === 'flashpoint' ? 1 : 0)
+      + (sort !== 'top' && feedMode === 'vortex' ? 1 : 0)
 
   return (
     <div className="flex flex-col gap-1.5">
@@ -1253,6 +1260,38 @@ export function FeedFilters() {
         </div>
       )}
 
+      {/* ── Overdrive mode ───────────────────────────────────────────────── */}
+      {feedMode === 'overdrive' && (
+        <div className="flex flex-col gap-1 pb-1">
+          <div className="flex items-center gap-2 px-3 py-1">
+            <BrainCircuit className="h-3 w-3 text-purple flex-shrink-0" />
+            <p className="text-[11px] font-mono text-purple/80">
+              Debates where citizens argue far more than they vote — the platform's intellectual black holes
+            </p>
+          </div>
+
+          <div
+            className={cn(
+              'flex items-center gap-2 px-3 py-1.5',
+              'overflow-x-auto',
+              '[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
+            )}
+          >
+            <Link
+              href="/overdrive"
+              className={cn(
+                'flex-shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-mono font-medium',
+                'border border-purple/40 text-purple/70',
+                'hover:text-purple hover:border-purple/60 transition-all duration-150'
+              )}
+            >
+              <BrainCircuit className="h-3 w-3" />
+              Full Overdrive board
+            </Link>
+          </div>
+        </div>
+      )}
+
       {/* ── Live Debates mode ─────────────────────────────────────────────── */}
       {feedMode === 'livedebates' && (
         <div className="flex flex-col gap-1 pb-1">
@@ -1291,6 +1330,189 @@ export function FeedFilters() {
             >
               <Clock className="h-3 w-3" />
               Calendar
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {/* ── Deadlock mode ─────────────────────────────────────────────────── */}
+      {feedMode === 'deadlock' && (
+        <div className="flex flex-col gap-1 pb-1">
+          <div className="flex items-center gap-2 px-3 py-1">
+            <Lock className="h-3 w-3 text-against-300 flex-shrink-0" />
+            <p className="text-[11px] font-mono text-against-200/80">
+              Debates locked in near-perfect 50/50 disagreement for 7+ days — the civic questions democracy can&#39;t resolve
+            </p>
+          </div>
+
+          <div
+            className={cn(
+              'flex items-center gap-2 px-3 py-1.5',
+              'overflow-x-auto',
+              '[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
+            )}
+          >
+            <Link
+              href="/deadlock"
+              className={cn(
+                'flex-shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-mono font-medium',
+                'border border-against-500/30 text-against-400/70',
+                'hover:text-against-300 hover:border-against-500/50 transition-all duration-150'
+              )}
+            >
+              <Lock className="h-3 w-3" />
+              Full Deadlock board
+            </Link>
+            <Link
+              href="/battleground"
+              className={cn(
+                'flex-shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-mono font-medium',
+                'border border-surface-400/40 text-surface-400',
+                'hover:text-surface-300 hover:border-surface-400/60 transition-all duration-150'
+              )}
+            >
+              <Swords className="h-3 w-3" />
+              Battleground
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {/* ── Converging mode ───────────────────────────────────────────────── */}
+      {feedMode === 'converging' && (
+        <div className="flex flex-col gap-1 pb-1">
+          <div className="flex items-center gap-2 px-3 py-1">
+            <GitMerge className="h-3 w-3 text-emerald flex-shrink-0" />
+            <p className="text-[11px] font-mono text-emerald/80">
+              Debates where the community is building consensus — recent votes reinforce the majority, pushing toward resolution
+            </p>
+          </div>
+
+          <div
+            className={cn(
+              'flex items-center gap-2 px-3 py-1.5',
+              'overflow-x-auto',
+              '[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
+            )}
+          >
+            <Link
+              href="/mandate"
+              className={cn(
+                'flex-shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-mono font-medium',
+                'border border-emerald/30 text-emerald/70',
+                'hover:text-emerald hover:border-emerald/50 transition-all duration-150'
+              )}
+            >
+              <Award className="h-3 w-3" />
+              Mandate
+            </Link>
+            <Link
+              href="/near-law"
+              className={cn(
+                'flex-shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-mono font-medium',
+                'border border-surface-400/40 text-surface-400',
+                'hover:text-surface-300 hover:border-surface-400/60 transition-all duration-150'
+              )}
+            >
+              <Gavel className="h-3 w-3" />
+              Near Law
+            </Link>
+            <Link
+              href="/converging"
+              className={cn(
+                'flex-shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-mono font-medium',
+                'border border-emerald/40 text-emerald/80',
+                'hover:text-emerald hover:border-emerald/60 transition-all duration-150'
+              )}
+            >
+              <GitMerge className="h-3 w-3" />
+              Full View
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {/* ── Flashpoint mode ───────────────────────────────────────────────── */}
+      {feedMode === 'flashpoint' && (
+        <div className="flex flex-col gap-1 pb-1">
+          <div className="flex items-center gap-2 px-3 py-1">
+            <Zap className="h-3 w-3 text-against-300 flex-shrink-0" />
+            <p className="text-[11px] font-mono text-against-200/80">
+              Debates at peak controversy right now — simultaneously high vote velocity AND near 50/50 split in the last 6 hours
+            </p>
+          </div>
+
+          <div
+            className={cn(
+              'flex items-center gap-2 px-3 py-1.5',
+              'overflow-x-auto',
+              '[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
+            )}
+          >
+            <Link
+              href="/battleground"
+              className={cn(
+                'flex-shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-mono font-medium',
+                'border border-against-500/30 text-against-400/70',
+                'hover:text-against-300 hover:border-against-500/50 transition-all duration-150'
+              )}
+            >
+              <Swords className="h-3 w-3" />
+              Battleground
+            </Link>
+            <Link
+              href="/momentum"
+              className={cn(
+                'flex-shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-mono font-medium',
+                'border border-surface-400/40 text-surface-400',
+                'hover:text-surface-300 hover:border-surface-400/60 transition-all duration-150'
+              )}
+            >
+              <Gauge className="h-3 w-3" />
+              Momentum
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {/* ── Vortex mode ───────────────────────────────────────────────────── */}
+      {feedMode === 'vortex' && (
+        <div className="flex flex-col gap-1 pb-1">
+          <div className="flex items-center gap-2 px-3 py-1">
+            <Tornado className="h-3 w-3 text-purple flex-shrink-0" />
+            <p className="text-[11px] font-mono text-purple/80">
+              Argument black holes — topics sucking in debate far beyond their vote share, ranked by argument intensity per voter
+            </p>
+          </div>
+
+          <div
+            className={cn(
+              'flex items-center gap-2 px-3 py-1.5',
+              'overflow-x-auto',
+              '[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
+            )}
+          >
+            <Link
+              href="/vortex"
+              className={cn(
+                'flex-shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-mono font-medium',
+                'border border-purple/40 text-purple/80',
+                'hover:text-purple hover:border-purple/60 transition-all duration-150'
+              )}
+            >
+              <Tornado className="h-3 w-3" />
+              Full Vortex board
+            </Link>
+            <Link
+              href="/argued"
+              className={cn(
+                'flex-shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-mono font-medium',
+                'border border-surface-400/40 text-surface-400',
+                'hover:text-surface-300 hover:border-surface-400/60 transition-all duration-150'
+              )}
+            >
+              <MessageSquare className="h-3 w-3" />
+              Most Argued
             </Link>
           </div>
         </div>

@@ -492,6 +492,13 @@ export default function SettingsPage() {
                   description="See how others see your profile"
                   href="/profile/me"
                 />
+                {user?.username && (
+                  <LinkRow
+                    label="Lobby Card"
+                    description="Your shareable civic bio link — perfect for social profiles"
+                    href={`/u/${user.username}`}
+                  />
+                )}
               </div>
             </div>
 

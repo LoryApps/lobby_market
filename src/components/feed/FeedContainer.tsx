@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useCallback, useState } from 'react'
 import Link from 'next/link'
-import { Users, Search, Keyboard, RefreshCw, ChevronUp, Sparkles, UserPlus, Check, Loader2, History, Vote, Hash, Plus } from 'lucide-react'
+import { Users, Search, Keyboard, RefreshCw, ChevronUp, Sparkles, UserPlus, Check, Loader2, History, Vote, Hash, Plus, Lock, GitMerge, Zap, Tornado } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useFeedStore } from '@/lib/stores/feed-store'
 import { useVoteStore } from '@/lib/stores/vote-store'
@@ -17,6 +17,7 @@ import { SetupChecklist } from '@/components/feed/SetupChecklist'
 import { FeedInsightStrip } from '@/components/feed/FeedInsightStrip'
 import { QuestionFeedCard } from '@/components/feed/QuestionFeedCard'
 import { FeedFilters } from '@/components/feed/FeedFilters'
+import { FeedPresetBar } from '@/components/feed/FeedPresetBar'
 import { RelaySpotlightCard } from '@/components/feed/RelaySpotlightCard'
 import { LivePlatformBanner } from '@/components/feed/LivePlatformBanner'
 import { PersonalDailyBar } from '@/components/feed/PersonalDailyBar'
@@ -849,6 +850,7 @@ export function FeedContainer() {
             )}
           </AnimatePresence>
           <FeedFilters />
+          <FeedPresetBar />
           <LivePlatformBanner />
           <DebateCountdownBanner />
         </div>
@@ -1179,6 +1181,65 @@ export function FeedContainer() {
               <p className="text-2xl font-bold text-white mb-2">No comebacks right now</p>
               <p className="text-surface-500">
                 No dormant debates have been revived in the last 24 hours. Check back soon — civic conversations have a way of surprising you.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {!isLoading && topics.length === 0 && feedMode === 'overdrive' && (
+          <div className="feed-card flex items-center justify-center">
+            <div className="text-center px-6">
+              <p className="text-2xl font-bold text-white mb-2">No overdrive debates yet</p>
+              <p className="text-surface-500">
+                No debates have enough arguments relative to their votes yet. Start arguing — the intellectual black holes will surface as the community digs in.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {!isLoading && topics.length === 0 && feedMode === 'deadlock' && (
+          <div className="feed-card flex items-center justify-center">
+            <div className="text-center px-6">
+              <Lock className="h-8 w-8 text-against-400/50 mx-auto mb-3" />
+              <p className="text-2xl font-bold text-white mb-2">No deadlocks right now</p>
+              <p className="text-surface-500">
+                No debates are perfectly stuck at 50/50 for 7+ days. Check back when the community can&apos;t make up its mind.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {!isLoading && topics.length === 0 && feedMode === 'converging' && (
+          <div className="feed-card flex items-center justify-center">
+            <div className="text-center px-6">
+              <GitMerge className="h-8 w-8 text-emerald/50 mx-auto mb-3" />
+              <p className="text-2xl font-bold text-white mb-2">No converging debates right now</p>
+              <p className="text-surface-500">
+                No debates are actively building consensus. Check back as the community votes — consensus forms quickly.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {!isLoading && topics.length === 0 && feedMode === 'flashpoint' && (
+          <div className="feed-card flex items-center justify-center">
+            <div className="text-center px-6">
+              <Zap className="h-8 w-8 text-against-400/50 mx-auto mb-3" />
+              <p className="text-2xl font-bold text-white mb-2">No flashpoints right now</p>
+              <p className="text-surface-500">
+                No debates are simultaneously high-velocity and contested. Vote activity picks up soon — check back.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {!isLoading && topics.length === 0 && feedMode === 'vortex' && (
+          <div className="feed-card flex items-center justify-center">
+            <div className="text-center px-6">
+              <Tornado className="h-8 w-8 text-purple/50 mx-auto mb-3" />
+              <p className="text-2xl font-bold text-white mb-2">No vortex topics right now</p>
+              <p className="text-surface-500">
+                No debates have enough argument intensity yet. Start arguing — the vortex forms when debate outpaces votes.
               </p>
             </div>
           </div>

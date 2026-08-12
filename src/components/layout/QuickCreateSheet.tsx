@@ -6,6 +6,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import {
   FileText,
+  Gavel,
+  HelpCircle,
   MessageSquarePlus,
   Mic,
   TrendingUp,
@@ -37,13 +39,22 @@ const ACTIONS: QuickAction[] = [
     border: 'border-for-500/30',
   },
   {
-    href: '/swipe',
+    href: '/write',
     label: 'Write an Argument',
-    sublabel: 'Swipe topics and add your voice',
+    sublabel: 'Craft a compelling civic argument',
     icon: MessageSquarePlus,
     color: 'text-emerald',
     bg: 'bg-emerald/10',
     border: 'border-emerald/30',
+  },
+  {
+    href: '/argue',
+    label: 'Back Your Vote',
+    sublabel: 'Argue topics you voted on',
+    icon: Gavel,
+    color: 'text-purple',
+    bg: 'bg-purple/10',
+    border: 'border-purple/30',
   },
   {
     href: '/debate/create',
@@ -71,6 +82,15 @@ const ACTIONS: QuickAction[] = [
     color: 'text-against-400',
     bg: 'bg-against-500/10',
     border: 'border-against-500/30',
+  },
+  {
+    href: '/socratic',
+    label: 'Socratic Lobby',
+    sublabel: 'Test your reasoning with AI questions',
+    icon: HelpCircle,
+    color: 'text-purple',
+    bg: 'bg-purple/10',
+    border: 'border-purple/30',
   },
 ]
 

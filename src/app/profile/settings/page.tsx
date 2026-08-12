@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Save, Calendar, Mail, ArrowLeft, AtSign, Code2, Globe, Sparkles, CheckCircle2, Circle, Eye } from 'lucide-react'
+import { Save, Calendar, Mail, ArrowLeft, AtSign, Code2, Globe, Sparkles, CheckCircle2, Circle, Eye, Share2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -488,6 +488,16 @@ export default function ProfileSettingsPage() {
             >
               Generate civic badge →
             </Link>
+            {profile && (
+              <Link
+                href={`/u/${profile.username}`}
+                target="_blank"
+                className="inline-flex items-center gap-2 rounded-lg bg-surface-200 hover:bg-surface-300 border border-surface-300 px-4 py-2.5 text-sm font-semibold text-surface-700 hover:text-white transition-colors"
+              >
+                <Share2 className="h-4 w-4" aria-hidden="true" />
+                Lobby Card
+              </Link>
+            )}
           </div>
         </form>
       </main>
