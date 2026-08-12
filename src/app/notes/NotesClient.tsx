@@ -25,6 +25,7 @@ import {
   ExternalLink,
   FileText,
   Loader2,
+  Network,
   Pin,
   PinOff,
   Plus,
@@ -594,6 +595,18 @@ export function NotesClient() {
               Private research notes — only you can see these
             </p>
           </div>
+          <Link
+            href="/notes/graph"
+            className={cn(
+              'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-semibold',
+              'bg-surface-200 border border-surface-300 text-surface-400',
+              'hover:bg-surface-300 hover:text-white transition-colors',
+            )}
+            title="Knowledge graph view"
+          >
+            <Network className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">Graph</span>
+          </Link>
           <Button
             variant="for"
             size="sm"
