@@ -668,6 +668,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'morning',
+    label: 'Civic Morning',
+    sublabel: 'Daily front page — headline topic, new laws, debate schedule, top argument',
+    href: '/morning',
+    icon: Bookmark,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'briefing',
     label: 'Daily Briefing',
     sublabel: 'Personalized action-oriented daily start page',
