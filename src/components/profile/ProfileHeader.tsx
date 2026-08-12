@@ -8,6 +8,7 @@ import {
   Calendar,
   Check,
   Code2,
+  FileText,
   GitCompare,
   Globe,
   Heart,
@@ -794,6 +795,12 @@ export function ProfileHeader({
               <Button variant="default" size="md">
                 <BarChart2 className="h-4 w-4" />
                 Analytics
+              </Button>
+            </Link>
+            <Link href={`/cv/${encodeURIComponent(profile.username)}`}>
+              <Button variant="default" size="md" title="View your Civic CV">
+                <FileText className="h-4 w-4" />
+                Civic CV
               </Button>
             </Link>
             <Link href={`/share/profile/${encodeURIComponent(profile.username)}`}>
