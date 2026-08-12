@@ -2844,6 +2844,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'socratic',
+    label: 'Socratic Lobby',
+    sublabel: 'AI Socratic dialogue — pick a topic, state your position, get five probing questions that test your reasoning',
+    href: '/socratic',
+    icon: Sparkles,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
     id: 'coach',
     label: 'Argument Coach',
     sublabel: 'AI workshop: draft an argument, get a Claude critique across Clarity, Evidence, Logic, and Persuasion',

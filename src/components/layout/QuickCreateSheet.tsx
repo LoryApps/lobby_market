@@ -7,6 +7,7 @@ import Link from 'next/link'
 import {
   FileText,
   Gavel,
+  HelpCircle,
   MessageSquarePlus,
   Mic,
   TrendingUp,
@@ -81,6 +82,15 @@ const ACTIONS: QuickAction[] = [
     color: 'text-against-400',
     bg: 'bg-against-500/10',
     border: 'border-against-500/30',
+  },
+  {
+    href: '/socratic',
+    label: 'Socratic Lobby',
+    sublabel: 'Test your reasoning with AI questions',
+    icon: HelpCircle,
+    color: 'text-purple',
+    bg: 'bg-purple/10',
+    border: 'border-purple/30',
   },
 ]
 
