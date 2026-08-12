@@ -138,6 +138,7 @@ const SECTIONS: FeatureSection[] = [
       { href: '/advisor', label: 'Civic Advisor', description: 'Personalized AI recommendations for your civic journey.', icon: Sparkles, isAI: true },
       { href: '/checker', label: 'Fact Checker', description: 'AI-assisted fact checking and claim verification tool.', icon: CheckCircle2, isAI: true },
       { href: '/brief', label: 'Topic Brief', description: 'AI-generated background briefing on any civic debate.', icon: FileText, isAI: true },
+      { href: '/stress-test', label: 'Argument Stress Test', description: 'Attack your argument from 5 angles before opponents do — empirical, logical, practical, systemic, and alternatives. Get a vulnerability score and defense tips.', icon: ShieldAlert, isAI: true, isNew: true },
     ],
   },
   {
