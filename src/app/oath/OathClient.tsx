@@ -227,6 +227,13 @@ function OathCertificate({
           View Profile
         </Link>
         <Link
+          href="/charter"
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-surface-200 border border-surface-300 text-sm text-surface-600 hover:bg-surface-300 hover:text-white transition-colors"
+        >
+          <Scroll className="h-4 w-4" />
+          Civic Charter
+        </Link>
+        <Link
           href="/floor"
           className="flex items-center gap-2 px-4 py-2 rounded-lg bg-for-600/20 border border-for-500/30 text-sm text-for-300 hover:bg-for-600/30 transition-colors"
         >

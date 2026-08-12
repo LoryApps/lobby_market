@@ -155,6 +155,7 @@ const SECTIONS: FeatureSection[] = [
     border: 'border-purple/20',
     icon: Users,
     features: [
+      { href: '/charter', label: 'Civic Charter', sublabel: 'Platform principles & signatories', icon: BookOpen },
       { href: '/profile/me', label: 'My Profile', sublabel: 'Your civic identity', icon: Users },
       { href: '/coalitions', label: 'Coalitions', sublabel: 'Join forces with like-minded voters', icon: GitMerge },
       { href: '/leaderboard', label: 'Leaderboard', sublabel: 'Top voices in the Lobby', icon: Trophy },
