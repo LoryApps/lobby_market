@@ -298,6 +298,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'fresh',
+    label: 'Fresh Debates',
+    sublabel: 'Topics less than 2 weeks old, ranked by early vote velocity — shape consensus before it hardens',
+    href: '/fresh',
+    icon: Sparkles,
+    iconColor: 'text-emerald',
+    iconBg: 'bg-emerald/10',
+  },
+  {
+    type: 'link',
     id: 'intel',
     label: 'Lobby Intel',
     sublabel: 'Live signals: deadlocks, brink-of-law topics, velocity spikes, upcoming debates',
