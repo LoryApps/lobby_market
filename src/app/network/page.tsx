@@ -332,6 +332,19 @@ export default function NetworkPage() {
           </button>
         </div>
 
+        {/* Tab switcher */}
+        <div className="flex items-center gap-1 p-1 mb-4 mx-4 sm:mx-0 rounded-xl bg-surface-100 border border-surface-300 w-fit">
+          <span className="px-4 py-1.5 text-xs font-mono font-semibold rounded-lg bg-surface-200 border border-surface-300 text-white">
+            Topics &amp; Args
+          </span>
+          <Link
+            href="/network/votes"
+            className="px-4 py-1.5 text-xs font-mono font-medium rounded-lg text-surface-400 hover:text-white transition-colors"
+          >
+            Votes
+          </Link>
+        </div>
+
         {/* Feed card */}
         <div className="bg-surface-100 border border-surface-300 sm:rounded-2xl overflow-hidden">
 
