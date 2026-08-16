@@ -8,19 +8,20 @@ import {
   ArrowLeft,
   Loader2,
   RefreshCw,
-  ThumbsDown,
-  ThumbsUp,
+  Trophy,
   Users,
-  Vote,
+  Sparkles,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { Avatar } from '@/components/ui/Avatar'
-import { Badge } from '@/components/ui/Badge'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { cn } from '@/lib/utils/cn'
-import type { NetworkVoteEvent, NetworkVotesResponse } from '@/app/api/network/votes/route'
+import type {
+  NetworkAchievementItem,
+  NetworkAchievementsResponse,
+} from '@/app/api/network/achievements/route'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -36,19 +37,49 @@ function relativeTime(iso: string): string {
   return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 }
 
-const STATUS_BADGE: Record<string, 'proposed' | 'active' | 'law' | 'failed'> = {
-  proposed: 'proposed',
-  active: 'active',
-  voting: 'active',
-  law: 'law',
-  failed: 'failed',
-  continued: 'proposed',
-  archived: 'proposed',
+type Tier = 'common' | 'rare' | 'epic' | 'legendary'
+
+const TIER_STYLES: Record<
+  Tier,
+  { label: string; iconBg: string; iconBorder: string; iconColor: string; glow: string; badge: string }
+> = {
+  legendary: {
+    label: 'Legendary',
+    iconBg: 'bg-gold/15',
+    iconBorder: 'border-gold/40',
+    iconColor: 'text-gold',
+    glow: 'shadow-[0_0_12px_rgba(245,158,11,0.2)]',
+    badge: 'bg-gold/15 text-gold border-gold/30',
+  },
+  epic: {
+    label: 'Epic',
+    iconBg: 'bg-purple/15',
+    iconBorder: 'border-purple/40',
+    iconColor: 'text-purple',
+    glow: 'shadow-[0_0_12px_rgba(139,92,246,0.2)]',
+    badge: 'bg-purple/15 text-purple border-purple/30',
+  },
+  rare: {
+    label: 'Rare',
+    iconBg: 'bg-for-500/15',
+    iconBorder: 'border-for-500/40',
+    iconColor: 'text-for-400',
+    glow: '',
+    badge: 'bg-for-500/15 text-for-400 border-for-500/30',
+  },
+  common: {
+    label: 'Common',
+    iconBg: 'bg-surface-200/60',
+    iconBorder: 'border-surface-400/30',
+    iconColor: 'text-surface-400',
+    glow: '',
+    badge: 'bg-surface-200/60 text-surface-400 border-surface-400/30',
+  },
 }
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 
-function VoteSkeleton() {
+function AchievementSkeleton() {
   return (
     <div className="flex items-start gap-3 rounded-2xl border border-surface-300 bg-surface-100 p-4">
       <Skeleton className="h-9 w-9 rounded-full flex-shrink-0" />
@@ -58,17 +89,17 @@ function VoteSkeleton() {
         <Skeleton className="h-4 w-4/5" />
         <Skeleton className="h-3 w-1/4" />
       </div>
-      <Skeleton className="h-8 w-16 rounded-lg flex-shrink-0" />
+      <Skeleton className="h-12 w-12 rounded-xl flex-shrink-0" />
     </div>
   )
 }
 
-// ─── Vote card ────────────────────────────────────────────────────────────────
+// ─── Achievement card ─────────────────────────────────────────────────────────
 
-function VoteCard({ event }: { event: NetworkVoteEvent }) {
-  const isFor = event.side === 'blue'
-  const forPct = Math.round(event.topic.blue_pct ?? 50)
-  const againstPct = 100 - forPct
+function AchievementCard({ item }: { item: NetworkAchievementItem }) {
+  const tier = (item.achievement.tier ?? 'common') as Tier
+  const styles = TIER_STYLES[tier] ?? TIER_STYLES.common
+  const isHighTier = tier === 'legendary' || tier === 'epic'
 
   return (
     <motion.div
@@ -77,98 +108,78 @@ function VoteCard({ event }: { event: NetworkVoteEvent }) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -4 }}
       transition={{ duration: 0.2 }}
-      className="group relative rounded-2xl border border-surface-300 bg-surface-100 p-4 hover:border-surface-400 transition-colors overflow-hidden"
+      className={cn(
+        'group relative flex items-start gap-3 rounded-2xl border bg-surface-100 p-4 transition-all',
+        isHighTier
+          ? 'border-surface-300 hover:border-surface-400 ' + styles.glow
+          : 'border-surface-300 hover:border-surface-400',
+      )}
     >
-      {/* Side accent stripe */}
+      {/* Actor avatar */}
+      <Link
+        href={`/profile/${item.actor.username}`}
+        className="flex-shrink-0 mt-0.5"
+        aria-label={`View ${item.actor.display_name ?? item.actor.username}'s profile`}
+      >
+        <Avatar
+          src={item.actor.avatar_url}
+          fallback={item.actor.display_name ?? item.actor.username}
+          size="sm"
+          className="ring-1 ring-surface-300 group-hover:ring-surface-400 transition-all"
+        />
+      </Link>
+
+      {/* Content */}
+      <div className="flex-1 min-w-0">
+        {/* Actor name + time */}
+        <div className="flex items-center gap-1.5 mb-1.5 flex-wrap">
+          <Link
+            href={`/profile/${item.actor.username}`}
+            className="text-xs font-mono font-semibold text-white hover:text-for-300 transition-colors truncate"
+          >
+            {item.actor.display_name ?? item.actor.username}
+          </Link>
+          <span className="text-xs font-mono text-surface-500">earned an achievement</span>
+          <span className="text-xs font-mono text-surface-600 ml-auto flex-shrink-0">
+            {relativeTime(item.earned_at)}
+          </span>
+        </div>
+
+        {/* Achievement name */}
+        <p className={cn('text-sm font-semibold leading-snug', isHighTier ? styles.iconColor : 'text-white')}>
+          {item.achievement.icon} {item.achievement.name}
+        </p>
+
+        {/* Achievement description */}
+        <p className="text-xs text-surface-500 mt-0.5 leading-relaxed line-clamp-2">
+          {item.achievement.description}
+        </p>
+
+        {/* Tier badge */}
+        <div className="mt-2">
+          <span
+            className={cn(
+              'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold border',
+              styles.badge,
+            )}
+          >
+            {tier === 'legendary' && <Sparkles className="h-2.5 w-2.5" aria-hidden="true" />}
+            {styles.label}
+          </span>
+        </div>
+      </div>
+
+      {/* Achievement icon tile */}
       <div
         className={cn(
-          'absolute left-0 top-0 bottom-0 w-[3px]',
-          isFor ? 'bg-for-500' : 'bg-against-500'
+          'flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-xl border text-2xl',
+          styles.iconBg,
+          styles.iconBorder,
+          isHighTier && styles.glow,
         )}
         aria-hidden="true"
-      />
-
-      <div className="flex items-start gap-3 pl-2">
-        {/* Actor avatar */}
-        <Link
-          href={`/profile/${event.actor.username}`}
-          className="flex-shrink-0 hover:opacity-80 transition-opacity"
-          aria-label={`View ${event.actor.display_name ?? event.actor.username}'s profile`}
-        >
-          <Avatar
-            src={event.actor.avatar_url}
-            fallback={event.actor.display_name ?? event.actor.username}
-            size="sm"
-          />
-        </Link>
-
-        {/* Content */}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 flex-wrap mb-1.5">
-            <Link
-              href={`/profile/${event.actor.username}`}
-              className="text-sm font-mono font-semibold text-white hover:text-for-300 transition-colors truncate max-w-[120px]"
-            >
-              {event.actor.display_name ?? event.actor.username}
-            </Link>
-            <span className="text-xs font-mono text-surface-500">voted</span>
-            <span
-              className={cn(
-                'inline-flex items-center gap-1 text-xs font-mono font-bold px-2 py-0.5 rounded-md',
-                isFor
-                  ? 'bg-for-600/20 text-for-400 border border-for-500/30'
-                  : 'bg-against-600/20 text-against-400 border border-against-500/30'
-              )}
-            >
-              {isFor ? (
-                <ThumbsUp className="h-3 w-3" aria-hidden="true" />
-              ) : (
-                <ThumbsDown className="h-3 w-3" aria-hidden="true" />
-              )}
-              {isFor ? 'FOR' : 'AGAINST'}
-            </span>
-            <span className="text-[11px] font-mono text-surface-600 ml-auto">
-              {relativeTime(event.voted_at)}
-            </span>
-          </div>
-
-          {/* Topic */}
-          <Link
-            href={`/topic/${event.topic.id}`}
-            className="block text-sm font-mono text-surface-300 line-clamp-2 hover:text-white transition-colors leading-relaxed"
-          >
-            {event.topic.statement}
-          </Link>
-
-          {/* Topic meta row */}
-          <div className="mt-2 flex items-center gap-3 flex-wrap">
-            {event.topic.category && (
-              <span className="text-[10px] font-mono text-surface-500 uppercase tracking-wider">
-                {event.topic.category}
-              </span>
-            )}
-            <Badge variant={STATUS_BADGE[event.topic.status] ?? 'proposed'}>
-              {event.topic.status}
-            </Badge>
-            <span className="text-[11px] font-mono text-surface-600 flex items-center gap-1">
-              <span className="text-for-400">{forPct}%</span>
-              <span className="text-surface-700">/</span>
-              <span className="text-against-400">{againstPct}%</span>
-            </span>
-          </div>
-
-          {/* Inline vote bar */}
-          <div className="mt-2 h-1 rounded-full overflow-hidden bg-surface-300" aria-hidden="true">
-            <div
-              className="h-full bg-for-500 float-left rounded-l-full"
-              style={{ width: `${forPct}%` }}
-            />
-            <div
-              className="h-full bg-against-500 float-left rounded-r-full"
-              style={{ width: `${againstPct}%` }}
-            />
-          </div>
-        </div>
+      >
+        {item.achievement.icon}
       </div>
     </motion.div>
   )
@@ -176,9 +187,9 @@ function VoteCard({ event }: { event: NetworkVoteEvent }) {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
-export default function NetworkVotesPage() {
+export default function NetworkAchievementsPage() {
   const router = useRouter()
-  const [votes, setVotes] = useState<NetworkVoteEvent[]>([])
+  const [achievements, setAchievements] = useState<NetworkAchievementItem[]>([])
   const [loading, setLoading] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
   const [isEmpty, setIsEmpty] = useState(false)
@@ -187,40 +198,44 @@ export default function NetworkVotesPage() {
   const [hasMore, setHasMore] = useState(false)
   const loadMoreRef = useRef<HTMLDivElement>(null)
 
-  const fetchVotes = useCallback(async (resetCursor?: boolean) => {
-    const params = new URLSearchParams({ limit: '40' })
-    if (!resetCursor && cursor) params.set('cursor', cursor)
+  const fetchAchievements = useCallback(
+    async (resetCursor?: boolean) => {
+      const url = new URL('/api/network/achievements', window.location.origin)
+      url.searchParams.set('limit', '30')
+      if (!resetCursor && cursor) url.searchParams.set('cursor', cursor)
 
-    try {
-      const res = await fetch(`/api/network/votes?${params}`)
-      if (res.status === 401) {
-        router.push('/login')
-        return
+      try {
+        const res = await fetch(url.toString())
+        if (res.status === 401) {
+          router.push('/login')
+          return
+        }
+        if (!res.ok) throw new Error('Failed to load')
+
+        const data: NetworkAchievementsResponse = await res.json()
+
+        if (resetCursor) {
+          setAchievements(data.achievements)
+        } else {
+          setAchievements((prev) => [...prev, ...data.achievements])
+        }
+
+        setIsEmpty(data.is_empty)
+        setFollowingCount(data.following_count)
+        setCursor(data.cursor)
+        setHasMore(data.cursor !== null)
+      } catch {
+        // network error — leave existing state
+      } finally {
+        setLoading(false)
+        setLoadingMore(false)
       }
-      if (!res.ok) throw new Error('Failed to load')
-
-      const data: NetworkVotesResponse = await res.json()
-
-      if (resetCursor) {
-        setVotes(data.votes)
-      } else {
-        setVotes((prev) => [...prev, ...data.votes])
-      }
-
-      setIsEmpty(data.is_empty)
-      setFollowingCount(data.following_count)
-      setCursor(data.cursor)
-      setHasMore(data.cursor !== null)
-    } catch {
-      // network error — leave existing state
-    } finally {
-      setLoading(false)
-      setLoadingMore(false)
-    }
-  }, [cursor, router])
+    },
+    [cursor, router],
+  )
 
   useEffect(() => {
-    fetchVotes(true)
+    fetchAchievements(true)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -234,21 +249,21 @@ export default function NetworkVotesPage() {
       (entries) => {
         if (entries[0].isIntersecting) {
           setLoadingMore(true)
-          fetchVotes()
+          fetchAchievements()
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     )
 
     observer.observe(el)
     return () => observer.disconnect()
-  }, [hasMore, loadingMore, fetchVotes])
+  }, [hasMore, loadingMore, fetchAchievements])
 
   const handleRefresh = () => {
     setLoading(true)
     setCursor(null)
     setHasMore(false)
-    fetchVotes(true)
+    fetchAchievements(true)
   }
 
   return (
@@ -265,12 +280,12 @@ export default function NetworkVotesPage() {
             >
               <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             </button>
-            <div className="flex items-center justify-center h-11 w-11 rounded-xl bg-for-600/10 border border-for-500/20">
-              <Vote className="h-5 w-5 text-for-400" aria-hidden="true" />
+            <div className="flex items-center justify-center h-11 w-11 rounded-xl bg-gold/10 border border-gold/20">
+              <Trophy className="h-5 w-5 text-gold" aria-hidden="true" />
             </div>
             <div>
               <h1 className="font-mono text-xl font-bold text-white leading-tight">
-                Network Votes
+                Network Achievements
               </h1>
               {followingCount > 0 && !loading && (
                 <p className="text-xs font-mono text-surface-500 mt-0.5">
@@ -307,51 +322,51 @@ export default function NetworkVotesPage() {
           >
             Topics &amp; Args
           </Link>
-          <span className="px-4 py-1.5 text-xs font-mono font-semibold rounded-lg bg-surface-200 border border-surface-300 text-white">
-            Votes
-          </span>
           <Link
-            href="/network/achievements"
+            href="/network/votes"
             className="px-4 py-1.5 text-xs font-mono font-medium rounded-lg text-surface-400 hover:text-white transition-colors"
           >
-            Achievements
+            Votes
           </Link>
+          <span className="px-4 py-1.5 text-xs font-mono font-semibold rounded-lg bg-surface-200 border border-surface-300 text-white">
+            Achievements
+          </span>
         </div>
 
         {/* Content */}
         {loading ? (
           <div className="space-y-3">
             {Array.from({ length: 6 }).map((_, i) => (
-              <VoteSkeleton key={i} />
+              <AchievementSkeleton key={i} />
             ))}
           </div>
         ) : isEmpty ? (
           <EmptyState
-            icon={Users}
-            iconColor="text-for-400/60"
-            iconBg="bg-for-600/10"
-            iconBorder="border-for-500/20"
+            icon={Trophy}
+            iconColor="text-gold/60"
+            iconBg="bg-gold/10"
+            iconBorder="border-gold/20"
             title={
               followingCount === 0
-                ? 'Follow people to see their votes'
-                : 'No votes from your network yet'
+                ? 'Follow people to see their achievements'
+                : 'No achievements from your network yet'
             }
             description={
               followingCount === 0
-                ? 'When you follow civic participants, their recent votes will appear here.'
-                : "The people you follow haven't voted recently. Check back soon."
+                ? 'When you follow civic participants, their earned achievements will appear here.'
+                : "The people you follow haven't earned achievements recently. Check back soon."
             }
             actions={[
               { label: 'Find People', href: '/discover', icon: Users },
-              { label: 'Browse Feed', href: '/', variant: 'secondary' },
+              { label: 'Browse Achievements', href: '/achievements', variant: 'secondary' },
             ]}
             size="lg"
           />
         ) : (
           <AnimatePresence mode="popLayout">
             <div className="space-y-3">
-              {votes.map((event) => (
-                <VoteCard key={event.id} event={event} />
+              {achievements.map((item) => (
+                <AchievementCard key={item.id} item={item} />
               ))}
             </div>
           </AnimatePresence>
