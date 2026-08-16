@@ -588,6 +588,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'civic-forecast',
+    label: 'Civic Forecast Dashboard',
+    sublabel: 'Law probability scores, momentum signals, and swing-topic alerts across all active debates',
+    href: '/civic-forecast',
+    icon: Target,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
     id: 'futures',
     label: 'Civic Futures',
     sublabel: 'Upcoming debates, vote deadlines, and high-momentum active topics',
