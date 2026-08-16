@@ -96,6 +96,7 @@ import { useFeedStore } from '@/lib/stores/feed-store'
 import { getTopicSignal, SIGNAL_PILL_CLASSES } from '@/lib/utils/topic-signal'
 import { Award, Clock, Flame, Gavel, Shuffle, Swords, Target, TrendingUp, Zap } from 'lucide-react'
 import { TopicReactions } from '@/components/topic/TopicReactions'
+import { MoodPicker } from '@/components/mood/MoodPicker'
 import { TopicHotTakes } from '@/components/topic/TopicHotTakes'
 import { ArgumentContributors } from '@/components/topic/ArgumentContributors'
 import { ArgumentCitationsPanel } from '@/components/topic/ArgumentCitationsPanel'
@@ -1326,11 +1327,16 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
             </ErrorBoundary>
 
             {/* Community reactions */}
-            <div className="mb-6">
+            <div className="mb-4">
               <p className="text-xs font-mono text-surface-500 mb-2 uppercase tracking-wide">
                 Community reads this as
               </p>
               <TopicReactions topicId={topic.id} size="md" />
+            </div>
+
+            {/* Emotional response */}
+            <div className="mb-6">
+              <MoodPicker topicId={topic.id} />
             </div>
 
             {/* Continuation lifecycle — authoring, list, or plurality vote */}
