@@ -788,6 +788,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'bulletin',
+    label: 'Civic Bulletin',
+    sublabel: 'Platform-wide board — new laws, live debates, and open votes in one view',
+    href: '/bulletin',
+    icon: Radio,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-900/50',
+  },
+  {
+    type: 'link',
     id: 'hot-takes',
     label: 'Hot Takes',
     sublabel: "Citizens' unfiltered vote reasons — what people actually think",
