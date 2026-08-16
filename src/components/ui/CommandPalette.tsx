@@ -1688,6 +1688,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'mood',
+    label: 'Civic Mood',
+    sublabel: 'How does debate make the community feel? Hopeful, inspired, worried, determined — the platform\'s emotional pulse.',
+    href: '/mood',
+    icon: Heart,
+    iconColor: 'text-against-400',
+    iconBg: 'bg-against-500/8',
+  },
+  {
+    type: 'link',
     id: 'roulette',
     label: 'Topic Roulette',
     sublabel: 'Discover a random debate you haven\'t voted on yet — spin to engage',
