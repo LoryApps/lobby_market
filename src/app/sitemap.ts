@@ -29,6 +29,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/temperature`, changeFrequency: 'always', priority: 0.85 },
   { url: `${BASE_URL}/mood`, changeFrequency: 'always', priority: 0.84 },
   { url: `${BASE_URL}/mood/atlas`, changeFrequency: 'daily', priority: 0.78 },
+  { url: `${BASE_URL}/mood/history`, changeFrequency: 'daily', priority: 0.77 },
   { url: `${BASE_URL}/mood/trending`, changeFrequency: 'always', priority: 0.80 },
   { url: `${BASE_URL}/breakthrough`, changeFrequency: 'hourly', priority: 0.84 },
   { url: `${BASE_URL}/scoreboard`, changeFrequency: 'always', priority: 0.88 },

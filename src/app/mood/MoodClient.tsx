@@ -16,6 +16,7 @@ import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   ArrowRight,
+  Clock,
   Frown,
   Globe,
   Heart,
@@ -262,6 +263,13 @@ export function MoodClient() {
               >
                 <Globe className="h-3 w-3" />
                 Atlas
+              </Link>
+              <Link
+                href="/mood/history"
+                className="flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-mono font-semibold text-surface-300 hover:bg-surface-200/10 transition-colors border border-surface-600/30 hover:border-surface-500/50"
+              >
+                <Clock className="h-3 w-3" />
+                History
               </Link>
               <Link
                 href="/mood/trending"
