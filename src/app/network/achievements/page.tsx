@@ -320,7 +320,13 @@ export default function NetworkAchievementsPage() {
             href="/network"
             className="px-3 py-1.5 text-xs font-mono font-medium rounded-lg text-surface-400 hover:text-white transition-colors"
           >
-            Topics &amp; Args
+            Activity
+          </Link>
+          <Link
+            href="/network/topics"
+            className="px-3 py-1.5 text-xs font-mono font-medium rounded-lg text-surface-400 hover:text-white transition-colors"
+          >
+            Topics
           </Link>
           <Link
             href="/network/votes"

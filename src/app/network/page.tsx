@@ -335,8 +335,14 @@ export default function NetworkPage() {
         {/* Tab switcher */}
         <div className="flex flex-wrap items-center gap-1 p-1 mb-4 mx-4 sm:mx-0 rounded-xl bg-surface-100 border border-surface-300 w-fit">
           <span className="px-3 py-1.5 text-xs font-mono font-semibold rounded-lg bg-surface-200 border border-surface-300 text-white">
-            Topics &amp; Args
+            Activity
           </span>
+          <Link
+            href="/network/topics"
+            className="px-3 py-1.5 text-xs font-mono font-medium rounded-lg text-surface-400 hover:text-white transition-colors"
+          >
+            Topics
+          </Link>
           <Link
             href="/network/votes"
             className="px-3 py-1.5 text-xs font-mono font-medium rounded-lg text-surface-400 hover:text-white transition-colors"
