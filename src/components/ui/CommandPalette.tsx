@@ -1728,6 +1728,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'mood-atlas',
+    label: 'Mood Atlas',
+    sublabel: 'The emotional fingerprint of every civic category — hopeful, worried, determined by topic area',
+    href: '/mood/atlas',
+    icon: Globe,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/8',
+  },
+  {
+    type: 'link',
     id: 'roulette',
     label: 'Topic Roulette',
     sublabel: 'Discover a random debate you haven\'t voted on yet — spin to engage',

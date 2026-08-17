@@ -17,6 +17,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   ArrowRight,
   Frown,
+  Globe,
   Heart,
   RefreshCw,
   Shield,
@@ -255,6 +256,13 @@ export function MoodClient() {
               Civic Mood
             </h1>
             <div className="ml-auto flex items-center gap-1.5">
+              <Link
+                href="/mood/atlas"
+                className="flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-mono font-semibold text-for-400 hover:bg-for-500/10 transition-colors border border-for-500/20 hover:border-for-500/40"
+              >
+                <Globe className="h-3 w-3" />
+                Atlas
+              </Link>
               <Link
                 href="/mood/trending"
                 className="flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-mono font-semibold text-purple hover:bg-purple/10 transition-colors border border-purple/20 hover:border-purple/40"

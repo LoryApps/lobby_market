@@ -2155,6 +2155,14 @@ interface RecentBuild {
 
 const RECENT_BUILDS: RecentBuild[] = [
   {
+    title: 'Mood Atlas + PWA Web App Manifest',
+    description: 'Ch. 359: Two upgrades. (1) New /mood/atlas page — the emotional fingerprint of every civic debate category. Shows which mood dominates each category (Politics, Technology, Ethics, etc.), a positive/anxious split bar, per-mood percentage bars for the top 4 moods, and 3 representative topics with their dominant mood. Backed by new /api/mood/atlas route that joins civic_topic_moods with topics, groups by category, and returns sorted CategoryMoodEntry objects. "Atlas" quick-link added to the Civic Mood page header and ⌘K Command Palette. /mood/atlas and /mood/trending added to sitemap. (2) Added src/app/manifest.ts — Next.js 14 App Router PWA web app manifest enabling Android "Add to Home Screen" and proper PWA installation. Defines name, short_name, icons, theme, display mode (standalone), start_url, and app shortcuts (Browse Topics, Live Debates, Create Topic). The app already had a service worker, offline fallback, and Apple PWA meta — this completes the PWA trio.',
+    href: '/mood/atlas',
+    icon: Globe,
+    color: 'text-for-400',
+    tag: 'Ch. 359',
+  },
+  {
     title: 'Relay Leg Stars in /relays/[id] + Uncontested Relays Page',
     description: 'Ch. 358: Two relay-system enhancements. (1) Per-leg star upvotes wired into /relays/[id] — the relay detail page all browser links point to. Adds star/unstar toggle per leg with live count, gold highlight when starred, and spinner feedback. Calls /api/relays/[id]/legs/[leg_id]/upvote; blocks own-leg starring client-side. (2) New /relays/uncontested page — surfaces topics where only one side (FOR or AGAINST) has a completed relay chain. Algorithm: fetch all complete/voted relays → build topic→sides map → filter to single-side topics. Filter tabs for missing side (all/for/against), sort modes (votes/newest/compelling), category pills, and load-more pagination. Each card shows the existing relay summary (starter avatar, leg count, compelling %) plus a CTA "Start the FOR/AGAINST Relay" linking to /relays/create pre-filled with topic and side. New /api/relays/uncontested route. "Uncontested" nav button added to Relays browser header and ⌘K Command Palette. /relays/uncontested + other relay sub-pages added to sitemap.',
     href: '/relays/uncontested',
