@@ -346,6 +346,12 @@ export default function NetworkVotesPage() {
           >
             People
           </Link>
+          <Link
+            href="/network/coalitions"
+            className="px-3 py-1.5 text-xs font-mono font-medium rounded-lg text-surface-400 hover:text-white transition-colors"
+          >
+            Coalitions
+          </Link>
         </div>
 
         {/* Content */}
