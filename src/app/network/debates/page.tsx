@@ -389,6 +389,12 @@ export default function NetworkDebatesPage() {
           >
             Laws
           </Link>
+          <Link
+            href="/network/people"
+            className="px-3 py-1.5 text-xs font-mono font-medium rounded-lg text-surface-400 hover:text-white transition-colors"
+          >
+            People
+          </Link>
         </div>
 
         {/* Feed */}
