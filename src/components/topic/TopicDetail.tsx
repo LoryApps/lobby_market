@@ -918,6 +918,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                       Archetype split
                     </Link>
                     <Link
+                      href={`/topic/${topic.id}/census`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-for-400 hover:text-for-300 transition-colors"
+                    >
+                      <BarChart2 className="h-3.5 w-3.5" />
+                      Voter census
+                    </Link>
+                    <Link
                       href={`/topic/${topic.id}/debate-prep`}
                       className="inline-flex items-center gap-1.5 text-xs font-mono text-gold hover:text-gold/80 transition-colors"
                     >
