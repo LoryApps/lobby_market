@@ -254,15 +254,24 @@ export function MoodClient() {
             <h1 className="font-mono text-xl font-bold text-white tracking-tight">
               Civic Mood
             </h1>
-            {!loading && data && (
-              <button
-                onClick={fetchData}
-                className="ml-auto p-1.5 rounded-lg text-surface-500 hover:text-white hover:bg-surface-200 transition-colors"
-                aria-label="Refresh"
+            <div className="ml-auto flex items-center gap-1.5">
+              <Link
+                href="/mood/trending"
+                className="flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-mono font-semibold text-purple hover:bg-purple/10 transition-colors border border-purple/20 hover:border-purple/40"
               >
-                <RefreshCw className="h-3.5 w-3.5" />
-              </button>
-            )}
+                <TrendingUp className="h-3 w-3" />
+                Trends
+              </Link>
+              {!loading && data && (
+                <button
+                  onClick={fetchData}
+                  className="p-1.5 rounded-lg text-surface-500 hover:text-white hover:bg-surface-200 transition-colors"
+                  aria-label="Refresh"
+                >
+                  <RefreshCw className="h-3.5 w-3.5" />
+                </button>
+              )}
+            </div>
           </div>
           <p className="text-sm text-surface-500 font-mono">
             How civic debate makes the community feel — right now.
