@@ -7,21 +7,22 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   ArrowLeft,
   Loader2,
+  MessageSquare,
   RefreshCw,
-  Trophy,
+  ThumbsUp,
   Users,
-  Sparkles,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { Avatar } from '@/components/ui/Avatar'
+import { Badge } from '@/components/ui/Badge'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { cn } from '@/lib/utils/cn'
 import type {
-  NetworkAchievementItem,
-  NetworkAchievementsResponse,
-} from '@/app/api/network/achievements/route'
+  NetworkArgumentItem,
+  NetworkArgumentsResponse,
+} from '@/app/api/network/arguments/route'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -37,69 +38,37 @@ function relativeTime(iso: string): string {
   return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 }
 
-type Tier = 'common' | 'rare' | 'epic' | 'legendary'
-
-const TIER_STYLES: Record<
-  Tier,
-  { label: string; iconBg: string; iconBorder: string; iconColor: string; glow: string; badge: string }
-> = {
-  legendary: {
-    label: 'Legendary',
-    iconBg: 'bg-gold/15',
-    iconBorder: 'border-gold/40',
-    iconColor: 'text-gold',
-    glow: 'shadow-[0_0_12px_rgba(245,158,11,0.2)]',
-    badge: 'bg-gold/15 text-gold border-gold/30',
-  },
-  epic: {
-    label: 'Epic',
-    iconBg: 'bg-purple/15',
-    iconBorder: 'border-purple/40',
-    iconColor: 'text-purple',
-    glow: 'shadow-[0_0_12px_rgba(139,92,246,0.2)]',
-    badge: 'bg-purple/15 text-purple border-purple/30',
-  },
-  rare: {
-    label: 'Rare',
-    iconBg: 'bg-for-500/15',
-    iconBorder: 'border-for-500/40',
-    iconColor: 'text-for-400',
-    glow: '',
-    badge: 'bg-for-500/15 text-for-400 border-for-500/30',
-  },
-  common: {
-    label: 'Common',
-    iconBg: 'bg-surface-200/60',
-    iconBorder: 'border-surface-400/30',
-    iconColor: 'text-surface-400',
-    glow: '',
-    badge: 'bg-surface-200/60 text-surface-400 border-surface-400/30',
-  },
+const STATUS_BADGE: Record<string, 'proposed' | 'active' | 'law' | 'failed'> = {
+  proposed: 'proposed',
+  active: 'active',
+  voting: 'active',
+  law: 'law',
+  failed: 'failed',
+  continued: 'proposed',
+  archived: 'proposed',
 }
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 
-function AchievementSkeleton() {
+function ArgumentSkeleton() {
   return (
     <div className="flex items-start gap-3 rounded-2xl border border-surface-300 bg-surface-100 p-4">
       <Skeleton className="h-9 w-9 rounded-full flex-shrink-0" />
       <div className="flex-1 space-y-2">
         <Skeleton className="h-3.5 w-1/3" />
         <Skeleton className="h-4 w-full" />
-        <Skeleton className="h-4 w-4/5" />
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-3/5" />
         <Skeleton className="h-3 w-1/4" />
       </div>
-      <Skeleton className="h-12 w-12 rounded-xl flex-shrink-0" />
     </div>
   )
 }
 
-// ─── Achievement card ─────────────────────────────────────────────────────────
+// ─── Argument card ────────────────────────────────────────────────────────────
 
-function AchievementCard({ item }: { item: NetworkAchievementItem }) {
-  const tier = (item.achievement.tier ?? 'common') as Tier
-  const styles = TIER_STYLES[tier] ?? TIER_STYLES.common
-  const isHighTier = tier === 'legendary' || tier === 'epic'
+function ArgumentCard({ item }: { item: NetworkArgumentItem }) {
+  const isFor = item.side === 'blue'
 
   return (
     <motion.div
@@ -108,78 +77,93 @@ function AchievementCard({ item }: { item: NetworkAchievementItem }) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -4 }}
       transition={{ duration: 0.2 }}
-      className={cn(
-        'group relative flex items-start gap-3 rounded-2xl border bg-surface-100 p-4 transition-all',
-        isHighTier
-          ? 'border-surface-300 hover:border-surface-400 ' + styles.glow
-          : 'border-surface-300 hover:border-surface-400',
-      )}
+      className="group relative rounded-2xl border border-surface-300 bg-surface-100 p-4 hover:border-surface-400 transition-colors overflow-hidden"
     >
-      {/* Actor avatar */}
-      <Link
-        href={`/profile/${item.actor.username}`}
-        className="flex-shrink-0 mt-0.5"
-        aria-label={`View ${item.actor.display_name ?? item.actor.username}'s profile`}
-      >
-        <Avatar
-          src={item.actor.avatar_url}
-          fallback={item.actor.display_name ?? item.actor.username}
-          size="sm"
-          className="ring-1 ring-surface-300 group-hover:ring-surface-400 transition-all"
-        />
-      </Link>
-
-      {/* Content */}
-      <div className="flex-1 min-w-0">
-        {/* Actor name + time */}
-        <div className="flex items-center gap-1.5 mb-1.5 flex-wrap">
-          <Link
-            href={`/profile/${item.actor.username}`}
-            className="text-xs font-mono font-semibold text-white hover:text-for-300 transition-colors truncate"
-          >
-            {item.actor.display_name ?? item.actor.username}
-          </Link>
-          <span className="text-xs font-mono text-surface-500">earned an achievement</span>
-          <span className="text-xs font-mono text-surface-600 ml-auto flex-shrink-0">
-            {relativeTime(item.earned_at)}
-          </span>
-        </div>
-
-        {/* Achievement name */}
-        <p className={cn('text-sm font-semibold leading-snug', isHighTier ? styles.iconColor : 'text-white')}>
-          {item.achievement.icon} {item.achievement.name}
-        </p>
-
-        {/* Achievement description */}
-        <p className="text-xs text-surface-500 mt-0.5 leading-relaxed line-clamp-2">
-          {item.achievement.description}
-        </p>
-
-        {/* Tier badge */}
-        <div className="mt-2">
-          <span
-            className={cn(
-              'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold border',
-              styles.badge,
-            )}
-          >
-            {tier === 'legendary' && <Sparkles className="h-2.5 w-2.5" aria-hidden="true" />}
-            {styles.label}
-          </span>
-        </div>
-      </div>
-
-      {/* Achievement icon tile */}
+      {/* Side accent stripe */}
       <div
         className={cn(
-          'flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-xl border text-2xl',
-          styles.iconBg,
-          styles.iconBorder,
-          isHighTier && styles.glow,
+          'absolute left-0 top-0 bottom-0 w-[3px]',
+          isFor ? 'bg-for-500' : 'bg-against-500'
         )}
         aria-hidden="true"
-      >
-        {item.achievement.icon}
+      />
+
+      <div className="flex items-start gap-3 pl-2">
+        {/* Actor avatar */}
+        <Link
+          href={`/profile/${item.actor.username}`}
+          className="flex-shrink-0 hover:opacity-80 transition-opacity"
+          aria-label={`View ${item.actor.display_name ?? item.actor.username}'s profile`}
+        >
+          <Avatar
+            src={item.actor.avatar_url}
+            fallback={item.actor.display_name ?? item.actor.username}
+            size="sm"
+          />
+        </Link>
+
+        {/* Content */}
+        <div className="flex-1 min-w-0">
+          {/* Actor + side badge + time */}
+          <div className="flex items-center gap-2 flex-wrap mb-2">
+            <Link
+              href={`/profile/${item.actor.username}`}
+              className="text-sm font-mono font-semibold text-white hover:text-for-300 transition-colors truncate max-w-[120px]"
+            >
+              {item.actor.display_name ?? item.actor.username}
+            </Link>
+            <span className="text-xs font-mono text-surface-500">argued</span>
+            <span
+              className={cn(
+                'inline-flex items-center gap-1 text-xs font-mono font-bold px-2 py-0.5 rounded-md',
+                isFor
+                  ? 'bg-for-600/20 text-for-400 border border-for-500/30'
+                  : 'bg-against-600/20 text-against-400 border border-against-500/30'
+              )}
+            >
+              {isFor ? 'FOR' : 'AGAINST'}
+            </span>
+            <span className="text-[11px] font-mono text-surface-600 ml-auto">
+              {relativeTime(item.argued_at)}
+            </span>
+          </div>
+
+          {/* Argument content */}
+          <p
+            className={cn(
+              'text-sm font-mono leading-relaxed line-clamp-3 mb-2',
+              isFor ? 'text-for-200' : 'text-against-200'
+            )}
+          >
+            {item.content}
+          </p>
+
+          {/* Topic link */}
+          <Link
+            href={`/topic/${item.topic.id}`}
+            className="block text-[11px] font-mono text-surface-500 line-clamp-1 hover:text-white transition-colors leading-relaxed mb-2"
+          >
+            re: {item.topic.statement}
+          </Link>
+
+          {/* Footer row: category, status, upvotes */}
+          <div className="flex items-center gap-3 flex-wrap">
+            {item.topic.category && (
+              <span className="text-[10px] font-mono text-surface-500 uppercase tracking-wider">
+                {item.topic.category}
+              </span>
+            )}
+            <Badge variant={STATUS_BADGE[item.topic.status] ?? 'proposed'}>
+              {item.topic.status}
+            </Badge>
+            {item.upvotes > 0 && (
+              <span className="flex items-center gap-1 text-[11px] font-mono text-surface-500">
+                <ThumbsUp className="h-3 w-3" aria-hidden="true" />
+                {item.upvotes}
+              </span>
+            )}
+          </div>
+        </div>
       </div>
     </motion.div>
   )
@@ -187,9 +171,9 @@ function AchievementCard({ item }: { item: NetworkAchievementItem }) {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
-export default function NetworkAchievementsPage() {
+export default function NetworkArgumentsPage() {
   const router = useRouter()
-  const [achievements, setAchievements] = useState<NetworkAchievementItem[]>([])
+  const [items, setItems] = useState<NetworkArgumentItem[]>([])
   const [loading, setLoading] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
   const [isEmpty, setIsEmpty] = useState(false)
@@ -198,26 +182,25 @@ export default function NetworkAchievementsPage() {
   const [hasMore, setHasMore] = useState(false)
   const loadMoreRef = useRef<HTMLDivElement>(null)
 
-  const fetchAchievements = useCallback(
+  const fetchArguments = useCallback(
     async (resetCursor?: boolean) => {
-      const url = new URL('/api/network/achievements', window.location.origin)
-      url.searchParams.set('limit', '30')
-      if (!resetCursor && cursor) url.searchParams.set('cursor', cursor)
+      const params = new URLSearchParams({ limit: '40' })
+      if (!resetCursor && cursor) params.set('cursor', cursor)
 
       try {
-        const res = await fetch(url.toString())
+        const res = await fetch(`/api/network/arguments?${params}`)
         if (res.status === 401) {
           router.push('/login')
           return
         }
         if (!res.ok) throw new Error('Failed to load')
 
-        const data: NetworkAchievementsResponse = await res.json()
+        const data: NetworkArgumentsResponse = await res.json()
 
         if (resetCursor) {
-          setAchievements(data.achievements)
+          setItems(data.arguments)
         } else {
-          setAchievements((prev) => [...prev, ...data.achievements])
+          setItems((prev) => [...prev, ...data.arguments])
         }
 
         setIsEmpty(data.is_empty)
@@ -231,11 +214,11 @@ export default function NetworkAchievementsPage() {
         setLoadingMore(false)
       }
     },
-    [cursor, router],
+    [cursor, router]
   )
 
   useEffect(() => {
-    fetchAchievements(true)
+    fetchArguments(true)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -249,21 +232,21 @@ export default function NetworkAchievementsPage() {
       (entries) => {
         if (entries[0].isIntersecting) {
           setLoadingMore(true)
-          fetchAchievements()
+          fetchArguments()
         }
       },
-      { threshold: 0.1 },
+      { threshold: 0.1 }
     )
 
     observer.observe(el)
     return () => observer.disconnect()
-  }, [hasMore, loadingMore, fetchAchievements])
+  }, [hasMore, loadingMore, fetchArguments])
 
   const handleRefresh = () => {
     setLoading(true)
     setCursor(null)
     setHasMore(false)
-    fetchAchievements(true)
+    fetchArguments(true)
   }
 
   return (
@@ -280,12 +263,12 @@ export default function NetworkAchievementsPage() {
             >
               <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             </button>
-            <div className="flex items-center justify-center h-11 w-11 rounded-xl bg-gold/10 border border-gold/20">
-              <Trophy className="h-5 w-5 text-gold" aria-hidden="true" />
+            <div className="flex items-center justify-center h-11 w-11 rounded-xl bg-for-600/10 border border-for-500/20">
+              <MessageSquare className="h-5 w-5 text-for-400" aria-hidden="true" />
             </div>
             <div>
               <h1 className="font-mono text-xl font-bold text-white leading-tight">
-                Network Achievements
+                Network Arguments
               </h1>
               {followingCount > 0 && !loading && (
                 <p className="text-xs font-mono text-surface-500 mt-0.5">
@@ -309,7 +292,10 @@ export default function NetworkAchievementsPage() {
               className="flex items-center justify-center h-8 w-8 rounded-lg border border-surface-300 bg-surface-100 text-surface-400 hover:text-white hover:border-surface-400 transition-colors disabled:opacity-40"
               aria-label="Refresh"
             >
-              <RefreshCw className={cn('h-3.5 w-3.5', loading && 'animate-spin')} aria-hidden="true" />
+              <RefreshCw
+                className={cn('h-3.5 w-3.5', loading && 'animate-spin')}
+                aria-hidden="true"
+              />
             </button>
           </div>
         </div>
@@ -328,51 +314,51 @@ export default function NetworkAchievementsPage() {
           >
             Votes
           </Link>
+          <span className="px-4 py-1.5 text-xs font-mono font-semibold rounded-lg bg-surface-200 border border-surface-300 text-white">
+            Arguments
+          </span>
           <Link
-            href="/network/arguments"
+            href="/network/achievements"
             className="px-4 py-1.5 text-xs font-mono font-medium rounded-lg text-surface-400 hover:text-white transition-colors"
           >
-            Arguments
-          </Link>
-          <span className="px-4 py-1.5 text-xs font-mono font-semibold rounded-lg bg-surface-200 border border-surface-300 text-white">
             Achievements
-          </span>
+          </Link>
         </div>
 
         {/* Content */}
         {loading ? (
           <div className="space-y-3">
             {Array.from({ length: 6 }).map((_, i) => (
-              <AchievementSkeleton key={i} />
+              <ArgumentSkeleton key={i} />
             ))}
           </div>
         ) : isEmpty ? (
           <EmptyState
-            icon={Trophy}
-            iconColor="text-gold/60"
-            iconBg="bg-gold/10"
-            iconBorder="border-gold/20"
+            icon={Users}
+            iconColor="text-for-400/60"
+            iconBg="bg-for-600/10"
+            iconBorder="border-for-500/20"
             title={
               followingCount === 0
-                ? 'Follow people to see their achievements'
-                : 'No achievements from your network yet'
+                ? 'Follow people to see their arguments'
+                : 'No arguments from your network yet'
             }
             description={
               followingCount === 0
-                ? 'When you follow civic participants, their earned achievements will appear here.'
-                : "The people you follow haven't earned achievements recently. Check back soon."
+                ? 'When you follow civic participants, their recent arguments will appear here.'
+                : "The people you follow haven't posted arguments recently. Check back soon."
             }
             actions={[
               { label: 'Find People', href: '/discover', icon: Users },
-              { label: 'Browse Achievements', href: '/achievements', variant: 'secondary' },
+              { label: 'Browse Feed', href: '/', variant: 'secondary' },
             ]}
             size="lg"
           />
         ) : (
           <AnimatePresence mode="popLayout">
             <div className="space-y-3">
-              {achievements.map((item) => (
-                <AchievementCard key={item.id} item={item} />
+              {items.map((item) => (
+                <ArgumentCard key={item.id} item={item} />
               ))}
             </div>
           </AnimatePresence>

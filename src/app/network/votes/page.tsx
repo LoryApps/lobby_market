@@ -311,6 +311,12 @@ export default function NetworkVotesPage() {
             Votes
           </span>
           <Link
+            href="/network/arguments"
+            className="px-4 py-1.5 text-xs font-mono font-medium rounded-lg text-surface-400 hover:text-white transition-colors"
+          >
+            Arguments
+          </Link>
+          <Link
             href="/network/achievements"
             className="px-4 py-1.5 text-xs font-mono font-medium rounded-lg text-surface-400 hover:text-white transition-colors"
           >
