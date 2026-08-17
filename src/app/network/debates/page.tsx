@@ -383,6 +383,12 @@ export default function NetworkDebatesPage() {
           <span className="px-3 py-1.5 text-xs font-mono font-semibold rounded-lg bg-surface-200 border border-surface-300 text-white">
             Debates
           </span>
+          <Link
+            href="/network/laws"
+            className="px-3 py-1.5 text-xs font-mono font-medium rounded-lg text-surface-400 hover:text-white transition-colors"
+          >
+            Laws
+          </Link>
         </div>
 
         {/* Feed */}
