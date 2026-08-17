@@ -362,6 +362,12 @@ export default function NetworkPage() {
             Arguments
           </Link>
           <Link
+            href="/network/questions"
+            className="px-3 py-1.5 text-xs font-mono font-medium rounded-lg text-surface-400 hover:text-white transition-colors"
+          >
+            Questions
+          </Link>
+          <Link
             href="/network/debates"
             className="px-3 py-1.5 text-xs font-mono font-medium rounded-lg text-surface-400 hover:text-white transition-colors"
           >
