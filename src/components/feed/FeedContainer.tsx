@@ -933,7 +933,7 @@ export function FeedContainer() {
         <FeedTutorial />
         <SetupChecklist />
         <DailyQuorumNudge />
-        {feedMode === 'discover' && <DailyPromptBanner />}
+        <DailyPromptBanner />
         {topics.map((topic, index) => (
           <div key={topic.id}>
             <ErrorBoundary
