@@ -67,6 +67,7 @@ function NetworkTabs({ active }: { active: string }) {
     { label: 'Laws',         href: '/network/laws' },
     { label: 'People',       href: '/network/people' },
     { label: 'Coalitions',   href: '/network/coalitions' },
+    { label: 'Predictions',  href: '/network/predictions' },
   ]
   return (
     <div className="flex flex-wrap items-center gap-1 p-1 mb-5 rounded-xl bg-surface-100 border border-surface-300 w-fit">

@@ -367,6 +367,12 @@ export default function NetworkAchievementsPage() {
           >
             Coalitions
           </Link>
+          <Link
+            href="/network/predictions"
+            className="px-3 py-1.5 text-xs font-mono font-medium rounded-lg text-surface-400 hover:text-white transition-colors"
+          >
+            Predictions
+          </Link>
         </div>
 
         {/* Content */}
