@@ -315,28 +315,34 @@ export default function NetworkAchievementsPage() {
         </div>
 
         {/* Filter tabs */}
-        <div className="mb-5 flex items-center gap-1 p-1 rounded-xl bg-surface-100 border border-surface-300 w-fit">
+        <div className="mb-5 flex flex-wrap items-center gap-1 p-1 rounded-xl bg-surface-100 border border-surface-300 w-fit">
           <Link
             href="/network"
-            className="px-4 py-1.5 text-xs font-mono font-medium rounded-lg text-surface-400 hover:text-white transition-colors"
+            className="px-3 py-1.5 text-xs font-mono font-medium rounded-lg text-surface-400 hover:text-white transition-colors"
           >
             Topics &amp; Args
           </Link>
           <Link
             href="/network/votes"
-            className="px-4 py-1.5 text-xs font-mono font-medium rounded-lg text-surface-400 hover:text-white transition-colors"
+            className="px-3 py-1.5 text-xs font-mono font-medium rounded-lg text-surface-400 hover:text-white transition-colors"
           >
             Votes
           </Link>
+          <span className="px-3 py-1.5 text-xs font-mono font-semibold rounded-lg bg-surface-200 border border-surface-300 text-white">
+            Achievements
+          </span>
           <Link
             href="/network/arguments"
-            className="px-4 py-1.5 text-xs font-mono font-medium rounded-lg text-surface-400 hover:text-white transition-colors"
+            className="px-3 py-1.5 text-xs font-mono font-medium rounded-lg text-surface-400 hover:text-white transition-colors"
           >
             Arguments
           </Link>
-          <span className="px-4 py-1.5 text-xs font-mono font-semibold rounded-lg bg-surface-200 border border-surface-300 text-white">
-            Achievements
-          </span>
+          <Link
+            href="/network/debates"
+            className="px-3 py-1.5 text-xs font-mono font-medium rounded-lg text-surface-400 hover:text-white transition-colors"
+          >
+            Debates
+          </Link>
         </div>
 
         {/* Content */}

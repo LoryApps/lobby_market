@@ -333,21 +333,33 @@ export default function NetworkPage() {
         </div>
 
         {/* Tab switcher */}
-        <div className="flex items-center gap-1 p-1 mb-4 mx-4 sm:mx-0 rounded-xl bg-surface-100 border border-surface-300 w-fit">
-          <span className="px-4 py-1.5 text-xs font-mono font-semibold rounded-lg bg-surface-200 border border-surface-300 text-white">
+        <div className="flex flex-wrap items-center gap-1 p-1 mb-4 mx-4 sm:mx-0 rounded-xl bg-surface-100 border border-surface-300 w-fit">
+          <span className="px-3 py-1.5 text-xs font-mono font-semibold rounded-lg bg-surface-200 border border-surface-300 text-white">
             Topics &amp; Args
           </span>
           <Link
             href="/network/votes"
-            className="px-4 py-1.5 text-xs font-mono font-medium rounded-lg text-surface-400 hover:text-white transition-colors"
+            className="px-3 py-1.5 text-xs font-mono font-medium rounded-lg text-surface-400 hover:text-white transition-colors"
           >
             Votes
           </Link>
           <Link
             href="/network/achievements"
-            className="px-4 py-1.5 text-xs font-mono font-medium rounded-lg text-surface-400 hover:text-white transition-colors"
+            className="px-3 py-1.5 text-xs font-mono font-medium rounded-lg text-surface-400 hover:text-white transition-colors"
           >
             Achievements
+          </Link>
+          <Link
+            href="/network/arguments"
+            className="px-3 py-1.5 text-xs font-mono font-medium rounded-lg text-surface-400 hover:text-white transition-colors"
+          >
+            Arguments
+          </Link>
+          <Link
+            href="/network/debates"
+            className="px-3 py-1.5 text-xs font-mono font-medium rounded-lg text-surface-400 hover:text-white transition-colors"
+          >
+            Debates
           </Link>
         </div>
 
