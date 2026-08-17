@@ -71,6 +71,7 @@ function NetworkTabs({ active }: { active: string }) {
     { label: 'Achievements', href: '/network/achievements' },
     { label: 'Debates',      href: '/network/debates' },
     { label: 'Laws',         href: '/network/laws' },
+    { label: 'Relays',       href: '/network/relays' },
     { label: 'People',       href: '/network/people' },
     { label: 'Coalitions',   href: '/network/coalitions' },
     { label: 'Predictions',  href: '/network/predictions' },
