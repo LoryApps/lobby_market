@@ -838,6 +838,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'topic-of-the-day',
+    label: 'Topic of the Day',
+    sublabel: "Today's civic spotlight — the debate with the most energy right now",
+    href: '/topic-of-the-day',
+    icon: Sparkles,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
+  },
+  {
+    type: 'link',
     id: 'argument-of-the-day',
     label: 'Argument of the Day',
     sublabel: "Today's best argument crowned by the Lobby — ranked by upvotes and AI quality score",
