@@ -15,6 +15,7 @@ import { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
+  ArrowLeftRight,
   ArrowRight,
   Clock,
   Frown,
@@ -277,6 +278,13 @@ export function MoodClient() {
               >
                 <TrendingUp className="h-3 w-3" />
                 Trends
+              </Link>
+              <Link
+                href="/mood/compare"
+                className="flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-mono font-semibold text-gold hover:bg-gold/10 transition-colors border border-gold/20 hover:border-gold/40"
+              >
+                <ArrowLeftRight className="h-3 w-3" />
+                Compare
               </Link>
               {!loading && data && (
                 <button

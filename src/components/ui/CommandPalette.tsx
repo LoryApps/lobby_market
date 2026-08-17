@@ -117,6 +117,7 @@ import {
   Star,
   UserCheck,
   Thermometer,
+  ArrowLeftRight,
 } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils/cn'
@@ -1735,6 +1736,16 @@ const QUICK_LINKS: QuickLink[] = [
     icon: Globe,
     iconColor: 'text-for-400',
     iconBg: 'bg-for-500/8',
+  },
+  {
+    type: 'link',
+    id: 'mood-compare',
+    label: 'Mood Compare',
+    sublabel: 'Compare how two civic debates make the community feel — side-by-side emotional profiles',
+    href: '/mood/compare',
+    icon: ArrowLeftRight,
+    iconColor: 'text-gold',
+    iconBg: 'bg-gold/10',
   },
   {
     type: 'link',
