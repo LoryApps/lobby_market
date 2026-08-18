@@ -432,6 +432,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/thesis/rising`,          changeFrequency: 'hourly', priority: 0.77 },
   { url: `${BASE_URL}/thesis/digest`,          changeFrequency: 'daily',  priority: 0.80 },
   { url: `${BASE_URL}/thesis/following`,       changeFrequency: 'always', priority: 0.75 },
+  { url: `${BASE_URL}/thesis/map`,             changeFrequency: 'hourly', priority: 0.76 },
   { url: `${BASE_URL}/thesis/category`,        changeFrequency: 'daily',  priority: 0.72 },
   ...(
     ['economics', 'politics', 'technology', 'science', 'ethics', 'philosophy', 'culture', 'health', 'environment', 'education']
