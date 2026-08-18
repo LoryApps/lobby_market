@@ -25,6 +25,7 @@ import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { Avatar } from '@/components/ui/Avatar'
 import { Skeleton } from '@/components/ui/Skeleton'
+import { ThesisComments } from './ThesisComments'
 import { cn } from '@/lib/utils/cn'
 import type { Thesis } from '@/lib/types/thesis'
 
@@ -420,6 +421,9 @@ export function ThesisDetailClient({ id }: { id: string }) {
             </div>
           )}
         </motion.div>
+
+        {/* Discussion thread */}
+        <ThesisComments thesisId={id} />
 
         {/* Back to thesis list */}
         <div className="mt-6 text-center">
