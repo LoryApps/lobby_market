@@ -3,6 +3,8 @@ import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { ThesisDetailClient } from './ThesisDetailClient'
 
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://lobby.market'
+
 interface Props {
   params: { id: string }
 }
@@ -24,19 +26,26 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     || (author as { username: string } | null)?.username
     || 'A civic voice'
 
+  const ogImageUrl = `${BASE_URL}/api/og/thesis/${params.id}`
+  const canonicalUrl = `${BASE_URL}/thesis/${params.id}`
+
   return {
     title: `"${data.statement.slice(0, 60)}${data.statement.length > 60 ? '…' : ''}" · Lobby Market`,
     description: `${authorName}'s civic thesis — ${data.category}. See who agrees and who doesn't on Lobby Market.`,
+    alternates: { canonical: canonicalUrl },
     openGraph: {
       title: `Civic Thesis: ${data.statement.slice(0, 80)}`,
       description: `${authorName} stakes a prediction. Do you agree or disagree?`,
       type: 'article',
       siteName: 'Lobby Market',
+      url: canonicalUrl,
+      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: `Civic thesis by ${authorName}` }],
     },
     twitter: {
-      card: 'summary',
+      card: 'summary_large_image',
       title: `Civic Thesis: ${data.statement.slice(0, 60)}`,
       description: `${authorName} stakes a civic prediction on Lobby Market.`,
+      images: [ogImageUrl],
     },
   }
 }
