@@ -22,6 +22,7 @@ export async function GET(req: NextRequest) {
   const limit = Math.min(parseInt(searchParams.get('limit') || '30', 10), 60)
   const offset = parseInt(searchParams.get('offset') || '0', 10)
   const authorId = searchParams.get('author_id') || null
+  const topicId = searchParams.get('topic_id') || null
 
   const {
     data: { user },
@@ -51,6 +52,9 @@ export async function GET(req: NextRequest) {
   }
   if (authorId) {
     query = query.eq('user_id', authorId)
+  }
+  if (topicId) {
+    query = query.eq('related_topic_id', topicId)
   }
 
   if (VALID_SORTS.includes(sort)) {
