@@ -772,6 +772,17 @@ export default function ThesisPage() {
           ))}
         </div>
 
+        {/* Category browse shortcut */}
+        <Link
+          href="/thesis/category"
+          className="flex items-center justify-between px-3.5 py-2.5 mb-4 rounded-xl bg-surface-100 border border-surface-300 hover:border-surface-400 transition-colors group"
+        >
+          <span className="text-xs font-mono text-surface-400 group-hover:text-white transition-colors">
+            Browse theses by category
+          </span>
+          <ArrowRight className="h-3.5 w-3.5 text-surface-500 group-hover:text-for-400 transition-colors" />
+        </Link>
+
         {/* Filters */}
         <div className="space-y-2.5 mb-5">
           {/* Status tabs */}
