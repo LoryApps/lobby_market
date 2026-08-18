@@ -773,7 +773,16 @@ export default function ThesisPage() {
         </div>
 
         {/* Quick nav shortcuts */}
-        <div className="grid grid-cols-2 gap-2 mb-4">
+        <div className="grid grid-cols-3 gap-2 mb-4">
+          <Link
+            href="/thesis/my"
+            className="flex items-center justify-between px-3 py-2.5 rounded-xl bg-purple/5 border border-purple/20 hover:border-purple/40 transition-colors group"
+          >
+            <span className="text-xs font-mono text-purple/70 group-hover:text-purple transition-colors">
+              My theses
+            </span>
+            <ArrowRight className="h-3.5 w-3.5 text-purple/40 group-hover:text-purple transition-colors" />
+          </Link>
           <Link
             href="/thesis/category"
             className="flex items-center justify-between px-3 py-2.5 rounded-xl bg-surface-100 border border-surface-300 hover:border-surface-400 transition-colors group"
