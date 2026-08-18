@@ -426,6 +426,20 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/exchange/wrap`,          changeFrequency: 'daily',  priority: 0.72 },
   { url: `${BASE_URL}/exchange/coalitions`,    changeFrequency: 'daily',  priority: 0.72 },
   { url: `${BASE_URL}/exchange/watchlist`,     changeFrequency: 'always', priority: 0.70 },
+  // Civic Thesis — prediction board
+  { url: `${BASE_URL}/thesis`,                 changeFrequency: 'hourly', priority: 0.80 },
+  { url: `${BASE_URL}/thesis/hot`,             changeFrequency: 'hourly', priority: 0.78 },
+  { url: `${BASE_URL}/thesis/following`,       changeFrequency: 'always', priority: 0.75 },
+  { url: `${BASE_URL}/thesis/category`,        changeFrequency: 'daily',  priority: 0.72 },
+  ...(
+    ['economics', 'politics', 'technology', 'science', 'ethics', 'philosophy', 'culture', 'health', 'environment', 'education']
+      .map((slug) => ({
+        url: `${BASE_URL}/thesis/category/${slug}`,
+        changeFrequency: 'daily' as const,
+        priority: 0.68,
+      }))
+  ),
+  { url: `${BASE_URL}/leaderboard/theses`,     changeFrequency: 'daily',  priority: 0.70 },
 ]
 
 export const dynamic = 'force-dynamic'
