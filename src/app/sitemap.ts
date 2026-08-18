@@ -429,6 +429,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   // Civic Thesis — prediction board
   { url: `${BASE_URL}/thesis`,                 changeFrequency: 'hourly', priority: 0.80 },
   { url: `${BASE_URL}/thesis/hot`,             changeFrequency: 'hourly', priority: 0.78 },
+  { url: `${BASE_URL}/thesis/digest`,          changeFrequency: 'daily',  priority: 0.80 },
   { url: `${BASE_URL}/thesis/following`,       changeFrequency: 'always', priority: 0.75 },
   { url: `${BASE_URL}/thesis/category`,        changeFrequency: 'daily',  priority: 0.72 },
   ...(
