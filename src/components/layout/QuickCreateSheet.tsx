@@ -10,6 +10,7 @@ import {
   HelpCircle,
   MessageSquarePlus,
   Mic,
+  Scroll,
   TrendingUp,
   Landmark,
   X,
@@ -82,6 +83,15 @@ const ACTIONS: QuickAction[] = [
     color: 'text-against-400',
     bg: 'bg-against-500/10',
     border: 'border-against-500/30',
+  },
+  {
+    href: '/thesis/create',
+    label: 'Write a Thesis',
+    sublabel: 'Stake your reputation on a prediction',
+    icon: Scroll,
+    color: 'text-gold',
+    bg: 'bg-gold/10',
+    border: 'border-gold/30',
   },
   {
     href: '/socratic',

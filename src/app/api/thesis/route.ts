@@ -177,6 +177,7 @@ export async function POST(req: NextRequest) {
     category?: string
     resolution_date?: string
     related_topic_id?: string
+    is_public?: boolean
   }
   try {
     body = await req.json()
@@ -184,7 +185,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
   }
 
-  const { statement, rationale, category, resolution_date, related_topic_id } = body
+  const { statement, rationale, category, resolution_date, related_topic_id, is_public } = body
 
   if (!statement || typeof statement !== 'string') {
     return NextResponse.json({ error: 'statement is required' }, { status: 400 })
@@ -211,6 +212,7 @@ export async function POST(req: NextRequest) {
       category: cat,
       resolution_date: resolution_date || null,
       related_topic_id: related_topic_id || null,
+      is_public: is_public !== false,
     })
     .select()
     .single()
