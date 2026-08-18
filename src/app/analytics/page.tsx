@@ -443,6 +443,15 @@ const SUITE_SECTIONS: Array<{
     ],
   },
   {
+    title: 'Predictions',
+    color: 'text-purple',
+    items: [
+      { label: 'Calibration Report',  href: '/analytics/calibration',    icon: Gauge },
+      { label: 'Thesis Analytics',    href: '/analytics/thesis',          icon: BookOpen },
+      { label: 'Prediction Stats',    href: '/analytics/predictions',     icon: Target },
+    ],
+  },
+  {
     title: 'Rankings & Growth',
     color: 'text-gold',
     items: [
@@ -613,6 +622,20 @@ export default function AnalyticsPage() {
                     <div>
                       <div className="text-sm font-mono font-semibold text-white">Calibration Report</div>
                       <div className="text-xs font-mono text-surface-500 mt-0.5">How well do your votes predict civic outcomes?</div>
+                    </div>
+                  </div>
+                  <ChevronRight className="h-4 w-4 text-surface-500 group-hover:text-white transition-colors flex-shrink-0" />
+                </Link>
+              </motion.div>
+              <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.36 }}>
+                <Link href="/analytics/thesis" className="flex items-center justify-between rounded-2xl bg-surface-100 border border-surface-300 p-5 hover:border-gold/40 hover:bg-surface-100/80 transition-colors group">
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-center h-10 w-10 rounded-xl bg-gold/10 border border-gold/20 flex-shrink-0">
+                      <BookOpen className="h-5 w-5 text-gold" />
+                    </div>
+                    <div>
+                      <div className="text-sm font-mono font-semibold text-white">Thesis Analytics</div>
+                      <div className="text-xs font-mono text-surface-500 mt-0.5">Your civic prediction record — vindication rate and category breakdown</div>
                     </div>
                   </div>
                   <ChevronRight className="h-4 w-4 text-surface-500 group-hover:text-white transition-colors flex-shrink-0" />
