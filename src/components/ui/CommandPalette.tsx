@@ -2663,6 +2663,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'thesis',
+    label: 'Civic Theses',
+    sublabel: 'Stake your predictions on society\'s future — get proven right or wrong',
+    href: '/thesis',
+    icon: Scroll,
+    iconColor: 'text-purple',
+    iconBg: 'bg-purple/10',
+  },
+  {
+    type: 'link',
     id: 'pledges',
     label: 'Civic Pledge Wall',
     sublabel: 'Make public civic commitments — let the community witness your actions',
