@@ -819,6 +819,15 @@ export default function ThesisPage() {
             </span>
             <ArrowRight className="h-3.5 w-3.5 text-gold/40 group-hover:text-gold transition-colors" />
           </Link>
+          <Link
+            href="/thesis/resolved"
+            className="flex items-center justify-between px-3 py-2.5 rounded-xl bg-against-500/5 border border-against-500/20 hover:border-against-500/40 transition-colors group"
+          >
+            <span className="text-xs font-mono text-against-400/70 group-hover:text-against-400 transition-colors">
+              Hall of Record
+            </span>
+            <ArrowRight className="h-3.5 w-3.5 text-against-400/40 group-hover:text-against-400 transition-colors" />
+          </Link>
         </div>
 
         {/* Filters */}
