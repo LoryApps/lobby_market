@@ -21,6 +21,7 @@ import {
   Radio,
   Map,
   Search,
+  Footprints,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -397,6 +398,7 @@ const SUITE_SECTIONS: Array<{
       { label: 'Topic Analytics',  href: '/analytics/topics',    icon: Scale },
       { label: 'Proposal Analytics', href: '/analytics/proposals', icon: FileText },
       { label: 'Civic Impact',     href: '/impact',              icon: Star },
+      { label: 'Civic Footprint',  href: '/footprint',           icon: Footprints },
       { label: 'Civic Legacy',     href: '/analytics/legacy',    icon: Trophy },
       { label: 'Civic Journey',    href: '/analytics/journey',   icon: Landmark },
     ],
