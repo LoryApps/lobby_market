@@ -389,6 +389,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/civic-questions`,   changeFrequency: 'always', priority: 0.78 },
   { url: `${BASE_URL}/motions`,           changeFrequency: 'hourly', priority: 0.75 },
   { url: `${BASE_URL}/grand-council`,     changeFrequency: 'daily',  priority: 0.72 },
+  { url: `${BASE_URL}/civic-ombudsman`,   changeFrequency: 'daily',  priority: 0.71 },
   { url: `${BASE_URL}/lords`,             changeFrequency: 'daily',  priority: 0.76 },
   { url: `${BASE_URL}/pmqs`,              changeFrequency: 'weekly', priority: 0.70 },
   { url: `${BASE_URL}/edm`,               changeFrequency: 'daily',  priority: 0.68 },
