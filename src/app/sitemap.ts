@@ -274,6 +274,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/arcade`, changeFrequency: 'weekly', priority: 0.75 },
   { url: `${BASE_URL}/trivia`, changeFrequency: 'daily', priority: 0.7 },
   { url: `${BASE_URL}/flashcards`, changeFrequency: 'daily', priority: 0.7 },
+  { url: `${BASE_URL}/checkin`, changeFrequency: 'daily', priority: 0.90 },
   { url: `${BASE_URL}/swipe`, changeFrequency: 'daily', priority: 0.78 },
   { url: `${BASE_URL}/ballot`, changeFrequency: 'daily', priority: 0.80 },
   { url: `${BASE_URL}/reel`, changeFrequency: 'always', priority: 0.82 },
