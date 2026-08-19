@@ -69,6 +69,8 @@ const navItems: NavItem[] = [
   { href: '/stress-test', label: 'Stress Test', icon: ShieldOff },
   { href: '/galaxy', label: 'Galaxy', icon: Orbit },
   { href: '/explore', label: 'Explore Features', icon: Layers },
+  { href: '/serendipity', label: 'Serendipity', icon: Shuffle },
+  { href: '/bulletin', label: 'Civic Bulletin', icon: Radio },
   { href: '/trending', label: 'Trending', icon: TrendingUp },
   { href: '/futures', label: 'Civic Futures', icon: CalendarClock },
   { href: '/surge', label: 'Surge', icon: Flame },

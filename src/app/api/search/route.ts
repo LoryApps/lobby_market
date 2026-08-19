@@ -398,5 +398,43 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ results: coalitionData ?? [], engine: 'ilike' })
   }
 
+  // ── Theses ───────────────────────────────────────────────────────────────────
+  // Searches civic theses by statement text. Returns public theses ordered by
+  // popularity (agree_count + disagree_count desc).
+
+  if (tab === 'theses') {
+    const THESIS_SELECT = `
+      id, statement, category, status, agree_count, disagree_count,
+      resolution_date, is_public, created_at,
+      author:profiles!civic_theses_user_id_fkey(id, username, display_name, avatar_url, role)
+    `
+
+    const { data: thesisData, error: thesisError } = await supabase
+      .from('civic_theses')
+      .select(THESIS_SELECT)
+      .ilike('statement', pattern)
+      .eq('is_public', true)
+      .order('agree_count', { ascending: false })
+      .limit(20)
+
+    if (!thesisError && thesisData && thesisData.length > 0) {
+      return NextResponse.json({ results: thesisData, engine: 'ilike' })
+    }
+
+    // Fallback: search rationale text as well
+    const { data: rationaleData, error: rationaleError } = await supabase
+      .from('civic_theses')
+      .select(THESIS_SELECT)
+      .ilike('rationale', pattern)
+      .eq('is_public', true)
+      .order('agree_count', { ascending: false })
+      .limit(20)
+
+    if (rationaleError) {
+      return NextResponse.json({ error: 'Search failed' }, { status: 500 })
+    }
+    return NextResponse.json({ results: rationaleData ?? [], engine: 'ilike' })
+  }
+
   return NextResponse.json({ results: [] })
 }

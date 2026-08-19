@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { Coins, ArrowUpRight, ArrowDown, Loader2 } from 'lucide-react'
+import { Coins, ArrowUpRight, ArrowDown, Loader2, Minus } from 'lucide-react'
 import type { CloutTransaction } from '@/lib/supabase/types'
+import { SpendCloutModal } from './SpendCloutModal'
 import { cn } from '@/lib/utils/cn'
 
 interface BalanceResponse {
@@ -29,6 +30,7 @@ export function CloutBalance({
   )
   const [loading, setLoading] = useState(initialBalance === undefined)
   const [error, setError] = useState<string | null>(null)
+  const [spendOpen, setSpendOpen] = useState(false)
 
   useEffect(() => {
     if (initialBalance !== undefined) return
@@ -105,17 +107,32 @@ export function CloutBalance({
           )}
         </div>
 
-        <Link
-          href="/clout"
-          className={cn(
-            'flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
-            'bg-gold/10 border border-gold/30 text-gold',
-            'hover:bg-gold/20 text-xs font-mono font-medium transition-colors'
+        <div className="flex flex-col gap-2">
+          <Link
+            href="/clout"
+            className={cn(
+              'flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+              'bg-gold/10 border border-gold/30 text-gold',
+              'hover:bg-gold/20 text-xs font-mono font-medium transition-colors'
+            )}
+          >
+            Ledger
+            <ArrowUpRight className="h-3.5 w-3.5" />
+          </Link>
+          {balance !== null && balance > 0 && (
+            <button
+              onClick={() => setSpendOpen(true)}
+              className={cn(
+                'flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                'bg-surface-200 border border-surface-300 text-surface-400',
+                'hover:bg-surface-300 hover:text-white text-xs font-mono font-medium transition-colors'
+              )}
+            >
+              <Minus className="h-3 w-3" />
+              Spend
+            </button>
           )}
-        >
-          Ledger
-          <ArrowUpRight className="h-3.5 w-3.5" />
-        </Link>
+        </div>
       </div>
 
       {!loading && !error && (
@@ -148,6 +165,16 @@ export function CloutBalance({
           </div>
         </div>
       )}
+
+      <SpendCloutModal
+        open={spendOpen}
+        onClose={() => setSpendOpen(false)}
+        currentBalance={balance ?? 0}
+        onSuccess={({ balance: newBalance }) => {
+          setBalance(newBalance)
+          setSpendOpen(false)
+        }}
+      />
     </div>
   )
 }

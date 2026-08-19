@@ -60,6 +60,7 @@ interface NotifPrefs {
   debate_challenge_notifications: boolean
   law_challenge_notifications: boolean
   law_endorsed_notifications: boolean
+  thesis_notifications: boolean
 }
 
 const DEFAULT_PREFS: NotifPrefs = {
@@ -80,6 +81,7 @@ const DEFAULT_PREFS: NotifPrefs = {
   debate_challenge_notifications: true,
   law_challenge_notifications: true,
   law_endorsed_notifications: true,
+  thesis_notifications: true,
 }
 
 function loadPrefs(): NotifPrefs {
@@ -611,6 +613,12 @@ export default function SettingsPage() {
                   description="When citizens endorse a law that originated from your topic — at 1, 5, 10, 25, and 50 endorsements"
                   checked={prefs.law_endorsed_notifications ?? true}
                   onChange={(v) => updatePref('law_endorsed_notifications', v)}
+                />
+                <SettingRow
+                  label="Thesis interactions"
+                  description="When someone agrees, disagrees, or comments on your civic thesis — vote milestones at 1, 5, 10, 25, and 50"
+                  checked={prefs.thesis_notifications ?? true}
+                  onChange={(v) => updatePref('thesis_notifications', v)}
                 />
               </div>
             </div>

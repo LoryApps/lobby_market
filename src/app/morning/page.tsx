@@ -7,6 +7,7 @@ import {
   Gavel,
   MessageSquare,
   Mic,
+  Moon,
   Scale,
   ThumbsDown,
   ThumbsUp,
@@ -493,6 +494,7 @@ export default async function MorningPage() {
               { href: '/trending', icon: TrendingUp, label: 'Trending', desc: 'What\'s moving now', color: 'text-gold' },
               { href: '/arguments', icon: MessageSquare, label: 'Top Arguments', desc: 'Best reasoning', color: 'text-emerald' },
               { href: '/laws', icon: Gavel, label: 'Law Codex', desc: 'All established laws', color: 'text-cyan-400' },
+              { href: '/evening', icon: Moon, label: 'Evening Recap', desc: "Today's verdicts", color: 'text-purple-400' },
             ].map(({ href, icon: Icon, label, desc, color }) => (
               <Link
                 key={href}

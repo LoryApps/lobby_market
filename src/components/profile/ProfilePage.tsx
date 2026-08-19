@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   Activity,
   BarChart2,
+  BookOpen,
   Clock,
   Coins,
   Flag,
@@ -893,6 +894,27 @@ export function ProfilePage({
                 </div>
                 <p className="text-xs font-mono text-surface-500 mt-2">
                   Public civic commitments {profile.display_name ?? profile.username} has made — with community witness accountability.
+                </p>
+              </Link>
+
+              {/* Civic Theses quick-link */}
+              <Link
+                href={`/profile/${profile.username}/theses`}
+                className="block rounded-2xl border border-surface-300 bg-surface-100 hover:bg-surface-200 hover:border-surface-400 transition-colors p-5"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <BookOpen className="h-4 w-4 text-for-400" aria-hidden="true" />
+                    <h3 className="text-[11px] font-mono text-surface-400 uppercase tracking-wider">
+                      Civic Theses
+                    </h3>
+                  </div>
+                  <span className="text-[10px] font-mono text-surface-500 hover:text-white transition-colors">
+                    View theses →
+                  </span>
+                </div>
+                <p className="text-xs font-mono text-surface-500 mt-2">
+                  Civic predictions {profile.display_name ?? profile.username} has staked openly — beliefs tracked for long-run accuracy.
                 </p>
               </Link>
 

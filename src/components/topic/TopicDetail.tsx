@@ -96,6 +96,7 @@ import { useFeedStore } from '@/lib/stores/feed-store'
 import { getTopicSignal, SIGNAL_PILL_CLASSES } from '@/lib/utils/topic-signal'
 import { Award, Clock, Flame, Gavel, Shuffle, Swords, Target, TrendingUp, Zap } from 'lucide-react'
 import { TopicReactions } from '@/components/topic/TopicReactions'
+import { MoodPicker } from '@/components/mood/MoodPicker'
 import { TopicHotTakes } from '@/components/topic/TopicHotTakes'
 import { ArgumentContributors } from '@/components/topic/ArgumentContributors'
 import { ArgumentCitationsPanel } from '@/components/topic/ArgumentCitationsPanel'
@@ -917,6 +918,13 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
                       Archetype split
                     </Link>
                     <Link
+                      href={`/topic/${topic.id}/census`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-for-400 hover:text-for-300 transition-colors"
+                    >
+                      <BarChart2 className="h-3.5 w-3.5" />
+                      Voter census
+                    </Link>
+                    <Link
                       href={`/topic/${topic.id}/debate-prep`}
                       className="inline-flex items-center gap-1.5 text-xs font-mono text-gold hover:text-gold/80 transition-colors"
                     >
@@ -1326,11 +1334,16 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
             </ErrorBoundary>
 
             {/* Community reactions */}
-            <div className="mb-6">
+            <div className="mb-4">
               <p className="text-xs font-mono text-surface-500 mb-2 uppercase tracking-wide">
                 Community reads this as
               </p>
               <TopicReactions topicId={topic.id} size="md" />
+            </div>
+
+            {/* Emotional response */}
+            <div className="mb-6">
+              <MoodPicker topicId={topic.id} />
             </div>
 
             {/* Continuation lifecycle — authoring, list, or plurality vote */}

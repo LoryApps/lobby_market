@@ -16,6 +16,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/trending`, changeFrequency: 'hourly', priority: 0.9 },
   { url: `${BASE_URL}/surge`, changeFrequency: 'hourly', priority: 0.85 },
   { url: `${BASE_URL}/frontier`, changeFrequency: 'hourly', priority: 0.84 },
+  { url: `${BASE_URL}/fresh`, changeFrequency: 'hourly', priority: 0.84 },
   { url: `${BASE_URL}/groundswell`, changeFrequency: 'hourly', priority: 0.83 },
   { url: `${BASE_URL}/velocity`, changeFrequency: 'hourly', priority: 0.82 },
   { url: `${BASE_URL}/flux`, changeFrequency: 'always', priority: 0.84 },
@@ -26,6 +27,10 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/split`, changeFrequency: 'hourly', priority: 0.85 },
   { url: `${BASE_URL}/momentum`, changeFrequency: 'always', priority: 0.85 },
   { url: `${BASE_URL}/temperature`, changeFrequency: 'always', priority: 0.85 },
+  { url: `${BASE_URL}/mood`, changeFrequency: 'always', priority: 0.84 },
+  { url: `${BASE_URL}/mood/atlas`, changeFrequency: 'daily', priority: 0.78 },
+  { url: `${BASE_URL}/mood/history`, changeFrequency: 'daily', priority: 0.77 },
+  { url: `${BASE_URL}/mood/trending`, changeFrequency: 'always', priority: 0.80 },
   { url: `${BASE_URL}/breakthrough`, changeFrequency: 'hourly', priority: 0.84 },
   { url: `${BASE_URL}/scoreboard`, changeFrequency: 'always', priority: 0.88 },
   { url: `${BASE_URL}/law`, changeFrequency: 'daily', priority: 0.85 },
@@ -76,6 +81,9 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/verdicts`, changeFrequency: 'hourly', priority: 0.8 },
   { url: `${BASE_URL}/transcripts`, changeFrequency: 'hourly', priority: 0.8 },
   { url: `${BASE_URL}/brief`, changeFrequency: 'daily', priority: 0.75 },
+  { url: `${BASE_URL}/morning`, changeFrequency: 'daily', priority: 0.80 },
+  { url: `${BASE_URL}/midday`, changeFrequency: 'hourly', priority: 0.80 },
+  { url: `${BASE_URL}/evening`, changeFrequency: 'daily', priority: 0.80 },
   { url: `${BASE_URL}/today`, changeFrequency: 'always', priority: 0.9 },
   { url: `${BASE_URL}/newspaper`, changeFrequency: 'daily', priority: 0.85 },
   { url: `${BASE_URL}/digest`, changeFrequency: 'weekly', priority: 0.65 },
@@ -266,6 +274,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/arcade`, changeFrequency: 'weekly', priority: 0.75 },
   { url: `${BASE_URL}/trivia`, changeFrequency: 'daily', priority: 0.7 },
   { url: `${BASE_URL}/flashcards`, changeFrequency: 'daily', priority: 0.7 },
+  { url: `${BASE_URL}/checkin`, changeFrequency: 'daily', priority: 0.90 },
   { url: `${BASE_URL}/swipe`, changeFrequency: 'daily', priority: 0.78 },
   { url: `${BASE_URL}/ballot`, changeFrequency: 'daily', priority: 0.80 },
   { url: `${BASE_URL}/reel`, changeFrequency: 'always', priority: 0.82 },
@@ -381,6 +390,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/civic-questions`,   changeFrequency: 'always', priority: 0.78 },
   { url: `${BASE_URL}/motions`,           changeFrequency: 'hourly', priority: 0.75 },
   { url: `${BASE_URL}/grand-council`,     changeFrequency: 'daily',  priority: 0.72 },
+  { url: `${BASE_URL}/civic-ombudsman`,   changeFrequency: 'daily',  priority: 0.71 },
   { url: `${BASE_URL}/lords`,             changeFrequency: 'daily',  priority: 0.76 },
   { url: `${BASE_URL}/pmqs`,              changeFrequency: 'weekly', priority: 0.70 },
   { url: `${BASE_URL}/edm`,               changeFrequency: 'daily',  priority: 0.68 },
@@ -416,6 +426,25 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/exchange/wrap`,          changeFrequency: 'daily',  priority: 0.72 },
   { url: `${BASE_URL}/exchange/coalitions`,    changeFrequency: 'daily',  priority: 0.72 },
   { url: `${BASE_URL}/exchange/watchlist`,     changeFrequency: 'always', priority: 0.70 },
+  // Civic Thesis — prediction board
+  { url: `${BASE_URL}/thesis`,                 changeFrequency: 'hourly', priority: 0.80 },
+  { url: `${BASE_URL}/thesis/hot`,             changeFrequency: 'hourly', priority: 0.78 },
+  { url: `${BASE_URL}/thesis/rising`,          changeFrequency: 'hourly', priority: 0.77 },
+  { url: `${BASE_URL}/thesis/digest`,          changeFrequency: 'daily',  priority: 0.80 },
+  { url: `${BASE_URL}/thesis/following`,       changeFrequency: 'always', priority: 0.75 },
+  { url: `${BASE_URL}/thesis/map`,             changeFrequency: 'hourly', priority: 0.76 },
+  { url: `${BASE_URL}/thesis/network`,         changeFrequency: 'hourly', priority: 0.76 },
+  { url: `${BASE_URL}/thesis/topics`,          changeFrequency: 'hourly', priority: 0.78 },
+  { url: `${BASE_URL}/thesis/category`,        changeFrequency: 'daily',  priority: 0.72 },
+  ...(
+    ['economics', 'politics', 'technology', 'science', 'ethics', 'philosophy', 'culture', 'health', 'environment', 'education']
+      .map((slug) => ({
+        url: `${BASE_URL}/thesis/category/${slug}`,
+        changeFrequency: 'daily' as const,
+        priority: 0.68,
+      }))
+  ),
+  { url: `${BASE_URL}/leaderboard/theses`,     changeFrequency: 'daily',  priority: 0.70 },
 ]
 
 export const dynamic = 'force-dynamic'

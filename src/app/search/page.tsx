@@ -30,6 +30,7 @@ import {
   Hash,
   Building2,
   Trophy,
+  Scroll,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -50,7 +51,7 @@ const SEARCH_SIGNAL_ICONS: Record<string, typeof TrendingUp> = {
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type Tab = 'topics' | 'laws' | 'people' | 'arguments' | 'questions' | 'relays' | 'debates' | 'tags' | 'coalitions'
+type Tab = 'topics' | 'laws' | 'people' | 'arguments' | 'questions' | 'relays' | 'debates' | 'tags' | 'coalitions' | 'theses'
 
 interface TopicResult {
   id: string
@@ -207,6 +208,25 @@ interface CoalitionSearchResult {
   } | null
 }
 
+interface ThesisSearchResult {
+  id: string
+  statement: string
+  category: string
+  status: 'active' | 'vindicated' | 'refuted' | 'expired'
+  agree_count: number
+  disagree_count: number
+  resolution_date: string | null
+  is_public: boolean
+  created_at: string
+  author: {
+    id: string
+    username: string
+    display_name: string | null
+    avatar_url: string | null
+    role: string
+  } | null
+}
+
 interface SuggestedUser {
   id: string
   username: string
@@ -225,7 +245,7 @@ interface TrendingData {
   recentLaws: { id: string; statement: string; category: string | null; established_at: string }[]
 }
 
-type SearchResult = TopicResult | LawResult | PersonResult | ArgumentResult | QuestionResult | RelayResult | DebateResult | TagResult | CoalitionSearchResult
+type SearchResult = TopicResult | LawResult | PersonResult | ArgumentResult | QuestionResult | RelayResult | DebateResult | TagResult | CoalitionSearchResult | ThesisSearchResult
 
 // ─── Config ───────────────────────────────────────────────────────────────────
 
@@ -238,6 +258,7 @@ const tabs: { id: Tab; label: string; icon: typeof FileText }[] = [
   { id: 'debates',    label: 'Debates',    icon: Swords },
   { id: 'people',     label: 'People',     icon: Users },
   { id: 'coalitions', label: 'Coalitions', icon: Building2 },
+  { id: 'theses',     label: 'Theses',     icon: Scroll },
   { id: 'arguments',  label: 'Arguments',  icon: MessageSquare },
   { id: 'questions',  label: 'Q&A',        icon: HelpCircle },
   { id: 'relays',     label: 'Relays',     icon: GitMerge },
@@ -331,7 +352,7 @@ function SearchFilters({
   const [categoryOpen, setCategoryOpen] = useState(false)
   const hasFilters = categoryFilter !== null || statusFilter !== null || sideFilter !== null
 
-  if (tab === 'people' || tab === 'questions' || tab === 'debates' || tab === 'tags' || tab === 'coalitions') return null
+  if (tab === 'people' || tab === 'questions' || tab === 'debates' || tab === 'tags' || tab === 'coalitions' || tab === 'theses') return null
 
   return (
     <div className="flex items-center gap-2 flex-wrap mb-4">
@@ -1144,6 +1165,97 @@ function CoalitionRow({ item }: { item: CoalitionSearchResult }) {
   )
 }
 
+// ─── Thesis row ──────────────────────────────────────────────────────────────
+
+const THESIS_STATUS_CONFIG = {
+  active:     { label: 'Active',     color: 'text-for-300',     bg: 'bg-for-500/10',     border: 'border-for-500/20' },
+  vindicated: { label: 'Vindicated', color: 'text-emerald',     bg: 'bg-emerald/10',     border: 'border-emerald/20' },
+  refuted:    { label: 'Refuted',    color: 'text-against-400', bg: 'bg-against-500/10', border: 'border-against-500/20' },
+  expired:    { label: 'Expired',    color: 'text-surface-500', bg: 'bg-surface-300/40', border: 'border-surface-400/20' },
+}
+
+function ThesisRow({ item }: { item: ThesisSearchResult }) {
+  const totalReactions = item.agree_count + item.disagree_count
+  const agreeRatio = totalReactions > 0 ? Math.round((item.agree_count / totalReactions) * 100) : null
+  const statusCfg = THESIS_STATUS_CONFIG[item.status] ?? THESIS_STATUS_CONFIG.active
+  const catColors = getCategoryStyle(
+    item.category.charAt(0).toUpperCase() + item.category.slice(1)
+  )
+
+  return (
+    <Link
+      href={`/thesis/${item.id}`}
+      className={cn(
+        'flex items-start gap-3 p-4 rounded-xl',
+        'bg-surface-100 border border-surface-300',
+        'hover:border-for-400/40 hover:bg-for-500/[0.03] transition-colors group'
+      )}
+    >
+      {/* Icon */}
+      <div className="flex-shrink-0 mt-0.5 h-8 w-8 rounded-lg bg-for-500/10 border border-for-500/20 flex items-center justify-center">
+        <Scroll className="h-4 w-4 text-for-400" aria-hidden="true" />
+      </div>
+
+      {/* Body */}
+      <div className="flex-1 min-w-0">
+        <p className="text-sm text-white group-hover:text-for-400 transition-colors line-clamp-2 leading-snug">
+          {item.statement}
+        </p>
+
+        {/* Meta row */}
+        <div className="flex items-center gap-2 mt-2 flex-wrap">
+          {/* Status */}
+          <span className={cn(
+            'inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-mono font-semibold border',
+            statusCfg.color, statusCfg.bg, statusCfg.border
+          )}>
+            {statusCfg.label}
+          </span>
+
+          {/* Category */}
+          <span className={cn(
+            'inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-mono border',
+            catColors.text, catColors.bg, catColors.border
+          )}>
+            {item.category.charAt(0).toUpperCase() + item.category.slice(1)}
+          </span>
+
+          {/* Agree/Disagree */}
+          {totalReactions > 0 && (
+            <>
+              <span className="flex items-center gap-1 text-xs text-emerald">
+                <ThumbsUp className="h-3 w-3" aria-hidden="true" />
+                {item.agree_count.toLocaleString()}
+              </span>
+              <span className="flex items-center gap-1 text-xs text-against-400">
+                <ThumbsDown className="h-3 w-3" aria-hidden="true" />
+                {item.disagree_count.toLocaleString()}
+              </span>
+            </>
+          )}
+
+          {/* Author */}
+          {item.author && (
+            <span className="text-xs text-surface-600 truncate">
+              by @{item.author.username}
+            </span>
+          )}
+        </div>
+
+        {/* Agreement bar */}
+        {agreeRatio !== null && (
+          <div className="mt-2 h-1 rounded-full bg-surface-300 overflow-hidden">
+            <div
+              className="h-full bg-emerald rounded-full"
+              style={{ width: `${agreeRatio}%` }}
+            />
+          </div>
+        )}
+      </div>
+    </Link>
+  )
+}
+
 // ─── Suggested person card (with inline follow button) ───────────────────────
 
 function SuggestPersonCard({ user }: { user: SuggestedUser }) {
@@ -1507,9 +1619,10 @@ function EmptyState({ query, tab }: { query: string; tab: Tab }) {
     arguments: 'No arguments match your search.',
     questions: 'No questions match your search.',
     relays:    'No relay chains match your search.',
-    debates:    'No debates match your search.',
-    tags:       'No topics found for that tag.',
-    coalitions: 'No coalitions match your search.',
+    debates:   'No debates match your search.',
+    tags:      'No topics found for that tag.',
+    coalitions:'No coalitions match your search.',
+    theses:    'No civic theses match your search.',
   }
   return (
     <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
@@ -1769,6 +1882,9 @@ function SearchContent() {
                 }
                 if (activeTab === 'coalitions') {
                   return <CoalitionRow key={item.id} item={item as CoalitionSearchResult} />
+                }
+                if (activeTab === 'theses') {
+                  return <ThesisRow key={item.id} item={item as ThesisSearchResult} />
                 }
                 return <PersonRow key={item.id} item={item as PersonResult} />
               })

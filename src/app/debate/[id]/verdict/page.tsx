@@ -399,6 +399,7 @@ export default async function DebateVerdictPage({ params }: PageProps) {
   const tabs = [
     { label: 'Clash Card', href: `/debate/${id}/clash`, icon: Swords },
     { label: 'Audience', href: `/debate/${id}/audience`, icon: Users },
+    { label: 'Verdict Census', href: `/debate/${id}/verdict-census`, icon: BarChart2 },
     { label: 'Performance', href: `/debate/${id}/performance`, icon: BarChart2 },
     { label: 'Highlights', href: `/debate/${id}/highlights`, icon: Award },
     { label: 'Transcript', href: `/debate/${id}/transcript`, icon: MessageSquare },

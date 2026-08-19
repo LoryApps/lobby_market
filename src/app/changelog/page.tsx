@@ -2155,6 +2155,38 @@ interface RecentBuild {
 
 const RECENT_BUILDS: RecentBuild[] = [
   {
+    title: 'Thesis Network Graph',
+    description: 'Ch. 362: New /thesis/network page — an interactive D3-force network graph visualising all civic theses as a connected web. Nodes represent individual theses, coloured by category (gold=economics, blue=politics, purple=technology, emerald=science, etc.), sized by total engagement (agree + disagree votes). Three edge types: topic edges (blue, weight 3) connect theses staked on the same debate topic; author edges (emerald, weight 2) chain theses by the same user; category edges (grey, weight 1) link the most-engaged theses within a shared category. Cluster forces pull same-category nodes together, organically forming visible community clusters. Vindicated theses show a gold halo; refuted theses show a red halo; an agree-ratio arc (mini progress ring) is drawn inside each node. Controls: live search (dims non-matching nodes), category pill filter (toggle individual categories), edge-type filter (All / Same Topic / Same Author / Same Category), status filter (all / active / vindicated / refuted), reset-view, refresh, and copy-link. Hover tooltip shows statement, category, status, agree/disagree counts, and author. Click navigates to /thesis/[id]. Graph data from new /api/thesis/network route that fetches up to 250 public theses, builds node list, and generates edges via shared-topic groups (dense links), author chains (up to 5 theses per author), and top-6 per-category engagement chains. "Network Graph" quick-link added to Thesis main page sidebar and sitemap.',
+    href: '/thesis/network',
+    icon: Network,
+    color: 'text-purple',
+    tag: 'Ch. 362',
+  },
+  {
+    title: 'Thesis Battlegrounds',
+    description: 'Ch. 361: New /thesis/topics page — surfaces debate topics that have multiple competing civic thesis predictions, ranked by controversy. Each card shows the topic\'s current vote split alongside the top thesis predictions staked on it, with per-thesis agree/disagree bars and a controversy score that peaks when two predictions have opposite community support. Sort modes: Most Contested, Most Theses, Most Active, Newest. Inline thesis cards show author avatars, statement text, thumbs-up/down counts, and agreement progress bar with percentage. Topics with fewer than 2 theses are filtered out. "Load more" pagination. "Add yours" deep link to /thesis/create pre-loaded with the topic. "Battlegrounds" quick-link added to the Civic Theses nav grid. Backed by new /api/thesis/topics route that batch-fetches all active public theses with related_topic_id set, groups them by topic, computes controversy_score = 1 − |agree_A − agree_B| / max(agree_A + agree_B, 1) for the two most-supported theses, and returns paginated sorted TopicWithTheses objects. New page added to sitemap.',
+    href: '/thesis/topics',
+    icon: Scale,
+    color: 'text-purple',
+    tag: 'Ch. 361',
+  },
+  {
+    title: 'Civic Thesis Alignment',
+    description: 'Ch. 360: New /thesis/alignment page — shows where civic thesis predictions align with or diverge from actual topic vote outcomes. For each active thesis linked to a topic, an alignment score is calculated as 100 − |thesis_agree_pct − topic_blue_pct|, measuring how closely community consensus on the thesis tracks real voting sentiment. Cards show the thesis statement with author avatar, a side-by-side MiniBar (thesis agree% vs topic blue_pct), delta description, alignment badge (Aligned / Neutral / Diverging), and the linked topic panel with vote outcome. Sort modes: Best Alignment, Most Diverging, Newest, Most Votes. Category filter pills for all 10 civic categories. Stats strip shows total linked theses, average alignment %, and most-aligned category. Legend explains what aligned vs diverging means. Backed by new /api/thesis/alignment route that batch-fetches civic_theses (active + is_public + related_topic_id IS NOT NULL), topics, and profiles in parallel. "Alignment" quick-link added to the Civic Theses nav grid.',
+    href: '/thesis/alignment',
+    icon: GitCompare,
+    color: 'text-for-400',
+    tag: 'Ch. 360',
+  },
+  {
+    title: 'Mood Atlas + PWA Web App Manifest',
+    description: 'Ch. 359: Two upgrades. (1) New /mood/atlas page — the emotional fingerprint of every civic debate category. Shows which mood dominates each category (Politics, Technology, Ethics, etc.), a positive/anxious split bar, per-mood percentage bars for the top 4 moods, and 3 representative topics with their dominant mood. Backed by new /api/mood/atlas route that joins civic_topic_moods with topics, groups by category, and returns sorted CategoryMoodEntry objects. "Atlas" quick-link added to the Civic Mood page header and ⌘K Command Palette. /mood/atlas and /mood/trending added to sitemap. (2) Added src/app/manifest.ts — Next.js 14 App Router PWA web app manifest enabling Android "Add to Home Screen" and proper PWA installation. Defines name, short_name, icons, theme, display mode (standalone), start_url, and app shortcuts (Browse Topics, Live Debates, Create Topic). The app already had a service worker, offline fallback, and Apple PWA meta — this completes the PWA trio.',
+    href: '/mood/atlas',
+    icon: Globe,
+    color: 'text-for-400',
+    tag: 'Ch. 359',
+  },
+  {
     title: 'Relay Leg Stars in /relays/[id] + Uncontested Relays Page',
     description: 'Ch. 358: Two relay-system enhancements. (1) Per-leg star upvotes wired into /relays/[id] — the relay detail page all browser links point to. Adds star/unstar toggle per leg with live count, gold highlight when starred, and spinner feedback. Calls /api/relays/[id]/legs/[leg_id]/upvote; blocks own-leg starring client-side. (2) New /relays/uncontested page — surfaces topics where only one side (FOR or AGAINST) has a completed relay chain. Algorithm: fetch all complete/voted relays → build topic→sides map → filter to single-side topics. Filter tabs for missing side (all/for/against), sort modes (votes/newest/compelling), category pills, and load-more pagination. Each card shows the existing relay summary (starter avatar, leg count, compelling %) plus a CTA "Start the FOR/AGAINST Relay" linking to /relays/create pre-filled with topic and side. New /api/relays/uncontested route. "Uncontested" nav button added to Relays browser header and ⌘K Command Palette. /relays/uncontested + other relay sub-pages added to sitemap.',
     href: '/relays/uncontested',

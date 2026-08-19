@@ -332,6 +332,73 @@ export default function NetworkPage() {
           </button>
         </div>
 
+        {/* Tab switcher */}
+        <div className="flex flex-wrap items-center gap-1 p-1 mb-4 mx-4 sm:mx-0 rounded-xl bg-surface-100 border border-surface-300 w-fit">
+          <span className="px-3 py-1.5 text-xs font-mono font-semibold rounded-lg bg-surface-200 border border-surface-300 text-white">
+            Activity
+          </span>
+          <Link
+            href="/network/topics"
+            className="px-3 py-1.5 text-xs font-mono font-medium rounded-lg text-surface-400 hover:text-white transition-colors"
+          >
+            Topics
+          </Link>
+          <Link
+            href="/network/votes"
+            className="px-3 py-1.5 text-xs font-mono font-medium rounded-lg text-surface-400 hover:text-white transition-colors"
+          >
+            Votes
+          </Link>
+          <Link
+            href="/network/achievements"
+            className="px-3 py-1.5 text-xs font-mono font-medium rounded-lg text-surface-400 hover:text-white transition-colors"
+          >
+            Achievements
+          </Link>
+          <Link
+            href="/network/arguments"
+            className="px-3 py-1.5 text-xs font-mono font-medium rounded-lg text-surface-400 hover:text-white transition-colors"
+          >
+            Arguments
+          </Link>
+          <Link
+            href="/network/debates"
+            className="px-3 py-1.5 text-xs font-mono font-medium rounded-lg text-surface-400 hover:text-white transition-colors"
+          >
+            Debates
+          </Link>
+          <Link
+            href="/network/laws"
+            className="px-3 py-1.5 text-xs font-mono font-medium rounded-lg text-surface-400 hover:text-white transition-colors"
+          >
+            Laws
+          </Link>
+          <Link
+            href="/network/people"
+            className="px-3 py-1.5 text-xs font-mono font-medium rounded-lg text-surface-400 hover:text-white transition-colors"
+          >
+            People
+          </Link>
+          <Link
+            href="/network/coalitions"
+            className="px-3 py-1.5 text-xs font-mono font-medium rounded-lg text-surface-400 hover:text-white transition-colors"
+          >
+            Coalitions
+          </Link>
+          <Link
+            href="/network/predictions"
+            className="px-3 py-1.5 text-xs font-mono font-medium rounded-lg text-surface-400 hover:text-white transition-colors"
+          >
+            Predictions
+          </Link>
+          <Link
+            href="/network/relays"
+            className="px-3 py-1.5 text-xs font-mono font-medium rounded-lg text-surface-400 hover:text-white transition-colors"
+          >
+            Relays
+          </Link>
+        </div>
+
         {/* Feed card */}
         <div className="bg-surface-100 border border-surface-300 sm:rounded-2xl overflow-hidden">
 

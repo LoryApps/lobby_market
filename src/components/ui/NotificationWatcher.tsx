@@ -90,6 +90,12 @@ interface NotifPrefs {
   streak_reminder: boolean
   weekly_digest: boolean
   qa_notifications: boolean
+  ama_notifications: boolean
+  relay_notifications: boolean
+  debate_challenge_notifications: boolean
+  law_challenge_notifications: boolean
+  law_endorsed_notifications: boolean
+  thesis_notifications: boolean
 }
 
 const DEFAULT_PREFS: NotifPrefs = {
@@ -105,6 +111,12 @@ const DEFAULT_PREFS: NotifPrefs = {
   streak_reminder: true,
   weekly_digest: true,
   qa_notifications: true,
+  ama_notifications: true,
+  relay_notifications: true,
+  debate_challenge_notifications: true,
+  law_challenge_notifications: true,
+  law_endorsed_notifications: true,
+  thesis_notifications: true,
 }
 
 function loadPrefs(): NotifPrefs {
@@ -278,6 +290,76 @@ const TYPE_CONFIG: Record<NotificationType, TypeConfig> = {
   delegate_voted: {
     prefKey: null,
     emoji: '🤝',
+    duration: 5000,
+  },
+  ama_question_answered: {
+    prefKey: 'ama_notifications',
+    emoji: '🎙️',
+    duration: 6000,
+  },
+  ama_session_starting: {
+    prefKey: 'ama_notifications',
+    emoji: '📡',
+    duration: 6000,
+  },
+  relay_leg_added: {
+    prefKey: 'relay_notifications',
+    emoji: '🔗',
+    duration: 5000,
+  },
+  relay_completed: {
+    prefKey: 'relay_notifications',
+    emoji: '🏁',
+    duration: 6000,
+  },
+  relay_voted: {
+    prefKey: 'relay_notifications',
+    emoji: '👍',
+    duration: 4000,
+  },
+  relay_invitation: {
+    prefKey: 'relay_notifications',
+    emoji: '📩',
+    duration: 7000,
+  },
+  debate_challenge: {
+    prefKey: 'debate_challenge_notifications',
+    emoji: '⚔️',
+    duration: 7000,
+  },
+  debate_challenge_accepted: {
+    prefKey: 'debate_challenge_notifications',
+    emoji: '✅',
+    duration: 6000,
+  },
+  debate_challenge_declined: {
+    prefKey: 'debate_challenge_notifications',
+    emoji: '🚫',
+    duration: 5000,
+  },
+  law_challenge_support: {
+    prefKey: 'law_challenge_notifications',
+    emoji: '📜',
+    duration: 5000,
+  },
+  law_challenge_milestone: {
+    prefKey: 'law_challenge_notifications',
+    emoji: '🏆',
+    duration: 6000,
+  },
+  law_endorsed: {
+    prefKey: 'law_endorsed_notifications',
+    emoji: '🤝',
+    duration: 6000,
+  },
+  thesis_vote: {
+    prefKey: 'thesis_notifications',
+    emoji: '📜',
+    duration: 5000,
+  },
+  thesis_comment: {
+    prefKey: 'thesis_notifications',
+    emoji: '💬',
     duration: 5000,
   },
 }
