@@ -878,6 +878,15 @@ export default function ThesisPage() {
             </span>
             <ArrowRight className="h-3.5 w-3.5 text-purple/40 group-hover:text-purple transition-colors" />
           </Link>
+          <Link
+            href="/thesis/watching"
+            className="flex items-center justify-between px-3 py-2.5 rounded-xl bg-gold/5 border border-gold/20 hover:border-gold/40 transition-colors group"
+          >
+            <span className="text-xs font-mono text-gold/70 group-hover:text-gold transition-colors">
+              Watchlist
+            </span>
+            <ArrowRight className="h-3.5 w-3.5 text-gold/40 group-hover:text-gold transition-colors" />
+          </Link>
         </div>
 
         {/* Filters */}

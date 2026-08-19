@@ -27,6 +27,7 @@ import { BottomNav } from '@/components/layout/BottomNav'
 import { Avatar } from '@/components/ui/Avatar'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { ThesisComments } from './ThesisComments'
+import { ThesisWatchButton } from '@/components/thesis/ThesisWatchButton'
 import { cn } from '@/lib/utils/cn'
 import type { Thesis } from '@/lib/types/thesis'
 
@@ -256,6 +257,9 @@ export function ThesisDetailClient({ id }: { id: string }) {
                 <StatusIcon className="h-2.5 w-2.5" />
                 {status.label}
               </span>
+              {!isOwner && (
+                <ThesisWatchButton thesisId={thesis.id} size="sm" />
+              )}
             </div>
           </div>
 
