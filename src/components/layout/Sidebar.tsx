@@ -119,6 +119,7 @@ const navItems: NavItem[] = [
   { href: '/streaks', label: 'Streak Hall', icon: Flame },
   { href: '/report-card', label: 'Report Card', icon: FileText },
   { href: '/dossier', label: 'Civic Dossier', icon: BarChart2 },
+  { href: '/resume', label: 'Civic Resume', icon: FileText },
   { href: '/profile/me', label: 'My Profile', icon: UserCircle },
 ]
 
