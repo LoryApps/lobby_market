@@ -2155,6 +2155,14 @@ interface RecentBuild {
 
 const RECENT_BUILDS: RecentBuild[] = [
   {
+    title: 'Thesis Network Graph',
+    description: 'Ch. 362: New /thesis/network page — an interactive D3-force network graph visualising all civic theses as a connected web. Nodes represent individual theses, coloured by category (gold=economics, blue=politics, purple=technology, emerald=science, etc.), sized by total engagement (agree + disagree votes). Three edge types: topic edges (blue, weight 3) connect theses staked on the same debate topic; author edges (emerald, weight 2) chain theses by the same user; category edges (grey, weight 1) link the most-engaged theses within a shared category. Cluster forces pull same-category nodes together, organically forming visible community clusters. Vindicated theses show a gold halo; refuted theses show a red halo; an agree-ratio arc (mini progress ring) is drawn inside each node. Controls: live search (dims non-matching nodes), category pill filter (toggle individual categories), edge-type filter (All / Same Topic / Same Author / Same Category), status filter (all / active / vindicated / refuted), reset-view, refresh, and copy-link. Hover tooltip shows statement, category, status, agree/disagree counts, and author. Click navigates to /thesis/[id]. Graph data from new /api/thesis/network route that fetches up to 250 public theses, builds node list, and generates edges via shared-topic groups (dense links), author chains (up to 5 theses per author), and top-6 per-category engagement chains. "Network Graph" quick-link added to Thesis main page sidebar and sitemap.',
+    href: '/thesis/network',
+    icon: Network,
+    color: 'text-purple',
+    tag: 'Ch. 362',
+  },
+  {
     title: 'Thesis Battlegrounds',
     description: 'Ch. 361: New /thesis/topics page — surfaces debate topics that have multiple competing civic thesis predictions, ranked by controversy. Each card shows the topic\'s current vote split alongside the top thesis predictions staked on it, with per-thesis agree/disagree bars and a controversy score that peaks when two predictions have opposite community support. Sort modes: Most Contested, Most Theses, Most Active, Newest. Inline thesis cards show author avatars, statement text, thumbs-up/down counts, and agreement progress bar with percentage. Topics with fewer than 2 theses are filtered out. "Load more" pagination. "Add yours" deep link to /thesis/create pre-loaded with the topic. "Battlegrounds" quick-link added to the Civic Theses nav grid. Backed by new /api/thesis/topics route that batch-fetches all active public theses with related_topic_id set, groups them by topic, computes controversy_score = 1 − |agree_A − agree_B| / max(agree_A + agree_B, 1) for the two most-supported theses, and returns paginated sorted TopicWithTheses objects. New page added to sitemap.',
     href: '/thesis/topics',
