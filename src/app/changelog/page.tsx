@@ -2155,6 +2155,14 @@ interface RecentBuild {
 
 const RECENT_BUILDS: RecentBuild[] = [
   {
+    title: 'Civic Thesis Alignment',
+    description: 'Ch. 360: New /thesis/alignment page — shows where civic thesis predictions align with or diverge from actual topic vote outcomes. For each active thesis linked to a topic, an alignment score is calculated as 100 − |thesis_agree_pct − topic_blue_pct|, measuring how closely community consensus on the thesis tracks real voting sentiment. Cards show the thesis statement with author avatar, a side-by-side MiniBar (thesis agree% vs topic blue_pct), delta description, alignment badge (Aligned / Neutral / Diverging), and the linked topic panel with vote outcome. Sort modes: Best Alignment, Most Diverging, Newest, Most Votes. Category filter pills for all 10 civic categories. Stats strip shows total linked theses, average alignment %, and most-aligned category. Legend explains what aligned vs diverging means. Backed by new /api/thesis/alignment route that batch-fetches civic_theses (active + is_public + related_topic_id IS NOT NULL), topics, and profiles in parallel. "Alignment" quick-link added to the Civic Theses nav grid.',
+    href: '/thesis/alignment',
+    icon: GitCompare,
+    color: 'text-for-400',
+    tag: 'Ch. 360',
+  },
+  {
     title: 'Mood Atlas + PWA Web App Manifest',
     description: 'Ch. 359: Two upgrades. (1) New /mood/atlas page — the emotional fingerprint of every civic debate category. Shows which mood dominates each category (Politics, Technology, Ethics, etc.), a positive/anxious split bar, per-mood percentage bars for the top 4 moods, and 3 representative topics with their dominant mood. Backed by new /api/mood/atlas route that joins civic_topic_moods with topics, groups by category, and returns sorted CategoryMoodEntry objects. "Atlas" quick-link added to the Civic Mood page header and ⌘K Command Palette. /mood/atlas and /mood/trending added to sitemap. (2) Added src/app/manifest.ts — Next.js 14 App Router PWA web app manifest enabling Android "Add to Home Screen" and proper PWA installation. Defines name, short_name, icons, theme, display mode (standalone), start_url, and app shortcuts (Browse Topics, Live Debates, Create Topic). The app already had a service worker, offline fallback, and Apple PWA meta — this completes the PWA trio.',
     href: '/mood/atlas',

@@ -851,6 +851,15 @@ export default function ThesisPage() {
             </span>
             <ArrowRight className="h-3.5 w-3.5 text-gold/40 group-hover:text-gold transition-colors" />
           </Link>
+          <Link
+            href="/thesis/alignment"
+            className="flex items-center justify-between px-3 py-2.5 rounded-xl bg-for-500/5 border border-for-500/20 hover:border-for-500/40 transition-colors group"
+          >
+            <span className="text-xs font-mono text-for-400/70 group-hover:text-for-400 transition-colors">
+              Alignment
+            </span>
+            <ArrowRight className="h-3.5 w-3.5 text-for-400/40 group-hover:text-for-400 transition-colors" />
+          </Link>
         </div>
 
         {/* Filters */}
