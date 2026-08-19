@@ -860,6 +860,15 @@ export default function ThesisPage() {
             </span>
             <ArrowRight className="h-3.5 w-3.5 text-for-400/40 group-hover:text-for-400 transition-colors" />
           </Link>
+          <Link
+            href="/thesis/topics"
+            className="flex items-center justify-between px-3 py-2.5 rounded-xl bg-purple/5 border border-purple/20 hover:border-purple/40 transition-colors group"
+          >
+            <span className="text-xs font-mono text-purple/70 group-hover:text-purple transition-colors">
+              Battlegrounds
+            </span>
+            <ArrowRight className="h-3.5 w-3.5 text-purple/40 group-hover:text-purple transition-colors" />
+          </Link>
         </div>
 
         {/* Filters */}

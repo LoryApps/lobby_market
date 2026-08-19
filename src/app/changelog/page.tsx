@@ -2155,6 +2155,14 @@ interface RecentBuild {
 
 const RECENT_BUILDS: RecentBuild[] = [
   {
+    title: 'Thesis Battlegrounds',
+    description: 'Ch. 361: New /thesis/topics page — surfaces debate topics that have multiple competing civic thesis predictions, ranked by controversy. Each card shows the topic\'s current vote split alongside the top thesis predictions staked on it, with per-thesis agree/disagree bars and a controversy score that peaks when two predictions have opposite community support. Sort modes: Most Contested, Most Theses, Most Active, Newest. Inline thesis cards show author avatars, statement text, thumbs-up/down counts, and agreement progress bar with percentage. Topics with fewer than 2 theses are filtered out. "Load more" pagination. "Add yours" deep link to /thesis/create pre-loaded with the topic. "Battlegrounds" quick-link added to the Civic Theses nav grid. Backed by new /api/thesis/topics route that batch-fetches all active public theses with related_topic_id set, groups them by topic, computes controversy_score = 1 − |agree_A − agree_B| / max(agree_A + agree_B, 1) for the two most-supported theses, and returns paginated sorted TopicWithTheses objects. New page added to sitemap.',
+    href: '/thesis/topics',
+    icon: Scale,
+    color: 'text-purple',
+    tag: 'Ch. 361',
+  },
+  {
     title: 'Civic Thesis Alignment',
     description: 'Ch. 360: New /thesis/alignment page — shows where civic thesis predictions align with or diverge from actual topic vote outcomes. For each active thesis linked to a topic, an alignment score is calculated as 100 − |thesis_agree_pct − topic_blue_pct|, measuring how closely community consensus on the thesis tracks real voting sentiment. Cards show the thesis statement with author avatar, a side-by-side MiniBar (thesis agree% vs topic blue_pct), delta description, alignment badge (Aligned / Neutral / Diverging), and the linked topic panel with vote outcome. Sort modes: Best Alignment, Most Diverging, Newest, Most Votes. Category filter pills for all 10 civic categories. Stats strip shows total linked theses, average alignment %, and most-aligned category. Legend explains what aligned vs diverging means. Backed by new /api/thesis/alignment route that batch-fetches civic_theses (active + is_public + related_topic_id IS NOT NULL), topics, and profiles in parallel. "Alignment" quick-link added to the Civic Theses nav grid.',
     href: '/thesis/alignment',
