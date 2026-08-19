@@ -887,6 +887,15 @@ export default function ThesisPage() {
             </span>
             <ArrowRight className="h-3.5 w-3.5 text-gold/40 group-hover:text-gold transition-colors" />
           </Link>
+          <Link
+            href="/thesis/leaderboard"
+            className="flex items-center justify-between px-3 py-2.5 rounded-xl bg-gold/10 border border-gold/30 hover:border-gold/50 transition-colors group"
+          >
+            <span className="text-xs font-mono text-gold group-hover:text-gold/80 transition-colors font-medium">
+              Leaderboard
+            </span>
+            <ArrowRight className="h-3.5 w-3.5 text-gold/50 group-hover:text-gold transition-colors" />
+          </Link>
         </div>
 
         {/* Filters */}

@@ -470,7 +470,7 @@ export function ThesisAnalyticsClient() {
                       Top Predictors
                     </h2>
                     <Link
-                      href="/leaderboard/theses"
+                      href="/thesis/leaderboard"
                       className="text-xs text-surface-500 hover:text-white transition-colors flex items-center gap-1"
                     >
                       Full leaderboard <ChevronRight className="h-3 w-3" aria-hidden="true" />
