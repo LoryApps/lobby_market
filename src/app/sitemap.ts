@@ -433,6 +433,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/thesis/digest`,          changeFrequency: 'daily',  priority: 0.80 },
   { url: `${BASE_URL}/thesis/following`,       changeFrequency: 'always', priority: 0.75 },
   { url: `${BASE_URL}/thesis/map`,             changeFrequency: 'hourly', priority: 0.76 },
+  { url: `${BASE_URL}/thesis/calibration`,     changeFrequency: 'daily',  priority: 0.74 },
   { url: `${BASE_URL}/thesis/network`,         changeFrequency: 'hourly', priority: 0.76 },
   { url: `${BASE_URL}/thesis/topics`,          changeFrequency: 'hourly', priority: 0.78 },
   { url: `${BASE_URL}/thesis/category`,        changeFrequency: 'daily',  priority: 0.72 },

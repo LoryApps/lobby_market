@@ -514,6 +514,16 @@ export function ThesisAnalyticsClient() {
                   </div>
                 </Link>
                 <Link
+                  href="/thesis/calibration"
+                  className="flex items-center gap-2 p-3 rounded-xl bg-purple/10 border border-purple/25 hover:border-purple/40 transition-colors group"
+                >
+                  <Target className="h-4 w-4 text-purple shrink-0" aria-hidden="true" />
+                  <div className="min-w-0">
+                    <p className="text-xs font-semibold text-white">Calibration</p>
+                    <p className="text-[10px] text-surface-500">Confidence vs reality</p>
+                  </div>
+                </Link>
+                <Link
                   href="/thesis/create"
                   className="flex items-center gap-2 p-3 rounded-xl bg-for-500/10 border border-for-500/25 hover:border-for-500/40 transition-colors group"
                 >
