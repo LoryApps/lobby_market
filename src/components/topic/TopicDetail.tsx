@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import {
   Activity,
@@ -72,8 +73,6 @@ import { SupportButton } from '@/components/voting/SupportButton'
 import { ChainBanner } from '@/components/chain/ChainBanner'
 import { ContinuationSection } from '@/components/chain/ContinuationSection'
 import { ChainVisualization } from '@/components/chain/ChainVisualization'
-import { LobbyBoard } from '@/components/lobby/LobbyBoard'
-import { ArgumentThread } from '@/components/topic/ArgumentThread'
 import { PredictionPanel } from '@/components/topic/PredictionPanel'
 import { RelatedTopics } from '@/components/topic/RelatedTopics'
 import { VoteTrend } from '@/components/topic/VoteTrend'
@@ -88,7 +87,6 @@ import { SharePanel } from '@/components/ui/SharePanel'
 import { BookmarkButton } from '@/components/ui/BookmarkButton'
 import { AddToCollectionButton } from '@/components/ui/AddToCollectionButton'
 import { TopicViewers } from '@/components/topic/TopicViewers'
-import { ArgumentSpotlight } from '@/components/topic/ArgumentSpotlight'
 import { TopicSubscribeButton } from '@/components/topic/TopicSubscribeButton'
 import { cn } from '@/lib/utils/cn'
 import { useVoteStore } from '@/lib/stores/vote-store'
@@ -100,22 +98,73 @@ import { MoodPicker } from '@/components/mood/MoodPicker'
 import { TopicHotTakes } from '@/components/topic/TopicHotTakes'
 import { ArgumentContributors } from '@/components/topic/ArgumentContributors'
 import { ArgumentCitationsPanel } from '@/components/topic/ArgumentCitationsPanel'
-import { TopicAIBrief } from '@/components/topic/TopicAIBrief'
-import { TopicSynthesisPanel } from '@/components/topic/TopicSynthesisPanel'
-import { TopicThesesPanel } from '@/components/topic/TopicThesesPanel'
 import { TopicContextPanel } from '@/components/topic/TopicContextPanel'
-import { TopicBountyPanel } from '@/components/topic/TopicBountyPanel'
 import { FollowingVotesPanel } from '@/components/topic/FollowingVotesPanel'
-import { TopicChat } from '@/components/topic/TopicChat'
-import { TopicEvidencePanel } from '@/components/topic/TopicEvidencePanel'
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary'
-import { ArgumentQualityPanel } from '@/components/topic/ArgumentQualityPanel'
 import { TopicCorrelationsPanel } from '@/components/topic/TopicCorrelationsPanel'
 import { TopicResolutionBanner } from '@/components/topic/TopicResolutionBanner'
 import { TopicChangemakersPanel } from '@/components/topic/TopicChangemakersPanel'
 import { TopicQAPanel } from '@/components/topic/TopicQAPanel'
 import { ExchangeMarketPanel } from '@/components/topic/ExchangeMarketPanel'
 import { TopicNotesButton } from '@/components/topic/TopicNotesButton'
+
+// ─── Tab panel loading skeleton ───────────────────────────────────────────────
+// Shown while a lazily-loaded tab panel chunk is downloading.
+
+function TabSkeleton({ rows = 4 }: { rows?: number }) {
+  return (
+    <div className="space-y-3 animate-pulse py-2">
+      {Array.from({ length: rows }).map((_, i) => (
+        <div key={i} className={`h-12 rounded-xl bg-surface-200/60 ${i % 3 === 2 ? 'w-4/5' : 'w-full'}`} />
+      ))}
+    </div>
+  )
+}
+
+// ─── Dynamic imports — non-default tab panels ─────────────────────────────────
+// These are only rendered when the user switches away from the default 'details'
+// tab, so we defer their JS cost until they're actually needed.
+
+const LobbyBoard = dynamic(
+  () => import('@/components/lobby/LobbyBoard').then((m) => m.LobbyBoard),
+  { loading: () => <TabSkeleton rows={4} /> }
+)
+const ArgumentThread = dynamic(
+  () => import('@/components/topic/ArgumentThread').then((m) => m.ArgumentThread),
+  { loading: () => <TabSkeleton rows={6} /> }
+)
+const ArgumentSpotlight = dynamic(
+  () => import('@/components/topic/ArgumentSpotlight').then((m) => m.ArgumentSpotlight),
+  { loading: () => <TabSkeleton rows={3} /> }
+)
+const TopicAIBrief = dynamic(
+  () => import('@/components/topic/TopicAIBrief').then((m) => m.TopicAIBrief),
+  { loading: () => <TabSkeleton rows={4} /> }
+)
+const TopicSynthesisPanel = dynamic(
+  () => import('@/components/topic/TopicSynthesisPanel').then((m) => m.TopicSynthesisPanel),
+  { loading: () => <TabSkeleton rows={3} /> }
+)
+const TopicThesesPanel = dynamic(
+  () => import('@/components/topic/TopicThesesPanel').then((m) => m.TopicThesesPanel),
+  { loading: () => <TabSkeleton rows={2} /> }
+)
+const TopicBountyPanel = dynamic(
+  () => import('@/components/topic/TopicBountyPanel').then((m) => m.TopicBountyPanel),
+  { loading: () => <TabSkeleton rows={3} /> }
+)
+const TopicChat = dynamic(
+  () => import('@/components/topic/TopicChat').then((m) => m.TopicChat),
+  { loading: () => <TabSkeleton rows={5} /> }
+)
+const TopicEvidencePanel = dynamic(
+  () => import('@/components/topic/TopicEvidencePanel').then((m) => m.TopicEvidencePanel),
+  { loading: () => <TabSkeleton rows={4} /> }
+)
+const ArgumentQualityPanel = dynamic(
+  () => import('@/components/topic/ArgumentQualityPanel').then((m) => m.ArgumentQualityPanel),
+  { loading: () => <TabSkeleton rows={3} /> }
+)
 
 const SIGNAL_ICONS_DETAIL: Record<string, typeof Flame> = {
   ending_soon:     Clock,
