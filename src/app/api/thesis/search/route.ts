@@ -24,13 +24,12 @@ export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl
 
   const q = (searchParams.get('q') ?? '').trim()
-  const limit = Math.min(parseInt(searchParams.get('limit') || '10', 10), 20)
+  const category = (searchParams.get('category') ?? '').trim().toLowerCase()
+  const status = (searchParams.get('status') ?? '').trim().toLowerCase()
+  const sort = (searchParams.get('sort') ?? 'popular').trim()
+  const limit = Math.min(parseInt(searchParams.get('limit') || '20', 10), 50)
 
-  if (!q || q.length < 2) {
-    return NextResponse.json({ results: [] } satisfies ThesisSearchResponse)
-  }
-
-  const { data: rows } = await supabase
+  let query = supabase
     .from('civic_theses')
     .select(`
       id, statement, category, status,
@@ -40,9 +39,42 @@ export async function GET(req: NextRequest) {
       )
     `)
     .eq('is_public', true)
-    .ilike('statement', `%${q}%`)
-    .order('agree_count', { ascending: false })
-    .limit(limit)
+
+  if (q && q.length >= 2) {
+    query = query.ilike('statement', `%${q}%`)
+  }
+
+  if (category && category !== 'all') {
+    query = query.eq('category', category)
+  }
+
+  if (status && status !== 'all') {
+    query = query.eq('status', status)
+  }
+
+  switch (sort) {
+    case 'newest':
+      query = query.order('created_at', { ascending: false })
+      break
+    case 'contested':
+      query = query.order('disagree_count', { ascending: false })
+      break
+    case 'resolving_soon':
+      query = query
+        .not('resolution_date', 'is', null)
+        .order('resolution_date', { ascending: true })
+      break
+    default:
+      query = query.order('agree_count', { ascending: false })
+  }
+
+  const { data: rows } = await query.limit(limit)
+
+  if (!q || q.length < 2) {
+    if (!category && !status) {
+      return NextResponse.json({ results: [] } satisfies ThesisSearchResponse)
+    }
+  }
 
   const results: ThesisSearchResult[] = (rows ?? []).map((row) => {
     const authorRaw = row.profiles as Record<string, unknown> | null
