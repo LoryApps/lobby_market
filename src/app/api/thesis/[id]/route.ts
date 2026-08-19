@@ -105,7 +105,7 @@ export async function PATCH(req: NextRequest, { params }: RouteContext) {
 
   const { data: existing } = await supabase
     .from('civic_theses')
-    .select('user_id')
+    .select('user_id, status')
     .eq('id', params.id)
     .single()
 
@@ -113,12 +113,22 @@ export async function PATCH(req: NextRequest, { params }: RouteContext) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
-  let body: { status?: string; resolution_date?: string } = {}
+  interface PatchBody {
+    status?: string
+    resolution_date?: string
+    statement?: string
+    rationale?: string
+    category?: string
+    is_public?: boolean
+  }
+  let body: PatchBody = {}
   try {
     body = await req.json()
   } catch {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
   }
+
+  const existingFull = existing
 
   const updates: Record<string, unknown> = {}
 
@@ -135,6 +145,40 @@ export async function PATCH(req: NextRequest, { params }: RouteContext) {
 
   if (body.resolution_date !== undefined) {
     updates.resolution_date = body.resolution_date || null
+  }
+
+  // Content edits are only allowed while the thesis is still active
+  if (existingFull?.status === 'active') {
+    if (body.statement !== undefined) {
+      const stmt = body.statement.trim()
+      if (stmt.length < 10 || stmt.length > 280) {
+        return NextResponse.json({ error: 'Statement must be 10–280 characters' }, { status: 400 })
+      }
+      updates.statement = stmt
+    }
+
+    if (body.rationale !== undefined) {
+      const rat = body.rationale.trim()
+      if (rat.length > 1200) {
+        return NextResponse.json({ error: 'Rationale must be ≤1200 characters' }, { status: 400 })
+      }
+      updates.rationale = rat || null
+    }
+
+    if (body.category !== undefined) {
+      const validCats = [
+        'economics', 'politics', 'technology', 'science', 'ethics',
+        'philosophy', 'culture', 'health', 'environment', 'education',
+      ]
+      if (!validCats.includes(body.category)) {
+        return NextResponse.json({ error: 'Invalid category' }, { status: 400 })
+      }
+      updates.category = body.category
+    }
+
+    if (body.is_public !== undefined) {
+      updates.is_public = Boolean(body.is_public)
+    }
   }
 
   const { data, error } = await supabase

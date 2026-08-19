@@ -12,6 +12,7 @@ import {
   CircleDot,
   Clock,
   Loader2,
+  Pencil,
   Scale,
   Scroll,
   ThumbsDown,
@@ -410,13 +411,22 @@ export function ThesisDetailClient({ id }: { id: string }) {
                   </button>
                 </div>
               ) : (
-                <button
-                  onClick={() => setShowResolve(true)}
-                  className="flex items-center gap-2 text-sm font-mono text-surface-500 hover:text-white transition-colors"
-                >
-                  <Scale className="h-4 w-4" />
-                  Resolve this thesis
-                </button>
+                <div className="flex items-center gap-4">
+                  <button
+                    onClick={() => setShowResolve(true)}
+                    className="flex items-center gap-2 text-sm font-mono text-surface-500 hover:text-white transition-colors"
+                  >
+                    <Scale className="h-4 w-4" />
+                    Resolve this thesis
+                  </button>
+                  <Link
+                    href={`/thesis/${thesis.id}/edit`}
+                    className="flex items-center gap-2 text-sm font-mono text-surface-500 hover:text-purple transition-colors"
+                  >
+                    <Pencil className="h-4 w-4" />
+                    Edit
+                  </Link>
+                </div>
               )}
             </div>
           )}
