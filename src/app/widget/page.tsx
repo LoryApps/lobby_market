@@ -17,6 +17,7 @@ import {
   Search,
   Smartphone,
   Tag,
+  Target,
   User,
   X,
   Zap,
@@ -28,7 +29,7 @@ import { cn } from '@/lib/utils/cn'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type WidgetType = 'topic' | 'argument' | 'profile'
+type WidgetType = 'topic' | 'argument' | 'profile' | 'thesis'
 type WidgetSize = 'compact' | 'standard' | 'wide'
 
 interface TopicResult {
@@ -57,7 +58,17 @@ interface PersonResult {
   clout: number
 }
 
-type SearchItem = TopicResult | ArgumentResult | PersonResult
+interface ThesisResult {
+  id: string
+  statement: string
+  category: string
+  status: string
+  agree_count: number
+  disagree_count: number
+  resolution_date: string | null
+}
+
+type SearchItem = TopicResult | ArgumentResult | PersonResult | ThesisResult
 
 // ─── Widget type definitions ──────────────────────────────────────────────────
 
@@ -97,6 +108,15 @@ const WIDGET_TYPES: {
     searchPlaceholder: 'Search by username or display name…',
     updateInterval: '2m',
   },
+  {
+    id: 'thesis',
+    label: 'Thesis',
+    icon: Target,
+    description: 'Embeddable civic thesis card with agree/disagree split and resolution status.',
+    searchTab: 'theses',
+    searchPlaceholder: 'Search civic theses — "AI will replace", "democracy will…"',
+    updateInterval: '60s',
+  },
 ]
 
 // ─── Size config ──────────────────────────────────────────────────────────────
@@ -128,8 +148,9 @@ const STATUS_LABEL: Record<string, string> = {
 // ─── Code builders ────────────────────────────────────────────────────────────
 
 function getEmbedSrc(type: WidgetType, item: SearchItem): string {
-  if (type === 'topic') return `/api/embed/topic/${(item as TopicResult).id}`
+  if (type === 'topic')    return `/api/embed/topic/${(item as TopicResult).id}`
   if (type === 'argument') return `/api/embed/argument/${(item as ArgumentResult).id}`
+  if (type === 'thesis')   return `/api/embed/thesis/${(item as ThesisResult).id}`
   return `/api/embed/profile/${(item as PersonResult).username}`
 }
 
@@ -137,9 +158,10 @@ function buildIframeCode(type: WidgetType, item: SearchItem, size: WidgetSize): 
   const { width, height } = SIZE_CONFIG[size]
   const src = `https://lobby.market${getEmbedSrc(type, item)}`
   const titles: Record<WidgetType, string> = {
-    topic: 'Lobby Market — Live Vote Widget',
+    topic:    'Lobby Market — Live Vote Widget',
     argument: 'Lobby Market — Argument Card',
-    profile: 'Lobby Market — Civic Profile',
+    profile:  'Lobby Market — Civic Profile',
+    thesis:   'Lobby Market — Civic Thesis',
   }
   return `<iframe
   src="${src}"
@@ -161,9 +183,10 @@ function buildResizingCode(type: WidgetType, item: SearchItem, size: WidgetSize)
       ? (item as PersonResult).username.slice(0, 8)
       : (item as { id: string }).id.slice(0, 8)
   const titles: Record<WidgetType, string> = {
-    topic: 'Lobby Market — Live Vote Widget',
+    topic:    'Lobby Market — Live Vote Widget',
     argument: 'Lobby Market — Argument Card',
-    profile: 'Lobby Market — Civic Profile',
+    profile:  'Lobby Market — Civic Profile',
+    thesis:   'Lobby Market — Civic Thesis',
   }
   return `<iframe
   id="lm-widget-${shortId}"
@@ -323,6 +346,41 @@ function PersonRow({ person, onSelect }: { person: PersonResult; onSelect: () =>
   )
 }
 
+function ThesisRow({ thesis, onSelect }: { thesis: ThesisResult; onSelect: () => void }) {
+  const total = thesis.agree_count + thesis.disagree_count
+  const agreePct = total > 0 ? Math.round((thesis.agree_count / total) * 100) : 50
+  const STATUS_COLOR: Record<string, string> = {
+    active: 'text-for-400',
+    vindicated: 'text-emerald',
+    refuted: 'text-against-400',
+    expired: 'text-surface-500',
+  }
+  return (
+    <button
+      type="button"
+      onClick={onSelect}
+      className="w-full flex items-start gap-3 px-4 py-3 hover:bg-surface-200 transition-colors text-left group"
+    >
+      <div className="flex-shrink-0 mt-1 w-1 h-8 rounded-full overflow-hidden bg-surface-300">
+        <div className="w-full bg-emerald rounded-full" style={{ height: `${agreePct}%` }} />
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-sm text-white font-mono line-clamp-2 leading-snug group-hover:text-for-200 transition-colors">
+          {thesis.statement}
+        </p>
+        <div className="flex items-center gap-2 mt-1">
+          <span className={`text-[10px] font-mono font-bold ${STATUS_COLOR[thesis.status] ?? 'text-surface-500'}`}>
+            {thesis.status.charAt(0).toUpperCase() + thesis.status.slice(1)}
+          </span>
+          <span className="text-[10px] text-surface-600 font-mono">
+            {agreePct}% Agree · {fmtVotes(total)} votes
+          </span>
+        </div>
+      </div>
+    </button>
+  )
+}
+
 // ─── Selected item pill ───────────────────────────────────────────────────────
 
 function SelectedPill({
@@ -339,7 +397,9 @@ function SelectedPill({
       ? (item as TopicResult).statement.slice(0, 80)
       : type === 'argument'
         ? (item as ArgumentResult).content.slice(0, 80)
-        : `@${(item as PersonResult).username}`
+        : type === 'thesis'
+          ? (item as ThesisResult).statement.slice(0, 80)
+          : `@${(item as PersonResult).username}`
 
   return (
     <motion.div
@@ -371,13 +431,17 @@ function DirectLink({ type, item }: { type: WidgetType; item: SearchItem }) {
       ? `https://lobby.market/topic/${(item as TopicResult).id}`
       : type === 'argument'
         ? `https://lobby.market/topic/${(item as ArgumentResult).topic?.id ?? ''}`
-        : `https://lobby.market/profile/${(item as PersonResult).username}`
+        : type === 'thesis'
+          ? `https://lobby.market/thesis/${(item as ThesisResult).id}`
+          : `https://lobby.market/profile/${(item as PersonResult).username}`
   const display =
     type === 'topic'
       ? `lobby.market/topic/${(item as TopicResult).id.slice(0, 8)}…`
       : type === 'argument'
         ? 'lobby.market/topic/…'
-        : `lobby.market/profile/${(item as PersonResult).username}`
+        : type === 'thesis'
+          ? `lobby.market/thesis/${(item as ThesisResult).id.slice(0, 8)}…`
+          : `lobby.market/profile/${(item as PersonResult).username}`
 
   return (
     <motion.div
@@ -399,7 +463,9 @@ function DirectLink({ type, item }: { type: WidgetType; item: SearchItem }) {
               ? `/topic/${(item as TopicResult).id}`
               : type === 'argument'
                 ? `/topic/${(item as ArgumentResult).topic?.id ?? ''}`
-                : `/profile/${(item as PersonResult).username}`
+                : type === 'thesis'
+                  ? `/thesis/${(item as ThesisResult).id}`
+                  : `/profile/${(item as PersonResult).username}`
           }
           className="text-[11px] font-mono text-for-400 hover:text-for-300 transition-colors"
         >
@@ -467,7 +533,9 @@ export default function WidgetBuilderPage() {
         ? (item as TopicResult).statement.slice(0, 60)
         : widgetType === 'argument'
           ? (item as ArgumentResult).content.slice(0, 60)
-          : `@${(item as PersonResult).username}`
+          : widgetType === 'thesis'
+            ? (item as ThesisResult).statement.slice(0, 60)
+            : `@${(item as PersonResult).username}`
     setQuery(label)
     setResults([])
   }
@@ -565,7 +633,9 @@ export default function WidgetBuilderPage() {
                     ? 'Choose a topic'
                     : widgetType === 'argument'
                       ? 'Choose an argument'
-                      : 'Choose a profile'}
+                      : widgetType === 'thesis'
+                        ? 'Choose a thesis'
+                        : 'Choose a profile'}
                 </h2>
               </div>
 
@@ -621,6 +691,10 @@ export default function WidgetBuilderPage() {
                       {widgetType === 'argument' &&
                         (results as ArgumentResult[]).map((item) => (
                           <ArgumentRow key={item.id} arg={item} onSelect={() => selectItem(item)} />
+                        ))}
+                      {widgetType === 'thesis' &&
+                        (results as ThesisResult[]).map((item) => (
+                          <ThesisRow key={item.id} thesis={item} onSelect={() => selectItem(item)} />
                         ))}
                       {widgetType === 'profile' &&
                         (results as PersonResult[]).map((item) => (
@@ -748,6 +822,10 @@ export default function WidgetBuilderPage() {
                 <div>
                   <span className="text-surface-400">Profiles: </span>
                   <code className="text-for-400">GET /api/embed/profile/{'{username}'}</code>
+                </div>
+                <div>
+                  <span className="text-surface-400">Theses: </span>
+                  <code className="text-for-400">GET /api/embed/thesis/{'{id}'}</code>
                 </div>
                 <div className="pt-1">
                   <Link href="/developers#embed" className="text-for-400 hover:text-for-300 underline underline-offset-2">
