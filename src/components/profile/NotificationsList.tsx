@@ -18,6 +18,7 @@ import {
   MessageCircle,
   MessageSquare,
   Scale,
+  Scroll,
   Swords,
   Trophy,
   TrendingUp,
@@ -30,6 +31,7 @@ import {
   Newspaper,
   Radio,
   ThumbsUp,
+  ThumbsDown,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
@@ -82,6 +84,8 @@ const typeConfig: Record<
   law_challenge_support:     { icon: ThumbsUp,     color: 'text-for-400'    },
   law_challenge_milestone:   { icon: TrendingUp,   color: 'text-emerald'    },
   law_endorsed:              { icon: Handshake,    color: 'text-emerald'    },
+  thesis_vote:               { icon: Scroll,       color: 'text-for-400'    },
+  thesis_comment:            { icon: MessageCircle, color: 'text-purple'    },
 }
 
 // ─── Filter tabs ──────────────────────────────────────────────────────────────
@@ -106,6 +110,8 @@ const SOCIAL_TYPES: NotificationType[] = [
   'reply_received',
   'role_promoted',
   'direct_message',
+  'thesis_vote',
+  'thesis_comment',
 ]
 
 const DEBATE_TYPES: NotificationType[] = ['debate_starting', 'new_topic_in_tag', 'debate_challenge', 'debate_challenge_accepted', 'debate_challenge_declined', 'law_challenge_support', 'law_challenge_milestone', 'law_endorsed']
@@ -184,6 +190,8 @@ function buildHref(notification: Notification): string {
       return `/ama/${reference_id}`
     case 'relay':
       return `/relays/${reference_id}`
+    case 'thesis':
+      return `/thesis/${reference_id}`
     default:
       return '#'
   }
