@@ -37,6 +37,7 @@ import {
   Trophy,
   X,
   Zap,
+  Sparkles,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { TopBar } from '@/components/layout/TopBar'
@@ -772,6 +773,19 @@ export default function ThesisPage() {
           ))}
         </div>
 
+        {/* Thesis of the Day banner */}
+        <Link
+          href="/thesis/today"
+          className="flex items-center gap-3 mb-4 px-4 py-3 rounded-xl bg-gradient-to-r from-gold/15 via-gold/8 to-transparent border border-gold/30 hover:border-gold/50 transition-all group"
+        >
+          <Sparkles className="h-5 w-5 text-gold shrink-0" />
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-semibold text-gold uppercase tracking-wider">Thesis of the Day</p>
+            <p className="text-xs text-surface-400 mt-0.5">Today&apos;s most contested civic prediction</p>
+          </div>
+          <ArrowRight className="h-4 w-4 text-gold/50 group-hover:text-gold transition-colors shrink-0" />
+        </Link>
+
         {/* Quick nav shortcuts */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
           <Link
@@ -827,6 +841,15 @@ export default function ThesisPage() {
               Hall of Record
             </span>
             <ArrowRight className="h-3.5 w-3.5 text-against-400/40 group-hover:text-against-400 transition-colors" />
+          </Link>
+          <Link
+            href="/thesis/today"
+            className="flex items-center justify-between px-3 py-2.5 rounded-xl bg-gold/5 border border-gold/20 hover:border-gold/40 transition-colors group"
+          >
+            <span className="text-xs font-mono text-gold/70 group-hover:text-gold transition-colors">
+              Today&apos;s Pick
+            </span>
+            <ArrowRight className="h-3.5 w-3.5 text-gold/40 group-hover:text-gold transition-colors" />
           </Link>
         </div>
 
