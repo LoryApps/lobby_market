@@ -1,17 +1,21 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import Link from 'next/link'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import {
   ArrowLeft,
+  ArrowUpRight,
   Calendar,
   ChevronDown,
+  Link2,
   Loader2,
   Lock,
   Scroll,
   Globe,
   Sparkles,
+  X,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
 import { BottomNav } from '@/components/layout/BottomNav'
@@ -49,8 +53,17 @@ const CAT_COLORS: Record<ThesisCategory, { text: string; bg: string; border: str
 const STATEMENT_MAX = 280
 const RATIONALE_MAX = 1200
 
+interface LinkedTopic {
+  id: string
+  statement: string
+  category: string | null
+  status: string | null
+}
+
 export function ThesisCreateClient() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const topicParam = searchParams.get('topic')
 
   const [statement, setStatement] = useState('')
   const [rationale, setRationale] = useState('')
@@ -60,6 +73,49 @@ export function ThesisCreateClient() {
   const [showCatPicker, setShowCatPicker] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
+
+  // Optional topic linkage — comes from ?topic=<id> when the user arrived
+  // from the "Stake yours" CTA on a topic detail page. Fetched once to show
+  // context so the user knows which topic they're staking on.
+  const [linkedTopicId, setLinkedTopicId] = useState<string | null>(topicParam)
+  const [linkedTopic, setLinkedTopic] = useState<LinkedTopic | null>(null)
+  const [linkedLoading, setLinkedLoading] = useState(false)
+
+  useEffect(() => {
+    if (!linkedTopicId) {
+      setLinkedTopic(null)
+      return
+    }
+    let cancelled = false
+    setLinkedLoading(true)
+    fetch(`/api/topics/${encodeURIComponent(linkedTopicId)}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (cancelled || !data) return
+        const t = data.topic ?? data
+        if (!t?.id) return
+        setLinkedTopic({
+          id: t.id,
+          statement: t.statement,
+          category: t.category ?? null,
+          status: t.status ?? null,
+        })
+        // Map the topic category onto a thesis category if we can, so the
+        // author isn't forced to re-classify.
+        if (t.category && (THESIS_CATEGORIES as string[]).includes(String(t.category).toLowerCase())) {
+          setCategory(String(t.category).toLowerCase() as ThesisCategory)
+        }
+      })
+      .catch(() => {
+        /* best-effort — silent */
+      })
+      .finally(() => {
+        if (!cancelled) setLinkedLoading(false)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [linkedTopicId])
 
   const statementLeft = STATEMENT_MAX - statement.length
   const rationaleLeft = RATIONALE_MAX - rationale.length
@@ -83,6 +139,7 @@ export function ThesisCreateClient() {
           category,
           resolution_date: resolutionDate || undefined,
           is_public: isPublic,
+          related_topic_id: linkedTopicId || undefined,
         }),
       })
 
@@ -145,6 +202,53 @@ export function ThesisCreateClient() {
             long-run accuracy record.
           </div>
         </motion.div>
+
+        {/* Linked topic banner — visible when ?topic=<id> is in the URL */}
+        {(linkedTopicId || linkedLoading) && (
+          <motion.div
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.25 }}
+            className="mb-5 p-3.5 rounded-xl bg-for-500/5 border border-for-500/30"
+          >
+            <div className="flex items-start gap-3">
+              <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-for-500/10 border border-for-500/30 shrink-0">
+                <Link2 className="h-4 w-4 text-for-400" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-[10px] font-mono font-semibold text-for-400 uppercase tracking-wide">
+                    Staking on topic
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setLinkedTopicId(null)}
+                    className="ml-auto flex items-center gap-1 text-[10px] font-mono text-surface-500 hover:text-white transition-colors"
+                    aria-label="Unlink topic"
+                  >
+                    <X className="h-3 w-3" />
+                    Unlink
+                  </button>
+                </div>
+                {linkedLoading && !linkedTopic ? (
+                  <div className="h-3 w-3/4 bg-surface-300/50 rounded animate-pulse" />
+                ) : linkedTopic ? (
+                  <Link
+                    href={`/topic/${linkedTopic.id}`}
+                    className="group flex items-start gap-1.5 text-[13px] text-white hover:text-for-300 transition-colors leading-snug"
+                  >
+                    <span className="line-clamp-2">{linkedTopic.statement}</span>
+                    <ArrowUpRight className="h-3 w-3 mt-1 text-surface-500 group-hover:text-for-300 shrink-0" />
+                  </Link>
+                ) : (
+                  <p className="text-[12px] text-surface-500">
+                    Topic couldn&apos;t be loaded — thesis will be published without a link.
+                  </p>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Statement */}

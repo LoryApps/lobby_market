@@ -102,6 +102,7 @@ import { ArgumentContributors } from '@/components/topic/ArgumentContributors'
 import { ArgumentCitationsPanel } from '@/components/topic/ArgumentCitationsPanel'
 import { TopicAIBrief } from '@/components/topic/TopicAIBrief'
 import { TopicSynthesisPanel } from '@/components/topic/TopicSynthesisPanel'
+import { TopicThesesPanel } from '@/components/topic/TopicThesesPanel'
 import { TopicContextPanel } from '@/components/topic/TopicContextPanel'
 import { TopicBountyPanel } from '@/components/topic/TopicBountyPanel'
 import { FollowingVotesPanel } from '@/components/topic/FollowingVotesPanel'
@@ -557,6 +558,10 @@ export function TopicDetail({ initialTopic, author, lawId, establishedAt }: Topi
               </div>
               {/* Spotlight: top FOR + AGAINST argument preview */}
               <ArgumentSpotlight topicId={topic.id} className="mb-6" />
+              {/* Civic theses staked on this topic — reputation predictions */}
+              <ErrorBoundary size="sm" label="Couldn't load staked theses">
+                <TopicThesesPanel topicId={topic.id} className="mb-6" />
+              </ErrorBoundary>
               {/* Argument quality distribution — AI grade breakdown per side */}
               <div className="mb-6 space-y-1.5">
                 <ArgumentQualityPanel topicId={topic.id} />
