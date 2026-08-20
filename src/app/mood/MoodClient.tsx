@@ -26,6 +26,7 @@ import {
   Smile,
   Sparkles,
   TrendingUp,
+  Trophy,
   Zap,
 } from 'lucide-react'
 import { TopBar } from '@/components/layout/TopBar'
@@ -285,6 +286,13 @@ export function MoodClient() {
               >
                 <ArrowLeftRight className="h-3 w-3" />
                 Compare
+              </Link>
+              <Link
+                href="/mood/leaderboard"
+                className="flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-mono font-semibold text-emerald hover:bg-emerald/10 transition-colors border border-emerald/20 hover:border-emerald/40"
+              >
+                <Trophy className="h-3 w-3" />
+                Ranks
               </Link>
               {!loading && data && (
                 <button
