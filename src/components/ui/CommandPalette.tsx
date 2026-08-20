@@ -1739,6 +1739,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'doppler',
+    label: 'Civic Doppler',
+    sublabel: 'Velocity × direction scatter map — see which debates are launching, crashing, drifting, or parked in one chart.',
+    href: '/doppler',
+    icon: Activity,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
     id: 'mood',
     label: 'Civic Mood',
     sublabel: 'How does debate make the community feel? Hopeful, inspired, worried, determined — the platform\'s emotional pulse.',

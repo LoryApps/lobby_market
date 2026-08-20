@@ -74,6 +74,11 @@ const TYPE_CONFIG: Record<
   debate_challenge:          { icon: Swords,          color: 'text-against-400', bg: 'bg-against-500/10' },
   debate_challenge_accepted: { icon: CheckCircle,     color: 'text-emerald',     bg: 'bg-emerald/10' },
   debate_challenge_declined: { icon: MessageSquare,   color: 'text-surface-500', bg: 'bg-surface-300/40' },
+  law_challenge_support:     { icon: Gavel,           color: 'text-gold',        bg: 'bg-gold/10' },
+  law_challenge_milestone:   { icon: Gavel,           color: 'text-gold',        bg: 'bg-gold/10' },
+  law_endorsed:              { icon: Award,           color: 'text-emerald',     bg: 'bg-emerald/10' },
+  thesis_vote:               { icon: TrendingUp,      color: 'text-purple',      bg: 'bg-purple/10' },
+  thesis_comment:            { icon: MessageCircle,   color: 'text-for-400',     bg: 'bg-for-500/10' },
 }
 
 const FALLBACK_CONFIG = { icon: AlertCircle, color: 'text-surface-500', bg: 'bg-surface-200' }
