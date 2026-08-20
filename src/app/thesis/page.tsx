@@ -888,6 +888,15 @@ export default function ThesisPage() {
             <ArrowRight className="h-3.5 w-3.5 text-purple/40 group-hover:text-purple transition-colors" />
           </Link>
           <Link
+            href="/thesis/battle"
+            className="flex items-center justify-between px-3 py-2.5 rounded-xl bg-against-500/5 border border-against-500/20 hover:border-against-500/40 transition-colors group"
+          >
+            <span className="text-xs font-mono text-against-400/70 group-hover:text-against-400 transition-colors">
+              Faceoff ⚔
+            </span>
+            <ArrowRight className="h-3.5 w-3.5 text-against-400/40 group-hover:text-against-400 transition-colors" />
+          </Link>
+          <Link
             href="/thesis/watching"
             className="flex items-center justify-between px-3 py-2.5 rounded-xl bg-gold/5 border border-gold/20 hover:border-gold/40 transition-colors group"
           >
