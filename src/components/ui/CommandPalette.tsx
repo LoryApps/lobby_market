@@ -1729,6 +1729,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'trajectory',
+    label: 'Civic Trajectory',
+    sublabel: 'Directional momentum of all active debates — surging FOR, reversing AGAINST, oscillating, or stalling.',
+    href: '/trajectory',
+    icon: Activity,
+    iconColor: 'text-purple-400',
+    iconBg: 'bg-purple-500/10',
+  },
+  {
+    type: 'link',
     id: 'mood',
     label: 'Civic Mood',
     sublabel: 'How does debate make the community feel? Hopeful, inspired, worried, determined — the platform\'s emotional pulse.',
