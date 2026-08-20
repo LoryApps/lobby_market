@@ -17,6 +17,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   ArrowLeftRight,
   ArrowRight,
+  BarChart2,
   Clock,
   Frown,
   Globe,
@@ -293,6 +294,13 @@ export function MoodClient() {
               >
                 <Trophy className="h-3 w-3" />
                 Ranks
+              </Link>
+              <Link
+                href="/mood/vs-votes"
+                className="flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-mono font-semibold text-surface-300 hover:bg-surface-200/10 transition-colors border border-surface-600/30 hover:border-surface-400/50"
+              >
+                <BarChart2 className="h-3 w-3" />
+                Vs. Votes
               </Link>
               {!loading && data && (
                 <button
