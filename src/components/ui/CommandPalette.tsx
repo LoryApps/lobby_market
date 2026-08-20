@@ -1719,6 +1719,16 @@ const QUICK_LINKS: QuickLink[] = [
   },
   {
     type: 'link',
+    id: 'climate',
+    label: 'Civic Climate',
+    sublabel: 'A weather report for civic discourse — storm systems, clear skies, and forecasts for upcoming laws.',
+    href: '/climate',
+    icon: Cloud,
+    iconColor: 'text-for-400',
+    iconBg: 'bg-for-500/10',
+  },
+  {
+    type: 'link',
     id: 'mood',
     label: 'Civic Mood',
     sublabel: 'How does debate make the community feel? Hopeful, inspired, worried, determined — the platform\'s emotional pulse.',

@@ -27,6 +27,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/split`, changeFrequency: 'hourly', priority: 0.85 },
   { url: `${BASE_URL}/momentum`, changeFrequency: 'always', priority: 0.85 },
   { url: `${BASE_URL}/temperature`, changeFrequency: 'always', priority: 0.85 },
+  { url: `${BASE_URL}/climate`, changeFrequency: 'always', priority: 0.84 },
   { url: `${BASE_URL}/mood`, changeFrequency: 'always', priority: 0.84 },
   { url: `${BASE_URL}/mood/atlas`, changeFrequency: 'daily', priority: 0.78 },
   { url: `${BASE_URL}/mood/history`, changeFrequency: 'daily', priority: 0.77 },
