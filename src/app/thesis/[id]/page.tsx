@@ -54,11 +54,68 @@ export default async function ThesisDetailPage({ params }: Props) {
   const supabase = await createClient()
   const { data } = await supabase
     .from('civic_theses')
-    .select('id')
+    .select('id, statement, category, status, created_at, agree_count, disagree_count, profiles!civic_theses_user_id_fkey(username, display_name)')
     .eq('id', params.id)
     .maybeSingle()
 
   if (!data) notFound()
 
-  return <ThesisDetailClient id={params.id} />
+  const authorProfile = Array.isArray(data.profiles) ? data.profiles[0] : data.profiles
+  const authorName = (authorProfile as { display_name: string | null; username: string } | null)?.display_name
+    || (authorProfile as { username: string } | null)?.username
+    || 'A civic voice'
+  const authorUsername = (authorProfile as { username: string } | null)?.username
+
+  const canonicalUrl = `${BASE_URL}/thesis/${params.id}`
+  const totalEngagement = ((data as { agree_count?: number }).agree_count ?? 0) + ((data as { disagree_count?: number }).disagree_count ?? 0)
+
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: data.statement,
+    url: canonicalUrl,
+    datePublished: (data as { created_at: string }).created_at,
+    author: {
+      '@type': 'Person',
+      name: authorName,
+      ...(authorUsername ? { url: `${BASE_URL}/profile/${authorUsername}` } : {}),
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Lobby Market',
+      url: BASE_URL,
+    },
+    about: {
+      '@type': 'Thing',
+      name: (data as { category: string }).category,
+    },
+    interactionStatistic: {
+      '@type': 'InteractionCounter',
+      interactionType: { '@type': 'ReactAction' },
+      userInteractionCount: totalEngagement,
+    },
+    additionalProperty: [
+      { '@type': 'PropertyValue', name: 'status', value: (data as { status: string }).status },
+      { '@type': 'PropertyValue', name: 'agreeCount', value: (data as { agree_count?: number }).agree_count ?? 0 },
+      { '@type': 'PropertyValue', name: 'disagreeCount', value: (data as { disagree_count?: number }).disagree_count ?? 0 },
+    ],
+    breadcrumb: {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Lobby Market', item: BASE_URL },
+        { '@type': 'ListItem', position: 2, name: 'Civic Theses', item: `${BASE_URL}/thesis` },
+        { '@type': 'ListItem', position: 3, name: data.statement.slice(0, 80), item: canonicalUrl },
+      ],
+    },
+  }
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      <ThesisDetailClient id={params.id} />
+    </>
+  )
 }

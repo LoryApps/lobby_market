@@ -597,7 +597,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     }))
 
-    return [...STATIC_ROUTES, ...topicUrls, ...wikiUrls, ...lawUrls, ...profileUrls, ...argumentUrls, ...dynamicTagUrls, ...seriesUrls]
+    // Individual public thesis pages
+    const { data: theses } = await supabase
+      .from('civic_theses')
+      .select('id, created_at, updated_at')
+      .eq('is_public', true)
+      .order('created_at', { ascending: false })
+      .limit(2000)
+
+    const thesisUrls: MetadataRoute.Sitemap = (theses ?? []).map((t) => ({
+      url: `${BASE_URL}/thesis/${t.id}`,
+      lastModified: new Date(t.updated_at ?? t.created_at),
+      changeFrequency: 'weekly' as const,
+      priority: 0.55,
+    }))
+
+    return [...STATIC_ROUTES, ...topicUrls, ...wikiUrls, ...lawUrls, ...profileUrls, ...argumentUrls, ...dynamicTagUrls, ...seriesUrls, ...thesisUrls]
   } catch {
     return STATIC_ROUTES
   }
