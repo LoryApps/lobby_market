@@ -469,6 +469,7 @@ const SUITE_SECTIONS: Array<{
       { label: 'Civic Resonance',   href: '/analytics/resonance',       icon: GitMerge },
       { label: 'Consistency',       href: '/analytics/consistency',     icon: GitMerge },
       { label: 'Engagement Volatility', href: '/analytics/volatility',   icon: Activity },
+      { label: 'Civic Form',           href: '/analytics/civic-form',   icon: Flame },
     ],
   },
 ]
@@ -824,6 +825,21 @@ export default function AnalyticsPage() {
                   </div>
                 </div>
                 <ChevronRight className="h-4 w-4 text-surface-500 group-hover:text-for-400 transition-colors flex-shrink-0" />
+              </Link>
+            </motion.div>
+            {/* Civic Form card */}
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.4122 }}>
+              <Link href="/analytics/civic-form" className="flex items-center justify-between rounded-2xl bg-surface-100 border border-gold/20 p-5 hover:border-gold/40 hover:bg-gold/5 transition-colors group">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center justify-center h-10 w-10 rounded-xl bg-gold/10 border border-gold/20 flex-shrink-0">
+                    <Flame className="h-5 w-5 text-gold" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-mono font-semibold text-white">Civic Form</div>
+                    <div className="text-xs font-mono text-surface-500 mt-0.5">Are you On Fire, Sharp, Steady, or Cold? 30-day performance vs your baseline</div>
+                  </div>
+                </div>
+                <ChevronRight className="h-4 w-4 text-surface-500 group-hover:text-gold transition-colors flex-shrink-0" />
               </Link>
             </motion.div>
             {/* Civic Portfolio card */}
