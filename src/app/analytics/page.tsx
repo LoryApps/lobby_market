@@ -468,6 +468,7 @@ const SUITE_SECTIONS: Array<{
       { label: 'Influence Score',   href: '/influence',                 icon: Network },
       { label: 'Civic Resonance',   href: '/analytics/resonance',       icon: GitMerge },
       { label: 'Consistency',       href: '/analytics/consistency',     icon: GitMerge },
+      { label: 'Engagement Volatility', href: '/analytics/volatility',   icon: Activity },
     ],
   },
 ]
@@ -808,6 +809,21 @@ export default function AnalyticsPage() {
                   </div>
                 </div>
                 <ChevronRight className="h-4 w-4 text-surface-500 group-hover:text-against-400 transition-colors flex-shrink-0" />
+              </Link>
+            </motion.div>
+            {/* Engagement Volatility card */}
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.413 }}>
+              <Link href="/analytics/volatility" className="flex items-center justify-between rounded-2xl bg-surface-100 border border-for-500/20 p-5 hover:border-for-500/40 hover:bg-for-500/5 transition-colors group">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center justify-center h-10 w-10 rounded-xl bg-for-500/10 border border-for-500/20 flex-shrink-0">
+                    <Activity className="h-5 w-5 text-for-400" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-mono font-semibold text-white">Engagement Volatility</div>
+                    <div className="text-xs font-mono text-surface-500 mt-0.5">Stability score, rhythm type, and your 90-day vote heatmap</div>
+                  </div>
+                </div>
+                <ChevronRight className="h-4 w-4 text-surface-500 group-hover:text-for-400 transition-colors flex-shrink-0" />
               </Link>
             </motion.div>
             {/* Civic Portfolio card */}
