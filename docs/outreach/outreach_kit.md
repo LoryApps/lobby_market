@@ -1,6 +1,6 @@
 # Outreach kit — Lorenc Hoxha → Albania (Sept 2026)
 
-Order of use: 1) LinkedIn fix, 2) one Albanian-language interview, 3) first email to the Economy & Innovation ministry.
+Status 25 Sep 2026: ministry email (3) and interview pitch (2) SENT. LinkedIn (1) optional.
 Do not email the PM office. Do not open with the film company. Two emails, then wait.
 
 ---

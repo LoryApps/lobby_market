@@ -13,9 +13,10 @@ Start: Monday 28 September 2026. Horizon: 12 months. Built from the optimised si
 ## Phase 1 — get the hook (weeks 1–8, to 20 Nov 2026)
 | Week | Dates | Actions |
 |---|---|---|
-| 1 | 28 Sep–2 Oct | Mon: LinkedIn headline + About live. Tue: interview pitch to Monitor.al. Wed 1 Oct: ministry email #1 (Gmail draft ready). Thu: register in the National Diaspora Register. |
+| 0 | Fri 25 Sep | DONE: ministry email #1 sent to info@ekonomia.gov.al; interview pitch sent to revista@monitor.al. |
+| 1 | 28 Sep–2 Oct | No further emails to the ministry. Thu: register in the National Diaspora Register. |
 | 2 | 5–9 Oct | No ministry contact. Meet 2 licensed Vietnamese labour-export agencies (ask: would you attend an Albania forum, what do you need to send workers). Tue: watch Sy m'sy, note the format, do not post yet. |
-| 3 | 12–16 Oct | Thu 15 Oct: ministry email #2, 3 lines, forward #1, new fact = the two agencies. If Monitor silent: pitch Euronews Albania. |
+| 3 | 12–16 Oct | Thu 15 Oct: ministry email #2, 3 lines, forward #1 (sent 25 Sep), new fact = the two agencies. Fri 2 Oct already: if Monitor silent after one week, pitch Euronews Albania. |
 | 4 | 19–23 Oct | One email to AIDA (investment agency) introducing yourself as HCMC contact for Vietnamese firms. Start a 90-second Vietnamese-language explainer "Albania for workers" using your own crew (this is the deliverable that makes you real). |
 | 5–6 | 26 Oct–6 Nov | If reply → call → send the vetted agency list + the explainer video. If no reply → stop emailing; work diaspora contacts and Diaspora4Innovation participants on LinkedIn; ask one for an introduction to the desk. |
 | 7–8 | 9–20 Nov | Book Trip 1 to Tirana for 30 Nov–4 Dec. Request meetings: ministry desk, AIDA, National Diaspora Agency, Chamber of Commerce (Vietnam trade). Use the explainer video as the reason for the meeting. |
@@ -40,6 +41,9 @@ Hook = any of: a call with the desk, your list or video used, an invitation to t
 - A defined role in the MoU implementation or a forum seat within 12 months: about one in two.
 - A paid contract in year one: rare. Honorary consul: a year-two prize.
 - Rama personally engaging: about one in ten, and it changes little.
+
+## Log
+- 25 Sep 2026: ministry email #1 sent (info@ekonomia.gov.al). Interview pitch sent (revista@monitor.al).
 
 ## Reminders set up
 - Weekly Monday 09:00 HCMC check-in (this session): status, next action, phase check.
