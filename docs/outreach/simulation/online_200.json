@@ -1,0 +1,141 @@
+{
+ "log": [
+  {
+   "block": 1,
+   "live": {
+    "deal": 6.0,
+    "labour": 6.0,
+    "forum": 6.0,
+    "tender": 4.0,
+    "rama": 2.0,
+    "spam": 8.0,
+    "trips": 0.54
+   },
+   "test": 6.8,
+   "strategy": "P1: email_mei 25%, film_channel 20%, diaspora 12%, email_aida 10% | P2: email_mei 19%, film_channel 17%, pipeline 14%, find_investor 9% | P3: pipeline 23%, email_mei 14%, film_channel 14%, propose_delegation 14%"
+  },
+  {
+   "block": 2,
+   "live": {
+    "deal": 14.0,
+    "labour": 10.0,
+    "forum": 14.0,
+    "tender": 14.0,
+    "rama": 4.0,
+    "spam": 4.0,
+    "trips": 2.48
+   },
+   "test": 22.0,
+   "strategy": "P1: email_mei 20%, film_channel 16%, wait 16%, find_investor 11% | P2: email_mei 17%, film_channel 15%, email_pm 15%, pipeline 9% | P3: pipeline 21%, email_mfa 13%, email_mei 12%, film_channel 12%"
+  },
+  {
+   "block": 3,
+   "live": {
+    "deal": 18.0,
+    "labour": 18.0,
+    "forum": 16.0,
+    "tender": 26.0,
+    "rama": 6.0,
+    "spam": 6.0,
+    "trips": 2.54
+   },
+   "test": 22.0,
+   "strategy": "P1: email_mei 20%, film_channel 17%, wait 17%, find_investor 12% | P2: film_channel 21%, propose_delegation 17%, diaspora 13%, email_mei 12% | P3: pipeline 20%, email_mfa 13%, email_mei 12%, film_channel 12%"
+  },
+  {
+   "block": 4,
+   "live": {
+    "deal": 26.0,
+    "labour": 46.0,
+    "forum": 26.0,
+    "tender": 0.0,
+    "rama": 26.0,
+    "spam": 24.0,
+    "trips": 3.8
+   },
+   "test": 37.6,
+   "strategy": "P1: email_mei 39%, wait 34%, email_pm 8%, symsy 8% | P2: film_channel 20%, propose_delegation 19%, email_mei 12%, diaspora 12% | P3: pipeline 17%, propose_delegation 13%, email_mfa 12%, symsy 12%"
+  }
+ ],
+ "final_weights": [
+  [
+   23,
+   0,
+   4,
+   0,
+   0,
+   0,
+   5,
+   5,
+   0,
+   20,
+   2,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   24,
+   38,
+   24,
+   4,
+   0,
+   10,
+   18,
+   0,
+   20,
+   0,
+   8,
+   36,
+   11,
+   0,
+   0
+  ],
+  [
+   15,
+   15,
+   4,
+   4,
+   18,
+   0,
+   0,
+   17,
+   2,
+   0,
+   10,
+   19,
+   25,
+   15,
+   0
+  ]
+ ],
+ "final_test": {
+  "deal": 37.6,
+  "trips": 4.094,
+  "spam": 21.6,
+  "labour": 44.1,
+  "tender": 3.9,
+  "forum": 34.2,
+  "contract": 0.3,
+  "rama": 14.5,
+  "ignored": 5.9879999999999995
+ },
+ "actions": [
+  "email_mei",
+  "film_channel",
+  "diaspora",
+  "email_aida",
+  "email_mfa",
+  "find_investor",
+  "email_pm",
+  "symsy",
+  "linkedin_adviser",
+  "wait",
+  "travel_tirana",
+  "propose_delegation",
+  "pipeline",
+  "consul_application",
+  "instagram_rama"
+ ]
+}
