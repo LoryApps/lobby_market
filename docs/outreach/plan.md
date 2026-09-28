@@ -14,7 +14,8 @@ Start: Monday 28 September 2026. Horizon: 12 months. Built from the optimised si
 | Week | Dates | Actions |
 |---|---|---|
 | 0 | Fri 25 Sep | DONE: ministry email #1 sent to info@ekonomia.gov.al; interview pitch sent to revista@monitor.al. |
-| 1 | 28 Sep–2 Oct | No further emails to the ministry. Thu: register in the National Diaspora Register. |
+| 1 | 28 Sep–2 Oct | Mon: direct emails to Marko/Gega, Muka, AIDA, VN Embassy Athens, DOLAB (done). Meet 2 licensed sending agencies. Register in the National Diaspora Register. |
+| 2 | 5–9 Oct | If ministry silent: Iris Ago (chief of cabinet), A. Vejseli (foreign trade), AKD. If any reply: stop widening, go deep on that desk. Book Hanoi day-trip to DOLAB. |
 | 2 | 5–9 Oct | No ministry contact. Meet 2 licensed Vietnamese labour-export agencies (ask: would you attend an Albania forum, what do you need to send workers). Tue: watch Sy m'sy, note the format, do not post yet. |
 | 3 | 12–16 Oct | Thu 15 Oct: ministry email #2, 3 lines, forward #1 (sent 25 Sep), new fact = the two agencies. Fri 2 Oct already: if Monitor silent after one week, pitch Euronews Albania. |
 | 4 | 19–23 Oct | One email to AIDA (investment agency) introducing yourself as HCMC contact for Vietnamese firms. Start a 90-second Vietnamese-language explainer "Albania for workers" using your own crew (this is the deliverable that makes you real). |
@@ -43,6 +44,7 @@ Hook = any of: a call with the desk, your list or video used, an invitation to t
 - Rama personally engaging: about one in ten, and it changes little.
 
 ## Log
+- 28 Sep 2026: wave 2 sent — J. Marko (cc A. Gega), A. Muka, AIDA (L. Plaku), Vietnamese Embassy Athens, DOLAB Hanoi. Target list in targets.md.
 - 25 Sep 2026: ministry email #1 sent (info@ekonomia.gov.al). Interview pitch sent (revista@monitor.al).
 
 ## Reminders set up
