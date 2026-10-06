@@ -44,9 +44,11 @@ Hook = any of: a call with the desk, your list or video used, an invitation to t
 - Rama personally engaging: about one in ten, and it changes little.
 
 ## Log
+- 6 Oct 2026: Lorenc: do not use Plan A email. Old routines paused. Wave 3 (12 emails) prepared in queue.md with two deliverables (Forum proposal, Vietnamese worker leaflet); blocked until a non-Plan-A account is connected. New key target: Deputy Minister Olta Manjani (led Apr 2026 Hanoi talks). 2-hour loop set up.
+- 5 Oct 2026: no replies visible (connector had switched to lory@planaproduction.vn; Sep threads not visible).
 - 28 Sep 2026: wave 2 sent — J. Marko (cc A. Gega), A. Muka, AIDA (L. Plaku), Vietnamese Embassy Athens, DOLAB Hanoi. Target list in targets.md.
 - 25 Sep 2026: ministry email #1 sent (info@ekonomia.gov.al). Interview pitch sent (revista@monitor.al).
 
-## Reminders set up
-- Weekly Monday 09:00 HCMC check-in (this session): status, next action, phase check.
-- Thu 15 Oct 09:00 HCMC: send ministry email #2.
+## Routines
+- ACTIVE: "Albania outreach: 2-hour loop (draft-only)", every 2 hours at :35 UTC. Checks which Gmail account is connected; with a non-Plan-A account it watches replies, drafts replies, drafts up to 3 queued emails per cycle; weekday news watch; Monday summary. Never sends.
+- PAUSED 6 Oct: weekly Monday check-in; 9 Oct follow-up reminder (both told to use the Plan A Gmail).
