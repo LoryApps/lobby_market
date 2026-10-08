@@ -44,11 +44,12 @@ Hook = any of: a call with the desk, your list or video used, an invitation to t
 - Rama personally engaging: about one in ten, and it changes little.
 
 ## Log
+- 8 Oct 2026: Lorenc: Plan A email allowed again, and every email must carry his own Gmail signature with the logo. The Gmail connector strips images and rewrites links, so drafts carry no signature and no links; Lorenc inserts the signature in Gmail and sends. The 28 Sep email to DOLAB bounced (address unknown), so DOLAB never received it; Q4 on hold until a working address is found. PDFs rebuilt to one page each (8 KB proposal, 14 KB leaflet; deliverables/build_pdfs.py). 10 wave-3 drafts created in lorenc.hoxha@planaproduction.com, attachments checked byte for byte. Suggested send: Fri 9 Oct 14:00 Vietnam time (09:00 Tirana). No replies from any target so far.
 - 6 Oct 2026: Lorenc: do not use Plan A email. Old routines paused. Wave 3 (12 emails) prepared in queue.md with two deliverables (Forum proposal, Vietnamese worker leaflet); blocked until a non-Plan-A account is connected. New key target: Deputy Minister Olta Manjani (led Apr 2026 Hanoi talks). 2-hour loop set up.
 - 5 Oct 2026: no replies visible (connector had switched to lory@planaproduction.vn; Sep threads not visible).
 - 28 Sep 2026: wave 2 sent — J. Marko (cc A. Gega), A. Muka, AIDA (L. Plaku), Vietnamese Embassy Athens, DOLAB Hanoi. Target list in targets.md.
 - 25 Sep 2026: ministry email #1 sent (info@ekonomia.gov.al). Interview pitch sent (revista@monitor.al).
 
 ## Routines
-- ACTIVE: "Albania outreach: 2-hour loop (draft-only)", every 2 hours at :35 UTC. Checks which Gmail account is connected; with a non-Plan-A account it watches replies, drafts replies, drafts up to 3 queued emails per cycle; weekday news watch; Monday summary. Never sends.
-- PAUSED 6 Oct: weekly Monday check-in; 9 Oct follow-up reminder (both told to use the Plan A Gmail).
+- ACTIVE: "Albania outreach: 2-hour loop (draft-only)", every 2 hours at :35 UTC, in lorenc.hoxha@planaproduction.com. Logs which drafts Lorenc has sent, watches for replies and bounces from the targets, drafts replies, drafts remaining queue items only when due (no signature, no links), weekday news watch, Monday summary. Never sends.
+- PAUSED 6 Oct, superseded by the loop: weekly Monday check-in; 9 Oct ministry follow-up reminder.
