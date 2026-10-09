@@ -1,15 +1,16 @@
-# Send queue — wave 3 (prepared 6 Oct, drafted 8 Oct 2026)
+# Send queue — wave 3 (prepared 6 Oct, drafted 8 Oct, sent 9 Oct 2026)
 
-## Status (8 Oct 2026): 10 drafts waiting in Gmail → Drafts (lorenc.hoxha@planaproduction.com)
-- Lorenc, 8 Oct: the Plan A address may be used again (lifts the 6 Oct ban).
-- Lorenc, 8 Oct: every email carries his own Gmail signature (#Ateam, Plan A logo, title, phones, address), not a
-  typed one. The Gmail connector strips every image and rewrites every link to google.com/url?q=…, so the
-  signature cannot be added from here. Drafts therefore end with the closing and his name, with no signature and no
-  links. Lorenc opens each draft in Gmail on a computer, clicks at the end of the text, presses Insert signature (pen
-  icon), then Send or Schedule send.
-- Suggested send time for all ten: Fri 9 Oct, 14:00 Vietnam time = 09:00 Tirana, 10:00 Athens, 15:00 Beijing (inside
-  every office's hours). If that is missed: any Tue–Thu at the same time.
-- All attachments were checked byte for byte against the files in deliverables/ (8 Oct).
+## Status (9 Oct 2026): wave 3 SENT from lorenc.hoxha@planaproduction.com
+- Lorenc, 9 Oct: "Send". Claude sent the 10 drafts unchanged at 08:37 UTC (10:37 Tirana, 15:37 Ho Chi Minh City).
+  They went without the logo signature: the Gmail connector strips every image and rewrites every link, so only
+  Lorenc can insert his signature in Gmail (he had been told on 8 Oct). Attachments were checked byte for byte
+  against deliverables/ on 8 Oct.
+- Q8 bounced at once: the domain konfindustria.org.al does not exist. The same text was resent at 08:39 UTC to the
+  addresses published on konfindustria.al (konfindustria@konfindustria.al, cc konfindustria.al@gmail.com), with
+  "Për vëmendjen e Z. Gjergj Buxhuku" in the subject.
+- Watch: bounces (Q1 Manjani is a pattern address) and replies. Q12 only if Q1–Q3 are all silent on Fri 16 Oct.
+- Future emails: drafts end with the closing and Lorenc's name, no signature and no links; Lorenc inserts his
+  signature in Gmail (Insert signature, pen icon) before sending.
 - Q4 (DOLAB) is on hold: the 28 Sep email to dolab@dolab.gov.vn bounced (550 5.1.1, address unknown), so DOLAB
   never received it. Needs a working address (call +84 24 3824 9517, or ask VAMAS), then send the Q4 text below as
   a first contact.
@@ -35,20 +36,20 @@ fall due. Drafts never contain a signature, images or links.
 
 | # | To | Address | Window | Attach | Order | Status |
 |---|---|---|---|---|---|---|
-| Q1 | Olta Manjani, Deputy Minister (led Apr 2026 Hanoi talks) | olta.manjani@ekonomia.gov.al (pattern) | Albania | P, L | wave A | DRAFTED 8 Oct · r-2490913428399560363 |
-| Q2 | Anila Muka, Dir. International Agreements (2nd email) | anila.muka@ekonomia.gov.al | Albania | P, L | wave A | DRAFTED 8 Oct · r4366985883031602133 |
-| Q3 | Jorgjeta Marko, cc Albin Gega (2nd email) | jorgjeta.marko@ekonomia.gov.al, cc albin.gega@ekonomia.gov.al | Albania | L, P | wave A | DRAFTED 8 Oct · r4961097601822420822 |
+| Q1 | Olta Manjani, Deputy Minister (led Apr 2026 Hanoi talks) | olta.manjani@ekonomia.gov.al (pattern) | Albania | P, L | wave A | SENT 9 Oct |
+| Q2 | Anila Muka, Dir. International Agreements (2nd email) | anila.muka@ekonomia.gov.al | Albania | P, L | wave A | SENT 9 Oct |
+| Q3 | Jorgjeta Marko, cc Albin Gega (2nd email) | jorgjeta.marko@ekonomia.gov.al, cc albin.gega@ekonomia.gov.al | Albania | L, P | wave A | SENT 9 Oct |
 | Q4 | Vũ Trường Giang, DOLAB (first contact: 28 Sep bounced) | dolab@dolab.gov.vn BOUNCED · address needed | Vietnam | L | wave B | HOLD |
-| Q5 | VAMAS (labour-export association) | vamas73nh@gmail.com | Vietnam | P, L | wave B | DRAFTED 8 Oct · r3323603690198783675 |
-| Q6 | Albanian Embassy in Beijing (covers Vietnam) | embassy.beijing@mfa.gov.al | China | P, L | wave B | DRAFTED 8 Oct · r-4880948080912758923 |
-| Q7 | Euronews Albania newsroom | newsroom@euronews.al | Albania | — | wave C | DRAFTED 8 Oct · r8847172891062963828 |
-| Q8 | Konfindustria (Gjergj Buxhuku) | info@konfindustria.org.al | Albania | — | wave C | DRAFTED 8 Oct · r-2047250888483774272 |
-| Q9 | Vietnamese Embassy Athens (2nd email) | vnemb.gr@mofa.gov.vn | Greece | L | wave C | DRAFTED 8 Oct · r-5787642306728578631 |
-| Q10 | Alketa Vejseli, Dir. Foreign Trade | alketa.vejseli@ekonomia.gov.al | Albania | P | wave D | DRAFTED 8 Oct · r-2272904397882615372 |
-| Q11 | Ermonela Xhafa, National Diaspora Agency | info@akd.gov.al | Albania | — | wave D | DRAFTED 8 Oct · r7149644205412064369 |
-| Q12 | Iris Ago, Chief of Cabinet | iris.ago@ekonomia.gov.al (pattern) | Albania | P, L | only if Q1–Q3 all silent 5 working days after sending | CONDITIONAL |
+| Q5 | VAMAS (labour-export association) | vamas73nh@gmail.com | Vietnam | P, L | wave B | SENT 9 Oct |
+| Q6 | Albanian Embassy in Beijing (covers Vietnam) | embassy.beijing@mfa.gov.al | China | P, L | wave B | SENT 9 Oct |
+| Q7 | Euronews Albania newsroom | newsroom@euronews.al | Albania | — | wave C | SENT 9 Oct |
+| Q8 | Konfindustria (Gjergj Buxhuku) | konfindustria@konfindustria.al, cc konfindustria.al@gmail.com (published on konfindustria.al) | Albania | — | wave C | info@konfindustria.org.al BOUNCED (no such domain) · RESENT 9 Oct |
+| Q9 | Vietnamese Embassy Athens (2nd email) | vnemb.gr@mofa.gov.vn | Greece | L | wave C | SENT 9 Oct |
+| Q10 | Alketa Vejseli, Dir. Foreign Trade | alketa.vejseli@ekonomia.gov.al | Albania | P | wave D | SENT 9 Oct |
+| Q11 | Ermonela Xhafa, National Diaspora Agency | info@akd.gov.al | Albania | — | wave D | SENT 9 Oct |
+| Q12 | Iris Ago, Chief of Cabinet | iris.ago@ekonomia.gov.al (pattern) | Albania | P, L | only if Q1–Q3 are all silent on Fri 16 Oct (5 working days after sending) | CONDITIONAL |
 
-Texts below are exactly what is in the drafts. Lorenc's Gmail signature goes after the last line.
+Texts below are exactly what was sent (Q8's resend changed only the subject).
 
 ---
 
