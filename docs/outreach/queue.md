@@ -18,6 +18,15 @@
   never received it. Needs a working address (call +84 24 3824 9517, or ask VAMAS), then send the Q4 text below as
   a first contact.
 
+## PROPOSED (9 Oct): Roundtable in Tirana, Thu 22 Oct 2026 (Lorenc decides)
+- Hosts: the Embassy of Viet Nam and the Honorary Consul of Viet Nam in Albania, Mr Sokol Topciu. Programme:
+  10:00–12:00 roundtable discussion (Tirana Marriott Hotel), 13:30 business lunch (Hare Space), 19:00–21:00 opening
+  ceremony of the Honorary Consul's office (Tirana Marriott Hotel). RSVP +355 69 701 0741, v.topciu@vitanet.al.
+- The Embassy asks Lorenc to invite Albanian companies and send names with contact details so it can invite them.
+- Lorenc to decide: attend in person (Trip 1 moves from 30 Nov to about 21–23 Oct) and RSVP to Mr Topciu's office.
+- Sources for the company list: Konfindustria (Q8), AKPA (Klevis Hysa), the MEI trade directorate (A. Vejseli, Q10),
+  tourism and hotel associations (to find), Lorenc's own contacts. The roundtable is the new fact for follow-ups.
+
 ## How it runs
 The 2-hour loop (routine "Albania outreach: 2-hour loop (draft-only)") never sends; automatic sending was refused by
 the permission system on 28 Sep and 6 Oct. It works in lorenc.hoxha@planaproduction.com: logs drafts Lorenc has
@@ -47,7 +56,7 @@ fall due. Drafts never contain a signature, images or links.
 | Q6 | Albanian Embassy in Beijing (covers Vietnam) | embassy.beijing@mfa.gov.al | China | P, L | wave B | SENT 9 Oct |
 | Q7 | Euronews Albania newsroom | newsroom@euronews.al | Albania | — | wave C | SENT 9 Oct |
 | Q8 | Konfindustria (Gjergj Buxhuku) | konfindustria@konfindustria.al, cc konfindustria.al@gmail.com (published on konfindustria.al) | Albania | — | wave C | info@konfindustria.org.al BOUNCED (no such domain) · RESENT 9 Oct |
-| Q9 | Vietnamese Embassy Athens (2nd email) | vnemb.gr@mofa.gov.vn | Greece | L | wave C | SENT 9 Oct |
+| Q9 | Vietnamese Embassy Athens (2nd email) | vnemb.gr@mofa.gov.vn | Greece | L | wave C | SENT 9 Oct · REPLIED 9 Oct 13:18 UTC: invitation to the 22 Oct Tirana roundtable, asks Lorenc to invite Albanian companies · reply DRAFTED r-7876083160950383286 (asks deadline, numbers, sectors; commits to nothing) |
 | Q10 | Alketa Vejseli, Dir. Foreign Trade | alketa.vejseli@ekonomia.gov.al | Albania | P | wave D | SENT 9 Oct |
 | Q11 | Ermonela Xhafa, National Diaspora Agency | info@akd.gov.al | Albania | — | wave D | SENT 9 Oct |
 | Q12 | Iris Ago, Chief of Cabinet | iris.ago@ekonomia.gov.al (pattern) | Albania | P, L | only if Q1–Q3 are all silent on Fri 16 Oct (5 working days after sending) | HOLD: the ministry answered through AKPA on 9 Oct |
