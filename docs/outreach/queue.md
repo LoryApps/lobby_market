@@ -8,7 +8,10 @@
 - Q8 bounced at once: the domain konfindustria.org.al does not exist. The same text was resent at 08:39 UTC to the
   addresses published on konfindustria.al (konfindustria@konfindustria.al, cc konfindustria.al@gmail.com), with
   "Për vëmendjen e Z. Gjergj Buxhuku" in the subject.
-- Watch: bounces (Q1 Manjani is a pattern address) and replies. Q12 only if Q1–Q3 are all silent on Fri 16 Oct.
+- FIRST REPLY, 9 Oct: Deputy Minister Manjani forwarded Q1 from her phone 15 minutes after it arrived (10:51 Tirana)
+  to Klevis Hysa at AKPA (National Employment and Skills Agency). At 12:52 he wrote: "Referuar e-mailit tuaj lutem te
+  na dergoni nje numer kontakti Whatsapp." Reply with Lorenc's WhatsApp number is drafted in the thread for Lorenc to
+  confirm and send. Q12 (Iris Ago) is on hold. Other items: keep watching for replies and bounces.
 - Future emails: drafts end with the closing and Lorenc's name, no signature and no links; Lorenc inserts his
   signature in Gmail (Insert signature, pen icon) before sending.
 - Q4 (DOLAB) is on hold: the 28 Sep email to dolab@dolab.gov.vn bounced (550 5.1.1, address unknown), so DOLAB
@@ -36,7 +39,7 @@ fall due. Drafts never contain a signature, images or links.
 
 | # | To | Address | Window | Attach | Order | Status |
 |---|---|---|---|---|---|---|
-| Q1 | Olta Manjani, Deputy Minister (led Apr 2026 Hanoi talks) | olta.manjani@ekonomia.gov.al (pattern) | Albania | P, L | wave A | SENT 9 Oct |
+| Q1 | Olta Manjani, Deputy Minister (led Apr 2026 Hanoi talks) | Olta.Manjani@ekonomia.gov.al (confirmed) | Albania | P, L | wave A | SENT 9 Oct · Manjani forwarded it to Klevis Hysa (AKPA) at 10:51 · he REPLIED 12:52 asking for a WhatsApp number · reply DRAFTED r-7453267332432713904 |
 | Q2 | Anila Muka, Dir. International Agreements (2nd email) | anila.muka@ekonomia.gov.al | Albania | P, L | wave A | SENT 9 Oct |
 | Q3 | Jorgjeta Marko, cc Albin Gega (2nd email) | jorgjeta.marko@ekonomia.gov.al, cc albin.gega@ekonomia.gov.al | Albania | L, P | wave A | SENT 9 Oct |
 | Q4 | Vũ Trường Giang, DOLAB (first contact: 28 Sep bounced) | dolab@dolab.gov.vn BOUNCED · address needed | Vietnam | L | wave B | HOLD |
@@ -47,7 +50,7 @@ fall due. Drafts never contain a signature, images or links.
 | Q9 | Vietnamese Embassy Athens (2nd email) | vnemb.gr@mofa.gov.vn | Greece | L | wave C | SENT 9 Oct |
 | Q10 | Alketa Vejseli, Dir. Foreign Trade | alketa.vejseli@ekonomia.gov.al | Albania | P | wave D | SENT 9 Oct |
 | Q11 | Ermonela Xhafa, National Diaspora Agency | info@akd.gov.al | Albania | — | wave D | SENT 9 Oct |
-| Q12 | Iris Ago, Chief of Cabinet | iris.ago@ekonomia.gov.al (pattern) | Albania | P, L | only if Q1–Q3 are all silent on Fri 16 Oct (5 working days after sending) | CONDITIONAL |
+| Q12 | Iris Ago, Chief of Cabinet | iris.ago@ekonomia.gov.al (pattern) | Albania | P, L | only if Q1–Q3 are all silent on Fri 16 Oct (5 working days after sending) | HOLD: the ministry answered through AKPA on 9 Oct |
 
 Texts below are exactly what was sent (Q8's resend changed only the subject).
 

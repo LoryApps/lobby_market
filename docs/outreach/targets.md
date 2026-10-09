@@ -12,11 +12,11 @@ Email pattern at the ministry is firstname.lastname@ekonomia.gov.al (confirmed o
 | Jorgjeta Marko | Director, Employment & Migration Policies | jorgjeta.marko@ekonomia.gov.al | Operational owner of recruitment channels | Sent 28 Sep, cc Gega · follow-up SENT 9 Oct (Q3) |
 | Albin Gega | Director General, Employment Policies, VET & Social Insurance | albin.gega@ekonomia.gov.al | Marko's boss; signs off the action plan | cc'd 28 Sep |
 | Anila Muka | Director, Integration, Coordination & International Agreements | anila.muka@ekonomia.gov.al | Owns the MoU text and the joint action plan | Sent 28 Sep · follow-up SENT 9 Oct (Q2) |
-| Iris Ago | Chief of Cabinet (Drejtor Kabineti) | iris.ago@ekonomia.gov.al (pattern) | Gatekeeper to the minister | CONDITIONAL Q12 |
+| Iris Ago | Chief of Cabinet (Drejtor Kabineti) | iris.ago@ekonomia.gov.al (pattern) | Gatekeeper to the minister | Q12 HOLD: the ministry answered via AKPA (9 Oct) |
 | Suzana Hoxha | Secretary General | paradhoma.sp@ekonomia.gov.al | Administrative head; routes letters | HOLD |
 | Rudolf Papa / Violeta Shqalsi-Cara / Fjorind Lika | Advisers to the minister | pattern | One may hold the "foreign workers" brief; ask Ago | HOLD |
 | Enkelejd Musabelliu | Deputy Minister (economic development, social policy background) | pattern | Secondary; Manjani owns Vietnam | HOLD, after trip |
-| Olta Manjani | Deputy Minister; LED the April 2026 delegation to Hanoi (talks with DOLAB acting director Vũ Trường Giang) | olta.manjani@ekonomia.gov.al (pattern) | Owns the Vietnam labour file at political level | SENT 9 Oct (Q1) |
+| Olta Manjani | Deputy Minister; LED the April 2026 delegation to Hanoi (talks with DOLAB acting director Vũ Trường Giang) | olta.manjani@ekonomia.gov.al (pattern) | Owns the Vietnam labour file at political level | SENT 9 Oct (Q1); address confirmed; she forwarded it to AKPA (Klevis Hysa) within 15 minutes |
 | Martin Kajo | Deputy Minister (innovation, digital, ex-cabinet director) | pattern | Forum logistics / digital | HOLD |
 
 ## Tier 2 — adjacent Albanian institutions
@@ -26,7 +26,7 @@ Email pattern at the ministry is firstname.lastname@ekonomia.gov.al (confirmed o
 | Alketa Vejseli | Director, Foreign Trade Affairs (MEI) | alketa.vejseli@ekonomia.gov.al | Trade delegation, Forum trade track | SENT 9 Oct (Q10) |
 | Mejvis Bajollari | DG Business Promotion & Trade (MEI) | mejvis.bajollari@ekonomia.gov.al | Same, senior | After Vejseli |
 | Ermonela Xhafa | Executive Director, National Diaspora Agency | info@akd.gov.al | Diaspora Register, Summit invitation, introductions | SENT 9 Oct (Q11) |
-| AKPA (National Employment & Skills Agency) | issues work permits; DG not published on site | via puna.gov.al | Implementation desk for permits | Ask Marko who; do not cold-email |
+| Klevis Hysa, AKPA (National Employment & Skills Agency) | Called AKPA's director in a Kosovo Online interview; the agency site names no director, so unconfirmed | Klevis.Hysa@akpa.gov.al | Manjani's pick for this file; AKPA runs employment services and the foreign-worker side | REPLIED 9 Oct (after Manjani's forward): asked for a WhatsApp number · reply drafted, Lorenc to send |
 | Ferit Hoxha | Minister for Europe & Foreign Affairs | via punetejashtme.gov.al | Honorary consul, Forum protocol | Phase 2 only |
 | Blendi Gonxhja | Minister of Tourism, Culture & Sport | via mtks.gov.al | Film rebate, NTA tenders | Phase 3 only |
 
