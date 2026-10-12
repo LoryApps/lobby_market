@@ -1,6 +1,6 @@
-# Target list — Albania–Vietnam file (updated 9 Oct 2026)
+# Target list — Albania–Vietnam file (updated 12 Oct 2026)
 
-**Sender:** lorenc.hoxha@planaproduction.com (allowed again 8 Oct). Lorenc's logo signature can only be inserted by him in Gmail; drafts made here have no signature and no links. Wave 3: 10 emails sent 9 Oct at Lorenc's "Send", without the logo signature (queue.md). No replies from any target so far.
+**Sender:** lorenc.hoxha@planaproduction.com (allowed again 8 Oct). Lorenc's logo signature can only be inserted by him in Gmail; drafts made here have no signature and no links. Wave 3: 10 emails sent 9 Oct at Lorenc's "Send", without the logo signature (queue.md). Replies so far: AKPA (Klevis Hysa, after Manjani's forward, 9 Oct) and the Vietnamese Embassy (9 and 12 Oct).
 Sources: ekonomia.gov.al (directorates, deputy ministers, cabinet, secretary general pages), aida.gov.al, akd.gov.al,
 vnembassy-athens.mofa.gov.vn, dolab.moha.gov.vn, RTSH / VietnamPlus / SGGP coverage of the 29 Jul 2026 MoU.
 Email pattern at the ministry is firstname.lastname@ekonomia.gov.al (confirmed on the directorates page). Rows marked "pattern" are inferred, not published.
@@ -35,7 +35,7 @@ Email pattern at the ministry is firstname.lastname@ekonomia.gov.al (confirmed o
 |---|---|---|---|---|
 | DOLAB, Ministry of Home Affairs; head: Vũ Trường Giang (acting director as of Apr 2026) | Vietnamese counterpart to the MoU; 41B Lý Thái Tổ, Hoàn Kiếm, Hanoi; +84 24 3824 9517 | dolab@dolab.gov.vn BOUNCED | Owns the sending side; 499 licensed enterprises | 28 Sep email BOUNCED (550 5.1.1, address unknown): never received · Q4 HOLD until a working address is confirmed by phone or via VAMAS. Visit in person in Hanoi. |
 | Vũ Chiến Thắng | Deputy Minister of Home Affairs; signed the MoU | via DOLAB | Signatory | Through DOLAB only |
-| Embassy of Vietnam in Athens (Amb. Phạm Thị Thu Hương) | Concurrently accredited to Albania; 20 Diamandidou St, Psychico; +30 210 612 8733 | vnemb.gr@mofa.gov.vn | Only Vietnamese diplomatic channel to Tirana | Sent 28 Sep (EN) · follow-up SENT 9 Oct (Q9) · REPLIED 9 Oct: invitation to the 22 Oct roundtable in Tirana, asks Lorenc for a list of Albanian companies · reply drafted |
+| Embassy of Vietnam in Athens (Amb. Phạm Thị Thu Hương) | Concurrently accredited to Albania; 20 Diamandidou St, Psychico; +30 210 612 8733 | vnemb.gr@mofa.gov.vn | Only Vietnamese diplomatic channel to Tirana | Sent 28 Sep (EN) · follow-up SENT 9 Oct (Q9) · REPLIED 9 Oct: invitation to the 22 Oct roundtable in Tirana, asks Lorenc for a list of Albanian companies · WROTE AGAIN 12 Oct: asks what the leaflet is for, asks Lorenc to confirm attendance and send the participants list · reply drafted, Lorenc to send |
 | Sokol Topciu, Honorary Consul of Viet Nam in Albania | Named in the Embassy's invitation; his office opens on 22 Oct in Tirana | RSVP v.topciu@vitanet.al, +355 69 701 0741 | Local ally in Tirana; co-host of the 22 Oct roundtable | Meet on 22 Oct |
 | VAMAS — Vietnam Association of Manpower Supply (all licensed senders) | 5th floor, 55 Nguyễn Khang, Cầu Giấy, Hanoi; 024 3776 4625 | vamas73nh@gmail.com | One door to the 499 licensed enterprises | SENT 9 Oct (Q5) |
 | Albanian Embassy in Beijing (accredited to Vietnam) | Guang Hua Lu 28, Beijing; +86 10 6532 1120 | embassy.beijing@mfa.gov.al | Albania's diplomatic channel for Vietnam | SENT 9 Oct (Q6) |
