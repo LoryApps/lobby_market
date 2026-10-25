@@ -1,6 +1,6 @@
 # Send queue — wave 3 (prepared 6 Oct, drafted 8 Oct, sent 9 Oct 2026)
 
-## Status (updated 12 Oct 2026): wave 3 SENT from lorenc.hoxha@planaproduction.com
+## Status (updated 25 Oct 2026): wave 3 SENT from lorenc.hoxha@planaproduction.com
 - Lorenc, 9 Oct: "Send". Claude sent the 10 drafts unchanged at 08:37 UTC (10:37 Tirana, 15:37 Ho Chi Minh City).
   They went without the logo signature: the Gmail connector strips every image and rewrites every link, so only
   Lorenc can insert his signature in Gmail (he had been told on 8 Oct). Attachments were checked byte for byte
@@ -17,21 +17,29 @@
   The unsent 9 Oct reply draft was replaced by one reply to the new message (r8674830779097923171). It explains the
   leaflet (a draft marked for review by the ministry and DOLAB, not published or given to workers, the Embassy's
   contact used only with its agreement), keeps the three questions, and says Lorenc will come back about attendance.
+- 25 Oct: no replies, bounces or sends from the targets since 12 Oct; both reply drafts are still unsent. The 22 Oct
+  roundtable passed with no RSVP from this mailbox, so the Embassy reply was redrafted for after the event
+  (r2262983976771675855, replaces r8674830779097923171). The leaflet paragraph is unchanged. The deadline and
+  numbers questions and the attendance line gave way to thanks for introducing Mr Topciu, a regret for not replying
+  before 22 Oct, an offer to suggest companies for any similar meeting, and a question whether one is planned.
+  It commits Lorenc to nothing.
 - Future emails: drafts end with the closing and Lorenc's name, no signature and no links; Lorenc inserts his
   signature in Gmail (Insert signature, pen icon) before sending.
 - Q4 (DOLAB) is on hold: the 28 Sep email to dolab@dolab.gov.vn bounced (550 5.1.1, address unknown), so DOLAB
   never received it. Needs a working address (call +84 24 3824 9517, or ask VAMAS), then send the Q4 text below as
   a first contact.
 
-## PROPOSED (9 Oct): Roundtable in Tirana, Thu 22 Oct 2026 (Lorenc decides)
+## PASSED: Roundtable in Tirana, Thu 22 Oct 2026 (proposed 9 Oct; no RSVP was sent from this mailbox)
 - Hosts: the Embassy of Viet Nam and the Honorary Consul of Viet Nam in Albania, Mr Sokol Topciu. Programme:
   10:00–12:00 roundtable discussion (Tirana Marriott Hotel), 13:30 business lunch (Hare Space), 19:00–21:00 opening
   ceremony of the Honorary Consul's office (Tirana Marriott Hotel). RSVP +355 69 701 0741, v.topciu@vitanet.al.
 - The Embassy asks Lorenc to invite Albanian companies and send names with contact details so it can invite them.
   On 12 Oct it asked again: confirm attendance and send the list of participants.
 - Lorenc to decide: attend in person (Trip 1 moves from 30 Nov to about 21–23 Oct) and RSVP to Mr Topciu's office.
+  Not decided before the date. The open hook is now the redrafted Embassy reply's question about a similar meeting.
 - Sources for the company list: Konfindustria (Q8), AKPA (Klevis Hysa), the MEI trade directorate (A. Vejseli, Q10),
-  tourism and hotel associations (to find), Lorenc's own contacts. The roundtable is the new fact for follow-ups.
+  tourism and hotel associations (to find), Lorenc's own contacts. The roundtable can no longer serve as the new
+  fact for follow-ups to silent contacts.
 
 ## How it runs
 The 2-hour loop (routine "Albania outreach: 2-hour loop (draft-only)") never sends; automatic sending was refused by
@@ -62,7 +70,7 @@ fall due. Drafts never contain a signature, images or links.
 | Q6 | Albanian Embassy in Beijing (covers Vietnam) | embassy.beijing@mfa.gov.al | China | P, L | wave B | SENT 9 Oct |
 | Q7 | Euronews Albania newsroom | newsroom@euronews.al | Albania | — | wave C | SENT 9 Oct |
 | Q8 | Konfindustria (Gjergj Buxhuku) | konfindustria@konfindustria.al, cc konfindustria.al@gmail.com (published on konfindustria.al) | Albania | — | wave C | info@konfindustria.org.al BOUNCED (no such domain) · RESENT 9 Oct |
-| Q9 | Vietnamese Embassy Athens (2nd email) | vnemb.gr@mofa.gov.vn | Greece | L | wave C | SENT 9 Oct · REPLIED 9 Oct 13:18 UTC: invitation to the 22 Oct Tirana roundtable, asks Lorenc to invite Albanian companies · WROTE AGAIN 12 Oct 13:37 UTC: asks the purpose of the attached leaflet, asks Lorenc to confirm attendance and send the list of participants · reply DRAFTED r8674830779097923171 (explains the leaflet; asks deadline, numbers, sectors; commits to nothing; replaces the unsent r-7876083160950383286) |
+| Q9 | Vietnamese Embassy Athens (2nd email) | vnemb.gr@mofa.gov.vn | Greece | L | wave C | SENT 9 Oct · REPLIED 9 Oct 13:18 UTC: invitation to the 22 Oct Tirana roundtable, asks Lorenc to invite Albanian companies · WROTE AGAIN 12 Oct 13:37 UTC: asks the purpose of the attached leaflet, asks Lorenc to confirm attendance and send the list of participants · reply DRAFTED r8674830779097923171 (explains the leaflet; asks deadline, numbers, sectors; commits to nothing; replaces the unsent r-7876083160950383286) · REDRAFTED 25 Oct after the event as r2262983976771675855 (leaflet paragraph unchanged; regrets not replying before 22 Oct; offers to suggest companies for any similar meeting; commits to nothing) |
 | Q10 | Alketa Vejseli, Dir. Foreign Trade | alketa.vejseli@ekonomia.gov.al | Albania | P | wave D | SENT 9 Oct |
 | Q11 | Ermonela Xhafa, National Diaspora Agency | info@akd.gov.al | Albania | — | wave D | SENT 9 Oct |
 | Q12 | Iris Ago, Chief of Cabinet | iris.ago@ekonomia.gov.al (pattern) | Albania | P, L | only if Q1–Q3 are all silent on Fri 16 Oct (5 working days after sending) | HOLD: the ministry answered through AKPA on 9 Oct |
