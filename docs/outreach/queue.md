@@ -1,6 +1,6 @@
 # Send queue — wave 3 (prepared 6 Oct, drafted 8 Oct, sent 9 Oct 2026)
 
-## Status (updated 25 Oct 2026): wave 3 SENT from lorenc.hoxha@planaproduction.com
+## Status (updated 28 Oct 2026): wave 3 SENT from lorenc.hoxha@planaproduction.com
 - Lorenc, 9 Oct: "Send". Claude sent the 10 drafts unchanged at 08:37 UTC (10:37 Tirana, 15:37 Ho Chi Minh City).
   They went without the logo signature: the Gmail connector strips every image and rewrites every link, so only
   Lorenc can insert his signature in Gmail (he had been told on 8 Oct). Attachments were checked byte for byte
@@ -23,11 +23,25 @@
   numbers questions and the attendance line gave way to thanks for introducing Mr Topciu, a regret for not replying
   before 22 Oct, an offer to suggest companies for any similar meeting, and a question whether one is planned.
   It commits Lorenc to nothing.
+- THIRD REPLY, 28 Oct 05:13 UTC: the Albanian Embassy in Beijing (Q6) answered, signed by Novruz Çeta, Minister
+  Counselor, cc riza.poda@mfa.gov.al (Riza Poda was ambassador to China and, non-resident, to Vietnam; his recall
+  was decreed in April 2026). It congratulates Lorenc, says the Embassy is ready to help him as an Albanian citizen
+  and entrepreneur, and invites him to the National Day ceremony in Beijing on Wed 18 Nov 2026 at 18:00, offering
+  to send the official invitation. Reply drafted (r2599443062293392146, to the Embassy, cc Mr Poda's address as in
+  the reply): thanks, asks for the official invitation, says he will let them know whether he can attend, repeats
+  the offer to be a contact in Vietnam. Commits Lorenc to nothing.
 - Future emails: drafts end with the closing and Lorenc's name, no signature and no links; Lorenc inserts his
   signature in Gmail (Insert signature, pen icon) before sending.
 - Q4 (DOLAB) is on hold: the 28 Sep email to dolab@dolab.gov.vn bounced (550 5.1.1, address unknown), so DOLAB
   never received it. Needs a working address (call +84 24 3824 9517, or ask VAMAS), then send the Q4 text below as
   a first contact.
+
+## PROPOSED (28 Oct): National Day ceremony, Albanian Embassy in Beijing, Wed 18 Nov 2026, 18:00 (Lorenc decides)
+- Host: the Embassy of Albania in Beijing, which also covers Vietnam. Invitation from Minister Counselor Novruz Çeta;
+  the official invitation follows once Lorenc says he is interested (the drafted reply asks for it).
+- Why it matters: first face-to-face contact with the Albanian diplomatic mission accredited to Vietnam, which the
+  plan needs before any representation role. It costs a Ho Chi Minh City–Beijing trip (about 5 hours each way).
+- Lorenc to decide: attend or not, after the official invitation arrives. Nothing is promised in the draft.
 
 ## PASSED: Roundtable in Tirana, Thu 22 Oct 2026 (proposed 9 Oct; no RSVP was sent from this mailbox)
 - Hosts: the Embassy of Viet Nam and the Honorary Consul of Viet Nam in Albania, Mr Sokol Topciu. Programme:
@@ -67,7 +81,7 @@ fall due. Drafts never contain a signature, images or links.
 | Q3 | Jorgjeta Marko, cc Albin Gega (2nd email) | jorgjeta.marko@ekonomia.gov.al, cc albin.gega@ekonomia.gov.al | Albania | L, P | wave A | SENT 9 Oct |
 | Q4 | Vũ Trường Giang, DOLAB (first contact: 28 Sep bounced) | dolab@dolab.gov.vn BOUNCED · address needed | Vietnam | L | wave B | HOLD |
 | Q5 | VAMAS (labour-export association) | vamas73nh@gmail.com | Vietnam | P, L | wave B | SENT 9 Oct |
-| Q6 | Albanian Embassy in Beijing (covers Vietnam) | embassy.beijing@mfa.gov.al | China | P, L | wave B | SENT 9 Oct |
+| Q6 | Albanian Embassy in Beijing (covers Vietnam) | embassy.beijing@mfa.gov.al | China | P, L | wave B | SENT 9 Oct · REPLIED 28 Oct 05:13 UTC (Novruz Çeta, Minister Counselor, cc riza.poda@mfa.gov.al): invitation to the National Day ceremony, Beijing, 18 Nov 18:00 · reply DRAFTED r2599443062293392146 (asks for the official invitation; commits to nothing) |
 | Q7 | Euronews Albania newsroom | newsroom@euronews.al | Albania | — | wave C | SENT 9 Oct |
 | Q8 | Konfindustria (Gjergj Buxhuku) | konfindustria@konfindustria.al, cc konfindustria.al@gmail.com (published on konfindustria.al) | Albania | — | wave C | info@konfindustria.org.al BOUNCED (no such domain) · RESENT 9 Oct |
 | Q9 | Vietnamese Embassy Athens (2nd email) | vnemb.gr@mofa.gov.vn | Greece | L | wave C | SENT 9 Oct · REPLIED 9 Oct 13:18 UTC: invitation to the 22 Oct Tirana roundtable, asks Lorenc to invite Albanian companies · WROTE AGAIN 12 Oct 13:37 UTC: asks the purpose of the attached leaflet, asks Lorenc to confirm attendance and send the list of participants · reply DRAFTED r8674830779097923171 (explains the leaflet; asks deadline, numbers, sectors; commits to nothing; replaces the unsent r-7876083160950383286) · REDRAFTED 25 Oct after the event as r2262983976771675855 (leaflet paragraph unchanged; regrets not replying before 22 Oct; offers to suggest companies for any similar meeting; commits to nothing) |
